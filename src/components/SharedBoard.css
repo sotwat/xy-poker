@@ -136,6 +136,8 @@
         /* Remove gap */
         padding: 0;
         /* Remove padding */
+        transform: scale(1.1) translateY(10px);
+        transform-origin: center center;
     }
 
     .card-slot {
