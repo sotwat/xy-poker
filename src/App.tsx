@@ -26,6 +26,7 @@ function App() {
   const [isOnlineGame, setIsOnlineGame] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [showResultsModal, setShowResultsModal] = useState(false);
+  const [isQuickMatch, setIsQuickMatch] = useState(false);
 
   // Player Names
   const [playerName, setPlayerName] = useState(() => {
@@ -63,6 +64,11 @@ function App() {
       setIsOnlineGame(true);
     });
 
+    socket.on('auto_start_game', () => {
+      console.log('Auto-starting Quick Match game');
+      dispatch({ type: 'START_GAME' });
+    });
+
     socket.on('game_action', (action: any) => {
       dispatch(action);
     });
@@ -72,6 +78,7 @@ function App() {
       socket.off('disconnect', onDisconnect);
       socket.off('player_joined');
       socket.off('sync_state');
+      socket.off('auto_start_game');
       socket.off('game_action');
       // Don't disconnect on cleanup - only when component unmounts
     };
@@ -181,7 +188,8 @@ function App() {
         setRoomId(response.roomId);
         setPlayerRole(response.role);
         setIsOnlineGame(true);
-        // If waiting for opponent, user will see setup screen
+        setIsQuickMatch(true);
+        // If waiting for opponent, user will see setup screen with waiting message
       }
     });
   };
@@ -340,7 +348,14 @@ function App() {
           <main className="game-board">
             {phase === 'setup' && (
               <div className="setup-screen">
-                {mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
+                {isQuickMatch ? (
+                  <div className="waiting-message">
+                    <h3>🎲 Quick Match</h3>
+                    <h2>Waiting for opponent...</h2>
+                    <div className="loading-spinner"></div>
+                    <p>Your game will start automatically when an opponent joins</p>
+                  </div>
+                ) : mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
                   <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
                 ) : (
                   <div className="waiting-message">

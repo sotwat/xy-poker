@@ -69,7 +69,11 @@ io.on('connection', (socket) => {
 
                 // Notify host that P2 joined
                 io.to(roomId).emit('player_joined', { playerId: socket.id });
-                console.log(`Quick match: User ${socket.id} joined room ${roomId}`);
+
+                // Auto-start game for quick match
+                io.to(roomId).emit('auto_start_game');
+
+                console.log(`Quick match: User ${socket.id} joined room ${roomId}, game auto-starting`);
             } else {
                 // Room became invalid, create new one
                 matchmakingQueue.length = 0; // Clear invalid queue
@@ -83,7 +87,7 @@ io.on('connection', (socket) => {
 
     function createMatchmakingRoom(socket, callback) {
         const roomId = Math.floor(1000 + Math.random() * 9000).toString();
-        rooms[roomId] = { players: [socket.id] };
+        rooms[roomId] = { players: [socket.id], isQuickMatch: true };
         socket.join(roomId);
         matchmakingQueue.push(roomId);
         callback({ success: true, roomId, role: 'host', waiting: true });
