@@ -69,6 +69,11 @@ function App() {
       dispatch({ type: 'START_GAME' });
     });
 
+    socket.on('opponent_joined', ({ opponentName }) => {
+      console.log('Opponent joined:', opponentName);
+      setOpponentName(opponentName);
+    });
+
     socket.on('game_action', (action: any) => {
       dispatch(action);
     });
@@ -79,6 +84,7 @@ function App() {
       socket.off('player_joined');
       socket.off('sync_state');
       socket.off('auto_start_game');
+      socket.off('opponent_joined');
       socket.off('game_action');
       // Don't disconnect on cleanup - only when component unmounts
     };
@@ -165,17 +171,20 @@ function App() {
   };
 
   const handleCreateRoom = () => {
-    socket.emit('create_room', (response: any) => {
+    socket.emit('create_room', { playerName }, (response: any) => {
       setRoomId(response.roomId);
       setPlayerRole('host');
     });
   };
 
   const handleJoinRoom = (id: string) => {
-    socket.emit('join_room', id, (response: any) => {
+    socket.emit('join_room', { roomId: id, playerName }, (response: any) => {
       if (response.success) {
         setRoomId(id);
         setPlayerRole('guest');
+        if (response.opponentName) {
+          setOpponentName(response.opponentName);
+        }
       } else {
         alert(response.message);
       }
@@ -186,11 +195,14 @@ function App() {
     // Set Quick Match mode immediately for UI update
     setIsQuickMatch(true);
 
-    socket.emit('quick_match', (response: any) => {
+    socket.emit('quick_match', { playerName }, (response: any) => {
       if (response.success) {
         setRoomId(response.roomId);
         setPlayerRole(response.role);
         setIsOnlineGame(true);
+        if (response.opponentName) {
+          setOpponentName(response.opponentName);
+        }
         // If waiting for opponent, user will see waiting screen
       } else {
         setIsQuickMatch(false); // Reset on error

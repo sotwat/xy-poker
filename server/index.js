@@ -30,23 +30,26 @@ const matchmakingQueue = [];
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
-    socket.on('create_room', (callback) => {
+    socket.on('create_room', ({ playerName }, callback) => {
         const roomId = Math.floor(1000 + Math.random() * 9000).toString();
-        rooms[roomId] = { players: [socket.id] };
+        rooms[roomId] = { players: [{ id: socket.id, name: playerName || 'Player 1' }] };
         socket.join(roomId);
         callback({ roomId });
         console.log(`Room ${roomId} created by ${socket.id}`);
     });
 
-    socket.on('join_room', (roomId, callback) => {
+    socket.on('join_room', ({ roomId, playerName }, callback) => {
         const room = rooms[roomId];
         if (room && room.players.length < 2) {
-            room.players.push(socket.id);
+            room.players.push({ id: socket.id, name: playerName || 'Player 2' });
             socket.join(roomId);
-            callback({ success: true });
 
-            // Notify host that P2 joined
-            io.to(roomId).emit('player_joined', { playerId: socket.id });
+            // Send opponent name to guest
+            const hostName = room.players[0].name;
+            callback({ success: true, opponentName: hostName });
+
+            // Notify host that P2 joined with their name
+            io.to(room.players[0].id).emit('player_joined', { playerId: socket.id, playerName: playerName || 'Player 2' });
             console.log(`User ${socket.id} joined room ${roomId}`);
 
             // Start game? Host can start.
@@ -55,7 +58,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('quick_match', (callback) => {
+    socket.on('quick_match', ({ playerName }, callback) => {
         // Check if there's a room waiting for a player
         if (matchmakingQueue.length > 0) {
             // Join the first available room
@@ -63,35 +66,39 @@ io.on('connection', (socket) => {
             const room = rooms[roomId];
 
             if (room && room.players.length === 1) {
-                room.players.push(socket.id);
-                socket.join(roomId);
-                callback({ success: true, roomId, role: 'guest' });
+                const hostName = room.players[0].name;
+                const guestName = playerName || 'Player 2';
 
-                // Notify host that P2 joined
-                io.to(roomId).emit('player_joined', { playerId: socket.id });
+                room.players.push({ id: socket.id, name: guestName });
+                socket.join(roomId);
+                callback({ success: true, roomId, role: 'guest', opponentName: hostName });
+
+                // Notify both players with opponent names and auto-start
+                io.to(room.players[0].id).emit('opponent_joined', { opponentName: guestName });
+                io.to(socket.id).emit('opponent_joined', { opponentName: hostName });
 
                 // Auto-start game for quick match
                 io.to(roomId).emit('auto_start_game');
 
-                console.log(`Quick match: User ${socket.id} joined room ${roomId}, game auto-starting`);
+                console.log(`Quick match: User ${socket.id} (${guestName}) joined ${room.players[0].id} (${hostName}) in room ${roomId}, game auto-starting`);
             } else {
                 // Room became invalid, create new one
                 matchmakingQueue.length = 0; // Clear invalid queue
-                createMatchmakingRoom(socket, callback);
+                createMatchmakingRoom(socket, playerName, callback);
             }
         } else {
             // No rooms waiting, create new one
-            createMatchmakingRoom(socket, callback);
+            createMatchmakingRoom(socket, playerName, callback);
         }
     });
 
-    function createMatchmakingRoom(socket, callback) {
+    function createMatchmakingRoom(socket, playerName, callback) {
         const roomId = Math.floor(1000 + Math.random() * 9000).toString();
-        rooms[roomId] = { players: [socket.id], isQuickMatch: true };
+        rooms[roomId] = { players: [{ id: socket.id, name: playerName || 'Player 1' }], isQuickMatch: true };
         socket.join(roomId);
         matchmakingQueue.push(roomId);
         callback({ success: true, roomId, role: 'host', waiting: true });
-        console.log(`Quick match room ${roomId} created by ${socket.id}, waiting for opponent`);
+        console.log(`Quick match room ${roomId} created by ${socket.id} (${playerName || 'Player 1'}), waiting for opponent`);
     }
 
     socket.on('game_action', ({ roomId, action }) => {
