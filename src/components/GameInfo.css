@@ -17,6 +17,46 @@
     font-weight: bold;
 }
 
+.turn-indicator {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.turn-indicator.your-turn {
+    font-size: 2rem;
+    padding: 1.5rem 3rem;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.5);
+    animation: pulse 1.5s ease-in-out infinite;
+    letter-spacing: 0.1em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.turn-indicator.opponent-turn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #aaa;
+    border-radius: 6px;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.5);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(79, 172, 254, 0.8);
+    }
+}
+
 .scores {
     display: flex;
     flex-direction: column;
