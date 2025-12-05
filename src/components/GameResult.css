@@ -181,12 +181,13 @@
 
     .winner-announcement {
         margin-top: 30px;
+        margin-bottom: 0.5rem;
     }
 
     .final-scores {
         gap: 0.25rem;
-        margin: 0.25rem 0;
-        transform: translateY(-20px);
+        margin: 0 0 0.15rem 0;
+        transform: translateY(-40px);
     }
 
     .score-box {
@@ -209,8 +210,8 @@
 
     .results-table {
         padding: 0.15rem;
-        margin: 0.25rem 0;
-        transform: translateY(-20px);
+        margin: 0 0 0.15rem 0;
+        transform: translateY(-40px);
     }
 
     .table-header,
@@ -223,8 +224,8 @@
 
     .button-group {
         gap: 0.25rem;
-        margin-top: 0.25rem;
-        transform: translateY(-20px);
+        margin-top: 0;
+        transform: translateY(-40px);
     }
 
     .restart-btn,
