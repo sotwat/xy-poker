@@ -1,10 +1,10 @@
 import { io, Socket } from 'socket.io-client';
 
 // Connect to server
-// In production (built), use same origin as the page
+// In production (built), use Render server
 // In dev, use localhost:3001
 const SERVER_URL = import.meta.env.PROD
-    ? (typeof window !== 'undefined' ? window.location.origin : undefined)
+    ? 'https://xy-poker.onrender.com'
     : 'http://localhost:3001';
 
 console.log('[Socket.IO] Connecting to:', SERVER_URL);
