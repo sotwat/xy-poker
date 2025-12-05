@@ -1,11 +1,13 @@
 import type { GameState, Card } from './types';
+import { getLearningData } from './aiLearning';
 
-// Enhanced AI with advanced strategies
+// Enhanced AI with advanced strategies + Learning System
 // 1. Evaluate straights (consecutive ranks)
 // 2. Consider X-hand (bottom row) strategy
 // 3. Weight scores by dice values
 // 4. Block opponent's strong columns
 // 5. Strategic hidden card placement
+// 6. Learn from game outcomes and adapt strategy
 
 export function getBestMove(gameState: GameState, playerIndex: number): { cardId: string, colIndex: number, isHidden: boolean } {
     const player = gameState.players[playerIndex];
@@ -42,11 +44,12 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
 
             // X-hand strategy (bottom row)
             if (emptySlotIdx === 2) {
-                score += evaluateXHandPotential(board, card, col);
+                const learning = getLearningData();
+                score += evaluateXHandPotential(board, card, col) * learning.xHandFocus;
 
-                // Bonus for completing column first
+                // Bonus for completing column first - INCREASED + LEARNING
                 if (opponent.board[2][col] === null) {
-                    score += 80;
+                    score += 150 * learning.bonusAggression;
                 }
             }
 
@@ -73,29 +76,32 @@ function evaluateColumnPlacement(cards: (Card | null)[], _colIndex: number, dice
     const validCards = cards.filter(c => c !== null) as Card[];
     if (validCards.length === 0) return 0;
 
+    // Get learning data for adaptive strategy
+    const learning = getLearningData();
+
     let score = 0;
     const numCards = validCards.length;
 
-    // Trips (Three of a Kind)
+    // Trips (Three of a Kind) - SIGNIFICANTLY INCREASED + LEARNING
     const ranks = validCards.map(c => c.rank);
     const uniqueRanks = new Set(ranks);
     if (numCards === 3 && uniqueRanks.size === 1) {
-        score += 200 * diceValue; // Trips weighted by dice
+        score += 400 * diceValue * learning.tripPreference; // Learning applied
     } else if (numCards === 2 && uniqueRanks.size === 1) {
-        score += 80 * diceValue; // Pair potential
+        score += 160 * diceValue * learning.tripPreference;
     }
 
-    // Flush
+    // Flush - SIGNIFICANTLY INCREASED + LEARNING
     const suits = validCards.map(c => c.suit).filter(s => s !== 'joker');
     const uniqueSuits = new Set(suits);
     if (uniqueSuits.size === 1 && numCards >= 2) {
-        score += 60 * diceValue; // Flush potential
+        score += 120 * diceValue * learning.flushPreference; // Learning applied
         if (numCards === 3) {
-            score += 40 * diceValue; // Complete flush
+            score += 100 * diceValue * learning.flushPreference;
         }
     }
 
-    // Straight (consecutive ranks)
+    // Straight (consecutive ranks) - SIGNIFICANTLY INCREASED + LEARNING
     if (numCards >= 2) {
         const sortedRanks = [...ranks].sort((a, b) => a - b);
         let consecutive = true;
@@ -106,20 +112,20 @@ function evaluateColumnPlacement(cards: (Card | null)[], _colIndex: number, dice
             }
         }
         if (consecutive) {
-            score += 70 * diceValue; // Straight potential
+            score += 140 * diceValue * learning.straightPreference; // Learning applied
             if (numCards === 3) {
-                score += 50 * diceValue; // Complete straight
+                score += 120 * diceValue * learning.straightPreference;
             }
         }
     }
 
-    // High cards in high dice columns
+    // High cards in high dice columns - INCREASED
     const avgRank = ranks.reduce((sum, r) => sum + r, 0) / ranks.length;
-    score += avgRank * diceValue * 3;
+    score += avgRank * diceValue * 5;
 
-    // Joker bonus
+    // Joker bonus - INCREASED
     if (validCards.some(c => c.suit === 'joker')) {
-        score += 100 * diceValue;
+        score += 200 * diceValue;
     }
 
     return score;
@@ -139,20 +145,20 @@ function evaluateXHandPotential(board: (Card | null)[][], newCard: Card, colInde
     const ranks = validCards.map(c => c.rank);
     const suits = validCards.map(c => c.suit).filter(s => s !== 'joker');
 
-    // Pairs, trips, quads
+    // Pairs, trips, quads - INCREASED
     const rankCounts = new Map<number, number>();
     ranks.forEach(r => rankCounts.set(r, (rankCounts.get(r) || 0) + 1));
     const maxCount = Math.max(...rankCounts.values());
 
-    if (maxCount >= 2) score += maxCount * 30;
+    if (maxCount >= 2) score += maxCount * 60; // Was 30
 
-    // Flush potential
+    // Flush potential - INCREASED
     const uniqueSuits = new Set(suits);
     if (uniqueSuits.size === 1 && validCards.length >= 3) {
-        score += 50;
+        score += 100; // Was 50
     }
 
-    // Straight potential
+    // Straight potential - INCREASED
     const sortedRanks = [...new Set(ranks)].sort((a, b) => a - b);
     if (sortedRanks.length >= 3) {
         let maxConsecutive = 1;
@@ -165,12 +171,12 @@ function evaluateXHandPotential(board: (Card | null)[][], newCard: Card, colInde
                 current = 1;
             }
         }
-        if (maxConsecutive >= 3) score += maxConsecutive * 25;
+        if (maxConsecutive >= 3) score += maxConsecutive * 50; // Was 25
     }
 
-    // High cards in bottom row are valuable
-    if (newCard.rank >= 12) score += 40;
-    if (newCard.suit === 'joker') score += 100;
+    // High cards in bottom row are valuable - INCREASED
+    if (newCard.rank >= 12) score += 80; // Was 40
+    if (newCard.suit === 'joker') score += 200; // Was 100
 
     return score;
 }
@@ -210,18 +216,20 @@ function shouldHideCard(move: { cardId: string, colIndex: number }, hand: Card[]
     const card = hand.find(c => c.id === move.cardId);
     if (!card || card.suit === 'joker') return false;
 
+    const learning = getLearningData();
+
     // Strategic hiding: Hide high-value cards in important columns
     const col = move.colIndex;
     const diceValue = player.dice[col];
 
     // Hide high cards (J, Q, K, A) in high dice columns (4, 5, 6)
     if (card.rank >= 11 && diceValue >= 4) {
-        return Math.random() < 0.4; // 40% chance
+        return Math.random() < (0.4 * learning.hidingStrategy / 0.3); // Adapt based on learning
     }
 
     // Hide strategically to prevent opponent from reading our hand
     if (card.rank >= 10) {
-        return Math.random() < 0.25; // 25% chance
+        return Math.random() < (0.25 * learning.hidingStrategy / 0.3);
     }
 
     return false;

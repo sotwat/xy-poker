@@ -2,6 +2,7 @@ import { useReducer, useState, useEffect, useRef } from 'react';
 import { gameReducer, INITIAL_GAME_STATE } from './logic/game';
 import { evaluateYHand, evaluateXHand } from './logic/evaluation';
 import { calculateXHandScores } from './logic/scoring';
+import { recordGameResult } from './logic/aiLearning';
 import type { Card } from './logic/types';
 import { SharedBoard } from './components/SharedBoard';
 import { Hand } from './components/Hand';
@@ -122,8 +123,15 @@ function App() {
   useEffect(() => {
     if (phase === 'ended') {
       setShowResultsModal(true);
+
+      // Record AI learning data in local mode
+      if (mode === 'local' && winner) {
+        const aiWon = winner === 'p2';
+        const isDraw = winner === null;
+        recordGameResult(aiWon, isDraw);
+      }
     }
-  }, [phase]);
+  }, [phase, mode, winner]);
 
   // Save player name to localStorage
   useEffect(() => {
