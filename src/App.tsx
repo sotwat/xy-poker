@@ -332,7 +332,7 @@ function App() {
         />
       </header>
 
-      {mode === 'online' && isQuickMatch && phase === 'setup' ? (
+      {mode === 'online' && isQuickMatch ? (
         <div className="setup-screen">
           <div className="waiting-message">
             <h3>🎲 Quick Match</h3>
