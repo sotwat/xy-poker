@@ -166,61 +166,61 @@
 
 @media (max-width: 600px) {
     .game-result-modal {
-        padding: 0.5rem;
+        padding: 0.25rem;
         width: 95%;
         max-height: 90vh;
         overflow-y: auto;
     }
 
     .game-result-modal h2 {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
     }
 
     .final-scores {
-        gap: 0.5rem;
-        margin: 0.5rem 0;
-    }
-
-    .score-box {
-        padding: 0.5rem;
-        min-width: 80px;
-    }
-
-    .score-box h3 {
-        font-size: 0.7rem;
-    }
-
-    .score-val {
-        font-size: 1.2rem;
+        gap: 0.25rem;
         margin: 0.25rem 0;
     }
 
+    .score-box {
+        padding: 0.25rem;
+        min-width: 60px;
+    }
+
+    .score-box h3 {
+        font-size: 0.55rem;
+    }
+
+    .score-val {
+        font-size: 0.9rem;
+        margin: 0.15rem 0;
+    }
+
     .bonus-val {
-        font-size: 0.6rem;
+        font-size: 0.5rem;
     }
 
     .results-table {
-        padding: 0.25rem;
-        margin: 0.5rem 0;
+        padding: 0.15rem;
+        margin: 0.25rem 0;
     }
 
     .table-header,
     .table-row {
         grid-template-columns: 0.5fr 0.5fr 1.5fr 1.5fr 1fr;
-        font-size: 0.65rem;
-        gap: 0.25rem;
-        padding: 0.25rem;
+        font-size: 0.5rem;
+        gap: 0.15rem;
+        padding: 0.15rem;
     }
 
     .button-group {
-        gap: 0.5rem;
-        margin-top: 0.5rem;
+        gap: 0.25rem;
+        margin-top: 0.25rem;
     }
 
     .restart-btn,
     .view-board-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.65rem;
     }
 }

@@ -80,7 +80,6 @@ export const GameResult: React.FC<GameResultProps> = ({
     return (
         <div className="game-result-overlay">
             <div className="game-result-modal">
-                <h2>Game Over</h2>
                 <div className="winner-announcement">
                     {winner === 'draw' ? (
                         <span className="draw-text">Draw - Tie Game!</span>
