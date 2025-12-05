@@ -196,6 +196,44 @@ input[type="text"] {
         margin: 0;
     }
 
+    .name-input-section {
+        gap: 0.32rem;
+        margin-top: 0.4rem;
+    }
+
+    .name-input-section label {
+        font-size: 0.72rem;
+    }
+
+    .name-input-section input {
+        padding: 0.4rem 0.64rem;
+        font-size: 0.72rem;
+    }
+
+    .quick-match-section {
+        gap: 0.32rem;
+        margin-top: 0.8rem;
+    }
+
+    .btn-large {
+        font-size: 0.8rem;
+        padding: 0.64rem 1.28rem;
+        min-width: 160px;
+    }
+
+    .quick-match-hint {
+        font-size: 0.56rem;
+    }
+
+    .divider {
+        margin: 0.8rem 0;
+    }
+
+    .divider span {
+        padding: 0 0.64rem;
+        font-size: 0.6rem;
+    }
+
     .lobby-actions {
         flex-direction: column;
         gap: 0.4rem;
