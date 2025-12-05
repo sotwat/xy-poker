@@ -7,7 +7,6 @@ interface CardProps {
     onClick?: () => void;
     isSelected?: boolean;
     isPlayable?: boolean;
-    canPeek?: boolean;
 }
 
 const SUIT_ICONS: Record<string, string> = {
@@ -26,30 +25,12 @@ const RANK_LABELS: Record<number, string> = {
     15: 'JOKER', // For Joker rank
 };
 
-export const Card: React.FC<CardProps> = ({ card, onClick, isSelected, isPlayable, canPeek = false }) => {
-    const [isPeeking, setIsPeeking] = React.useState(false);
+export const Card: React.FC<CardProps> = ({ card, onClick, isSelected, isPlayable }) => {
 
-    const handlePeekStart = () => {
-        if (canPeek && card.isHidden) {
-            setIsPeeking(true);
-        }
-    };
 
-    const handlePeekEnd = () => {
-        setIsPeeking(false);
-    };
-
-    if (card.isHidden && !isPeeking) {
+    if (card.isHidden) {
         return (
-            <div
-                className={`card hidden ${isSelected ? 'selected' : ''}`}
-                onClick={onClick}
-                onMouseDown={handlePeekStart}
-                onMouseUp={handlePeekEnd}
-                onMouseLeave={handlePeekEnd}
-                onTouchStart={handlePeekStart}
-                onTouchEnd={handlePeekEnd}
-            >
+            <div className={`card hidden ${isSelected ? 'selected' : ''}`} onClick={onClick}>
                 <div className="card-back"></div>
             </div>
         );
@@ -57,18 +38,12 @@ export const Card: React.FC<CardProps> = ({ card, onClick, isSelected, isPlayabl
 
     const label = card.suit === 'joker' ? 'JOKER' : (RANK_LABELS[card.rank] || card.rank.toString());
     const icon = SUIT_ICONS[card.suit];
-    const peekClass = isPeeking ? 'peeking' : '';
 
     return (
         <div
-            className={`card ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''} ${peekClass}`}
+            className={`card ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''}`}
             onClick={onClick}
             data-suit={card.suit}
-            onMouseDown={handlePeekStart}
-            onMouseUp={handlePeekEnd}
-            onMouseLeave={handlePeekEnd}
-            onTouchStart={handlePeekStart}
-            onTouchEnd={handlePeekEnd}
         >
             <div className="card-top">
                 <span className="rank">{label}</span>

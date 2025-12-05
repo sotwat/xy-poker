@@ -77,8 +77,9 @@ export const Lobby: React.FC<LobbyProps> = ({ onCreateRoom, onJoinRoom, roomId, 
                             </button>
                         )}
                     </div>
-                    <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for host to start...'}</p>
-                    <div className="loading-spinner">Waiting for opponent...</div>
+                    <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for host to start game...'}</p>
+                    {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent to join...</div>}
+                    {playerRole === 'guest' && <div className="loading-spinner">Connected to Room</div>}
                 </div>
             )}
         </div>

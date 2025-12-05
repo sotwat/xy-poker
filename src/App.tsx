@@ -41,27 +41,13 @@ function App() {
     socket.on('player_joined', () => {
       console.log('[Game] Player joined! Current role:', playerRoleRef.current);
       if (playerRoleRef.current === 'host') {
-        // Start game!
-        handleStartGame();
+        // Player joined, enter "Setup" phase in Online mode
+        // This triggers the Sync Effect below, sending 'setup' state to guest
         setIsOnlineGame(true);
-        // Sync initial state to guest
-        // We need to wait a bit for state to update or send current
-        // Actually, handleStartGame dispatches START_GAME.
-        // We should listen to state changes and sync?
       }
     });
 
     socket.on('sync_state', (remoteState: any) => { // remoteState should be GameState
-      // Force update state (we might need a SET_STATE action or just reload)
-      // Ideally reducer should have a SYNC action.
-      // For now, let's assume we can just replace state if we had a SET_STATE action.
-      // Or we can just rely on action relaying.
-      // But initial sync is needed for Dice.
-      // Host generates, Guest must receive.
-      // So Host sends START_GAME action with specific dice?
-      // Current START_GAME generates dice inside reducer.
-      // We need to change START_GAME to accept dice or sync state.
-      // Let's add SYNC_STATE action.
       dispatch({ type: 'SYNC_STATE', payload: remoteState } as any);
       setIsOnlineGame(true);
     });
@@ -246,7 +232,14 @@ function App() {
           <main className="game-board">
             {phase === 'setup' && (
               <div className="setup-screen">
-                <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
+                {mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
+                  <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
+                ) : (
+                  <div className="waiting-message">
+                    <h3>Waiting for Host to start game...</h3>
+                    <div className="loading-spinner"></div>
+                  </div>
+                )}
               </div>
             )}
             {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
@@ -257,7 +250,6 @@ function App() {
                   dice={players[0].dice} // Shared dice
                   onColumnClick={handleColumnClick}
                   isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
-                  revealHidden={phase === 'ended'}
                 />
               </div>
             )}

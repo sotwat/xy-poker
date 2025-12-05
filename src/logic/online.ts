@@ -3,9 +3,9 @@ import { io, Socket } from 'socket.io-client';
 // Connect to server
 // In production (built), use same origin as the page
 // In dev, use localhost:3001
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || (import.meta.env.PROD
+const SERVER_URL = import.meta.env.PROD
     ? (typeof window !== 'undefined' ? window.location.origin : undefined)
-    : 'http://localhost:3001');
+    : 'http://localhost:3001';
 
 console.log('[Socket.IO] Connecting to:', SERVER_URL);
 
