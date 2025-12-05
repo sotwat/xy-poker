@@ -30,19 +30,13 @@ export const GameInfo: React.FC<GameInfoProps> = ({
         <div className="game-info">
             <div className="status-bar">
                 {phase === 'playing' && (
-                    isOnlineMode ? (
-                        currentPlayerIndex === myIndex ? (
-                            <div className="turn-indicator your-turn">
-                                YOUR TURN
-                            </div>
-                        ) : (
-                            <div className="turn-indicator opponent-turn">
-                                {oppDisplayName}'s Turn
-                            </div>
-                        )
+                    currentPlayerIndex === (isOnlineMode ? myIndex : 0) ? (
+                        <div className="turn-indicator your-turn">
+                            YOUR TURN
+                        </div>
                     ) : (
-                        <div className="turn-indicator">
-                            Turn: {currentPlayerIndex === 0 ? p1Name : p2Name}
+                        <div className="turn-indicator opponent-turn">
+                            {isOnlineMode ? `${oppDisplayName}'s Turn` : `${p2Name}'s Turn`}
                         </div>
                     )
                 )}
