@@ -227,12 +227,7 @@ input[type="text"] {
     }
 
     .divider {
-        margin: 0.8rem 0;
-    }
-
-    .divider span {
-        padding: 0 0.64rem;
-        font-size: 0.6rem;
+        display: none;
     }
 
     .lobby-actions {
