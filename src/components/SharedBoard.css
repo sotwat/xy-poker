@@ -8,10 +8,10 @@
     align-items: center;
 }
 
-/* Desktop: Move down from center */
+/* Desktop: No vertical offset */
 @media (min-width: 601px) {
     .shared-board {
-        transform: scale(1.0) translateY(5px);
+        transform: scale(1.0) translateY(0px);
         transform-origin: center center;
     }
 }
