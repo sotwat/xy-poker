@@ -8,6 +8,11 @@ interface CardProps {
     isSelected?: boolean;
     isPlayable?: boolean;
     isPeeking?: boolean; // For revealing own hidden cards temporarily
+    onMouseDown?: () => void;
+    onMouseUp?: () => void;
+    onMouseLeave?: () => void;
+    onTouchStart?: () => void;
+    onTouchEnd?: () => void;
 }
 
 const SUIT_ICONS: Record<string, string> = {
@@ -26,12 +31,31 @@ const RANK_LABELS: Record<number, string> = {
     15: 'JOKER', // For Joker rank
 };
 
-export const Card: React.FC<CardProps> = ({ card, onClick, isSelected, isPlayable, isPeeking }) => {
+export const Card: React.FC<CardProps> = ({
+    card,
+    onClick,
+    isSelected,
+    isPlayable,
+    isPeeking,
+    onMouseDown,
+    onMouseUp,
+    onMouseLeave,
+    onTouchStart,
+    onTouchEnd
+}) => {
 
     // If hidden but peeking, show card face with overlay
     if (card.isHidden && !isPeeking) {
         return (
-            <div className={`card hidden ${isSelected ? 'selected' : ''}`} onClick={onClick}>
+            <div
+                className={`card hidden ${isSelected ? 'selected' : ''}`}
+                onClick={onClick}
+                onMouseDown={onMouseDown}
+                onMouseUp={onMouseUp}
+                onMouseLeave={onMouseLeave}
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
+            >
                 <div className="card-back"></div>
             </div>
         );
@@ -44,6 +68,11 @@ export const Card: React.FC<CardProps> = ({ card, onClick, isSelected, isPlayabl
         <div
             className={`card ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''} ${isPeeking ? 'peeking' : ''}`}
             onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseLeave}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
             data-suit={card.suit}
         >
             {isPeeking && <div className="peek-overlay"></div>}

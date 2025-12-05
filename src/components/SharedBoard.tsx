@@ -22,19 +22,45 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     revealAll = false
 }) => {
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
+    const [pressTimer, setPressTimer] = useState<number | null>(null);
 
-    const handleCardClick = (card: CardType | null, colIndex: number, isPlayerCard: boolean) => {
+    const handleCardPressStart = (card: CardType | null, _colIndex: number, isPlayerCard: boolean) => {
         if (!card) return;
 
-        // If clicking own hidden card, toggle peek
+        // Clear any existing timer
+        if (pressTimer !== null) {
+            clearTimeout(pressTimer);
+            setPressTimer(null);
+        }
+
+        // If it's own hidden card, start long press timer
         if (isPlayerCard && card.isHidden && !revealAll) {
-            if (peekingCard === card.id) {
-                setPeekingCard(null); // Hide if already peeking
-            } else {
-                setPeekingCard(card.id); // Peek at this card
-            }
-        } else if (isCurrentPlayer) {
-            // Normal column click for placing cards
+            const timer = window.setTimeout(() => {
+                setPeekingCard(card.id);
+            }, 500); // 500ms long press
+            setPressTimer(timer);
+        }
+    };
+
+    const handleCardPressEnd = (card: CardType | null, colIndex: number, _isPlayerCard: boolean) => {
+        // Clear timer if released before long press completes
+        if (pressTimer !== null) {
+            clearTimeout(pressTimer);
+            setPressTimer(null);
+        }
+
+        // Hide peek when released
+        setPeekingCard(null);
+
+        // If it was a quick press (not long press) and conditions are met, trigger column click
+        if (!card && isCurrentPlayer) {
+            onColumnClick(colIndex);
+        }
+    };
+
+    const handleCardClick = (card: CardType | null, colIndex: number, isPlayerCard: boolean) => {
+        // For non-hidden cards or opponent cards, just handle column click
+        if (card && (!card.isHidden || !isPlayerCard) && isCurrentPlayer) {
             onColumnClick(colIndex);
         }
     };
@@ -81,6 +107,11 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                                     card={revealAll ? { ...card, isHidden: false } : card}
                                     isPeeking={peekingCard === card.id}
                                     onClick={() => handleCardClick(card, colIndex, true)}
+                                    onMouseDown={() => handleCardPressStart(card, colIndex, true)}
+                                    onMouseUp={() => handleCardPressEnd(card, colIndex, true)}
+                                    onMouseLeave={() => handleCardPressEnd(card, colIndex, true)}
+                                    onTouchStart={() => handleCardPressStart(card, colIndex, true)}
+                                    onTouchEnd={() => handleCardPressEnd(card, colIndex, true)}
                                 />
                             ) : (
                                 <div className="empty-slot" onClick={() => isCurrentPlayer && onColumnClick(colIndex)} />
