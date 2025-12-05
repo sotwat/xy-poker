@@ -11,7 +11,7 @@
 /* Desktop: Move down from center */
 @media (min-width: 601px) {
     .shared-board {
-        transform: scale(1.0) translateY(15px);
+        transform: scale(1.0) translateY(10px);
         transform-origin: center center;
     }
 }
