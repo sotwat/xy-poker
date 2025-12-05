@@ -53,7 +53,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                 <div className="player-slots">
                     {playerCards.map((card, idx) => (
                         <div key={`pl-${idx}`} className="card-slot player-slot">
-                            {card ? <Card card={revealHidden ? { ...card, isHidden: false } : card} /> : <div className="empty-slot" />}
+                            {card ? <Card card={revealHidden ? { ...card, isHidden: false } : card} canPeek={!revealHidden} /> : <div className="empty-slot" />}
                         </div>
                     ))}
                 </div>
