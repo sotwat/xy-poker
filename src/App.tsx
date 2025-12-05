@@ -183,13 +183,17 @@ function App() {
   };
 
   const handleQuickMatch = () => {
+    // Set Quick Match mode immediately for UI update
+    setIsQuickMatch(true);
+
     socket.emit('quick_match', (response: any) => {
       if (response.success) {
         setRoomId(response.roomId);
         setPlayerRole(response.role);
         setIsOnlineGame(true);
-        setIsQuickMatch(true);
-        // If waiting for opponent, user will see setup screen with waiting message
+        // If waiting for opponent, user will see waiting screen
+      } else {
+        setIsQuickMatch(false); // Reset on error
       }
     });
   };
