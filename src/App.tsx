@@ -1,5 +1,6 @@
 import { useReducer, useState, useEffect, useRef } from 'react';
 import { gameReducer, INITIAL_GAME_STATE } from './logic/game';
+import { evaluateYHand } from './logic/evaluation';
 import { SharedBoard } from './components/SharedBoard';
 import { Hand } from './components/Hand';
 import { GameInfo } from './components/GameInfo';
@@ -163,6 +164,34 @@ function App() {
     });
   };
 
+  const calculateWinningColumns = (): ('p1' | 'p2' | 'draw')[] => {
+    const { players } = gameState;
+    const p1 = players[0];
+    const p2 = players[1];
+    const dice = p1.dice;
+
+    return Array.from({ length: 5 }, (_, colIndex) => {
+      const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
+      const p2Cards = [p2.board[0][colIndex]!, p2.board[1][colIndex]!, p2.board[2][colIndex]!];
+
+      const p1Res = evaluateYHand(p1Cards, dice[colIndex]);
+      const p2Res = evaluateYHand(p2Cards, dice[colIndex]);
+
+      if (p1Res.rankValue > p2Res.rankValue) return 'p1';
+      if (p2Res.rankValue > p1Res.rankValue) return 'p2';
+
+      // Tie-break with kickers
+      for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
+        const k1 = p1Res.kickers[k] || 0;
+        const k2 = p2Res.kickers[k] || 0;
+        if (k1 > k2) return 'p1';
+        if (k2 > k1) return 'p2';
+      }
+
+      return 'draw';
+    });
+  };
+
   const handleCardSelect = (cardId: string) => {
     // Determine current player's index based on mode
     let myPlayerIndex = 0; // Default for local P1
@@ -292,6 +321,7 @@ function App() {
                   onColumnClick={handleColumnClick}
                   isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
                   revealAll={phase === 'ended'}
+                  winningColumns={phase === 'ended' ? calculateWinningColumns() : undefined}
                 />
               </div>
             )}

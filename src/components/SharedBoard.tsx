@@ -11,6 +11,7 @@ interface SharedBoardProps {
     onColumnClick: (colIndex: number) => void;
     isCurrentPlayer: boolean;
     revealAll?: boolean; // For post-game view
+    winningColumns?: ('p1' | 'p2' | 'draw')[];
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -19,7 +20,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     dice,
     onColumnClick,
     isCurrentPlayer,
-    revealAll = false
+    revealAll = false,
+    winningColumns
 }) => {
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const [pressTimer, setPressTimer] = useState<number | null>(null);
@@ -76,7 +78,10 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         return (
             <div
                 key={colIndex}
-                className={`shared-column ${isCurrentPlayer ? 'interactive' : ''}`}
+                className={`shared-column ${isCurrentPlayer ? 'interactive' : ''
+                    } ${winningColumns && winningColumns[colIndex] === 'p1' ? 'winning-column-p1' : ''
+                    } ${winningColumns && winningColumns[colIndex] === 'p2' ? 'winning-column-p2' : ''
+                    }`}
             >
                 {/* Opponent Side */}
                 <div className="opponent-slots">

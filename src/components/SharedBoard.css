@@ -20,6 +20,46 @@
     border-radius: 8px;
 }
 
+.shared-column.winning-column-p1 {
+    background: rgba(79, 172, 254, 0.15);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+    animation: glow-p1 2s ease-in-out infinite;
+}
+
+.shared-column.winning-column-p2 {
+    background: rgba(255, 88, 88, 0.15);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 0 20px rgba(255, 88, 88, 0.4);
+    animation: glow-p2 2s ease-in-out infinite;
+}
+
+@keyframes glow-p1 {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(79, 172, 254, 0.7);
+    }
+}
+
+@keyframes glow-p2 {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(255, 88, 88, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(255, 88, 88, 0.7);
+    }
+}
+
 .opponent-slots,
 .player-slots {
     display: flex;
