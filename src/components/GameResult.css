@@ -225,7 +225,7 @@
     .button-group {
         gap: 0.25rem;
         margin-top: 0;
-        transform: translateY(-60px);
+        transform: translateY(-65px);
     }
 
     .restart-btn,
