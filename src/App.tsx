@@ -303,6 +303,12 @@ function App() {
               </button>
             )}
 
+            {phase === 'ended' && !showResultsModal && (
+              <button className="btn-primary" onClick={() => setShowResultsModal(true)}>
+                Show Results
+              </button>
+            )}
+
             {phase === 'ended' && showResultsModal && (
               <GameResult
                 gameState={gameState}
