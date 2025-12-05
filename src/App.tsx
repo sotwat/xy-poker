@@ -13,6 +13,7 @@ import { socket, connectSocket } from './logic/online';
 import './App.css';
 
 import { getBestMove } from './logic/ai';
+import { generateRandomPlayerName } from './logic/nameGenerator';
 
 function App() {
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
@@ -28,9 +29,10 @@ function App() {
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [isQuickMatch, setIsQuickMatch] = useState(false);
 
-  // Player Names
+  // Player Names - Generate random name for uniqueness
   const [playerName, setPlayerName] = useState(() => {
-    return localStorage.getItem('xypoker_playerName') || 'Player 1';
+    const saved = localStorage.getItem('xypoker_playerName');
+    return saved || generateRandomPlayerName();
   });
   const [opponentName, setOpponentName] = useState('Player 2');
 
