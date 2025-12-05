@@ -39,7 +39,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                             </div>
                             {onSurrender && (
                                 <button className="surrender-btn" onClick={onSurrender}>
-                                    降参
+                                    Cancel
                                 </button>
                             )}
                         </>

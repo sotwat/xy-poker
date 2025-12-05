@@ -17,8 +17,9 @@
     font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     justify-content: center;
+    position: relative;
+    width: 100%;
 }
 
 .turn-indicator {
@@ -90,6 +91,8 @@
 }
 
 .surrender-btn {
+    position: absolute;
+    right: 0;
     padding: 0.3rem 0.6rem;
     font-size: 0.7rem;
     background: rgba(255, 88, 88, 0.2);
