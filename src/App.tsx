@@ -66,6 +66,7 @@ function App() {
 
     socket.on('auto_start_game', () => {
       console.log('Auto-starting Quick Match game');
+      setIsQuickMatch(false); // Reset flag to allow transition to game
       dispatch({ type: 'START_GAME' });
     });
 
