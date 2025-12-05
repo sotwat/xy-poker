@@ -125,13 +125,14 @@ function App() {
       setShowResultsModal(true);
 
       // Record AI learning data in local mode
-      if (mode === 'local' && winner) {
+      if (mode === 'local') {
+        const { winner } = gameState;
         const aiWon = winner === 'p2';
         const isDraw = winner === null;
         recordGameResult(aiWon, isDraw);
       }
     }
-  }, [phase, mode, winner]);
+  }, [phase, mode, gameState]);
 
   // Save player name to localStorage
   useEffect(() => {
