@@ -393,6 +393,9 @@ function App() {
             <h2>Waiting for opponent...</h2>
             <div className="loading-spinner"></div>
             <p>Your game will start automatically when an opponent joins</p>
+            <button className="btn-cancel" onClick={handleCancelMatchmaking}>
+              キャンセル
+            </button>
           </div>
         </div>
       ) : mode === 'online' && !isOnlineGame ? (
