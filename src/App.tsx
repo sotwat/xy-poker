@@ -23,6 +23,12 @@ function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [showResultsModal, setShowResultsModal] = useState(false);
 
+  // Player Names
+  const [playerName, setPlayerName] = useState(() => {
+    return localStorage.getItem('xypoker_playerName') || 'Player 1';
+  });
+  const [opponentName, setOpponentName] = useState('Player 2');
+
   // Use ref to track playerRole for event handlers
   const playerRoleRef = useRef(playerRole);
   useEffect(() => {
@@ -116,9 +122,27 @@ function App() {
     }
   }, [phase]);
 
+  // Save player name to localStorage
+  useEffect(() => {
+    localStorage.setItem('xypoker_playerName', playerName);
+  }, [playerName]);
+
+  // Update opponent name based on mode
+  useEffect(() => {
+    if (mode === 'local') {
+      setOpponentName('AI');
+    } else if (mode === 'online' && !isOnlineGame) {
+      setOpponentName('Player 2');
+    }
+  }, [mode, isOnlineGame]);
+
   const handleStartGame = () => {
     dispatch({ type: 'START_GAME' });
     setShowResultsModal(false);
+  };
+
+  const handlePlayerNameChange = (name: string) => {
+    setPlayerName(name);
   };
 
   const handleCreateRoom = () => {
@@ -225,7 +249,13 @@ function App() {
             </button>
           </div>
         )}
-        <GameInfo gameState={gameState} isOnlineMode={mode === 'online'} playerRole={playerRole} />
+        <GameInfo
+          gameState={gameState}
+          isOnlineMode={mode === 'online'}
+          playerRole={playerRole}
+          playerName={playerName}
+          opponentName={opponentName}
+        />
       </header>
 
       {mode === 'online' && !isOnlineGame ? (
@@ -235,6 +265,8 @@ function App() {
           roomId={roomId}
           isConnected={isConnected}
           playerRole={playerRole}
+          playerName={playerName}
+          onPlayerNameChange={handlePlayerNameChange}
         />
       ) : (
         <>
@@ -314,6 +346,8 @@ function App() {
                 gameState={gameState}
                 onRestart={handleStartGame}
                 onClose={() => setShowResultsModal(false)}
+                playerName={playerName}
+                opponentName={opponentName}
               />
             )}
           </footer>

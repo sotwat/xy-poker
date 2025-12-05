@@ -7,9 +7,19 @@ interface LobbyProps {
     roomId: string | null;
     isConnected: boolean;
     playerRole: 'host' | 'guest' | null;
+    playerName: string;
+    onPlayerNameChange: (name: string) => void;
 }
 
-export const Lobby: React.FC<LobbyProps> = ({ onCreateRoom, onJoinRoom, roomId, isConnected, playerRole }) => {
+export const Lobby: React.FC<LobbyProps> = ({
+    onCreateRoom,
+    onJoinRoom,
+    roomId,
+    isConnected,
+    playerRole,
+    playerName,
+    onPlayerNameChange
+}) => {
     const [joinId, setJoinId] = useState('');
 
     if (!isConnected) {
@@ -29,6 +39,19 @@ export const Lobby: React.FC<LobbyProps> = ({ onCreateRoom, onJoinRoom, roomId, 
     return (
         <div className="lobby-container">
             <h2>Online Multiplayer</h2>
+
+            {/* Player Name Input */}
+            <div className="name-input-section">
+                <label htmlFor="playerName">Your Name:</label>
+                <input
+                    id="playerName"
+                    type="text"
+                    value={playerName}
+                    onChange={(e) => onPlayerNameChange(e.target.value)}
+                    maxLength={20}
+                    placeholder="Enter your name"
+                />
+            </div>
 
             {!roomId ? (
                 <div className="lobby-actions">

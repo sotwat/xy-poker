@@ -8,13 +8,24 @@ interface GameResultProps {
     gameState: GameState;
     onRestart: () => void;
     onClose: () => void;
+    playerName?: string;
+    opponentName?: string;
 }
 
-export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart, onClose }) => {
+export const GameResult: React.FC<GameResultProps> = ({
+    gameState,
+    onRestart,
+    onClose,
+    playerName = 'Player 1',
+    opponentName = 'Player 2'
+}) => {
     const { players, winner } = gameState;
     const p1 = players[0];
     const p2 = players[1];
     const dice = players[0].dice; // Shared dice
+
+    const p1Name = playerName;
+    const p2Name = opponentName;
 
     // Helper to get readable hand name
     const getHandName = (type: string) => {
@@ -72,7 +83,7 @@ export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart, on
                 <h2>Game Over</h2>
                 <div className="winner-announcement">
                     Winner: <span className={winner === 'p1' ? 'p1-text' : 'p2-text'}>
-                        {winner === 'p1' ? 'Player 1' : 'Player 2'}
+                        {winner === 'p1' ? p1Name : (winner === 'p2' ? p2Name : 'Draw')}
                     </span>
                 </div>
 
@@ -80,8 +91,8 @@ export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart, on
                     <div className="table-header">
                         <div>Column</div>
                         <div>Dice</div>
-                        <div>P1 Hand</div>
-                        <div>P2 Hand</div>
+                        <div>P1</div>
+                        <div>P2</div>
                         <div>Winner</div>
                     </div>
                     {columnResults.map((res, idx) => (
@@ -111,12 +122,12 @@ export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart, on
 
                 <div className="final-scores">
                     <div className="score-box p1">
-                        <h3>Player 1</h3>
+                        <h3>{p1Name}</h3>
                         <div className="score-val">{p1.score}</div>
                         <div className="bonus-val">Bonuses: {p1.bonusesClaimed}</div>
                     </div>
                     <div className="score-box p2">
-                        <h3>Player 2</h3>
+                        <h3>{p2Name}</h3>
                         <div className="score-val">{p2.score}</div>
                         <div className="bonus-val">Bonuses: {p2.bonusesClaimed}</div>
                     </div>

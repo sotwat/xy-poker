@@ -6,10 +6,25 @@ interface GameInfoProps {
     gameState: GameState;
     isOnlineMode?: boolean;
     playerRole?: 'host' | 'guest' | null;
+    playerName?: string;
+    opponentName?: string;
 }
 
-export const GameInfo: React.FC<GameInfoProps> = ({ gameState, isOnlineMode = false, playerRole = null }) => {
+export const GameInfo: React.FC<GameInfoProps> = ({
+    gameState,
+    isOnlineMode = false,
+    playerRole = null,
+    playerName = 'Player 1',
+    opponentName = 'Player 2'
+}) => {
     const { phase, currentPlayerIndex, players, winner } = gameState;
+
+    // Determine display names based on player role in online mode
+    const myIndex = isOnlineMode && playerRole === 'guest' ? 1 : 0;
+    const myDisplayName = playerName;
+    const oppDisplayName = opponentName;
+    const p1Name = myIndex === 0 ? myDisplayName : oppDisplayName;
+    const p2Name = myIndex === 1 ? myDisplayName : oppDisplayName;
 
     return (
         <div className="game-info">
@@ -17,17 +32,17 @@ export const GameInfo: React.FC<GameInfoProps> = ({ gameState, isOnlineMode = fa
                 {phase === 'playing' && (
                     <div className="turn-indicator">
                         {isOnlineMode ? (
-                            currentPlayerIndex === (playerRole === 'guest' ? 1 : 0)
+                            currentPlayerIndex === myIndex
                                 ? '▶ Your Turn'
-                                : 'Opponent\'s Turn'
+                                : `${oppDisplayName}'s Turn`
                         ) : (
-                            `Turn: Player ${currentPlayerIndex + 1}`
+                            `Turn: ${currentPlayerIndex === 0 ? p1Name : p2Name}`
                         )}
                     </div>
                 )}
                 {phase === 'ended' && (
                     <div className="winner-banner">
-                        Winner: {winner === 'p1' ? 'Player 1' : 'Player 2'}!
+                        Winner: {winner === 'p1' ? p1Name : p2Name}!
                     </div>
                 )}
                 {phase === 'scoring' && (
@@ -39,8 +54,8 @@ export const GameInfo: React.FC<GameInfoProps> = ({ gameState, isOnlineMode = fa
 
             <div className="scores">
                 <div className="score-row">
-                    <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>P1 Score: {players[0].score}</span>
-                    <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>P2 Score: {players[1].score}</span>
+                    <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>{p1Name}: {players[0].score}</span>
+                    <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>{p2Name}: {players[1].score}</span>
                 </div>
                 <div className="bonus-row">
                     <span className="bonus-item">Bonuses: {players[0].bonusesClaimed}</span>

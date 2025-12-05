@@ -8,6 +8,30 @@
     gap: 2rem;
 }
 
+.name-input-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.name-input-section label {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.name-input-section input {
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: #222;
+    color: white;
+    text-align: center;
+    font-size: 1rem;
+    width: 250px;
+    box-sizing: border-box;
+}
+
 .lobby-actions {
     display: flex;
     gap: 2rem;
