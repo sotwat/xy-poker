@@ -5,6 +5,7 @@ interface LobbyProps {
     onCreateRoom: () => void;
     onJoinRoom: (roomId: string) => void;
     onQuickMatch: () => void;
+    onCancelMatchmaking: () => void;
     roomId: string | null;
     isConnected: boolean;
     playerRole: 'host' | 'guest' | null;
@@ -16,6 +17,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     onCreateRoom,
     onJoinRoom,
     onQuickMatch,
+    onCancelMatchmaking,
     roomId,
     isConnected,
     playerRole,
@@ -116,6 +118,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for host to start game...'}</p>
                     {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent to join...</div>}
                     {playerRole === 'guest' && <div className="loading-spinner">Connected to Room</div>}
+                    <button className="btn-cancel" onClick={onCancelMatchmaking}>
+                        キャンセル
+                    </button>
                 </div>
             )}
         </div>

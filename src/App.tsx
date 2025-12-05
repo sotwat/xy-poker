@@ -81,6 +81,13 @@ function App() {
       dispatch(action);
     });
 
+    socket.on('game_end_surrender', ({ winner }) => {
+      // Handle surrender ending the game
+      dispatch({ type: 'CALCULATE_SCORE' });
+      const newState = { ...gameState, winner };
+      dispatch({ type: 'SYNC_STATE', payload: newState } as any);
+    });
+
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
@@ -89,6 +96,7 @@ function App() {
       socket.off('auto_start_game');
       socket.off('opponent_joined');
       socket.off('game_action');
+      socket.off('game_end_surrender');
       // Don't disconnect on cleanup - only when component unmounts
     };
   }, []); // Empty dependency array - only run once on mount
@@ -211,6 +219,32 @@ function App() {
         setIsQuickMatch(false); // Reset on error
       }
     });
+  };
+
+  const handleCancelMatchmaking = () => {
+    // Cancel matchmaking and return to lobby
+    socket.emit('cancel_matchmaking', { roomId });
+    setRoomId(null);
+    setPlayerRole(null);
+    setIsQuickMatch(false);
+    setIsOnlineGame(false);
+  };
+
+  const handleSurrender = () => {
+    if (!window.confirm('降参しますか？ゲームを終了します。')) {
+      return;
+    }
+
+    if (mode === 'local') {
+      // Local mode: AI wins
+      dispatch({ type: 'CALCULATE_SCORE' });
+      // Force winner to be P2 (AI)
+      const newState = { ...gameState, winner: 'p2' as const };
+      dispatch({ type: 'SYNC_STATE', payload: newState } as any);
+    } else {
+      // Online mode: notify server
+      socket.emit('surrender', { roomId });
+    }
   };
 
   const calculateWinningColumns = (): ('p1' | 'p2' | 'draw')[] => {
@@ -348,6 +382,7 @@ function App() {
           playerRole={playerRole}
           playerName={playerName}
           opponentName={opponentName}
+          onSurrender={handleSurrender}
         />
       </header>
 
@@ -365,6 +400,7 @@ function App() {
           onCreateRoom={handleCreateRoom}
           onJoinRoom={handleJoinRoom}
           onQuickMatch={handleQuickMatch}
+          onCancelMatchmaking={handleCancelMatchmaking}
           roomId={roomId}
           isConnected={isConnected}
           playerRole={playerRole}

@@ -171,6 +171,23 @@
     }
 }
 
+.btn-cancel {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #aaa;
+    border: 1px solid #666;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #888;
+}
+
 input[type="text"] {
     padding: 0.8rem;
     border-radius: 4px;

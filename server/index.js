@@ -101,6 +101,50 @@ io.on('connection', (socket) => {
         console.log(`Quick match room ${roomId} created by ${socket.id} (${playerName || 'Player 1'}), waiting for opponent`);
     }
 
+    socket.on('cancel_matchmaking', ({ roomId }) => {
+        if (roomId && rooms[roomId]) {
+            // Remove player from room
+            const room = rooms[roomId];
+            const playerIndex = room.players.findIndex(p => p.id === socket.id);
+
+            if (playerIndex !== -1) {
+                room.players.splice(playerIndex, 1);
+                socket.leave(roomId);
+
+                // If room is empty, delete it and remove from queue
+                if (room.players.length === 0) {
+                    delete rooms[roomId];
+                    const queueIndex = matchmakingQueue.indexOf(roomId);
+                    if (queueIndex !== -1) {
+                        matchmakingQueue.splice(queueIndex, 1);
+                    }
+                    console.log(`Room ${roomId} cancelled and deleted`);
+                } else {
+                    // Notify remaining player
+                    io.to(roomId).emit('player_left');
+                    console.log(`Player ${socket.id} cancelled matchmaking in room ${roomId}`);
+                }
+            }
+        }
+    });
+
+    socket.on('surrender', ({ roomId }) => {
+        if (roomId && rooms[roomId]) {
+            // Determine winner (opponent of surrendering player)
+            const room = rooms[roomId];
+            const surrenderIndex = room.players.findIndex(p => p.id === socket.id);
+
+            if (surrenderIndex !== -1) {
+                const winnerIndex = surrenderIndex === 0 ? 1 : 0;
+                const winner = winnerIndex === 0 ? 'p1' : 'p2';
+
+                // Notify all players in room
+                io.to(roomId).emit('game_end_surrender', { winner, surrendererId: socket.id });
+                console.log(`Player ${socket.id} surrendered in room ${roomId}, winner: ${winner}`);
+            }
+        }
+    });
+
     socket.on('game_action', ({ roomId, action }) => {
         // Relay action to others in room
         socket.to(roomId).emit('game_action', action);

@@ -8,6 +8,7 @@ interface GameInfoProps {
     playerRole?: 'host' | 'guest' | null;
     playerName?: string;
     opponentName?: string;
+    onSurrender?: () => void;
 }
 
 export const GameInfo: React.FC<GameInfoProps> = ({
@@ -15,7 +16,8 @@ export const GameInfo: React.FC<GameInfoProps> = ({
     isOnlineMode = false,
     playerRole = null,
     playerName = 'Player 1',
-    opponentName = 'Player 2'
+    opponentName = 'Player 2',
+    onSurrender
 }) => {
     const { phase, currentPlayerIndex, players, winner } = gameState;
 
@@ -66,6 +68,12 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                     <span className="bonus-item">Bonuses: {players[1].bonusesClaimed}</span>
                 </div>
             </div>
+
+            {phase === 'playing' && onSurrender && (
+                <button className="surrender-btn" onClick={onSurrender}>
+                    降参
+                </button>
+            )}
         </div>
     );
 };
