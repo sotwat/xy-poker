@@ -1,0 +1,79 @@
+.game-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 0 2px 2px 2px;
+    background: transparent;
+    border-radius: 8px;
+    box-shadow: none;
+    margin-bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.status-bar {
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.scores {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    align-items: center;
+}
+
+.score-row,
+.bonus-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    width: 100%;
+}
+
+.score-item {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.score-item.active {
+    background: #e3f2fd;
+    color: #1976d2;
+    font-weight: bold;
+}
+
+.bonus-item {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+@media (max-width: 600px) {
+    .game-info {
+        padding: 0 2px 2px 2px;
+        /* Remove top padding */
+        gap: 0;
+        margin-bottom: 0;
+        /* Remove margin */
+        width: 100%;
+        box-sizing: border-box;
+        box-shadow: none;
+        background: transparent;
+        /* Remove background to blend */
+    }
+
+    .status-bar {
+        font-size: 0.8rem;
+    }
+
+    .score-item {
+        font-size: 0.8rem;
+    }
+
+    .bonus-item {
+        font-size: 0.7rem;
+    }
+}

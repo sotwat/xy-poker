@@ -1,0 +1,92 @@
+.shared-board {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background: #f0f2f5;
+    border-radius: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
+.shared-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.shared-column.interactive:hover .player-slots {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+}
+
+.opponent-slots,
+.player-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Opponent cards should be rotated 180 degrees to "face" the player?
+   Or just the slot?
+   If we rotate the card, it looks upside down to us.
+   "Face each other".
+   Let's rotate the opponent-slot container 180 deg?
+   No, that reverses the order. We already manually reversed the order (2,1,0).
+   So we just need to rotate the CARDS themselves 180 deg so they look upside down.
+*/
+.opponent-slot .card {
+    transform: rotate(180deg);
+}
+
+.dice-row {
+    margin: 8px 0;
+    padding: 8px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-slot {
+    width: 60px;
+    height: 90px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-slot {
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 600px) {
+    .shared-board {
+        gap: 0;
+        /* Remove gap */
+        padding: 0;
+        /* Remove padding */
+    }
+
+    .card-slot {
+        width: 45px;
+        height: 63px;
+        /* Fixed height (5/7 ratio) */
+        border-width: 1px;
+        border-radius: 4px;
+    }
+
+    /* Force card to fill the slot */
+    .card-slot .card {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .dice-row {
+        padding: 2px;
+        margin: 1px 0;
+        /* Reduced margin */
+    }
+}

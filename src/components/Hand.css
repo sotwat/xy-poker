@@ -1,0 +1,89 @@
+.hand {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    min-height: 110px;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.hand.active {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);
+}
+
+.hand-card-wrapper {
+    transition: transform 0.2s;
+}
+
+.hand-card-wrapper:hover {
+    transform: translateY(-5px);
+}
+
+@media (max-width: 600px) {
+    .hand {
+        padding: 4px;
+        gap: 4px;
+        /* Slightly increased gap for better touch targets */
+        height: 50px;
+        /* Reduced height to make hand smaller */
+        min-height: 0;
+        /* Override min-height */
+        overflow-x: auto;
+        /* Allow scrolling if too many cards */
+        justify-content: center;
+        /* Center cards */
+        width: 100%;
+        /* Use full available width */
+        box-sizing: border-box;
+    }
+
+    /* Hide scrollbar */
+    .hand::-webkit-scrollbar {
+        display: none;
+    }
+
+    .hand-card-wrapper {
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .hand .card {
+        height: 100%;
+        /* Fill hand height (minus padding) */
+        width: auto;
+        /* Maintain aspect ratio */
+        aspect-ratio: 5/7;
+        /* Standard poker ratio */
+        min-width: 0;
+        /* Allow shrinking if needed */
+    }
+
+    /* Further reduce font size for cards in hand */
+    .hand .card .card-top,
+    .hand .card .card-bottom {
+        font-size: 7px;
+        line-height: 0.9;
+    }
+
+    .hand .card .card-center {
+        font-size: 12px;
+    }
+
+    /* Disable hover and selection animations to prevent layout shifts */
+    .hand-card-wrapper:hover {
+        transform: none;
+    }
+
+    .hand .card:hover {
+        transform: none;
+    }
+
+    .hand .card.selected {
+        transform: none;
+    }
+}

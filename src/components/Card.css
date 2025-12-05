@@ -1,0 +1,99 @@
+.card {
+  width: 60px;
+  height: 90px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  user-select: none;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card.selected {
+  border: 2px solid #007bff;
+  transform: translateY(-10px);
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.card.hidden {
+  background: #2c3e50;
+  border: 2px solid #fff;
+}
+
+.card-back {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(45deg,
+      #2c3e50,
+      #2c3e50 10px,
+      #34495e 10px,
+      #34495e 20px);
+  border-radius: 4px;
+}
+
+.card.hearts,
+.card.diamonds {
+  color: #e74c3c;
+}
+
+.card.clubs,
+.card.spades {
+  color: #2c3e50;
+}
+
+.card.joker {
+  color: #8e44ad;
+}
+
+.card-top,
+.card-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.card-bottom {
+  transform: rotate(180deg);
+}
+
+.card-center {
+  font-size: 24px;
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 2px;
+    /* Reduced padding */
+    border-radius: 4px;
+    /* Smaller radius */
+  }
+
+  .card-top,
+  .card-bottom {
+    font-size: 10px;
+    /* Smaller corner text */
+  }
+
+  .card-center {
+    font-size: 16px;
+    /* Smaller center text */
+  }
+}

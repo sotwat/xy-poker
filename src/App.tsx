@@ -1,0 +1,313 @@
+import { useReducer, useState, useEffect, useRef } from 'react';
+import { gameReducer, INITIAL_GAME_STATE } from './logic/game';
+import { SharedBoard } from './components/SharedBoard';
+import { Hand } from './components/Hand';
+import { GameInfo } from './components/GameInfo';
+import { GameResult } from './components/GameResult';
+import { Lobby } from './components/Lobby';
+import { socket, connectSocket } from './logic/online';
+import './App.css';
+
+import { getBestMove } from './logic/ai';
+
+function App() {
+  const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [placeHidden, setPlaceHidden] = useState(false);
+
+  // Online State
+  const [mode, setMode] = useState<'local' | 'online'>('local');
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [playerRole, setPlayerRole] = useState<'host' | 'guest' | null>(null);
+  const [isOnlineGame, setIsOnlineGame] = useState(false);
+  const [isConnected, setIsConnected] = useState(socket.connected);
+
+  // Use ref to track playerRole for event handlers
+  const playerRoleRef = useRef(playerRole);
+  useEffect(() => {
+    playerRoleRef.current = playerRole;
+  }, [playerRole]);
+
+  // Initialize Socket
+  useEffect(() => {
+    connectSocket();
+
+    const onConnect = () => setIsConnected(true);
+    const onDisconnect = () => setIsConnected(false);
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+
+    socket.on('player_joined', () => {
+      console.log('[Game] Player joined! Current role:', playerRoleRef.current);
+      if (playerRoleRef.current === 'host') {
+        // Start game!
+        handleStartGame();
+        setIsOnlineGame(true);
+        // Sync initial state to guest
+        // We need to wait a bit for state to update or send current
+        // Actually, handleStartGame dispatches START_GAME.
+        // We should listen to state changes and sync?
+      }
+    });
+
+    socket.on('sync_state', (remoteState: any) => { // remoteState should be GameState
+      // Force update state (we might need a SET_STATE action or just reload)
+      // Ideally reducer should have a SYNC action.
+      // For now, let's assume we can just replace state if we had a SET_STATE action.
+      // Or we can just rely on action relaying.
+      // But initial sync is needed for Dice.
+      // Host generates, Guest must receive.
+      // So Host sends START_GAME action with specific dice?
+      // Current START_GAME generates dice inside reducer.
+      // We need to change START_GAME to accept dice or sync state.
+      // Let's add SYNC_STATE action.
+      dispatch({ type: 'SYNC_STATE', payload: remoteState } as any);
+      setIsOnlineGame(true);
+    });
+
+    socket.on('game_action', (action: any) => {
+      dispatch(action);
+    });
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('player_joined');
+      socket.off('sync_state');
+      socket.off('game_action');
+      // Don't disconnect on cleanup - only when component unmounts
+    };
+  }, []); // Empty dependency array - only run once on mount
+
+  // Sync State on Change (Host only)
+  useEffect(() => {
+    if (isOnlineGame && playerRole === 'host' && roomId) {
+      socket.emit('sync_state', { roomId, state: gameState });
+    }
+  }, [gameState, isOnlineGame, playerRole, roomId]);
+
+
+  const { currentPlayerIndex, players, phase } = gameState;
+  const currentPlayer = players[currentPlayerIndex];
+
+  // AI Turn Logic (Only in Local Mode)
+  useEffect(() => {
+    if (mode === 'local' && phase === 'playing' && currentPlayerIndex === 1) {
+      // AI is Player 2
+      const timer = setTimeout(() => {
+        // 1. Calculate Move
+        const move = getBestMove(gameState, 1);
+
+        // 2. Place Card & Draw (Atomic)
+        dispatch({
+          type: 'PLACE_AND_DRAW',
+          payload: {
+            cardId: move.cardId,
+            colIndex: move.colIndex,
+            isHidden: move.isHidden
+          }
+        });
+
+      }, 1000); // 1s delay before AI starts acting
+
+      return () => clearTimeout(timer);
+    }
+  }, [phase, currentPlayerIndex, gameState, mode]); // Depend on gameState to re-eval if needed, but mainly index.
+
+  useEffect(() => {
+    if (phase === 'scoring') {
+      // Auto-calculate score after a short delay or immediately
+      // Let's add a button to "Reveal & Score" instead of auto
+    }
+  }, [phase]);
+
+  const handleStartGame = () => {
+    dispatch({ type: 'START_GAME' });
+  };
+
+  const handleCreateRoom = () => {
+    socket.emit('create_room', (response: any) => {
+      setRoomId(response.roomId);
+      setPlayerRole('host');
+    });
+  };
+
+  const handleJoinRoom = (id: string) => {
+    socket.emit('join_room', id, (response: any) => {
+      if (response.success) {
+        setRoomId(id);
+        setPlayerRole('guest');
+      } else {
+        alert(response.message);
+      }
+    });
+  };
+
+  const handleCardSelect = (cardId: string) => {
+    // Determine current player's index based on mode
+    let myPlayerIndex = 0; // Default for local P1
+    if (isOnlineGame) {
+      myPlayerIndex = playerRole === 'host' ? 0 : 1;
+    }
+
+    if (currentPlayerIndex !== myPlayerIndex) return; // Prevent selecting during opponent's turn
+    if (selectedCardId === cardId) {
+      setSelectedCardId(null);
+    } else {
+      setSelectedCardId(cardId);
+    }
+  };
+
+  const handleColumnClick = (colIndex: number) => {
+    if (phase !== 'playing') return;
+    if (!selectedCardId) return; // Must have a card selected
+
+    // Determine current player's index based on mode
+    let myPlayerIndex = 0; // Default for local P1
+    if (isOnlineGame) {
+      myPlayerIndex = playerRole === 'host' ? 0 : 1;
+    }
+
+    if (currentPlayerIndex !== myPlayerIndex) return; // Not my turn
+
+    const action = {
+      type: 'PLACE_AND_DRAW',
+      payload: {
+        cardId: selectedCardId,
+        colIndex,
+        isHidden: placeHidden,
+      }
+    };
+    dispatch(action as any); // Dispatch locally
+
+    if (isOnlineGame && roomId) {
+      socket.emit('game_action', { roomId, action }); // Emit to server for other players
+    }
+
+    setSelectedCardId(null);
+    setPlaceHidden(false);
+  };
+
+  // const handleDraw = () => { // Removed as draw is automatic
+  //   if (currentPlayerIndex !== 0) return;
+  //   dispatch({ type: 'DRAW_CARD' });
+  // };
+
+  const handleCalculateScore = () => {
+    dispatch({ type: 'CALCULATE_SCORE' });
+  };
+
+  // Removed hasPlaced state logic as draw is automatic.
+  // The extensive comment block about `hasPlaced` and turn flow is also removed.
+  // useEffect(() => {
+  //   setHasPlaced(false);
+  // }, [gameState.turnCount, gameState.currentPlayerIndex]);
+
+  // Also reset selection
+  useEffect(() => {
+    setSelectedCardId(null);
+    setPlaceHidden(false);
+  }, [gameState.currentPlayerIndex]);
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <h1>XY Poker</h1>
+        {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
+          <div className="mode-switch">
+            <button
+              className={mode === 'local' ? 'active' : ''}
+              onClick={() => { setMode('local'); setIsOnlineGame(false); setRoomId(null); setPlayerRole(null); }}
+            >
+              Local (vs AI)
+            </button>
+            <button
+              className={mode === 'online' ? 'active' : ''}
+              onClick={() => setMode('online')}
+            >
+              Online
+            </button>
+          </div>
+        )}
+        <GameInfo gameState={gameState} isOnlineMode={mode === 'online'} playerRole={playerRole} />
+      </header>
+
+      {mode === 'online' && !isOnlineGame ? (
+        <Lobby
+          onCreateRoom={handleCreateRoom}
+          onJoinRoom={handleJoinRoom}
+          roomId={roomId}
+          isConnected={isConnected}
+          playerRole={playerRole}
+        />
+      ) : (
+        <>
+          <main className="game-board">
+            {phase === 'setup' && (
+              <div className="setup-screen">
+                <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
+              </div>
+            )}
+            {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
+              <div className="play-area">
+                <SharedBoard
+                  playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
+                  opponentBoard={players[isOnlineGame && playerRole === 'guest' ? 0 : 1].board}
+                  dice={players[0].dice} // Shared dice
+                  onColumnClick={handleColumnClick}
+                  isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                />
+              </div>
+            )}
+          </main>
+
+          <footer className="controls">
+
+            {phase === 'playing' && (
+              <>
+                <div className="hand-container">
+                  <Hand
+                    hand={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].hand}
+                    selectedCardId={selectedCardId}
+                    onCardSelect={handleCardSelect}
+                    isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                  />
+                </div>
+
+                <div className="action-bar">
+                  <div className="place-controls">
+                    <label className="toggle-hidden">
+                      <input
+                        type="checkbox"
+                        checked={placeHidden}
+                        onChange={(e) => setPlaceHidden(e.target.checked)}
+                        disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
+                      />
+                      Place Face Down ({3 - currentPlayer.hiddenCardsCount} left)
+                    </label>
+                    <div className="instruction">
+                      {selectedCardId ? "Click a column to place" : "Select a card from your hand"}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {phase === 'scoring' && (
+              <button className="btn-primary" onClick={handleCalculateScore}>
+                Reveal & Calculate Scores
+              </button>
+            )}
+
+            {phase === 'ended' && (
+              <GameResult gameState={gameState} onRestart={handleStartGame} />
+            )}
+          </footer>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default App;

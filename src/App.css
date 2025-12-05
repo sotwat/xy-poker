@@ -1,0 +1,288 @@
+.app {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-header {
+  background: #2c3e50;
+  color: white;
+  padding: 0.3rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.game-board {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.play-area {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: none;
+  transform: scale(0.8);
+  transform-origin: center center;
+  margin-top: -90px;
+  /* Raised field position on PC */
+}
+
+.opponent-area,
+.player-area {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.opponent-area {
+  opacity: 0.9;
+  transform: scale(0.95);
+}
+
+.opponent-area .board {
+  transform: rotate(180deg);
+}
+
+/* Rotate cards back so they are upright for the viewer? 
+   Or keep them upside down as if viewed from across? 
+   "Face each other across dice".
+   Usually in digital card games, opponent cards are upside down or upright.
+   If we rotate the board 180, the "Top Row" (Row 0) becomes the bottom visually.
+   Row 2 (X Hand) becomes top visually.
+   Wait, Row 0 is top.
+   If we rotate 180:
+   Row 0 is now at bottom.
+   Row 2 is at top.
+   The Dice are attached to the board columns.
+   If we rotate the WHOLE board, the dice also rotate to the bottom?
+   My Board component has Dice at the top.
+   If I rotate 180, Dice go to bottom.
+   This creates:
+   [Opponent Row 2]
+   [Opponent Row 1]
+   [Opponent Row 0]
+   [Opponent Dice]
+   
+   [Player Dice] (if Player board is normal)
+   [Player Row 0]
+   [Player Row 1]
+   [Player Row 2]
+   
+   This puts the dice in the middle! This is exactly what "Across the dice" means.
+   Perfect.
+   
+   Now, card orientation.
+   If board is rotated 180, cards are also rotated 180 (upside down).
+   This is realistic.
+   But maybe hard to read.
+   Let's keep them upside down for "immersion" or rotate them back?
+   User said "Face each other".
+   I'll keep them rotated with the board (upside down for me).
+   Actually, let's rotate the CONTENT of the card back if we want readability.
+   But "Facing each other" implies I see their backs or upside down faces.
+   Since it's open info (mostly), upside down is fine.
+   But let's make the text readable?
+   No, let's stick to pure board rotation first.
+*/
+
+.controls {
+  background: white;
+  padding: 8px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  bottom: 0;
+}
+
+.hand-container {
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.action-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  min-height: 30px;
+  font-size: 0.85rem;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+.btn-secondary {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #1e7e34;
+}
+
+.btn-secondary:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.toggle-hidden {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  color: black;
+}
+
+.instruction {
+  color: #666;
+  font-style: italic;
+  min-height: 1.2em;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .instruction {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.setup-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Mobile Optimization: Fit to Screen */
+/* Mobile Optimization: Fit to Screen */
+/* Mobile Optimization: Fit to Screen */
+/* Mobile Optimization: Fit to Screen */
+@media (max-width: 900px) {
+  .app {
+    height: 100dvh;
+    /* Force full viewport height */
+    overflow: hidden;
+    /* Prevent scrolling */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center content */
+    gap: 0;
+  }
+
+  .app-header {
+    padding: 0.2rem 0.2rem 0 0.2rem;
+    /* Remove bottom padding */
+    flex-shrink: 0;
+    z-index: 20;
+  }
+
+  .app-header h1 {
+    font-size: 1rem;
+    margin: 0;
+    /* Remove margin */
+    line-height: 1.2;
+  }
+
+  .game-board {
+    flex: 1;
+    /* Take all available space */
+    padding: 0;
+    padding-top: 240px;
+    /* Force content down from the top (unscaled) */
+    min-height: 0;
+    /* Allow shrinking */
+    display: flex;
+    align-items: center;
+    /* Clip overflow */
+  }
+
+  .play-area {
+    gap: 0;
+    /* Remove gap completely */
+    width: 100%;
+    /* Scale down to fit. */
+    transform: scale(0.65);
+    transform-origin: center top;
+    /* Anchor to top */
+    /* Remove negative margins and rely on flex layout */
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    /* Remove internal padding */
+    padding-bottom: 0;
+    /* No padding to show full field */
+    flex: 1;
+    /* Take available space */
+    justify-content: flex-start;
+    /* Align content to top */
+    position: relative;
+    top: -235px;
+    /* Move field up - lowered by 15px */
+  }
+
+  .controls {
+    padding: 5px;
+    /* Minimal padding */
+    flex-shrink: 0;
+    /* Don't shrink controls */
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 10;
+    /* Ensure on top */
+    width: 100vw;
+    /* Full viewport width */
+    box-sizing: border-box;
+    /* Include padding in width */
+    position: relative;
+    bottom: 105px;
+    /* Controls position - raised by 5px */
+  }
+
+  .action-bar {
+    flex-direction: row;
+    /* Keep row to save vertical space */
+    gap: 10px;
+    height: 30px;
+    /* Fixed height to prevent layout shifts */
+  }
+
+  .toggle-hidden {
+    font-size: 0.8rem;
+  }
+}
