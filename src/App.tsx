@@ -395,7 +395,7 @@ function App() {
             <p>Your game will start automatically when an opponent joins</p>
           </div>
         </div>
-      ) : mode === 'online' && !roomId ? (
+      ) : mode === 'online' && !isOnlineGame ? (
         <Lobby
           onCreateRoom={handleCreateRoom}
           onJoinRoom={handleJoinRoom}
