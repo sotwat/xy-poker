@@ -69,7 +69,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     return bestMove;
 }
 
-function evaluateColumnPlacement(cards: (Card | null)[], colIndex: number, diceValue: number, slotIdx: number): number {
+function evaluateColumnPlacement(cards: (Card | null)[], _colIndex: number, diceValue: number, _slotIdx: number): number {
     const validCards = cards.filter(c => c !== null) as Card[];
     if (validCards.length === 0) return 0;
 
@@ -175,7 +175,7 @@ function evaluateXHandPotential(board: (Card | null)[][], newCard: Card, colInde
     return score;
 }
 
-function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: number, card: Card, slotIdx: number): number {
+function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: number, _card: Card, _slotIdx: number): number {
     const oppCol = [opponent.board[0][colIndex], opponent.board[1][colIndex], opponent.board[2][colIndex]];
     const oppCards = oppCol.filter(c => c !== null) as Card[];
 
@@ -204,7 +204,7 @@ function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: numb
     return blockValue;
 }
 
-function shouldHideCard(move: { cardId: string, colIndex: number }, hand: Card[], player: GameState['players'][0], board: (Card | null)[][]): boolean {
+function shouldHideCard(move: { cardId: string, colIndex: number }, hand: Card[], player: GameState['players'][0], _board: (Card | null)[][]): boolean {
     if (player.hiddenCardsCount >= 3) return false;
 
     const card = hand.find(c => c.id === move.cardId);
