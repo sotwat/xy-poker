@@ -68,12 +68,9 @@
     }
 }
 
-/* Winning row styles for X-hand - yellow/gold for X-hand winner */
+/* Winning row styles for X-hand - solid gold border */
 .card-slot.winning-row-x {
-    background: rgba(255, 215, 0, 0.25);
-    border: 2px solid rgba(255, 215, 0, 0.7);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-    animation: glow-x 2s ease-in-out infinite;
+    border: 3px solid #ffd700;
 }
 
 @keyframes glow-x {
@@ -90,17 +87,16 @@
 
 /* Winning slot styles for individual slots */
 .card-slot.winning-slot-p1 {
-    background: rgba(88, 166, 255, 0.25);
-    border: 2px solid rgba(88, 166, 255, 0.7);
-    box-shadow: 0 0 15px rgba(88, 166, 255, 0.6);
-    animation: glow-p1 2s ease-in-out infinite;
+    border: 3px solid #4facfe;
 }
 
 .card-slot.winning-slot-p2 {
-    background: rgba(255, 88, 88, 0.25);
-    border: 2px solid rgba(255, 88, 88, 0.7);
-    box-shadow: 0 0 15px rgba(255, 88, 88, 0.6);
-    animation: glow-p2 2s ease-in-out infinite;
+    border: 3px solid #ff5858;
+}
+
+/* Winning row styles for X-hand */
+.card-slot.winning-row-x {
+    border: 3px solid #ffd700;
 }
 
 .interactive .shared-column:hover {
