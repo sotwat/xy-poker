@@ -189,6 +189,7 @@ input[type="text"] {
     .lobby-container {
         gap: 0.4rem;
         padding: 0.4rem 0;
+        transform: translateY(-20px);
     }
 
     .lobby-container h2 {
