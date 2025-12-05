@@ -1,0 +1,14 @@
+{
+    "name": "xy-poker-server",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "Socket.IO server for XY Poker online multiplayer",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "express": "^5.2.1",
+        "socket.io": "^4.8.1"
+    }
+}
