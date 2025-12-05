@@ -187,64 +187,64 @@ input[type="text"] {
 
 @media (max-width: 768px) {
     .lobby-container {
-        gap: 0.5rem;
-        padding: 0.5rem 0;
+        gap: 0.4rem;
+        padding: 0.4rem 0;
     }
 
     .lobby-container h2 {
-        font-size: 1rem;
+        font-size: 0.8rem;
         margin: 0;
     }
 
     .lobby-actions {
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
 
     .divider {
         transform: rotate(90deg);
-        margin: 0.25rem 0;
+        margin: 0.2rem 0;
     }
 
     .action-box {
         width: 90%;
         max-width: 300px;
-        padding: 0.5rem;
-        gap: 0.25rem;
+        padding: 0.4rem;
+        gap: 0.2rem;
     }
 
     .action-box h3 {
-        font-size: 0.85rem;
+        font-size: 0.68rem;
         margin: 0;
     }
 
     .action-box p {
-        font-size: 0.7rem;
+        font-size: 0.56rem;
         margin: 0;
     }
 
     .action-box button {
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        padding: 5px 10px;
+        font-size: 0.64rem;
     }
 
     .action-box input {
-        padding: 0.4rem;
-        font-size: 0.85rem;
+        padding: 0.32rem;
+        font-size: 0.68rem;
     }
 
     .room-id-display {
-        font-size: 1rem;
-        padding: 0.4rem;
+        font-size: 0.8rem;
+        padding: 0.32rem;
         flex-direction: row;
     }
 
     .waiting-room {
-        padding: 0.8rem;
+        padding: 0.64rem;
     }
 
     .waiting-room h3 {
-        font-size: 0.95rem;
-        margin: 0 0 0.3rem 0;
+        font-size: 0.76rem;
+        margin: 0 0 0.24rem 0;
     }
 }
