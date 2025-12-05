@@ -77,18 +77,22 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         const opponentCards = [opponentBoard[2][colIndex], opponentBoard[1][colIndex], opponentBoard[0][colIndex]];
         const playerCards = [playerBoard[0][colIndex], playerBoard[1][colIndex], playerBoard[2][colIndex]];
 
+        // Check if this column is won and by whom
+        const isWonByP1 = winningColumns && winningColumns[colIndex] === 'p1';
+        const isWonByP2 = winningColumns && winningColumns[colIndex] === 'p2';
+
         return (
             <div
                 key={colIndex}
-                className={`shared-column ${isCurrentPlayer ? 'interactive' : ''
-                    } ${winningColumns && winningColumns[colIndex] === 'p1' ? 'winning-column-p1' : ''
-                    } ${winningColumns && winningColumns[colIndex] === 'p2' ? 'winning-column-p2' : ''
-                    }`}
+                className={`shared-column ${isCurrentPlayer ? 'interactive' : ''}`}
             >
                 {/* Opponent Side */}
                 <div className="opponent-slots">
                     {opponentCards.map((card, idx) => (
-                        <div key={`opp-${idx}`} className="card-slot opponent-slot">
+                        <div
+                            key={`opp-${idx}`}
+                            className={`card-slot opponent-slot ${isWonByP2 ? 'winning-slot-p2' : ''}`}
+                        >
                             {card ? (
                                 <Card
                                     card={revealAll ? { ...card, isHidden: false } : card}
@@ -111,7 +115,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                         <div
                             key={`pl-${idx}`}
                             className={`card-slot player-slot ${xWinner && idx === 2 && xWinner !== 'draw' ? 'winning-row-x' : ''
-                                }`}
+                                } ${isWonByP1 ? 'winning-slot-p1' : ''}`}
                         >
                             {card ? (
                                 <Card
