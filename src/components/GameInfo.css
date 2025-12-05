@@ -155,3 +155,10 @@
         font-size: 0.6rem;
     }
 }
+
+/* Hide GameInfo on mobile when result screen is shown */
+@media (max-width: 600px) {
+    body:has(.game-result-overlay) .game-info {
+        display: none;
+    }
+}
