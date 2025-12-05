@@ -10,6 +10,7 @@ interface SharedBoardProps {
     dice: number[];
     onColumnClick: (colIndex: number) => void;
     isCurrentPlayer: boolean;
+    revealHidden?: boolean;
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -17,7 +18,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     opponentBoard,
     dice,
     onColumnClick,
-    isCurrentPlayer
+    isCurrentPlayer,
+    revealHidden = false
 }) => {
     // Render 5 columns
     const columns = Array.from({ length: 5 }, (_, colIndex) => {
@@ -37,7 +39,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                 <div className="opponent-slots">
                     {opponentCards.map((card, idx) => (
                         <div key={`opp-${idx}`} className="card-slot opponent-slot">
-                            {card ? <Card card={card} /> : <div className="empty-slot" />}
+                            {card ? <Card card={revealHidden ? { ...card, isHidden: false } : card} /> : <div className="empty-slot" />}
                         </div>
                     ))}
                 </div>
@@ -51,7 +53,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                 <div className="player-slots">
                     {playerCards.map((card, idx) => (
                         <div key={`pl-${idx}`} className="card-slot player-slot">
-                            {card ? <Card card={card} /> : <div className="empty-slot" />}
+                            {card ? <Card card={revealHidden ? { ...card, isHidden: false } : card} /> : <div className="empty-slot" />}
                         </div>
                     ))}
                 </div>

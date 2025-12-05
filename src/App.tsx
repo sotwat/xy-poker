@@ -257,6 +257,7 @@ function App() {
                   dice={players[0].dice} // Shared dice
                   onColumnClick={handleColumnClick}
                   isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                  revealHidden={phase === 'ended'}
                 />
               </div>
             )}

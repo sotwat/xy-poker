@@ -65,6 +65,16 @@ export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart }) 
     // If equal, it's a draw (no +1 bonus awarded, or both got base points and are equal)
 
 
+    const [isMinimized, setIsMinimized] = React.useState(false);
+
+    if (isMinimized) {
+        return (
+            <button className="view-result-btn" onClick={() => setIsMinimized(false)}>
+                Show Result
+            </button>
+        );
+    }
+
     return (
         <div className="game-result-overlay">
             <div className="game-result-modal">
@@ -121,9 +131,14 @@ export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart }) 
                     </div>
                 </div>
 
-                <button className="btn-primary restart-btn" onClick={onRestart}>
-                    Play Again
-                </button>
+                <div className="result-actions">
+                    <button className="btn-secondary view-board-btn" onClick={() => setIsMinimized(true)}>
+                        View Board
+                    </button>
+                    <button className="btn-primary restart-btn" onClick={onRestart}>
+                        Play Again
+                    </button>
+                </div>
             </div>
         </div>
     );
