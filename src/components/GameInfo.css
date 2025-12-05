@@ -55,18 +55,16 @@
 
 .scores {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    gap: 16px;
     width: 100%;
+    justify-content: center;
     align-items: center;
 }
 
-.score-row,
-.bonus-row {
+.player-score-row {
     display: flex;
-    gap: 16px;
-    justify-content: center;
-    width: 100%;
+    gap: 8px;
+    align-items: center;
 }
 
 .score-item {
@@ -118,12 +116,11 @@
     }
 
     .scores {
-        gap: 1px;
+        gap: 8px;
     }
 
-    .score-row,
-    .bonus-row {
-        gap: 8px;
+    .player-score-row {
+        gap: 4px;
     }
 
     .score-item {
