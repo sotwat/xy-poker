@@ -332,7 +332,16 @@ function App() {
         />
       </header>
 
-      {mode === 'online' && !isOnlineGame ? (
+      {mode === 'online' && isQuickMatch && phase === 'setup' ? (
+        <div className="setup-screen">
+          <div className="waiting-message">
+            <h3>🎲 Quick Match</h3>
+            <h2>Waiting for opponent...</h2>
+            <div className="loading-spinner"></div>
+            <p>Your game will start automatically when an opponent joins</p>
+          </div>
+        </div>
+      ) : mode === 'online' && !roomId ? (
         <Lobby
           onCreateRoom={handleCreateRoom}
           onJoinRoom={handleJoinRoom}
