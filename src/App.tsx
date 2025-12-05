@@ -1,6 +1,8 @@
 import { useReducer, useState, useEffect, useRef } from 'react';
 import { gameReducer, INITIAL_GAME_STATE } from './logic/game';
-import { evaluateYHand } from './logic/evaluation';
+import { evaluateYHand, evaluateXHand } from './logic/evaluation';
+import { calculateXHandScores } from './logic/scoring';
+import type { Card } from './logic/types';
 import { SharedBoard } from './components/SharedBoard';
 import { Hand } from './components/Hand';
 import { GameInfo } from './components/GameInfo';
@@ -192,6 +194,21 @@ function App() {
     });
   };
 
+  const calculateXWinner = (): 'p1' | 'p2' | 'draw' => {
+    const { players } = gameState;
+    const p1 = players[0];
+    const p2 = players[1];
+
+    const p1XRes = evaluateXHand(p1.board[2] as Card[]);
+    const p2XRes = evaluateXHand(p2.board[2] as Card[]);
+
+    const { p1Score: p1XScore, p2Score: p2XScore } = calculateXHandScores(p1XRes, p2XRes);
+
+    if (p1XScore > p2XScore) return 'p1';
+    if (p2XScore > p1XScore) return 'p2';
+    return 'draw';
+  };
+
   const handleCardSelect = (cardId: string) => {
     // Determine current player's index based on mode
     let myPlayerIndex = 0; // Default for local P1
@@ -322,6 +339,7 @@ function App() {
                   isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
                   revealAll={phase === 'ended'}
                   winningColumns={phase === 'ended' ? calculateWinningColumns() : undefined}
+                  xWinner={phase === 'ended' ? calculateXWinner() : undefined}
                 />
               </div>
             )}

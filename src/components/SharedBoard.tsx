@@ -12,6 +12,7 @@ interface SharedBoardProps {
     isCurrentPlayer: boolean;
     revealAll?: boolean; // For post-game view
     winningColumns?: ('p1' | 'p2' | 'draw')[];
+    xWinner?: 'p1' | 'p2' | 'draw'; // X-hand winner for row highlighting
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -21,7 +22,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     onColumnClick,
     isCurrentPlayer,
     revealAll = false,
-    winningColumns
+    winningColumns,
+    xWinner
 }) => {
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const [pressTimer, setPressTimer] = useState<number | null>(null);
@@ -106,7 +108,12 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                 {/* Player Side */}
                 <div className="player-slots">
                     {playerCards.map((card, idx) => (
-                        <div key={`pl-${idx}`} className="card-slot player-slot">
+                        <div
+                            key={`pl-${idx}`}
+                            className={`card-slot player-slot ${xWinner && idx === 2 && xWinner === 'p1' ? 'winning-row-p1' : ''
+                                } ${xWinner && idx === 2 && xWinner === 'p2' ? 'winning-row-p2' : ''
+                                }`}
+                        >
                             {card ? (
                                 <Card
                                     card={revealAll ? { ...card, isHidden: false } : card}
