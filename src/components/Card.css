@@ -97,3 +97,21 @@
     /* Smaller center text */
   }
 }
+
+/* Peek overlay for temporarily revealed hidden cards */
+.card.peeking {
+  border: 2px solid #f39c12;
+  box-shadow: 0 0 10px rgba(243, 156, 18, 0.6);
+}
+
+.peek-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(243, 156, 18, 0.2);
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 1;
+}

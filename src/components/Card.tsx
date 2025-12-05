@@ -7,6 +7,7 @@ interface CardProps {
     onClick?: () => void;
     isSelected?: boolean;
     isPlayable?: boolean;
+    isPeeking?: boolean; // For revealing own hidden cards temporarily
 }
 
 const SUIT_ICONS: Record<string, string> = {
@@ -25,10 +26,10 @@ const RANK_LABELS: Record<number, string> = {
     15: 'JOKER', // For Joker rank
 };
 
-export const Card: React.FC<CardProps> = ({ card, onClick, isSelected, isPlayable }) => {
+export const Card: React.FC<CardProps> = ({ card, onClick, isSelected, isPlayable, isPeeking }) => {
 
-
-    if (card.isHidden) {
+    // If hidden but peeking, show card face with overlay
+    if (card.isHidden && !isPeeking) {
         return (
             <div className={`card hidden ${isSelected ? 'selected' : ''}`} onClick={onClick}>
                 <div className="card-back"></div>
@@ -41,10 +42,11 @@ export const Card: React.FC<CardProps> = ({ card, onClick, isSelected, isPlayabl
 
     return (
         <div
-            className={`card ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''}`}
+            className={`card ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''} ${isPeeking ? 'peeking' : ''}`}
             onClick={onClick}
             data-suit={card.suit}
         >
+            {isPeeking && <div className="peek-overlay"></div>}
             <div className="card-top">
                 <span className="rank">{label}</span>
                 <span className="suit">{icon}</span>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Card as CardType } from '../logic/types';
 import { Card } from './Card';
 import { Dice } from './Dice';
@@ -10,6 +10,7 @@ interface SharedBoardProps {
     dice: number[];
     onColumnClick: (colIndex: number) => void;
     isCurrentPlayer: boolean;
+    revealAll?: boolean; // For post-game view
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -17,8 +18,27 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     opponentBoard,
     dice,
     onColumnClick,
-    isCurrentPlayer
+    isCurrentPlayer,
+    revealAll = false
 }) => {
+    const [peekingCard, setPeekingCard] = useState<string | null>(null);
+
+    const handleCardClick = (card: CardType | null, colIndex: number, isPlayerCard: boolean) => {
+        if (!card) return;
+
+        // If clicking own hidden card, toggle peek
+        if (isPlayerCard && card.isHidden && !revealAll) {
+            if (peekingCard === card.id) {
+                setPeekingCard(null); // Hide if already peeking
+            } else {
+                setPeekingCard(card.id); // Peek at this card
+            }
+        } else if (isCurrentPlayer) {
+            // Normal column click for placing cards
+            onColumnClick(colIndex);
+        }
+    };
+
     // Render 5 columns
     const columns = Array.from({ length: 5 }, (_, colIndex) => {
         // Opponent Rows: 2 (Top), 1, 0 (Bottom near dice)
@@ -31,13 +51,18 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
             <div
                 key={colIndex}
                 className={`shared-column ${isCurrentPlayer ? 'interactive' : ''}`}
-                onClick={() => isCurrentPlayer && onColumnClick(colIndex)}
             >
                 {/* Opponent Side */}
                 <div className="opponent-slots">
                     {opponentCards.map((card, idx) => (
                         <div key={`opp-${idx}`} className="card-slot opponent-slot">
-                            {card ? <Card card={card} /> : <div className="empty-slot" />}
+                            {card ? (
+                                <Card
+                                    card={revealAll ? { ...card, isHidden: false } : card}
+                                />
+                            ) : (
+                                <div className="empty-slot" onClick={() => isCurrentPlayer && onColumnClick(colIndex)} />
+                            )}
                         </div>
                     ))}
                 </div>
@@ -51,7 +76,15 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                 <div className="player-slots">
                     {playerCards.map((card, idx) => (
                         <div key={`pl-${idx}`} className="card-slot player-slot">
-                            {card ? <Card card={card} /> : <div className="empty-slot" />}
+                            {card ? (
+                                <Card
+                                    card={revealAll ? { ...card, isHidden: false } : card}
+                                    isPeeking={peekingCard === card.id}
+                                    onClick={() => handleCardClick(card, colIndex, true)}
+                                />
+                            ) : (
+                                <div className="empty-slot" onClick={() => isCurrentPlayer && onColumnClick(colIndex)} />
+                            )}
                         </div>
                     ))}
                 </div>

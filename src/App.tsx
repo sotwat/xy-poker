@@ -21,6 +21,7 @@ function App() {
   const [playerRole, setPlayerRole] = useState<'host' | 'guest' | null>(null);
   const [isOnlineGame, setIsOnlineGame] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [showResultsModal, setShowResultsModal] = useState(false);
 
   // Use ref to track playerRole for event handlers
   const playerRoleRef = useRef(playerRole);
@@ -108,8 +109,16 @@ function App() {
     }
   }, [phase]);
 
+  // Show results modal when game ends
+  useEffect(() => {
+    if (phase === 'ended') {
+      setShowResultsModal(true);
+    }
+  }, [phase]);
+
   const handleStartGame = () => {
     dispatch({ type: 'START_GAME' });
+    setShowResultsModal(false);
   };
 
   const handleCreateRoom = () => {
@@ -250,6 +259,7 @@ function App() {
                   dice={players[0].dice} // Shared dice
                   onColumnClick={handleColumnClick}
                   isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                  revealAll={phase === 'ended'}
                 />
               </div>
             )}
@@ -293,8 +303,12 @@ function App() {
               </button>
             )}
 
-            {phase === 'ended' && (
-              <GameResult gameState={gameState} onRestart={handleStartGame} />
+            {phase === 'ended' && showResultsModal && (
+              <GameResult
+                gameState={gameState}
+                onRestart={handleStartGame}
+                onClose={() => setShowResultsModal(false)}
+              />
             )}
           </footer>
         </>

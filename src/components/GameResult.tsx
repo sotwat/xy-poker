@@ -7,9 +7,10 @@ import './GameResult.css';
 interface GameResultProps {
     gameState: GameState;
     onRestart: () => void;
+    onClose: () => void;
 }
 
-export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart }) => {
+export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart, onClose }) => {
     const { players, winner } = gameState;
     const p1 = players[0];
     const p2 = players[1];
@@ -121,9 +122,14 @@ export const GameResult: React.FC<GameResultProps> = ({ gameState, onRestart }) 
                     </div>
                 </div>
 
-                <button className="btn-primary restart-btn" onClick={onRestart}>
-                    Play Again
-                </button>
+                <div className="button-group">
+                    <button className="btn-secondary view-board-btn" onClick={onClose}>
+                        View Board
+                    </button>
+                    <button className="btn-primary restart-btn" onClick={onRestart}>
+                        Play Again
+                    </button>
+                </div>
             </div>
         </div>
     );
