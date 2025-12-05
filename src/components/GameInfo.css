@@ -15,6 +15,10 @@
 .status-bar {
     font-size: 0.8rem;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
 }
 
 .turn-indicator {
@@ -86,15 +90,15 @@
 }
 
 .surrender-btn {
-    margin-top: 0.5rem;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
     background: rgba(255, 88, 88, 0.2);
     color: #ff5858;
     border: 1px solid #ff5858;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .surrender-btn:hover {

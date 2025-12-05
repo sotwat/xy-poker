@@ -33,9 +33,16 @@ export const GameInfo: React.FC<GameInfoProps> = ({
             <div className="status-bar">
                 {phase === 'playing' && (
                     currentPlayerIndex === (isOnlineMode ? myIndex : 0) ? (
-                        <div className="turn-indicator your-turn">
-                            YOUR TURN
-                        </div>
+                        <>
+                            <div className="turn-indicator your-turn">
+                                YOUR TURN
+                            </div>
+                            {onSurrender && (
+                                <button className="surrender-btn" onClick={onSurrender}>
+                                    降参
+                                </button>
+                            )}
+                        </>
                     ) : (
                         <div className="turn-indicator opponent-turn">
                             {isOnlineMode ? `${oppDisplayName}'s Turn` : `${p2Name}'s Turn`}
@@ -68,12 +75,6 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                     <span className="bonus-item">Bonuses: {players[1].bonusesClaimed}</span>
                 </div>
             </div>
-
-            {phase === 'playing' && onSurrender && (
-                <button className="surrender-btn" onClick={onSurrender}>
-                    降参
-                </button>
-            )}
         </div>
     );
 };
