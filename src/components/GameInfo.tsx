@@ -42,7 +42,11 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                 )}
                 {phase === 'ended' && (
                     <div className="winner-banner">
-                        Winner: {winner === 'p1' ? p1Name : p2Name}!
+                        {winner === 'draw' ? (
+                            'Draw - Tie Game!'
+                        ) : (
+                            `Winner: ${winner === 'p1' ? p1Name : p2Name}!`
+                        )}
                     </div>
                 )}
                 {phase === 'scoring' && (

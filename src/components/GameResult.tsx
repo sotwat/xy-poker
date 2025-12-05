@@ -82,9 +82,15 @@ export const GameResult: React.FC<GameResultProps> = ({
             <div className="game-result-modal">
                 <h2>Game Over</h2>
                 <div className="winner-announcement">
-                    Winner: <span className={winner === 'p1' ? 'p1-text' : 'p2-text'}>
-                        {winner === 'p1' ? p1Name : (winner === 'p2' ? p2Name : 'Draw')}
-                    </span>
+                    {winner === 'draw' ? (
+                        <span className="draw-text">Draw - Tie Game!</span>
+                    ) : (
+                        <>
+                            Winner: <span className={winner === 'p1' ? 'p1-text' : 'p2-text'}>
+                                {winner === 'p1' ? p1Name : p2Name}
+                            </span>!
+                        </>
+                    )}
                 </div>
 
                 <div className="results-table">
