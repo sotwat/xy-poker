@@ -236,8 +236,8 @@ function App() {
     }
 
     if (mode === 'local') {
-      // Local mode: Reset to lobby
-      dispatch({ type: 'RESET' });
+      // Local mode: Reset to initial state
+      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
       setMode('local');
     } else {
       // Online mode: notify server and reset
@@ -249,7 +249,7 @@ function App() {
         setPlayerRole(null);
         setIsOnlineGame(false);
         setIsQuickMatch(false);
-        dispatch({ type: 'RESET' });
+        dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
       }, 1000); // Small delay to allow server notification
     }
   };
