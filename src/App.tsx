@@ -175,6 +175,17 @@ function App() {
     });
   };
 
+  const handleQuickMatch = () => {
+    socket.emit('quick_match', (response: any) => {
+      if (response.success) {
+        setRoomId(response.roomId);
+        setPlayerRole(response.role);
+        setIsOnlineGame(true);
+        // If waiting for opponent, user will see setup screen
+      }
+    });
+  };
+
   const calculateWinningColumns = (): ('p1' | 'p2' | 'draw')[] => {
     const { players } = gameState;
     const p1 = players[0];
@@ -317,6 +328,7 @@ function App() {
         <Lobby
           onCreateRoom={handleCreateRoom}
           onJoinRoom={handleJoinRoom}
+          onQuickMatch={handleQuickMatch}
           roomId={roomId}
           isConnected={isConnected}
           playerRole={playerRole}

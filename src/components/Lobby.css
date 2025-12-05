@@ -20,6 +20,52 @@
     color: #aaa;
 }
 
+.name-input-section input:focus {
+    outline: none;
+    border-color: #4facfe;
+    box-shadow: 0 0 5px rgba(79, 172, 254, 0.5);
+}
+
+.quick-match-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.btn-large {
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    min-width: 250px;
+}
+
+.quick-match-hint {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    color: #666;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #444;
+}
+
+.divider span {
+    padding: 0 1rem;
+    font-size: 0.9rem;
+}
+
 .name-input-section input {
     padding: 0.6rem 1rem;
     border-radius: 6px;

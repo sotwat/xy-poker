@@ -4,6 +4,7 @@ import './Lobby.css';
 interface LobbyProps {
     onCreateRoom: () => void;
     onJoinRoom: (roomId: string) => void;
+    onQuickMatch: () => void;
     roomId: string | null;
     isConnected: boolean;
     playerRole: 'host' | 'guest' | null;
@@ -14,6 +15,7 @@ interface LobbyProps {
 export const Lobby: React.FC<LobbyProps> = ({
     onCreateRoom,
     onJoinRoom,
+    onQuickMatch,
     roomId,
     isConnected,
     playerRole,
@@ -51,6 +53,17 @@ export const Lobby: React.FC<LobbyProps> = ({
                     maxLength={20}
                     placeholder="Enter your name"
                 />
+            </div>
+
+            <div className="quick-match-section">
+                <button className="btn-primary btn-large" onClick={onQuickMatch}>
+                    🎲 Quick Match
+                </button>
+                <p className="quick-match-hint">Play against a random opponent</p>
+            </div>
+
+            <div className="divider">
+                <span>OR</span>
             </div>
 
             {!roomId ? (

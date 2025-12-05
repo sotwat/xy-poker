@@ -24,6 +24,9 @@ const io = new Server(server, {
 // For simplicity, we just track players in room.
 const rooms = {};
 
+// Matchmaking queue: stores roomId of rooms waiting for second player
+const matchmakingQueue = [];
+
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
@@ -52,6 +55,41 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('quick_match', (callback) => {
+        // Check if there's a room waiting for a player
+        if (matchmakingQueue.length > 0) {
+            // Join the first available room
+            const roomId = matchmakingQueue.shift();
+            const room = rooms[roomId];
+
+            if (room && room.players.length === 1) {
+                room.players.push(socket.id);
+                socket.join(roomId);
+                callback({ success: true, roomId, role: 'guest' });
+
+                // Notify host that P2 joined
+                io.to(roomId).emit('player_joined', { playerId: socket.id });
+                console.log(`Quick match: User ${socket.id} joined room ${roomId}`);
+            } else {
+                // Room became invalid, create new one
+                matchmakingQueue.length = 0; // Clear invalid queue
+                createMatchmakingRoom(socket, callback);
+            }
+        } else {
+            // No rooms waiting, create new one
+            createMatchmakingRoom(socket, callback);
+        }
+    });
+
+    function createMatchmakingRoom(socket, callback) {
+        const roomId = Math.floor(1000 + Math.random() * 9000).toString();
+        rooms[roomId] = { players: [socket.id] };
+        socket.join(roomId);
+        matchmakingQueue.push(roomId);
+        callback({ success: true, roomId, role: 'host', waiting: true });
+        console.log(`Quick match room ${roomId} created by ${socket.id}, waiting for opponent`);
+    }
+
     socket.on('game_action', ({ roomId, action }) => {
         // Relay action to others in room
         socket.to(roomId).emit('game_action', action);
@@ -72,6 +110,11 @@ io.on('connection', (socket) => {
                 io.to(roomId).emit('player_left');
                 if (room.players.length === 0) {
                     delete rooms[roomId];
+                    // Remove from matchmaking queue if present
+                    const queueIndex = matchmakingQueue.indexOf(roomId);
+                    if (queueIndex !== -1) {
+                        matchmakingQueue.splice(queueIndex, 1);
+                    }
                 }
             }
         }
