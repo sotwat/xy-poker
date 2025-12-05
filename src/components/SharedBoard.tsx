@@ -110,8 +110,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                     {playerCards.map((card, idx) => (
                         <div
                             key={`pl-${idx}`}
-                            className={`card-slot player-slot ${xWinner && idx === 2 && xWinner === 'p1' ? 'winning-row-p1' : ''
-                                } ${xWinner && idx === 2 && xWinner === 'p2' ? 'winning-row-p2' : ''
+                            className={`card-slot player-slot ${xWinner && idx === 2 && xWinner !== 'draw' ? 'winning-row-x' : ''
                                 }`}
                         >
                             {card ? (
