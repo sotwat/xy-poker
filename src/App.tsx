@@ -236,14 +236,21 @@ function App() {
     }
 
     if (mode === 'local') {
-      // Local mode: AI wins
-      dispatch({ type: 'CALCULATE_SCORE' });
-      // Force winner to be P2 (AI)
-      const newState = { ...gameState, winner: 'p2' as const };
-      dispatch({ type: 'SYNC_STATE', payload: newState } as any);
+      // Local mode: Reset to lobby
+      dispatch({ type: 'RESET' });
+      setMode('local');
     } else {
-      // Online mode: notify server
+      // Online mode: notify server and reset
       socket.emit('surrender', { roomId });
+
+      // Reset to lobby
+      setTimeout(() => {
+        setRoomId(null);
+        setPlayerRole(null);
+        setIsOnlineGame(false);
+        setIsQuickMatch(false);
+        dispatch({ type: 'RESET' });
+      }, 1000); // Small delay to allow server notification
     }
   };
 
