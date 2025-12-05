@@ -116,16 +116,30 @@ io.on('connection', (socket) => {
         // Cleanup rooms...
         for (const roomId in rooms) {
             const room = rooms[roomId];
-            if (room.players.includes(socket.id)) {
-                room.players = room.players.filter(id => id !== socket.id);
+            // Check if this socket is in the room (players are now objects with {id, name})
+            const playerIndex = room.players.findIndex(p => p.id === socket.id);
+
+            if (playerIndex !== -1) {
+                // Remove the player
+                room.players.splice(playerIndex, 1);
+
+                // Notify remaining players
                 io.to(roomId).emit('player_left');
+
+                console.log(`Player ${socket.id} left room ${roomId}, ${room.players.length} players remaining`);
+
+                // If room is empty, delete it
                 if (room.players.length === 0) {
                     delete rooms[roomId];
+
                     // Remove from matchmaking queue if present
                     const queueIndex = matchmakingQueue.indexOf(roomId);
                     if (queueIndex !== -1) {
                         matchmakingQueue.splice(queueIndex, 1);
+                        console.log(`Empty room ${roomId} removed from matchmaking queue`);
                     }
+
+                    console.log(`Empty room ${roomId} deleted`);
                 }
             }
         }
