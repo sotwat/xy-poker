@@ -19,6 +19,11 @@
   margin: 0;
 }
 
+/* Hide header when result screen is shown */
+body:has(.game-result-overlay) .app-header {
+  display: none;
+}
+
 .game-board {
   flex: 1;
   padding: 20px;
