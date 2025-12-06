@@ -29,7 +29,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({
     const p2Name = myIndex === 1 ? myDisplayName : oppDisplayName;
 
     return (
-        <div className="game-info">
+        <div className="game-info" data-my-index={isOnlineMode ? myIndex : 0}>
             <div className="status-bar">
                 {phase === 'playing' && (
                     currentPlayerIndex === (isOnlineMode ? myIndex : 0) ? (
@@ -66,11 +66,11 @@ export const GameInfo: React.FC<GameInfoProps> = ({
             </div>
 
             <div className="scores">
-                <div className="player-score-row">
+                <div className="player-score-row player-1">
                     <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>{p1Name}: {players[0].score}</span>
                     <span className="bonus-item">Bonuses: {players[0].bonusesClaimed}</span>
                 </div>
-                <div className="player-score-row">
+                <div className="player-score-row player-2">
                     <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>{p2Name}: {players[1].score}</span>
                     <span className="bonus-item">Bonuses: {players[1].bonusesClaimed}</span>
                 </div>
