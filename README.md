@@ -54,19 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12062142` (2025-12-06 21:42)
+**Latest Version:** `12062155` (2025-12-06 21:55)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12062142** - Limited player name input max length to 10 characters
-2. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
-3. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
-4. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
-5. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
-6. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
-7. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
-8. **v12062108** - Shifted mobile field up by 20px (total `translateY(-110px)`)
-9. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
-10. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
+1. **v12062155** - Hidden version number during gameplay (only visible in Lobby) to prevent title overlap
+2. **v12062142** - Limited player name input max length to 10 characters
+3. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
+4. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
+5. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
+6. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
+7. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
+8. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
+9. **v12062108** - Shifted mobile field up by 20px (total `translateY(-110px)`)
+10. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
 10. **v12061243** - Hide header during battle on mobile, keep on lobby
 
 ### Current Mobile UI Specifications
