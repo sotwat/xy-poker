@@ -59,7 +59,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             <div className="quick-match-section">
-                <button className="btn-primary btn-large" onClick={onQuickMatch}>
+                <button className="btn-primary btn-large" onClick={() => { playClickSound(); onQuickMatch(); }}>
                     🎲 Quick Match
                 </button>
                 <p className="quick-match-hint">Play against a random opponent</p>
