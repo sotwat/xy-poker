@@ -89,6 +89,7 @@ function App() {
 
       // Return to lobby after 2 seconds
       setTimeout(() => {
+        setMode('online');
         setRoomId(null);
         setPlayerRole(null);
         setIsOnlineGame(false);
@@ -100,6 +101,7 @@ function App() {
     socket.on('player_left', () => {
       // Opponent left/cancelled - return to lobby
       console.log('Opponent left the room');
+      setMode('online');
       setRoomId(null);
       setPlayerRole(null);
       setIsOnlineGame(false);
@@ -376,7 +378,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>XY Poker <span className="version">12061129</span></h1>
+        <h1>XY Poker <span className="version">12061133</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
