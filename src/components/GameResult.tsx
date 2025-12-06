@@ -2,6 +2,7 @@ import React from 'react';
 import type { GameState, Card } from '../logic/types';
 import { evaluateYHand, evaluateXHand } from '../logic/evaluation';
 import { calculateXHandScores } from '../logic/scoring';
+import { playClickSound } from '../utils/sound';
 import './GameResult.css';
 
 interface GameResultProps {
@@ -139,10 +140,10 @@ export const GameResult: React.FC<GameResultProps> = ({
                 </div>
 
                 <div className="button-group">
-                    <button className="btn-secondary view-board-btn" onClick={onClose}>
+                    <button className="btn-secondary view-board-btn" onClick={() => { playClickSound(); onClose(); }}>
                         View Board
                     </button>
-                    <button className="btn-primary restart-btn" onClick={onRestart}>
+                    <button className="btn-primary restart-btn" onClick={() => { playClickSound(); onRestart(); }}>
                         Play Again
                     </button>
                 </div>

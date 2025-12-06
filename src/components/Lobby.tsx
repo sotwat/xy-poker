@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { playClickSound } from '../utils/sound';
 import './Lobby.css';
 
 interface LobbyProps {
@@ -73,7 +74,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <div className="action-box">
                         <h3>Create Room</h3>
                         <p>Start a new game and invite a friend.</p>
-                        <button className="btn-primary" onClick={onCreateRoom}>Create Room</button>
+                        <button className="btn-primary" onClick={() => { playClickSound(); onCreateRoom(); }}>Create Room</button>
                     </div>
 
                     <div className="divider">OR</div>
@@ -90,7 +91,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         />
                         <button
                             className="btn-secondary"
-                            onClick={() => onJoinRoom(joinId)}
+                            onClick={() => { playClickSound(); onJoinRoom(joinId); }}
                             disabled={joinId.length !== 4}
                         >
                             Join Room
@@ -118,7 +119,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for host to start game...'}</p>
                     {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent to join...</div>}
                     {playerRole === 'guest' && <div className="loading-spinner">Connected to Room</div>}
-                    <button className="btn-cancel" onClick={onCancelMatchmaking}>
+                    <button className="btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
                         Cancel
                     </button>
                 </div>

@@ -14,6 +14,7 @@ import './App.css';
 
 import { getBestMove } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
+import { playClickSound } from './utils/sound';
 
 function App() {
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
@@ -199,6 +200,7 @@ function App() {
   }, [mode, isOnlineGame]);
 
   const handleStartGame = () => {
+    playClickSound();
     dispatch({ type: 'START_GAME' });
     setShowResultsModal(false);
   };
@@ -248,6 +250,7 @@ function App() {
   };
 
   const handleCancelMatchmaking = () => {
+    playClickSound();
     // Cancel matchmaking and return to lobby
     socket.emit('cancel_matchmaking', { roomId });
     setRoomId(null);
@@ -257,6 +260,7 @@ function App() {
   };
 
   const handleSurrender = () => {
+    playClickSound();
     if (!window.confirm('Surrender? This will end the game.')) {
       return;
     }
@@ -382,18 +386,18 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>XY Poker <span className="version">12061154</span></h1>
+        <h1>XY Poker <span className="version">12061158</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
               className={mode === 'local' ? 'active' : ''}
-              onClick={() => { setMode('local'); setIsOnlineGame(false); setRoomId(null); setPlayerRole(null); }}
+              onClick={() => { playClickSound(); setMode('local'); setIsOnlineGame(false); setRoomId(null); setPlayerRole(null); }}
             >
               Local (vs AI)
             </button>
             <button
               className={mode === 'online' ? 'active' : ''}
-              onClick={() => setMode('online')}
+              onClick={() => { playClickSound(); setMode('online'); }}
             >
               Online
             </button>
