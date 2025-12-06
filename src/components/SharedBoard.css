@@ -153,7 +153,7 @@
         /* Remove gap */
         padding: 0;
         /* Remove padding */
-        transform: scale(1.1) translateY(15px);
+        transform: scale(1.25) translateY(10px);
         transform-origin: center center;
     }
 
