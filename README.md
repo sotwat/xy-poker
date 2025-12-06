@@ -1,199 +1,119 @@
 # XY Poker
 
-XYポーカーは、3×5のボードでプレイする戦略的カードゲームです。縦（Y軸）と横（X軸）の役を駆使して相手と得点を競います。
+A 2-player poker card game with both local and online multiplayer modes.
 
-## 🎮 プレイ方法
+## Development Guidelines
 
-**公開URL:** https://xy-poker.vercel.app/
+### 🔴 CRITICAL RULES - MUST FOLLOW
 
-### ゲームモード
-- **ローカル対戦（vs AI）**: コンピュータと対戦
-- **オンライン対戦**: 友達とリアルタイムで対戦
+#### 1. Version Update Policy
+**バージョンは全てのアップデートで必ず更新すること**
 
-## 🏗️ アーキテクチャ
+- Every single code change MUST update the version number in `App.tsx`
+- Format: `MMDDHHMM` (月日時分)
+- Example: `12061302` = December 6, 13:02
+- Update location: `<span className="version">MMDDHHMM</span>`
+- This is NON-NEGOTIABLE - never skip version updates
 
-### フロントエンド
-- **フレームワーク**: React 19 + TypeScript + Vite
-- **デプロイ先**: Vercel (https://xy-poker.vercel.app/)
-- **主要技術**: 
-  - React Hooks (useReducer, useState, useEffect)
-  - Socket.IO Client (オンライン対戦用)
+#### 2. CSS Positioning Rules
+**座標移動は必ずtransform translateYを使用すること**
 
-### バックエンド（オンライン対戦サーバー）
-- **サーバー**: Node.js + Express + Socket.IO
-- **デプロイ先**: Render (https://xy-poker.onrender.com)
-- **ファイル**: `server/index.js`
+- ❌ **NEVER use `margin` to move elements vertically**
+  - Margins do not actually move coordinates
+  - User explicitly stated margins don't work multiple times
+  
+- ✅ **ALWAYS use `transform: translateY()` for coordinate movement**
+  ```css
+  /* Correct way to move element up 40px */
+  transform: scale(0.7) translateY(-40px);
+  
+  /* Wrong - does not move coordinates */
+  margin-top: -40px;
+  ```
 
-### プロジェクト構成
+- When user says "move X up/down by Npx", use `translateY(-Npx)` or `translateY(Npx)`
+- Multiple transforms can be combined: `transform: scale(X) translateY(Y)`
+
+#### 3. Git Commit Messages
+- Always in Japanese
+- Include version number in commit message
+- Example: `fix: translateYで座標を40px上に移動 v12061302`
+
+## Project Structure
+
 ```
 xy-poker/
 ├── src/
-│   ├── components/      # React コンポーネント
-│   │   ├── Board.tsx/css
-│   │   ├── Card.tsx/css
-│   │   ├── Dice.tsx/css
-│   │   ├── GameInfo.tsx/css
-│   │   ├── GameResult.tsx/css
-│   │   ├── Hand.tsx/css
-│   │   ├── Lobby.tsx/css
-│   │   └── SharedBoard.tsx/css
-│   ├── logic/           # ゲームロジック
-│   │   ├── game.ts      # ゲームステート管理（Reducer）
-│   │   ├── deck.ts      # カード生成・シャッフル
-│   │   ├── evaluation.ts # 役判定（Y軸・X軸）
-│   │   ├── scoring.ts   # スコア計算
-│   │   ├── ai.ts        # AI思考エンジン
-│   │   ├── online.ts    # Socket.IO接続設定
-│   │   └── types.ts     # 型定義
-│   ├── App.tsx          # メインアプリケーション
-│   └── main.tsx         # エントリーポイント
+│   ├── components/      # React components
+│   │   ├── SharedBoard.tsx/.css
+│   │   ├── GameInfo.tsx/.css
+│   │   ├── Hand.tsx/.css
+│   │   ├── Lobby.tsx/.css
+│   │   └── GameResult.tsx/.css
+│   ├── logic/          # Game logic
+│   │   ├── game.ts     # Game state reducer
+│   │   ├── evaluation.ts
+│   │   ├── scoring.ts
+│   │   └── online.ts   # Socket.IO client
+│   ├── utils/
+│   │   └── sound.ts    # Audio utilities
+│   ├── App.tsx
+│   └── App.css
 ├── server/
-│   └── index.js         # Socket.IOサーバー（オンライン対戦）
-└── start-services.sh    # ローカル開発用サーバー起動スクリプト
+│   └── index.js        # Socket.IO server
+└── README.md
 ```
 
-## 🚀 開発環境セットアップ
+## Mobile UI Specifics
 
-### 必要条件
-- Node.js 18+
-- npm
+### Header Behavior
+- **Lobby Screen**: Header visible with background #2c3e50
+  - Shows title, version, Local/Online toggle
+  - GameInfo (scores) hidden during setup phase
+  
+- **Battle Screen**: Header completely hidden
+  - Conditional class: `battle-mode` when `phase === 'playing' || 'scoring'`
+  - CSS: `.app-header.battle-mode { display: none !important; }`
 
-### インストール
-```bash
-npm install
+### Field Positioning
+Current mobile settings (as of v12061302):
+```css
+.play-area {
+  transform: scale(0.7) translateY(-40px);
+  transform-origin: center center;
+}
 ```
 
-### ローカル開発
-#### フロントエンドのみ（ローカル対戦）
+## Important Lessons Learned
+
+### What Doesn't Work
+1. ❌ Using `margin-top` to move field position (coordinates don't change)
+2. ❌ Forgetting to update version number on changes
+3. ❌ Using grid layout for simple centering (overly complex)
+
+### What Works
+1. ✅ `transform: translateY()` for coordinate movement
+2. ✅ Simple flexbox centering for mobile layouts
+3. ✅ Conditional rendering with `phase !== 'setup'` for GameInfo
+4. ✅ Transform combining: `scale() translateY()`
+
+## Running the Project
+
+### Development
 ```bash
+# Frontend (Vite)
 npm run dev
-# http://localhost:5173 でアクセス
-```
 
-#### オンライン対戦も含む（フルスタック）
-```bash
-# ターミナル1: フロントエンド
-npm run dev
-
-# ターミナル2: Socket.IOサーバー
+# Backend (Socket.IO server)
 node server/index.js
 ```
 
-または、tmuxを使った一括起動：
-```bash
-./start-services.sh
-```
+### Production
+Frontend is deployed to Vercel.
+Backend requires a separate Node.js server with Socket.IO support.
 
-## 🌐 デプロイ情報
-
-### フロントエンド (Vercel)
-- **URL**: https://xy-poker.vercel.app/
-- **自動デプロイ**: `main`ブランチへのpush時に自動デプロイ
-- **環境変数**: 不要（ビルド時に`import.meta.env.PROD`で判定）
-
-### バックエンド (Render)
-- **URL**: https://xy-poker.onrender.com
-- **デプロイ方法**: Render ダッシュボードから手動デプロイ、またはGitHub連携
-- **起動コマンド**: `node server/index.js`
-- **ポート**: 3001（環境変数`PORT`で上書き可能）
-
-### 接続設定
-フロントエンドは`src/logic/online.ts`で環境を判定：
-- **開発環境**: `http://localhost:3001`
-- **本番環境**: `https://xy-poker.onrender.com`
-
-## 🎯 ゲームルール
-
-### 基本ルール
-1. 各プレイヤーは3×5のボードにカードを配置
-2. 初期手札4枚、カード配置後に1枚ドロー
-3. 各列の上部にダイス（1-6）が配置され、これが得点の重みになる
-4. 15枚配置完了後、得点計算
-
-### 役（Y軸：縦列3枚）
-- ストレートフラッシュ
-- スリーカード
-- フラッシュ
-- ストレート
-- ワンペア
-- ハイカード
-
-### 役（X軸：横列5枚・最下段のみ）
-- ロイヤルフラッシュ（即勝利）
-- ストレートフラッシュ
-- フォーカード
-- フルハウス
-- フラッシュ
-- ストレート
-- スリーカード
-- ツーペア
-- ワンペア
-- ハイカード
-
-### 特殊ルール
-- **裏向き配置**: 各プレイヤー最大3枚まで裏向きで配置可能（ジョーカーは不可）
-- **列ボーナス**: 相手より先に列を完成させると、ボーナスカード1枚獲得
-- **同じ列に3枚すべて裏向き**: 不可
-
-## 🛠️ 技術スタック
-
-- **言語**: TypeScript
-- **フロントエンド**: React 19, Vite
-- **バックエンド**: Node.js, Express
-- **リアルタイム通信**: Socket.IO
-- **デプロイ**: Vercel (フロント), Render (バックエンド)
-- **リンター**: ESLint
-
-## 📝 最近の更新履歴
-
-### 2025-12-05
-
-#### オンライン対戦の安定性向上
-- ✅ ホスト主導のゲーム開始システム実装
-  - ホストのみがゲーム開始可能に変更
-  - ゲスト側に待機メッセージ表示
-  - ゲーム状態の同期処理を改善
-- ✅ 本番環境での接続修正
-  - VercelフロントエンドからRenderサーバーへの接続を修正
-  - Socket.IO接続URLを`https://xy-poker.onrender.com`に設定
-
-#### 機能追加・復元
-- ✅ **自分の裏向きカード確認機能**
-  - プレイ中に自分の裏向きカードを**長押し（500ms）**で一時的に内容確認
-  - オレンジ色のオーバーレイで視覚的フィードバック
-  - 離すと自動的に裏向きに戻る
-  - マウスとタッチ（モバイル）の両方に対応
-- ✅ **ゲーム終了後の盤面表示機能**
-  - 結果モーダルに「View Board」ボタンを追加
-  - すべてのカードがオープンされた最終盤面を確認可能
-  - 「Show Results」ボタンでリザルト画面に戻る
-  - リザルト画面と盤面表示を自由に切り替え可能
-- ✅ **プレイヤー名カスタマイズ機能**
-  - プレイヤー名を最大20文字で変更可能
-  - localStorageに保存（次回起動時も維持）
-  - ロビーで名前入力（上部に配置）
-  - ゲーム情報と結果画面に名前を表示
-- ✅ **目立つターン表示**
-  - 自分のターンを「YOUR TURN」と大きく表示（2remフォント）
-  - 青いグラデーション背景とパルスアニメーション
-  - ローカルモード（vs AI）とオンラインモードの両方に対応
-- ✅ **勝利列のハイライト表示**
-  - View Boardで勝った列を視覚的にハイライト
-  - Player 1: 青色のグロー効果
-  - Player 2: 赤色のグロー効果
-  - 脈動するアニメーションで勝敗が一目で分かる
-
-#### ドキュメント
-- ✅ README.mdの大幅な改善
-  - プロジェクト構成の詳細化
-  - アーキテクチャ図の追加
-  - デプロイ情報の明記
-  - 開発環境セットアップ手順の追加
-
-## 🤝 コントリビューション
-
-プルリクエストを歓迎します。大きな変更の場合は、まずissueを開いて変更内容を議論してください。
-
-## 📄 ライセンス
-
-MIT
+## Technologies
+- **Frontend**: React, TypeScript, Vite
+- **Backend**: Node.js, Socket.IO
+- **Styling**: Vanilla CSS
+- **Audio**: Web Audio API
