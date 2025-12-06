@@ -126,6 +126,7 @@
         pointer-events: none;
         z-index: 10;
         align-items: center;
+        transform: translateY(-20px);
     }
 
     /* Flatten the structure */

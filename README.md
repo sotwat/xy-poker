@@ -54,19 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12062130` (2025-12-06 21:30)
+**Latest Version:** `12062134` (2025-12-06 21:34)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
-2. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
-3. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
-4. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
-5. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
-6. **v12062108** - Shifted mobile field up by 20px (total `translateY(-110px)`)
-7. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
-8. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
-9. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
-10. **v12061252** - Removed score display from lobby, field scale to 0.75, moved up 20px
+1. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
+2. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
+3. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
+4. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
+5. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
+6. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
+7. **v12062108** - Shifted mobile field up by 20px (total `translateY(-110px)`)
+8. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
+9. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
+10. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
 10. **v12061243** - Hide header during battle on mobile, keep on lobby
 
 ### Current Mobile UI Specifications
