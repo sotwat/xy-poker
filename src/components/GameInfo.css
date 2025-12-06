@@ -110,36 +110,29 @@
 
 @media (max-width: 600px) {
     .game-info {
-        display: block;
-        width: auto;
-        max-width: none;
-        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 4px;
+        padding: 4px;
         margin: 0;
+        width: 100vw;
+        max-width: 100vw;
+        box-sizing: border-box;
         background: transparent;
-        position: absolute;
-        top: 0;
+        position: relative;
         left: 0;
         right: 0;
-        bottom: 0;
-        pointer-events: none;
-    }
-
-    .game-info>* {
-        pointer-events: auto;
+        transform: none;
     }
 
     .status-bar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
+        grid-column: 1 / -1;
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-size: 0.65rem;
-        padding: 4px 8px;
-        background: rgba(255, 255, 255, 0.9);
-        z-index: 10;
+        padding: 0;
     }
 
     .turn-indicator {
@@ -147,12 +140,16 @@
         font-size: 0.75rem;
     }
 
-    .turn-indicator.your-turn,
-    .turn-indicator.opponent-turn {
+    .turn-indicator.your-turn {
         padding: 0.3rem 0.6rem;
         font-size: 0.75rem;
         position: static;
         margin: 0;
+    }
+
+    .turn-indicator.opponent-turn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
     }
 
     .surrender-btn {
@@ -163,45 +160,36 @@
     }
 
     .scores {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: space-between;
-        padding: 0 4px;
-        gap: 0;
-        margin: 0;
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 0;
     }
 
     .player-score-row {
         display: flex;
         flex-direction: column;
         gap: 2px;
-        font-size: 0.55rem;
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        max-width: 60px;
-    }
-
-    .player-score-row:nth-child(1) {
         align-items: flex-start;
     }
 
+    .player-score-row:nth-child(1) {
+        text-align: left;
+    }
+
     .player-score-row:nth-child(2) {
+        text-align: right;
         align-items: flex-end;
     }
 
     .score-item {
-        font-size: 0.6rem;
-        padding: 2px;
-        white-space: nowrap;
+        font-size: 0.65rem;
+        padding: 1px 4px;
     }
 
     .bonus-item {
-        font-size: 0.55rem;
-        white-space: nowrap;
+        font-size: 0.6rem;
     }
 }
 
