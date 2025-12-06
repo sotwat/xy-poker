@@ -54,22 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12062110` (2025-12-06 21:10)
+**Latest Version:** `12062125` (2025-12-06 21:25)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
-2. **v12062108** - Shifted mobile field up by 20px (total `translateY(-110px)`)
-3. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
-4. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
-4. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
-3. **v12061252** - Removed score display from lobby, field scale to 0.75, moved up 20px
-4. **v12061249** - Removed grid layout, centered content with flexbox
-5. **v12061246** - Centered Start Game and battle field after header removal
-6. **v12061243** - Hide header during battle on mobile, keep on lobby
-7. **v12061238** - Made app-header background transparent on mobile
-8. **v12061232** - Removed backgrounds from GameInfo elements
-9. **v12061230** - Set field z-index above GameInfo
-10. **v12061227** - Reverted bad vertical text layout
+1. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
+2. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
+3. **v12062108** - Shifted mobile field up by 20px (total `translateY(-110px)`)
+4. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
+5. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
+6. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
+7. **v12061252** - Removed score display from lobby, field scale to 0.75, moved up 20px
+8. **v12061249** - Removed grid layout, centered content with flexbox
+9. **v12061246** - Centered Start Game and battle field after header removal
+10. **v12061243** - Hide header during battle on mobile, keep on lobby
 
 ### Current Mobile UI Specifications
 
@@ -83,7 +80,7 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Game Field:**
 ```css
 .play-area {
-  transform: scale(0.7) translateY(-40px);
+  transform: scale(0.65) translateY(-110px);
   transform-origin: center center;
   margin: 0;
   padding: 0;
@@ -92,10 +89,17 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 **GameInfo:**
 - Conditionally rendered: `{phase !== 'setup' && (<GameInfo ... />)}`
-- Grid layout on mobile (1fr 1fr)
-- YOUR TURN left, Cancel button right
-- Player scores left column, opponent right column
-- Transparent backgrounds with colored borders
+- **Layout:** CSS Grid with 3 columns (Left, Center, Right)
+  - `display: grid; grid-template-columns: 80px 1fr 80px;`
+  - Uses `display: contents` to ignore .status-bar/.scores wrappers
+- **Left Sidebar:**
+  - Player Name & Score (`grid-column: 1`)
+  - "YOUR TURN" Indicator (`margin-top: 150px`)
+- **Right Sidebar:**
+  - Opponent Name & Score (`grid-column: 3`)
+  - "Opponent's Turn" Indicator
+  - Cancel Button (Bottom)
+- **Styling:** Transparent container, white/semi-transparent element backgrounds
 
 ## Project Structure
 
