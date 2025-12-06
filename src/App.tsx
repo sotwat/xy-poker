@@ -86,6 +86,15 @@ function App() {
       dispatch({ type: 'CALCULATE_SCORE' });
       const newState = { ...gameState, winner };
       dispatch({ type: 'SYNC_STATE', payload: newState } as any);
+
+      // Return to lobby after 2 seconds
+      setTimeout(() => {
+        setRoomId(null);
+        setPlayerRole(null);
+        setIsOnlineGame(false);
+        setIsQuickMatch(false);
+        dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+      }, 2000);
     });
 
     socket.on('player_left', () => {
@@ -247,21 +256,11 @@ function App() {
     }
 
     if (mode === 'local') {
-      // Local mode: Reset to initial state
+      // Local mode: Reset to initial state immediately
       dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
-      setMode('local');
     } else {
-      // Online mode: notify server and reset
+      // Online mode: notify server (server will send game_end_surrender to both players)
       socket.emit('surrender', { roomId });
-
-      // Reset to lobby
-      setTimeout(() => {
-        setRoomId(null);
-        setPlayerRole(null);
-        setIsOnlineGame(false);
-        setIsQuickMatch(false);
-        dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
-      }, 1000); // Small delay to allow server notification
     }
   };
 
@@ -377,7 +376,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>XY Poker <span className="version">12061125</span></h1>
+        <h1>XY Poker <span className="version">12061129</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
