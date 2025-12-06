@@ -385,8 +385,8 @@ function App() {
 
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>XY Poker <span className="version">12061238</span></h1>
+      <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
+        <h1>XY Poker <span className="version">12061243</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
