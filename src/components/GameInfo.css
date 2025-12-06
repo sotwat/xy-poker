@@ -112,8 +112,9 @@
     .game-info {
         display: grid;
         grid-template-columns: 80px 1fr 80px;
-        /* Left Sidebar, Center(Empty), Right Sidebar */
-        grid-template-rows: 1fr;
+        /* Left, Center, Right */
+        grid-template-rows: 1fr auto 1fr;
+        /* Top (Indicators), Middle (Scores), Bottom (Cancel) */
         padding: 0;
         margin: 0;
         background: transparent;
@@ -124,13 +125,7 @@
         height: 100%;
         pointer-events: none;
         z-index: 10;
-        /* SharedBoard is 100, but GameInfo children need to be visible around it */
-        /* Actually SharedBoard is z-index 100 relative to stacking context, this GameInfo is absolute over app. 
-           Wait, SharedBoard has z-index 100. If we want GameInfo text to check z-index, we should check stacking.
-           But SharedBoard is transformed scale 0.65.
-           If we set GameInfo z-index: 10, it might be behind SharedBoard which is 100.
-           However, we want the text to be BESIDE the board, not behind/over it.
-        */
+        align-items: center;
     }
 
     /* Flatten the structure */
@@ -139,26 +134,28 @@
         display: contents;
     }
 
-    /* Common styles for sidebar elements */
+    /* Common for all sidebar elements */
     .game-info>* {
         pointer-events: auto;
     }
 
+    /* Scores - Middle Row */
     .player-score-row {
+        grid-row: 2;
+        /* Middle */
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 2px;
         font-size: 0.7rem;
-        /* No rotation needed if we have space */
         writing-mode: horizontal-tb;
         transform: none;
         max-width: none;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 4px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 6px;
         border-radius: 4px;
-        margin: auto 0;
-        /* Vertical center */
+        z-index: 20;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .score-item {
@@ -175,7 +172,6 @@
     /* If I am Player 1 (index 0) */
     .game-info[data-my-index="0"] .player-1 {
         grid-column: 1;
-        /* Left */
         align-items: flex-start;
         text-align: left;
         margin-left: 4px;
@@ -183,7 +179,6 @@
 
     .game-info[data-my-index="0"] .player-2 {
         grid-column: 3;
-        /* Right */
         align-items: flex-end;
         text-align: right;
         margin-right: 4px;
@@ -192,7 +187,6 @@
     /* If I am Player 2 (index 1) */
     .game-info[data-my-index="1"] .player-2 {
         grid-column: 1;
-        /* Left */
         align-items: flex-start;
         text-align: left;
         margin-left: 4px;
@@ -200,54 +194,49 @@
 
     .game-info[data-my-index="1"] .player-1 {
         grid-column: 3;
-        /* Right */
         align-items: flex-end;
         text-align: right;
         margin-right: 4px;
     }
 
-    /* Turn Indicators */
+    /* Turn Indicators - Top Row */
     .turn-indicator {
-        margin: auto 0;
+        grid-row: 1;
+        /* Top */
+        align-self: end;
+        /* Push to bottom of top row (closer to middle) */
         padding: 4px 8px;
         font-size: 0.7rem;
         background: rgba(255, 255, 255, 0.9) !important;
-        /* Restore background */
         border-radius: 4px;
-        margin-bottom: 50px;
-        /* Offset from center to be above/below score or distinct */
+        margin-bottom: 8px;
+        z-index: 20;
     }
 
     /* YOUR TURN - Always Left */
     .turn-indicator.your-turn {
         grid-column: 1;
-        grid-row: 1;
-        align-self: start;
-        /* Top */
-        margin-top: 150px;
-        /* Roughly aligned with dice area or field top */
         margin-left: 4px;
         border: 2px solid #4facfe;
+        text-align: center;
     }
 
     /* Opponent's Turn - Always Right */
     .turn-indicator.opponent-turn {
         grid-column: 3;
-        grid-row: 1;
-        align-self: start;
-        margin-top: 150px;
         margin-right: 4px;
-        text-align: right;
+        text-align: center;
         border: 1px solid #888;
     }
 
-    /* Cancel Button - Always Right */
+    /* Cancel Button - Bottom Row (Right) */
     .surrender-btn {
         grid-column: 3;
-        grid-row: 1;
-        align-self: end;
+        grid-row: 3;
         /* Bottom */
-        margin-bottom: 20px;
+        align-self: start;
+        /* Top of bottom row */
+        margin-top: 8px;
         margin-right: 4px;
         background: #ff4757;
         color: white;
@@ -255,21 +244,31 @@
         padding: 8px 12px;
         border-radius: 4px;
         font-size: 0.75rem;
+        z-index: 20;
     }
 
-    /* Winner Banner / Scoring Phase - Center over field if needed or hidden */
-    .winner-banner,
-    .scoring-banner {
-        grid-column: 1 / -1;
-        grid-row: 1;
-        align-self: center;
-        justify-self: center;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 8px;
-        z-index: 200;
-    }
+    margin-right: 4px;
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+/* Winner Banner / Scoring Phase - Center over field if needed or hidden */
+.winner-banner,
+.scoring-banner {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    z-index: 200;
+}
 }
 
 /* Hide GameInfo on mobile when result screen is shown */

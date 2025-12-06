@@ -54,19 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12062145` (2025-12-06 21:45)
+**Latest Version:** `12062149` (2025-12-06 21:49)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
-2. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
-3. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
-4. **v12062108** - Shifted mobile field up by 20px (total `translateY(-110px)`)
-5. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
-6. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
-7. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
-8. **v12061252** - Removed score display from lobby, field scale to 0.75, moved up 20px
-9. **v12061249** - Removed grid layout, centered content with flexbox
-10. **v12061246** - Centered Start Game and battle field after header removal
+1. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
+2. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
+3. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
+4. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
+5. **v12062108** - Shifted mobile field up by 20px (total `translateY(-110px)`)
+6. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
+7. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
+8. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
+9. **v12061252** - Removed score display from lobby, field scale to 0.75, moved up 20px
+10. **v12061249** - Removed grid layout, centered content with flexbox
 10. **v12061243** - Hide header during battle on mobile, keep on lobby
 
 ### Current Mobile UI Specifications
