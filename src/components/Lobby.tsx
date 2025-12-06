@@ -119,7 +119,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent to join...</div>}
                     {playerRole === 'guest' && <div className="loading-spinner">Connected to Room</div>}
                     <button className="btn-cancel" onClick={onCancelMatchmaking}>
-                        キャンセル
+                        Cancel
                     </button>
                 </div>
             )}

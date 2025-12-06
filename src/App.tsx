@@ -257,7 +257,7 @@ function App() {
   };
 
   const handleSurrender = () => {
-    if (!window.confirm('降参しますか？ゲームを終了します。')) {
+    if (!window.confirm('Surrender? This will end the game.')) {
       return;
     }
 
@@ -382,7 +382,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>XY Poker <span className="version">12061152</span></h1>
+        <h1>XY Poker <span className="version">12061154</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -417,7 +417,7 @@ function App() {
             <div className="loading-spinner"></div>
             <p>Your game will start automatically when an opponent joins</p>
             <button className="btn-cancel" onClick={handleCancelMatchmaking}>
-              キャンセル
+              Cancel
             </button>
           </div>
         </div>
