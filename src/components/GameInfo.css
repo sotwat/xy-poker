@@ -204,20 +204,35 @@
         grid-row: 1;
         /* Top */
         align-self: end;
-        /* Push to bottom of top row (closer to middle) */
+        /* Push to bottom of top row */
         padding: 4px 8px;
         font-size: 0.7rem;
-        background: rgba(255, 255, 255, 0.9) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         border-radius: 4px;
         margin-bottom: 8px;
         z-index: 20;
+
+        /* Centering */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        /* Fill the grid cell width */
+        box-sizing: border-box;
+        /* Include padding in width */
     }
 
     /* YOUR TURN - Always Left */
     .turn-indicator.your-turn {
         grid-column: 1;
         margin-left: 4px;
-        border: 2px solid #4facfe;
+        border: 2px solid #00d2ff;
+        /* Cyan border */
+        color: #00d2ff !important;
+        /* Cyan text */
+        background: #e0f9ff !important;
+        /* Very light cyan bg */
+        font-weight: bold;
         text-align: center;
     }
 
