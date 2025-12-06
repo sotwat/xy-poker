@@ -88,6 +88,16 @@ function App() {
       dispatch({ type: 'SYNC_STATE', payload: newState } as any);
     });
 
+    socket.on('player_left', () => {
+      // Opponent left/cancelled - return to lobby
+      console.log('Opponent left the room');
+      setRoomId(null);
+      setPlayerRole(null);
+      setIsOnlineGame(false);
+      setIsQuickMatch(false);
+      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+    });
+
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
@@ -97,6 +107,7 @@ function App() {
       socket.off('opponent_joined');
       socket.off('game_action');
       socket.off('game_end_surrender');
+      socket.off('player_left');
       // Don't disconnect on cleanup - only when component unmounts
     };
   }, []); // Empty dependency array - only run once on mount
