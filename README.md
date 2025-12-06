@@ -54,11 +54,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12061302` (2025-12-06 13:02)
+**Latest Version:** `12062107` (2025-12-06 21:07)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
-2. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
+1. **v12062107** - Shifted mobile field up by 50px (total `translateY(-90px)`)
+2. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
+3. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
 3. **v12061252** - Removed score display from lobby, field scale to 0.75, moved up 20px
 4. **v12061249** - Removed grid layout, centered content with flexbox
 5. **v12061246** - Centered Start Game and battle field after header removal
