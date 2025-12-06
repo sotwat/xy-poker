@@ -53,7 +53,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     type="text"
                     value={playerName}
                     onChange={(e) => onPlayerNameChange(e.target.value)}
-                    maxLength={20}
+                    maxLength={10}
                     placeholder="Enter your name"
                 />
             </div>
