@@ -377,7 +377,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>XY Poker <span className="version">12061122</span></h1>
+        <h1>XY Poker <span className="version">12061125</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
