@@ -19,6 +19,13 @@
   margin: 0;
 }
 
+.app-header .version {
+  font-size: 0.6rem;
+  color: #888;
+  margin-left: 0.5rem;
+  font-weight: normal;
+}
+
 /* Hide header when result screen is shown */
 body:has(.game-result-overlay) .app-header {
   display: none;
