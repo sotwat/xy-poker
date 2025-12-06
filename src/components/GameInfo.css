@@ -147,6 +147,7 @@
 
     .scores {
         gap: 8px;
+        margin-top: 10px;
     }
 
     .player-score-row {
