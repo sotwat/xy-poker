@@ -83,18 +83,22 @@ function App() {
 
     socket.on('game_end_surrender', ({ winner }) => {
       // Handle surrender ending the game
+      console.log('[SURRENDER] Received game_end_surrender event, winner:', winner);
       dispatch({ type: 'CALCULATE_SCORE' });
       const newState = { ...gameState, winner };
       dispatch({ type: 'SYNC_STATE', payload: newState } as any);
 
       // Return to lobby after 2 seconds
       setTimeout(() => {
+        console.log('[SURRENDER] Returning to lobby - setting state');
+        console.log('[SURRENDER] Before reset - mode:', mode, 'isOnlineGame:', isOnlineGame, 'isQuickMatch:', isQuickMatch, 'roomId:', roomId);
         setMode('online');
         setRoomId(null);
         setPlayerRole(null);
         setIsOnlineGame(false);
         setIsQuickMatch(false);
         dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+        console.log('[SURRENDER] State reset complete');
       }, 2000);
     });
 
@@ -378,7 +382,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>XY Poker <span className="version">12061133</span></h1>
+        <h1>XY Poker <span className="version">12061150</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
