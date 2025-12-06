@@ -302,6 +302,12 @@ body:has(.game-result-overlay) .app-header {
   .toggle-hidden {
     font-size: 0.8rem;
   }
+
+  /* Remove app-header background on mobile */
+  .app-header {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
 }
 
 .waiting-message {
