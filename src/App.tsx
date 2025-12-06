@@ -386,7 +386,7 @@ function App() {
   return (
     <div className="app">
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
-        <h1>XY Poker <span className="version">12061249</span></h1>
+        <h1>XY Poker <span className="version">12061252</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -403,14 +403,16 @@ function App() {
             </button>
           </div>
         )}
-        <GameInfo
-          gameState={gameState}
-          isOnlineMode={mode === 'online'}
-          playerRole={playerRole}
-          playerName={playerName}
-          opponentName={opponentName}
-          onSurrender={handleSurrender}
-        />
+        {phase !== 'setup' && (
+          <GameInfo
+            gameState={gameState}
+            isOnlineMode={mode === 'online'}
+            playerRole={playerRole}
+            playerName={playerName}
+            opponentName={opponentName}
+            onSurrender={handleSurrender}
+          />
+        )}
       </header>
 
       {mode === 'online' && isQuickMatch ? (
