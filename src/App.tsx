@@ -84,22 +84,22 @@ function App() {
     socket.on('game_end_surrender', ({ winner }) => {
       // Handle surrender ending the game
       console.log('[SURRENDER] Received game_end_surrender event, winner:', winner);
-      dispatch({ type: 'CALCULATE_SCORE' });
-      const newState = { ...gameState, winner };
-      dispatch({ type: 'SYNC_STATE', payload: newState } as any);
 
-      // Return to lobby after 2 seconds
+      // Return to lobby after 1 second (showing winner briefly)
       setTimeout(() => {
-        console.log('[SURRENDER] Returning to lobby - setting state');
-        console.log('[SURRENDER] Before reset - mode:', mode, 'isOnlineGame:', isOnlineGame, 'isQuickMatch:', isQuickMatch, 'roomId:', roomId);
-        setMode('online');
-        setRoomId(null);
-        setPlayerRole(null);
-        setIsOnlineGame(false);
-        setIsQuickMatch(false);
+        console.log('[SURRENDER] Returning to lobby - resetting ALL state');
+        // Reset all state at once using functional updates
+        setMode(() => 'online');
+        setRoomId(() => null);
+        setPlayerRole(() => null);
+        setIsOnlineGame(() => false);
+        setIsQuickMatch(() => false);
+        setOpponentName(() => 'Player 2');
+
+        // Reset game state to initial
         dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
-        console.log('[SURRENDER] State reset complete');
-      }, 2000);
+        console.log('[SURRENDER] State reset complete - should show lobby');
+      }, 1000);
     });
 
     socket.on('player_left', () => {
@@ -382,7 +382,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>XY Poker <span className="version">12061150</span></h1>
+        <h1>XY Poker <span className="version">12061152</span></h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
