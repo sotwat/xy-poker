@@ -134,11 +134,16 @@
         align-items: center;
         font-size: 0.65rem;
         padding: 0;
+        background: transparent;
+        z-index: 1;
     }
 
     .turn-indicator {
         padding: 0.3rem 0.6rem;
         font-size: 0.75rem;
+        background: transparent !important;
+        color: #4facfe !important;
+        border: 1px solid #4facfe;
     }
 
     .turn-indicator.your-turn {
@@ -146,11 +151,18 @@
         font-size: 0.75rem;
         position: static;
         margin: 0;
+        background: transparent !important;
+        color: #4facfe !important;
+        border: 2px solid #4facfe;
+        font-weight: bold;
     }
 
     .turn-indicator.opponent-turn {
         padding: 0.3rem 0.6rem;
         font-size: 0.75rem;
+        background: transparent !important;
+        color: #888 !important;
+        border: 1px solid #888;
     }
 
     .surrender-btn {
