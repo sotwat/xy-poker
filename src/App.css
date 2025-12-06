@@ -241,13 +241,15 @@ body:has(.game-result-overlay) .app-header {
     flex: 1;
     /* Take all available space */
     padding: 0;
-    padding-top: 240px;
-    /* Force content down from the top (unscaled) */
+    padding-top: 20px;
+    /* Minimal top padding */
     min-height: 0;
     /* Allow shrinking */
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    /* Clip overflow */
+    /* Center content */
   }
 
   .play-area {
