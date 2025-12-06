@@ -34,10 +34,65 @@ A 2-player poker card game with both local and online multiplayer modes.
 - When user says "move X up/down by Npx", use `translateY(-Npx)` or `translateY(Npx)`
 - Multiple transforms can be combined: `transform: scale(X) translateY(Y)`
 
-#### 3. Git Commit Messages
+#### 3. README Maintenance Policy 
+**全てのアップデートでREADMEを更新すること**
+
+- README.md must be updated with EVERY code change
+- Document what changed, why it changed, and current state
+- Other AIs must be able to perfectly understand project state from README alone
+- Include:
+  - Current version number
+  - Recent changes (keep last 5-10 updates)
+  - Current mobile/desktop UI specifications
+  - Known issues or workarounds
+- This is as critical as updating version numbers
+
+#### 4. Git Commit Messages
 - Always in Japanese
 - Include version number in commit message
 - Example: `fix: translateYで座標を40px上に移動 v12061302`
+
+## Current Project State
+
+**Latest Version:** `12061302` (2025-12-06 13:02)
+
+### Recent Changes (Last 10 Updates)
+1. **v12061302** - Fixed field positioning using `transform: translateY(-40px)` instead of margin
+2. **v12061259** - Adjusted mobile field: scale 0.7, 40px up (attempted with margin - didn't work)
+3. **v12061252** - Removed score display from lobby, field scale to 0.75, moved up 20px
+4. **v12061249** - Removed grid layout, centered content with flexbox
+5. **v12061246** - Centered Start Game and battle field after header removal
+6. **v12061243** - Hide header during battle on mobile, keep on lobby
+7. **v12061238** - Made app-header background transparent on mobile
+8. **v12061232** - Removed backgrounds from GameInfo elements
+9. **v12061230** - Set field z-index above GameInfo
+10. **v12061227** - Reverted bad vertical text layout
+
+### Current Mobile UI Specifications
+
+**Header:**
+- Lobby (phase === 'setup'): Visible with #2c3e50 background
+  - Title, version, Local/Online toggle shown
+  - GameInfo hidden
+- Battle (phase === 'playing' || 'scoring'): Completely hidden
+  - Uses `battle-mode` class: `display: none !important`
+
+**Game Field:**
+```css
+.play-area {
+  transform: scale(0.7) translateY(-40px);
+  transform-origin: center center;
+  margin: 0;
+  padding: 0;
+}
+```
+
+**GameInfo:**
+- Conditionally rendered: `{phase !== 'setup' && (<GameInfo ... />)}`
+- Grid layout on mobile (1fr 1fr)
+- YOUR TURN left, Cancel button right
+- Player scores left column, opponent right column
+- Transparent backgrounds with colored borders
 
 ## Project Structure
 
