@@ -257,7 +257,7 @@ body:has(.game-result-overlay) .app-header {
     /* Remove gap completely */
     width: 100%;
     /* Full width */
-    transform: scale(0.7) translateY(-90px);
+    transform: scale(0.7) translateY(-110px);
     transform-origin: center center;
     /* Center anchor */
     margin: 0;
