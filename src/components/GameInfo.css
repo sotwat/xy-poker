@@ -124,6 +124,7 @@
         left: 0;
         right: 0;
         transform: none;
+        z-index: 1;
     }
 
     .status-bar {

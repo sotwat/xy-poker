@@ -155,6 +155,8 @@
         /* Remove padding */
         transform: scale(1.25) translateY(10px);
         transform-origin: center center;
+        position: relative;
+        z-index: 100;
     }
 
     .card-slot {
