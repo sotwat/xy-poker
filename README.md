@@ -54,19 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12071800` (2025-12-07 18:00)
+**Latest Version:** `12071805` (2025-12-07 18:05)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12071800** - Updated result table to show actual player names in "Winner" column instead of P1/P2
-2. **v12071759** - Fixed shared board highlights in online mode: Guest (Red) now sees their own winning columns (bottom) in Red and opponent (top) in Blue
-3. **v12071752** - Fixed online result screen bug where Guest (Red) saw swapped names/scores (passed correct `p1Name`/`p2Name` based on role)
-4. **v12071742** - Shifted mobile result screen down by ~20px (`scale(0.8) translateY(25px)`)
-5. **v12071722** - Fixed CSS syntax error in `GameResult.css` (restored `.winner-col.draw`), confirmed winner glow is global
-6. **v12071714** - Mobile UI Polish: Hidden scoring/winner overlay banners on mobile, scaled result screen to 0.8x, added winner glow effect
-7. **v12071706** - Reduced mobile field scale to 0.63 (kept `translateY(-115px)`)
-8. **v12071703** - Shifted mobile field and controls UP by 5px (`field: translateY(-115px)`, `controls: bottom: 110px`)
-9. **v12071654** - Shifted mobile field down by 10px (`translateY(-110px)`) per user request
-10. **v12071649** - Fixed build error by correcting AI move dispatch logic (restored `PLACE_AND_DRAW` action)
+1. **v12071805** - Fixed X-Hand highlight bug: now correctly lights up the winner's row (Bottom/Top) based on `xWinner` instead of always Bottom
+2. **v12071800** - Updated result table to show actual player names in "Winner" column instead of P1/P2
+3. **v12071759** - Fixed shared board highlights in online mode: Guest (Red) now sees their own winning columns (bottom) in Red and opponent (top) in Blue
+4. **v12071752** - Fixed online result screen bug where Guest (Red) saw swapped names/scores (passed correct `p1Name`/`p2Name` based on role)
+5. **v12071742** - Shifted mobile result screen down by ~20px (`scale(0.8) translateY(25px)`)
+6. **v12071722** - Fixed CSS syntax error in `GameResult.css` (restored `.winner-col.draw`), confirmed winner glow is global
+7. **v12071714** - Mobile UI Polish: Hidden scoring/winner overlay banners on mobile, scaled result screen to 0.8x, added winner glow effect
+8. **v12071706** - Reduced mobile field scale to 0.63 (kept `translateY(-115px)`)
+9. **v12071703** - Shifted mobile field and controls UP by 5px (`field: translateY(-115px)`, `controls: bottom: 110px`)
+10. **v12071654** - Shifted mobile field down by 10px (`translateY(-110px)`) per user request
 
 10. **v12061243** - Hide header during battle on mobile, keep on lobby
 

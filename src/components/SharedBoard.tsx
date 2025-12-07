@@ -96,6 +96,13 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         const isTopWon = winner === topPlayerId;
         const topWinningClass = isTopWon ? `winning-slot-${topPlayerId}` : '';
 
+        // X-Hand Highlight Logic
+        // Row 2 is the X-Hand row.
+        // For Opponent (Top), cards are [Row2, Row1, Row0], so Row 2 is idx 0.
+        // For Player (Bottom), cards are [Row0, Row1, Row2], so Row 2 is idx 2.
+        const isTopXWinner = xWinner === topPlayerId;
+        const isBottomXWinner = xWinner === bottomPlayerId;
+
         return (
             <div
                 key={colIndex}
@@ -106,7 +113,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                     {opponentCards.map((card, idx) => (
                         <div
                             key={`opp-${idx}`}
-                            className={`card-slot opponent-slot ${topWinningClass}`}
+                            className={`card-slot opponent-slot ${topWinningClass} ${isTopXWinner && idx === 0 ? 'winning-row-x' : ''}`}
                         >
                             {card ? (
                                 <Card
@@ -129,7 +136,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                     {playerCards.map((card, idx) => (
                         <div
                             key={`pl-${idx}`}
-                            className={`card-slot player-slot ${xWinner && idx === 2 && xWinner !== 'draw' ? 'winning-row-x' : ''
+                            className={`card-slot player-slot ${isBottomXWinner && idx === 2 ? 'winning-row-x' : ''
                                 } ${bottomWinningClass}`}
                         >
                             {card ? (
