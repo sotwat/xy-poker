@@ -276,3 +276,15 @@
         display: none;
     }
 }
+
+/* Red Theme for Player 2 (Red) overrides */
+.game-info[data-my-index="1"] .turn-indicator.your-turn {
+    background: linear-gradient(135deg, #ff5858 0%, #ffbdbe 100%);
+    box-shadow: 0 4px 15px rgba(255, 88, 88, 0.4);
+}
+
+.player-score-row.player-2 .score-item.active {
+    background: #ffebee;
+    color: #d32f2f;
+    border: 1px solid rgba(211, 47, 47, 0.2);
+}
