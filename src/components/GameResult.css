@@ -126,7 +126,8 @@
     }
 }
 
-color: #888;
+.winner-col.draw {
+    color: #888;
 }
 
 .table-divider {
