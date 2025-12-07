@@ -173,8 +173,17 @@ node server/index.js
 ```
 
 ### Production
-Frontend is deployed to Vercel.
-Backend requires a separate Node.js server with Socket.IO support.
+**Frontend:** Currently deployed to Vercel (Hobby Tier).
+- URL: https://xy-poker.vercel.app/
+- Note: Free plan restricts commercial use (ads). Migration to Cloudflare Pages is planned.
+
+**Backend:** Self-hosted on local machine, exposed via Cloudflare Tunnel.
+- URL: https://xy-poker-server.trycloudflare.com (or similar dynamic tunnel URL)
+
+## monetization Strategy
+- Goal: Display banner ads (Google AdSense) for free revenue.
+- Restriction: Vercel Hobby plan prohibits commercial use.
+- Solution: Migrate frontend to **Cloudflare Pages** (Free commercial use allowed) before implementing ads.
 
 ## Technologies
 - **Frontend**: React, TypeScript, Vite
