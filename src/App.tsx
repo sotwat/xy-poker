@@ -392,7 +392,7 @@ function App() {
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
-        <h1>XY Poker {isLobbyView && <span className="version">12071742</span>}</h1>
+        <h1>XY Poker {isLobbyView && <span className="version">12071752</span>}</h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -533,8 +533,8 @@ function App() {
                 gameState={gameState}
                 onRestart={handleStartGame}
                 onClose={() => setShowResultsModal(false)}
-                playerName={playerName}
-                opponentName={opponentName}
+                p1Name={(isOnlineGame && playerRole === 'guest') ? opponentName : playerName}
+                p2Name={(isOnlineGame && playerRole === 'guest') ? playerName : opponentName}
               />
             )}
           </footer>

@@ -54,19 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12071742` (2025-12-07 17:42)
+**Latest Version:** `12071752` (2025-12-07 17:52)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12071742** - Shifted mobile result screen down by ~20px (`scale(0.8) translateY(25px)`)
-2. **v12071722** - Fixed CSS syntax error in `GameResult.css` (restored `.winner-col.draw`), confirmed winner glow is global
-3. **v12071714** - Mobile UI Polish: Hidden scoring/winner overlay banners on mobile, scaled result screen to 0.8x, added winner glow effect
-4. **v12071706** - Reduced mobile field scale to 0.63 (kept `translateY(-115px)`)
-5. **v12071703** - Shifted mobile field and controls UP by 5px (`field: translateY(-115px)`, `controls: bottom: 110px`)
-6. **v12071654** - Shifted mobile field down by 10px (`translateY(-110px)`) per user request
-7. **v12071649** - Fixed build error by correcting AI move dispatch logic (restored `PLACE_AND_DRAW` action)
-8. **v12071647** - Fixed incomplete application of version hiding logic (previously only added logic, now applied to UI)
-9. **v12071645** - Implemented strictly `view-lobby` class to control version visibility (hidden in Quick Match waiting & Battle)
-10. **v12062155** - Force hidden version number during gameplay using both React condition and CSS (`.app:not(.phase-setup) .version { display: none }`)
+1. **v12071752** - Fixed online result screen bug where Guest (Red) saw swapped names/scores (passed correct `p1Name`/`p2Name` based on role)
+2. **v12071742** - Shifted mobile result screen down by ~20px (`scale(0.8) translateY(25px)`)
+3. **v12071722** - Fixed CSS syntax error in `GameResult.css` (restored `.winner-col.draw`), confirmed winner glow is global
+4. **v12071714** - Mobile UI Polish: Hidden scoring/winner overlay banners on mobile, scaled result screen to 0.8x, added winner glow effect
+5. **v12071706** - Reduced mobile field scale to 0.63 (kept `translateY(-115px)`)
+6. **v12071703** - Shifted mobile field and controls UP by 5px (`field: translateY(-115px)`, `controls: bottom: 110px`)
+7. **v12071654** - Shifted mobile field down by 10px (`translateY(-110px)`) per user request
+8. **v12071649** - Fixed build error by correcting AI move dispatch logic (restored `PLACE_AND_DRAW` action)
+9. **v12071647** - Fixed incomplete application of version hiding logic (previously only added logic, now applied to UI)
+10. **v12071645** - Implemented strictly `view-lobby` class to control version visibility (hidden in Quick Match waiting & Battle)
 
 10. **v12061243** - Hide header during battle on mobile, keep on lobby
 

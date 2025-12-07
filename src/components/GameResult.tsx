@@ -9,24 +9,21 @@ interface GameResultProps {
     gameState: GameState;
     onRestart: () => void;
     onClose: () => void;
-    playerName?: string;
-    opponentName?: string;
+    p1Name?: string;
+    p2Name?: string;
 }
 
 export const GameResult: React.FC<GameResultProps> = ({
     gameState,
     onRestart,
     onClose,
-    playerName = 'Player 1',
-    opponentName = 'Player 2'
+    p1Name = 'Player 1',
+    p2Name = 'Player 2'
 }) => {
     const { players, winner } = gameState;
     const p1 = players[0];
     const p2 = players[1];
     const dice = players[0].dice; // Shared dice
-
-    const p1Name = playerName;
-    const p2Name = opponentName;
 
     // Helper to get readable hand name
     const getHandName = (type: string) => {
