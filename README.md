@@ -57,7 +57,7 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12062155` (2025-12-06 21:55)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12062155** - Hidden version number during gameplay (only visible in Lobby) to prevent title overlap
+1. **v12062155** - Force hidden version number during gameplay using both React condition and CSS (`.app:not(.phase-setup) .version { display: none }`)
 2. **v12062142** - Limited player name input max length to 10 characters
 3. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
 4. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)

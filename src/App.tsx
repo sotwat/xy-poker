@@ -384,7 +384,7 @@ function App() {
   }, [gameState.currentPlayerIndex]);
 
   return (
-    <div className="app">
+    <div className={`app phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker {phase === 'setup' && <span className="version">12062155</span>}</h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (

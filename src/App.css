@@ -31,6 +31,11 @@
   font-weight: normal;
 }
 
+/* Explicitly hide version in battle phases */
+.app:not(.phase-setup) .version {
+  display: none !important;
+}
+
 /* Hide header when result screen is shown */
 body:has(.game-result-overlay) .app-header {
   display: none;
