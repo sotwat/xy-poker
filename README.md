@@ -45,14 +45,13 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12080310` (2025-12-08 03:10)
+**Latest Version:** `12080334` (2025-12-08 03:34)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12080310** - **Major Fixes:**
-   - **Quick Match:** Implemented auto-start when opponent is found.
-   - **Rating Display:** Added fetching of rating on connection to show in Lobby.
-   - **Version UI:** Restricted version display to Lobby/Setup screens only.
-   - **Stability:** Fixed internal syntax errors in App.tsx.
+1. **v12080334** - **Fixes:**
+   - **Rating Display:** Fixed bug where rating wasn't fetched for new users (missing `browserId` generation).
+   - **Initial Rating:** Changed from 1500 to 1000.
+   - **Compliance:** Validated version update policy.
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).
