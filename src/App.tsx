@@ -526,15 +526,7 @@ function App() {
             )}
             {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
               <div className="play-area">
-                {/* Opponent Hand (Top) - Hidden unless revealed */}
-                <div className="hand-container opponent-hand">
-                  <Hand
-                    hand={gameState.players[1].hand}
-                    isOpponent={true}
-                    isHidden={phase !== 'ended'} // Reveal on end
-                    onCardSelect={() => { }}
-                  />
-                </div>
+
 
                 <SharedBoard
                   playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
