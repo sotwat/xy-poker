@@ -184,10 +184,12 @@ node server/index.js
 - **Branch Strategy:** `main` branch is production.
 
 ### 2. Frontend Hosting
-- **Platform:** **Vercel** (Hobby Tier)
-- **URL:** [https://xy-poker.vercel.app/](https://xy-poker.vercel.app/)
-- **Status:** Active, but restricted for commercial use.
-- **Plan:** Migrate to Cloudflare Pages for monetization.
+- **Primary:** **Cloudflare Pages** (Free Tier)
+  - **URL:** [https://xy-poker.pages.dev/](https://xy-poker.pages.dev/)
+  - **Status:** **Active (Live)** - Commercial use allowed (AdSense active).
+- **Secondary:** **Vercel** (Hobby Tier)
+  - URL: [https://xy-poker.vercel.app/](https://xy-poker.vercel.app/)
+  - Status: Legacy / Backup (No ads allowed).
 
 ### 3. Backend Hosting (Socket.IO)
 - **Primary:** **Render** (Free Tier)
@@ -205,8 +207,10 @@ node server/index.js
 
 ## 💰 Monetization Strategy
 - **Goal:** Display banner ads (Google AdSense) for free revenue.
-- **Blocker:** Vercel Hobby plan prohibits commercial use.
-- **Solution:** Migrate frontend to **Cloudflare Pages** (Free commercial use allowed).
+- **Status:** **Implemented (Review Pending)** via Cloudflare Pages.
+- **Implementation:**
+  - Google AdSense Auto Ads script added (v12080112).
+  - Fixed bottom banner placeholder added (v12080050).
 
 ## 🛠 Tech Stack
 - **Frontend library:** React 18, TypeScript
