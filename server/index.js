@@ -25,7 +25,7 @@ const io = new Server(server, {
 const rooms = {};
 
 // Matchmaking queue: stores roomId of rooms waiting for second player
-const supabase = require('./db');
+import supabase from './db.js';
 
 // Elo Rating Constants
 const K_FACTOR = 32;
