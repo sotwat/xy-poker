@@ -15,6 +15,7 @@ import './App.css';
 import { getBestMove } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound } from './utils/sound';
+import { getBrowserId } from './utils/identity';
 
 function App() {
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
@@ -171,10 +172,8 @@ function App() {
   // Fetch rating on connect
   useEffect(() => {
     if (isConnected) {
-      const id = localStorage.getItem('xy_poker_browser_id');
-      if (id) {
-        socket.emit('get_player_data', { browserId: id });
-      }
+      const id = getBrowserId(); // Use utility to get or create
+      socket.emit('get_player_data', { browserId: id });
     }
   }, [isConnected]);
 
