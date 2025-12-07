@@ -100,7 +100,7 @@
 
 @media (max-width: 600px) {
     .game-result-modal {
-        transform: scale(0.8);
+        transform: scale(0.8) translateY(25px);
         width: 100%;
     }
 }
