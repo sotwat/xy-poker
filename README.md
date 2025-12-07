@@ -54,19 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12071654` (2025-12-07 16:54)
+**Latest Version:** `12071703` (2025-12-07 17:03)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12071654** - Shifted mobile field down by 10px (`translateY(-110px)`) per user request
-2. **v12071649** - Fixed build error by correcting AI move dispatch logic (restored `PLACE_AND_DRAW` action)
-3. **v12071647** - Fixed incomplete application of version hiding logic (previously only added logic, now applied to UI)
-4. **v12071645** - Implemented strictly `view-lobby` class to control version visibility (hidden in Quick Match waiting & Battle)
-5. **v12062155** - Force hidden version number during gameplay using both React condition and CSS (`.app:not(.phase-setup) .version { display: none }`)
-6. **v12062142** - Limited player name input max length to 10 characters
-7. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
-8. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
-9. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
-10. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
+1. **v12071703** - Shifted mobile field and controls UP by 5px (`field: translateY(-115px)`, `controls: bottom: 110px`)
+2. **v12071654** - Shifted mobile field down by 10px (`translateY(-110px)`) per user request
+3. **v12071649** - Fixed build error by correcting AI move dispatch logic (restored `PLACE_AND_DRAW` action)
+4. **v12071647** - Fixed incomplete application of version hiding logic (previously only added logic, now applied to UI)
+5. **v12071645** - Implemented strictly `view-lobby` class to control version visibility (hidden in Quick Match waiting & Battle)
+6. **v12062155** - Force hidden version number during gameplay using both React condition and CSS (`.app:not(.phase-setup) .version { display: none }`)
+7. **v12062142** - Limited player name input max length to 10 characters
+8. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
+9. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
+10. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
 10. **v12061243** - Hide header during battle on mobile, keep on lobby
 
 ### Current Mobile UI Specifications
