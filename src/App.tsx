@@ -392,7 +392,7 @@ function App() {
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
-        <h1>XY Poker {isLobbyView && <span className="version">12071815</span>}</h1>
+        <h1>XY Poker {isLobbyView && <span className="version">12080050</span>}</h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -539,6 +539,13 @@ function App() {
               />
             )}
           </footer>
+
+          {/* Ad Banner Placeholder */}
+          <div className="ad-banner-container">
+            <div className="ad-placeholder">
+              <span className="ad-label">Advertisement</span>
+            </div>
+          </div>
         </>
       )}
     </div>

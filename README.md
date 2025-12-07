@@ -54,12 +54,14 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12071815` (2025-12-07 18:15)
+**Latest Version:** `12080050` (2025-12-08 00:50)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12071815** - Applied Red theme for Red Player (Guest): "YOUR TURN" banner and Name Highlight are now Red when active
-2. **v12071805** - Fixed X-Hand highlight bug: now correctly lights up the winner's row (Bottom/Top) based on `xWinner` instead of always Bottom
-3. **v12071800** - Updated result table to show actual player names in "Winner" column instead of P1/P2
+1. **v12080050** - Added bottom ad banner placeholder (fixed 60px height) for monetization
+2. **v12080038** - Updated README with comprehensive infrastructure documentation (GitHub/Vercel/Render)
+3. **v12071815** - Applied Red theme for Red Player (Guest): "YOUR TURN" banner and Name Highlight are now Red when active
+4. **v12071805** - Fixed X-Hand highlight bug: now correctly lights up the winner's row (Bottom/Top) based on `xWinner` instead of always Bottom
+5. **v12071800** - Updated result table to show actual player names in "Winner" column instead of P1/P2
 4. **v12071759** - Fixed shared board highlights in online mode: Guest (Red) now sees their own winning columns (bottom) in Red and opponent (top) in Blue
 5. **v12071752** - Fixed online result screen bug where Guest (Red) saw swapped names/scores (passed correct `p1Name`/`p2Name` based on role)
 6. **v12071742** - Shifted mobile result screen down by ~20px (`scale(0.8) translateY(25px)`)
