@@ -187,7 +187,9 @@ function App() {
   // 1. Local mode AND Setup phase
   // 2. Online mode AND Not in a game AND Not waiting for Quick Match
   // Note: Quick Match waiting screen is NOT the lobby.
-  const isLobbyView = (mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame && !isQuickMatch);
+  // Lobby view is ONLY for Online mode initialization
+  // Local mode setup is handled by the game board view (with setup overlay)
+  const isLobbyView = mode === 'online' && !isOnlineGame && !isQuickMatch;
 
   // AI Turn Logic (Only in Local Mode)
   useEffect(() => {
@@ -441,7 +443,15 @@ function App() {
           <div className="mode-switch">
             <button
               className={mode === 'local' ? 'active' : ''}
-              onClick={() => { playClickSound(); setMode('local'); setIsOnlineGame(false); setRoomId(null); setPlayerRole(null); }}
+              onClick={() => {
+                playClickSound();
+                setMode('local');
+                setIsOnlineGame(false);
+                setRoomId(null);
+                setPlayerRole(null);
+                // Reset game state to ensure we go to setup
+                dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+              }}
             >
               Local (vs AI)
             </button>
