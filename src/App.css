@@ -367,3 +367,35 @@ body:has(.game-result-overlay) .app-header {
   color: #888;
   font-size: 0.8rem;
 }
+
+/* Mode Switcher in Header */
+.mode-switch {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.mode-switch button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ccc;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-switch button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.mode-switch button.active {
+  background: #3498db;
+  border-color: #3498db;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
