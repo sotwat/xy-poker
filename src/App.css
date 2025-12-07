@@ -340,3 +340,30 @@ body:has(.game-result-overlay) .app-header {
     transform: rotate(360deg);
   }
 }
+
+/* Ad Banner Styles */
+.ad-banner-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.ad-placeholder {
+  width: 320px;
+  height: 50px;
+  background: #e0e0e0;
+  border: 1px dashed #aaa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+  font-size: 0.8rem;
+}

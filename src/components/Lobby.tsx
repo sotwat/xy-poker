@@ -12,6 +12,7 @@ interface LobbyProps {
     playerRole: 'host' | 'guest' | null;
     playerName: string;
     onPlayerNameChange: (name: string) => void;
+    rating?: number | null;
 }
 
 export const Lobby: React.FC<LobbyProps> = ({
@@ -23,7 +24,8 @@ export const Lobby: React.FC<LobbyProps> = ({
     isConnected,
     playerRole,
     playerName,
-    onPlayerNameChange
+    onPlayerNameChange,
+    rating
 }) => {
     const [joinId, setJoinId] = useState('');
 
@@ -56,6 +58,17 @@ export const Lobby: React.FC<LobbyProps> = ({
                     maxLength={10}
                     placeholder="Enter your name"
                 />
+                {rating !== null && rating !== undefined && (
+                    <div className="player-rating-display" style={{
+                        marginTop: '8px',
+                        fontSize: '0.9rem',
+                        color: '#ffd700',
+                        fontWeight: 'bold',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                    }}>
+                        Your Rating: <span style={{ fontSize: '1.1rem' }}>{rating}</span>
+                    </div>
+                )}
             </div>
 
             <div className="quick-match-section">

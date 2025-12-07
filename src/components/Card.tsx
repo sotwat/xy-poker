@@ -8,6 +8,7 @@ interface CardProps {
     isSelected?: boolean;
     isPlayable?: boolean;
     isPeeking?: boolean; // For revealing own hidden cards temporarily
+    isHidden?: boolean; // Override to force hide
     onMouseDown?: () => void;
     onMouseUp?: () => void;
     onMouseLeave?: () => void;
@@ -37,6 +38,7 @@ export const Card: React.FC<CardProps> = ({
     isSelected,
     isPlayable,
     isPeeking,
+    isHidden,
     onMouseDown,
     onMouseUp,
     onMouseLeave,
@@ -45,7 +47,9 @@ export const Card: React.FC<CardProps> = ({
 }) => {
 
     // If hidden but peeking, show card face with overlay
-    if (card.isHidden && !isPeeking) {
+    const shouldHide = (card.isHidden || isHidden) && !isPeeking;
+
+    if (shouldHide) {
         return (
             <div
                 className={`card hidden ${isSelected ? 'selected' : ''}`}

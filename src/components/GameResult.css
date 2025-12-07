@@ -263,3 +263,38 @@
         font-size: 0.65rem;
     }
 }
+
+/* Rating Updates */
+.rating-update {
+    margin-top: 10px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #eee;
+}
+
+.rating-values {
+    font-weight: bold;
+    margin: 4px 0;
+}
+
+.rating-new {
+    color: #fff;
+    font-size: 1.1em;
+}
+
+.rating-change {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.rating-change.pos {
+    color: #4cd137;
+    text-shadow: 0 0 5px rgba(76, 209, 55, 0.5);
+}
+
+.rating-change.neg {
+    color: #e74c3c;
+    text-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+}

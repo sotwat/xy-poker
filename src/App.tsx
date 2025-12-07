@@ -14,7 +14,7 @@ import './App.css';
 
 import { getBestMove } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
-import { playClickSound } from './utils/sound';
+import { playClickSound, playSuccessSound } from './utils/sound';
 
 function App() {
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
@@ -29,6 +29,10 @@ function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [isQuickMatch, setIsQuickMatch] = useState(false);
+
+  // Rating State
+  const [myRating, setMyRating] = useState<number | null>(null);
+  const [ratingUpdates, setRatingUpdates] = useState<any>(null);
 
   // Player Names - Generate random name for uniqueness
   const [playerName, setPlayerName] = useState(() => {
@@ -53,13 +57,21 @@ function App() {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
 
-    socket.on('player_joined', () => {
-      console.log('[Game] Player joined! Current role:', playerRoleRef.current);
-      if (playerRoleRef.current === 'host') {
-        // Player joined, enter "Setup" phase in Online mode
-        // This triggers the Sync Effect below, sending 'setup' state to guest
-        setIsOnlineGame(true);
+    // When we join quick match queue, server returns our rating
+    socket.on('quick_match_joined', (data: any = {}) => {
+      // data.rating might be present if server sends it
+      if (data.rating) {
+        setMyRating(data.rating);
       }
+      setIsQuickMatch(true);
+      // Note: lobby logic handles the "Waiting" UI
+    });
+
+    socket.on('player_joined', ({ roomId, role }) => {
+      setRoomId(roomId);
+      setPlayerRole(role);
+      setIsOnlineGame(true);
+      setMode('online');
     });
 
     socket.on('sync_state', (remoteState: any) => { // remoteState should be GameState
@@ -70,12 +82,20 @@ function App() {
     socket.on('auto_start_game', () => {
       console.log('Auto-starting Quick Match game');
       setIsQuickMatch(false); // Reset flag to allow transition to game
-      dispatch({ type: 'START_GAME' });
     });
 
-    socket.on('opponent_joined', ({ opponentName }) => {
-      console.log('Opponent joined:', opponentName);
-      setOpponentName(opponentName);
+    socket.on('opponent_joined', ({ name }) => {
+      setOpponentName(name);
+      playSuccessSound();
+    });
+
+    socket.on('game_start', ({ roomId }: any) => {
+      setRoomId(roomId);
+    });
+
+    socket.on('rating_update', (updates: any) => {
+      console.log('Rating updates received:', updates);
+      setRatingUpdates(updates);
     });
 
     socket.on('game_action', (action: any) => {
@@ -96,6 +116,7 @@ function App() {
         setIsOnlineGame(() => false);
         setIsQuickMatch(() => false);
         setOpponentName(() => 'Player 2');
+        setRatingUpdates(null); // Clear rating updates
 
         // Reset game state to initial
         dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
@@ -111,12 +132,16 @@ function App() {
       setPlayerRole(null);
       setIsOnlineGame(false);
       setIsQuickMatch(false);
+      setRatingUpdates(null);
       dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
     });
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
+      socket.off('quick_match_joined');
+      socket.off('game_start');
+      socket.off('rating_update');
       socket.off('player_joined');
       socket.off('sync_state');
       socket.off('auto_start_game');
@@ -135,6 +160,24 @@ function App() {
     }
   }, [gameState, isOnlineGame, playerRole, roomId]);
 
+  // Rating: Handle Game End Report (Host Only)
+  useEffect(() => {
+    if (isOnlineGame && playerRole === 'host' && roomId && gameState.phase === 'ended' && gameState.winner !== null) {
+      // Report game end to server for rating calculation
+      // Only send once? Server handles idempotency but verify local state isn't spamming.
+      // game.ts reducer sets phase='ended' once.
+      // But useEffect runs on every render if deps change.
+      // We need to ensure we report it.
+      // 'gameState.phase' changes to 'ended' exactly once.
+
+      socket.emit('report_game_end', {
+        roomId,
+        winner: gameState.winner,
+        p1Score: gameState.players[0].score,
+        p2Score: gameState.players[1].score
+      });
+    }
+  }, [gameState.phase, gameState.winner, isOnlineGame, playerRole, roomId]); // Check specific deps
 
   const { currentPlayerIndex, players, phase } = gameState;
   const currentPlayer = players[currentPlayerIndex];
@@ -209,10 +252,6 @@ function App() {
     playClickSound();
     dispatch({ type: 'START_GAME' });
     setShowResultsModal(false);
-  };
-
-  const handlePlayerNameChange = (name: string) => {
-    setPlayerName(name);
   };
 
   const handleCreateRoom = () => {
@@ -389,10 +428,15 @@ function App() {
     setPlaceHidden(false);
   }, [gameState.currentPlayerIndex]);
 
+  // ... inside App component before return ...
+
+  const p1DisplayName = isOnlineGame && playerRole === 'guest' ? opponentName : playerName;
+  const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
+
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
-        <h1>XY Poker {isLobbyView && <span className="version">12080112</span>}</h1>
+        <h1>XY Poker {isLobbyView && <span className="version">12080145</span>}</h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -434,7 +478,7 @@ function App() {
             </button>
           </div>
         </div>
-      ) : mode === 'online' && !isOnlineGame ? (
+      ) : isLobbyView ? (
         <Lobby
           onCreateRoom={handleCreateRoom}
           onJoinRoom={handleJoinRoom}
@@ -444,7 +488,8 @@ function App() {
           isConnected={isConnected}
           playerRole={playerRole}
           playerName={playerName}
-          onPlayerNameChange={handlePlayerNameChange}
+          onPlayerNameChange={setPlayerName}
+          rating={myRating}
         />
       ) : (
         <>
@@ -470,6 +515,16 @@ function App() {
             )}
             {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
               <div className="play-area">
+                {/* Opponent Hand (Top) - Hidden unless revealed */}
+                <div className="hand-container opponent-hand">
+                  <Hand
+                    hand={gameState.players[1].hand}
+                    isOpponent={true}
+                    isHidden={phase !== 'ended'} // Reveal on end
+                    onCardSelect={() => { }}
+                  />
+                </div>
+
                 <SharedBoard
                   playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
                   opponentBoard={players[isOnlineGame && playerRole === 'guest' ? 0 : 1].board}
@@ -533,12 +588,21 @@ function App() {
               <GameResult
                 gameState={gameState}
                 onRestart={handleStartGame}
-                onClose={() => setShowResultsModal(false)}
-                p1Name={(isOnlineGame && playerRole === 'guest') ? opponentName : playerName}
-                p2Name={(isOnlineGame && playerRole === 'guest') ? playerName : opponentName}
+                onClose={() => {
+                  setShowResultsModal(false);
+                  setMode('online');
+                  setRoomId(null);
+                  setPlayerRole(null);
+                  setIsOnlineGame(false);
+                  setIsQuickMatch(false);
+                  setRatingUpdates(null);
+                  dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+                }}
+                p1Name={p1DisplayName}
+                p2Name={p2DisplayName}
+                ratingUpdates={ratingUpdates}
               />
-            )}
-          </footer>
+            )}</footer>
 
           {/* Ad Banner Placeholder */}
           <div className="ad-banner-container">

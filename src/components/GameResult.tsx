@@ -11,6 +11,10 @@ interface GameResultProps {
     onClose: () => void;
     p1Name?: string;
     p2Name?: string;
+    ratingUpdates?: {
+        p1: { old: number, new: number, change: number };
+        p2: { old: number, new: number, change: number };
+    } | null;
 }
 
 export const GameResult: React.FC<GameResultProps> = ({
@@ -18,7 +22,8 @@ export const GameResult: React.FC<GameResultProps> = ({
     onRestart,
     onClose,
     p1Name = 'Player 1',
-    p2Name = 'Player 2'
+    p2Name = 'Player 2',
+    ratingUpdates
 }) => {
     const { players, winner } = gameState;
     const p1 = players[0];
@@ -132,11 +137,33 @@ export const GameResult: React.FC<GameResultProps> = ({
                         <h3>{p1Name}</h3>
                         <div className="score-val">{p1.score}</div>
                         <div className="bonus-val">Bonuses: {p1.bonusesClaimed}</div>
+                        {ratingUpdates && ratingUpdates.p1 && (
+                            <div className="rating-update">
+                                <div>Rating</div>
+                                <div className="rating-values">
+                                    {ratingUpdates.p1.old} → <span className="rating-new">{ratingUpdates.p1.new}</span>
+                                </div>
+                                <div className={`rating-change ${ratingUpdates.p1.change >= 0 ? 'pos' : 'neg'}`}>
+                                    {ratingUpdates.p1.change >= 0 ? '+' : ''}{ratingUpdates.p1.change}
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <div className={`score-box p2 ${winner === 'p2' ? 'winner-box' : ''}`}>
                         <h3>{p2Name}</h3>
                         <div className="score-val">{p2.score}</div>
                         <div className="bonus-val">Bonuses: {p2.bonusesClaimed}</div>
+                        {ratingUpdates && ratingUpdates.p2 && (
+                            <div className="rating-update">
+                                <div>Rating</div>
+                                <div className="rating-values">
+                                    {ratingUpdates.p2.old} → <span className="rating-new">{ratingUpdates.p2.new}</span>
+                                </div>
+                                <div className={`rating-change ${ratingUpdates.p2.change >= 0 ? 'pos' : 'neg'}`}>
+                                    {ratingUpdates.p2.change >= 0 ? '+' : ''}{ratingUpdates.p2.change}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 

@@ -24,6 +24,14 @@ socket.on('disconnect', (reason) => console.log('[Socket.IO] Disconnected. Reaso
 socket.on('connect_error', (err) => console.error('[Socket.IO] Connection error:', err));
 socket.on('reconnect_attempt', () => console.log('[Socket.IO] Reconnecting...'));
 
+import { getBrowserId } from '../utils/identity';
+
+export const joinQuickMatch = () => {
+    if (socket) {
+        const browserId = getBrowserId();
+        socket.emit('join_quick_match', { browserId });
+    }
+};
 export const connectSocket = () => {
     if (!socket.connected) {
         console.log('[Socket.IO] Initiating connection...');
