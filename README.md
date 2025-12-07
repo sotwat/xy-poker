@@ -172,21 +172,42 @@ npm run dev
 node server/index.js
 ```
 
-### Production
-**Frontend:** Currently deployed to Vercel (Hobby Tier).
-- URL: https://xy-poker.vercel.app/
-- Note: Free plan restricts commercial use (ads). Migration to Cloudflare Pages is planned.
+## 🏗 Infrastructure & Deployment Status
+**Current Architecture (As of Dec 8, 2025)**
 
-**Backend:** Self-hosted on local machine, exposed via Cloudflare Tunnel.
-- URL: https://xy-poker-server.trycloudflare.com (or similar dynamic tunnel URL)
+### 1. Source Code Management
+- **Platform:** **GitHub**
+- **Repository:** `sotwat/xy-poker` (Private/Public)
+- **Branch Strategy:** `main` branch is production.
 
-## monetization Strategy
-- Goal: Display banner ads (Google AdSense) for free revenue.
-- Restriction: Vercel Hobby plan prohibits commercial use.
-- Solution: Migrate frontend to **Cloudflare Pages** (Free commercial use allowed) before implementing ads.
+### 2. Frontend Hosting
+- **Platform:** **Vercel** (Hobby Tier)
+- **URL:** [https://xy-poker.vercel.app/](https://xy-poker.vercel.app/)
+- **Status:** Active, but restricted for commercial use.
+- **Plan:** Migrate to Cloudflare Pages for monetization.
 
-## Technologies
-- **Frontend**: React, TypeScript, Vite
-- **Backend**: Node.js, Socket.IO
-- **Styling**: Vanilla CSS
-- **Audio**: Web Audio API
+### 3. Backend Hosting (Socket.IO)
+- **Primary:** **Render** (Free Tier)
+  - Used for stable public access when local tunnel is offline.
+  - URL: *(To be confirmed by user - likely on onrender.com)*
+- **Dev / Fallback:** **Localhost + Cloudflare Tunnel**
+  - Used for low-latency development testing.
+  - URL: `https://xy-poker-server.trycloudflare.com`
+
+### 4. Database / Persistence
+- **Type:** In-memory (Game State)
+- **Status:** No persistent DB currently (State lost on restart).
+
+---
+
+## 💰 Monetization Strategy
+- **Goal:** Display banner ads (Google AdSense) for free revenue.
+- **Blocker:** Vercel Hobby plan prohibits commercial use.
+- **Solution:** Migrate frontend to **Cloudflare Pages** (Free commercial use allowed).
+
+## 🛠 Tech Stack
+- **Frontend library:** React 18, TypeScript
+- **Build Tool:** Vite
+- **Styling:** Vanilla CSS (CSS Variables, Flexbox/Grid) - **No Tailwind**
+- **Realtime:** Socket.IO Client/Server (v4)
+- **Audio:** Web Audio API (Tone.js free)
