@@ -91,6 +91,20 @@ function App() {
 
     socket.on('game_start', ({ roomId }: any) => {
       setRoomId(roomId);
+      // Auto-start if it's a quick match
+      if (isQuickMatchRef.current) {
+        setIsQuickMatch(false);
+        setIsOnlineGame(true);
+        playSuccessSound();
+        dispatch({ type: 'START_GAME' });
+        setShowResultsModal(false);
+      }
+    });
+
+    socket.on('player_data', (data: any) => {
+      if (data && data.rating) {
+        setMyRating(data.rating);
+      }
     });
 
     socket.on('rating_update', (updates: any) => {
@@ -141,6 +155,7 @@ function App() {
       socket.off('disconnect', onDisconnect);
       socket.off('quick_match_joined');
       socket.off('game_start');
+      socket.off('player_data'); // Clean up
       socket.off('rating_update');
       socket.off('player_joined');
       socket.off('sync_state');
@@ -153,6 +168,16 @@ function App() {
     };
   }, []); // Empty dependency array - only run once on mount
 
+  // Fetch rating on connect
+  useEffect(() => {
+    if (isConnected) {
+      const id = localStorage.getItem('xy_poker_browser_id');
+      if (id) {
+        socket.emit('get_player_data', { browserId: id });
+      }
+    }
+  }, [isConnected]);
+
   // Sync State on Change (Host only)
   useEffect(() => {
     if (isOnlineGame && playerRole === 'host' && roomId) {
@@ -160,16 +185,9 @@ function App() {
     }
   }, [gameState, isOnlineGame, playerRole, roomId]);
 
-  // Rating: Handle Game End Report (Host Only)
+  // Rating: Handle Game End Report (Host only)
   useEffect(() => {
     if (isOnlineGame && playerRole === 'host' && roomId && gameState.phase === 'ended' && gameState.winner !== null) {
-      // Report game end to server for rating calculation
-      // Only send once? Server handles idempotency but verify local state isn't spamming.
-      // game.ts reducer sets phase='ended' once.
-      // But useEffect runs on every render if deps change.
-      // We need to ensure we report it.
-      // 'gameState.phase' changes to 'ended' exactly once.
-
       socket.emit('report_game_end', {
         roomId,
         winner: gameState.winner,
@@ -177,10 +195,16 @@ function App() {
         p2Score: gameState.players[1].score
       });
     }
-  }, [gameState.phase, gameState.winner, isOnlineGame, playerRole, roomId]); // Check specific deps
+  }, [gameState.phase, gameState.winner, isOnlineGame, playerRole, roomId]);
 
   const { currentPlayerIndex, players, phase } = gameState;
   const currentPlayer = players[currentPlayerIndex];
+
+  // Use ref for isQuickMatch to access in socket listeners
+  const isQuickMatchRef = useRef(isQuickMatch);
+  useEffect(() => {
+    isQuickMatchRef.current = isQuickMatch;
+  }, [isQuickMatch]);
 
   // Determine if we are in the Lobby view (where version and title inputs are shown)
   // Lobby view is:
@@ -190,16 +214,16 @@ function App() {
   // Lobby view is ONLY for Online mode initialization
   // Local mode setup is handled by the game board view (with setup overlay)
   const isLobbyView = mode === 'online' && !isOnlineGame && !isQuickMatch;
+  const showVersion = isLobbyView || (mode === 'local' && phase === 'setup');
 
-  // AI Turn Logic (Only in Local Mode)
+  const p1DisplayName = isOnlineGame && playerRole === 'guest' ? opponentName : playerName;
+  const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
+
+  // AI Turn Logic (Example)
   useEffect(() => {
     if (mode === 'local' && phase === 'playing' && currentPlayerIndex === 1) {
-      // AI is Player 2
       const timer = setTimeout(() => {
-        // 1. Calculate Move
         const move = getBestMove(gameState, 1);
-
-        // 2. Place Card & Draw (Atomic)
         dispatch({
           type: 'PLACE_AND_DRAW',
           payload: {
@@ -208,25 +232,15 @@ function App() {
             isHidden: move.isHidden
           }
         });
-        playClickSound(); // AI move sound
+        playClickSound();
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [gameState, mode]); // Depend on gameState to trigger on turn change
+  }, [gameState, mode]);
 
-  useEffect(() => {
-    if (phase === 'scoring') {
-      // Auto-calculate score after a short delay or immediately
-      // Let's add a button to "Reveal & Score" instead of auto
-    }
-  }, [phase]);
-
-  // Show results modal when game ends
   useEffect(() => {
     if (phase === 'ended') {
       setShowResultsModal(true);
-
-      // Record AI learning data in local mode
       if (mode === 'local') {
         const { winner } = gameState;
         const aiWon = winner === 'p2';
@@ -236,12 +250,10 @@ function App() {
     }
   }, [phase, mode, gameState]);
 
-  // Save player name to localStorage
   useEffect(() => {
     localStorage.setItem('xypoker_playerName', playerName);
   }, [playerName]);
 
-  // Update opponent name based on mode
   useEffect(() => {
     if (mode === 'local') {
       setOpponentName('AI');
@@ -278,9 +290,7 @@ function App() {
   };
 
   const handleQuickMatch = () => {
-    // Set Quick Match mode immediately for UI update
     setIsQuickMatch(true);
-
     socket.emit('quick_match', { playerName }, (response: any) => {
       if (response.success) {
         setRoomId(response.roomId);
@@ -289,16 +299,14 @@ function App() {
         if (response.opponentName) {
           setOpponentName(response.opponentName);
         }
-        // If waiting for opponent, user will see waiting screen
       } else {
-        setIsQuickMatch(false); // Reset on error
+        setIsQuickMatch(false);
       }
     });
   };
 
   const handleCancelMatchmaking = () => {
     playClickSound();
-    // Cancel matchmaking and return to lobby
     socket.emit('cancel_matchmaking', { roomId });
     setRoomId(null);
     setPlayerRole(null);
@@ -313,10 +321,8 @@ function App() {
     }
 
     if (mode === 'local') {
-      // Local mode: Reset to initial state immediately
       dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
     } else {
-      // Online mode: notify server (server will send game_end_surrender to both players)
       socket.emit('surrender', { roomId });
     }
   };
@@ -337,7 +343,6 @@ function App() {
       if (p1Res.rankValue > p2Res.rankValue) return 'p1';
       if (p2Res.rankValue > p1Res.rankValue) return 'p2';
 
-      // Tie-break with kickers
       for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
         const k1 = p1Res.kickers[k] || 0;
         const k2 = p2Res.kickers[k] || 0;
@@ -365,13 +370,12 @@ function App() {
   };
 
   const handleCardSelect = (cardId: string) => {
-    // Determine current player's index based on mode
-    let myPlayerIndex = 0; // Default for local P1
+    let myPlayerIndex = 0;
     if (isOnlineGame) {
       myPlayerIndex = playerRole === 'host' ? 0 : 1;
     }
 
-    if (currentPlayerIndex !== myPlayerIndex) return; // Prevent selecting during opponent's turn
+    if (currentPlayerIndex !== myPlayerIndex) return;
     if (selectedCardId === cardId) {
       setSelectedCardId(null);
     } else {
@@ -381,15 +385,14 @@ function App() {
 
   const handleColumnClick = (colIndex: number) => {
     if (phase !== 'playing') return;
-    if (!selectedCardId) return; // Must have a card selected
+    if (!selectedCardId) return;
 
-    // Determine current player's index based on mode
-    let myPlayerIndex = 0; // Default for local P1
+    let myPlayerIndex = 0;
     if (isOnlineGame) {
       myPlayerIndex = playerRole === 'host' ? 0 : 1;
     }
 
-    if (currentPlayerIndex !== myPlayerIndex) return; // Not my turn
+    if (currentPlayerIndex !== myPlayerIndex) return;
 
     const action = {
       type: 'PLACE_AND_DRAW',
@@ -399,47 +402,21 @@ function App() {
         isHidden: placeHidden,
       }
     };
-    dispatch(action as any); // Dispatch locally
+    dispatch(action as any);
 
     if (isOnlineGame && roomId) {
-      socket.emit('game_action', { roomId, action }); // Emit to server for other players
+      socket.emit('game_action', { roomId, action });
     }
 
     setSelectedCardId(null);
     setPlaceHidden(false);
   };
 
-  // const handleDraw = () => { // Removed as draw is automatic
-  //   if (currentPlayerIndex !== 0) return;
-  //   dispatch({ type: 'DRAW_CARD' });
-  // };
-
-  const handleCalculateScore = () => {
-    dispatch({ type: 'CALCULATE_SCORE' });
-  };
-
-  // Removed hasPlaced state logic as draw is automatic.
-  // The extensive comment block about `hasPlaced` and turn flow is also removed.
-  // useEffect(() => {
-  //   setHasPlaced(false);
-  // }, [gameState.turnCount, gameState.currentPlayerIndex]);
-
-  // Also reset selection
-  useEffect(() => {
-    setSelectedCardId(null);
-    setPlaceHidden(false);
-  }, [gameState.currentPlayerIndex]);
-
-  // ... inside App component before return ...
-
-  const p1DisplayName = isOnlineGame && playerRole === 'guest' ? opponentName : playerName;
-  const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
-
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        <span className="version">12080225</span>
+        {showVersion && <span className="version">12080310</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -450,7 +427,6 @@ function App() {
                 setIsOnlineGame(false);
                 setRoomId(null);
                 setPlayerRole(null);
-                // Reset game state to ensure we go to setup
                 dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
               }}
             >
@@ -552,10 +528,9 @@ function App() {
                     hand={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].hand}
                     selectedCardId={selectedCardId}
                     onCardSelect={handleCardSelect}
-                    isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                    isHidden={false}
                   />
                 </div>
-
                 <div className="action-bar">
                   <div className="place-controls">
                     <label className="toggle-hidden">
@@ -567,16 +542,13 @@ function App() {
                       />
                       Place Face Down ({3 - currentPlayer.hiddenCardsCount} left)
                     </label>
-                    <div className="instruction">
-                      {selectedCardId ? "Click a column to place" : "Select a card from your hand"}
-                    </div>
                   </div>
                 </div>
               </>
             )}
 
             {phase === 'scoring' && (
-              <button className="btn-primary" onClick={handleCalculateScore}>
+              <button className="btn-primary" onClick={() => dispatch({ type: 'CALCULATE_SCORE' })}>
                 Reveal & Calculate Scores
               </button>
             )}
