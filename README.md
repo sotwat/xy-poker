@@ -54,19 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12071706` (2025-12-07 17:06)
+**Latest Version:** `12071714` (2025-12-07 17:14)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12071706** - Reduced mobile field scale to 0.63 (kept `translateY(-115px)`)
-2. **v12071703** - Shifted mobile field and controls UP by 5px (`field: translateY(-115px)`, `controls: bottom: 110px`)
-3. **v12071654** - Shifted mobile field down by 10px (`translateY(-110px)`) per user request
-4. **v12071649** - Fixed build error by correcting AI move dispatch logic (restored `PLACE_AND_DRAW` action)
-5. **v12071647** - Fixed incomplete application of version hiding logic (previously only added logic, now applied to UI)
-6. **v12071645** - Implemented strictly `view-lobby` class to control version visibility (hidden in Quick Match waiting & Battle)
-7. **v12062155** - Force hidden version number during gameplay using both React condition and CSS (`.app:not(.phase-setup) .version { display: none }`)
-8. **v12062142** - Limited player name input max length to 10 characters
-9. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
-10. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
+1. **v12071714** - Mobile UI Polish: Hidden scoring/winner overlay banners on mobile, scaled result screen to 0.8x, added winner glow effect
+2. **v12071706** - Reduced mobile field scale to 0.63 (kept `translateY(-115px)`)
+3. **v12071703** - Shifted mobile field and controls UP by 5px (`field: translateY(-115px)`, `controls: bottom: 110px`)
+4. **v12071654** - Shifted mobile field down by 10px (`translateY(-110px)`) per user request
+5. **v12071649** - Fixed build error by correcting AI move dispatch logic (restored `PLACE_AND_DRAW` action)
+6. **v12071647** - Fixed incomplete application of version hiding logic (previously only added logic, now applied to UI)
+7. **v12071645** - Implemented strictly `view-lobby` class to control version visibility (hidden in Quick Match waiting & Battle)
+8. **v12062155** - Force hidden version number during gameplay using both React condition and CSS (`.app:not(.phase-setup) .version { display: none }`)
+9. **v12062142** - Limited player name input max length to 10 characters
+10. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
 10. **v12061243** - Hide header during battle on mobile, keep on lobby
 
 ### Current Mobile UI Specifications

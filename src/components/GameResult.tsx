@@ -127,12 +127,12 @@ export const GameResult: React.FC<GameResultProps> = ({
                 </div>
 
                 <div className="final-scores">
-                    <div className="score-box p1">
+                    <div className={`score-box p1 ${winner === 'p1' ? 'winner-box' : ''}`}>
                         <h3>{p1Name}</h3>
                         <div className="score-val">{p1.score}</div>
                         <div className="bonus-val">Bonuses: {p1.bonusesClaimed}</div>
                     </div>
-                    <div className="score-box p2">
+                    <div className={`score-box p2 ${winner === 'p2' ? 'winner-box' : ''}`}>
                         <h3>{p2Name}</h3>
                         <div className="score-val">{p2.score}</div>
                         <div className="bonus-val">Bonuses: {p2.bonusesClaimed}</div>

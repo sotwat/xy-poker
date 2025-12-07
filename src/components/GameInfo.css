@@ -263,28 +263,11 @@
         z-index: 20;
     }
 
-    margin-right: 4px;
-    background: #ff4757;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-}
-
-/* Winner Banner / Scoring Phase - Center over field if needed or hidden */
-.winner-banner,
-.scoring-banner {
-    grid-column: 1 / -1;
-    grid-row: 1;
-    align-self: center;
-    justify-self: center;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    z-index: 200;
-}
+    /* Hide Winner Banner / Scoring Phase on mobile */
+    .winner-banner,
+    .scoring-banner {
+        display: none !important;
+    }
 }
 
 /* Hide GameInfo on mobile when result screen is shown */
