@@ -155,7 +155,14 @@ function App() {
         const move = getBestMove(gameState, 1);
 
         // 2. Place Card & Draw (Atomic)
-        dispatch({ type: 'PLACE_CARD', column: move.column, handIndex: move.handIndex });
+        dispatch({
+          type: 'PLACE_AND_DRAW',
+          payload: {
+            cardId: move.cardId,
+            colIndex: move.colIndex,
+            isHidden: move.isHidden
+          }
+        });
         playClickSound(); // AI move sound
       }, 1000);
       return () => clearTimeout(timer);
@@ -385,7 +392,7 @@ function App() {
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
-        <h1>XY Poker {isLobbyView && <span className="version">12071647</span>}</h1>
+        <h1>XY Poker {isLobbyView && <span className="version">12071649</span>}</h1>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button

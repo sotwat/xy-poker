@@ -54,19 +54,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12071647` (2025-12-07 16:47)
+**Latest Version:** `12071649` (2025-12-07 16:49)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12071647** - Fixed incomplete application of version hiding logic (previously only added logic, now applied to UI)
-2. **v12071645** - Implemented strictly `view-lobby` class to control version visibility (hidden in Quick Match waiting & Battle)
-3. **v12062155** - Force hidden version number during gameplay using both React condition and CSS (`.app:not(.phase-setup) .version { display: none }`)
-4. **v12062142** - Limited player name input max length to 10 characters
-5. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
-6. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
-7. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
-8. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
-9. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
-10. **v12062110** - Reduced mobile field scale to 0.65 (kept `translateY(-110px)`)
+1. **v12071649** - Fixed build error by correcting AI move dispatch logic (restored `PLACE_AND_DRAW` action)
+2. **v12071647** - Fixed incomplete application of version hiding logic (previously only added logic, now applied to UI)
+3. **v12071645** - Implemented strictly `view-lobby` class to control version visibility (hidden in Quick Match waiting & Battle)
+4. **v12062155** - Force hidden version number during gameplay using both React condition and CSS (`.app:not(.phase-setup) .version { display: none }`)
+5. **v12062142** - Limited player name input max length to 10 characters
+6. **v12062134** - Shifted GameInfo sidebars up 20px (`translateY(-20px)`) and field up 10px (total `translateY(-120px)`)
+7. **v12062130** - Centered "YOUR TURN" text and changed color to cyan (Cyan text/border, light cyan bg)
+8. **v12062149** - Implemented strict 3-row grid layout for mobile GameInfo to prevent overlapping and ensure visibility
+9. **v12062145** - Fixed invisible GameInfo by moving it outside of `<header>` (which is hidden on mobile battle)
+10. **v12062125** - Redesigned mobile GameInfo: Split left/right sidebars (Player/Opponent info)
 10. **v12061243** - Hide header during battle on mobile, keep on lobby
 
 ### Current Mobile UI Specifications
