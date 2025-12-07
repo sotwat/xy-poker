@@ -139,6 +139,13 @@ function App() {
   const { currentPlayerIndex, players, phase } = gameState;
   const currentPlayer = players[currentPlayerIndex];
 
+  // Determine if we are in the Lobby view (where version and title inputs are shown)
+  // Lobby view is:
+  // 1. Local mode AND Setup phase
+  // 2. Online mode AND Not in a game AND Not waiting for Quick Match
+  // Note: Quick Match waiting screen is NOT the lobby.
+  const isLobbyView = (mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame && !isQuickMatch);
+
   // AI Turn Logic (Only in Local Mode)
   useEffect(() => {
     if (mode === 'local' && phase === 'playing' && currentPlayerIndex === 1) {
@@ -148,20 +155,12 @@ function App() {
         const move = getBestMove(gameState, 1);
 
         // 2. Place Card & Draw (Atomic)
-        dispatch({
-          type: 'PLACE_AND_DRAW',
-          payload: {
-            cardId: move.cardId,
-            colIndex: move.colIndex,
-            isHidden: move.isHidden
-          }
-        });
-
-      }, 1000); // 1s delay before AI starts acting
-
+        dispatch({ type: 'PLACE_CARD', column: move.column, handIndex: move.handIndex });
+        playClickSound(); // AI move sound
+      }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [phase, currentPlayerIndex, gameState, mode]); // Depend on gameState to re-eval if needed, but mainly index.
+  }, [gameState, mode]); // Depend on gameState to trigger on turn change
 
   useEffect(() => {
     if (phase === 'scoring') {

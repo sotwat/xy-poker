@@ -31,8 +31,8 @@
   font-weight: normal;
 }
 
-/* Explicitly hide version in battle phases */
-.app:not(.phase-setup) .version {
+/* Explicitly hide version in ANY view that is not the Lobby */
+.app:not(.view-lobby) .version {
   display: none !important;
 }
 
