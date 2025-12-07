@@ -13,6 +13,7 @@ interface SharedBoardProps {
     revealAll?: boolean; // For post-game view
     winningColumns?: ('p1' | 'p2' | 'draw')[];
     xWinner?: 'p1' | 'p2' | 'draw'; // X-hand winner for row highlighting
+    bottomPlayerId?: 'p1' | 'p2'; // 'p1' means P1 is at bottom (blue), 'p2' means P2 is at bottom (red)
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -23,7 +24,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     isCurrentPlayer,
     revealAll = false,
     winningColumns,
-    xWinner
+    xWinner,
+    bottomPlayerId = 'p1' // Default to P1 at bottom
 }) => {
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const [pressTimer, setPressTimer] = useState<number | null>(null);
@@ -71,27 +73,40 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
 
     // Render 5 columns
     const columns = Array.from({ length: 5 }, (_, colIndex) => {
-        // Opponent Rows: 2 (Top), 1, 0 (Bottom near dice)
-        // Player Rows: 0 (Top near dice), 1, 2 (Bottom)
+        // Define who is Top relative to the Board View
+        // If bottomPlayerId is 'p1', then Top is P2.
+        // If bottomPlayerId is 'p2', then Top is P1.
+        const topPlayerId = bottomPlayerId === 'p1' ? 'p2' : 'p1';
 
         const opponentCards = [opponentBoard[2][colIndex], opponentBoard[1][colIndex], opponentBoard[0][colIndex]];
         const playerCards = [playerBoard[0][colIndex], playerBoard[1][colIndex], playerBoard[2][colIndex]];
 
-        // Check if this column is won and by whom
-        const isWonByP1 = winningColumns && winningColumns[colIndex] === 'p1';
-        const isWonByP2 = winningColumns && winningColumns[colIndex] === 'p2';
+        // Determine if Top/Bottom rows are won
+        // winningColumns[colIndex] returns 'p1' or 'p2' (the winner)
+        const winner = winningColumns ? winningColumns[colIndex] : null;
+
+        // Bottom Highlight Logic:
+        // Highlight if the winner MATCHES the bottom player ID.
+        // And apply class based on the winner ID (p1=Blue, p2=Red).
+        const isBottomWon = winner === bottomPlayerId;
+        const bottomWinningClass = isBottomWon ? `winning-slot-${bottomPlayerId}` : '';
+
+        // Top Highlight Logic:
+        // Highlight if the winner MATCHES the top player ID.
+        const isTopWon = winner === topPlayerId;
+        const topWinningClass = isTopWon ? `winning-slot-${topPlayerId}` : '';
 
         return (
             <div
                 key={colIndex}
                 className={`shared-column ${isCurrentPlayer ? 'interactive' : ''}`}
             >
-                {/* Opponent Side */}
+                {/* Opponent Side (Top) */}
                 <div className="opponent-slots">
                     {opponentCards.map((card, idx) => (
                         <div
                             key={`opp-${idx}`}
-                            className={`card-slot opponent-slot ${isWonByP2 ? 'winning-slot-p2' : ''}`}
+                            className={`card-slot opponent-slot ${topWinningClass}`}
                         >
                             {card ? (
                                 <Card
@@ -109,13 +124,13 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                     <Dice value={dice[colIndex]} />
                 </div>
 
-                {/* Player Side */}
+                {/* Player Side (Bottom) */}
                 <div className="player-slots">
                     {playerCards.map((card, idx) => (
                         <div
                             key={`pl-${idx}`}
                             className={`card-slot player-slot ${xWinner && idx === 2 && xWinner !== 'draw' ? 'winning-row-x' : ''
-                                } ${isWonByP1 ? 'winning-slot-p1' : ''}`}
+                                } ${bottomWinningClass}`}
                         >
                             {card ? (
                                 <Card
