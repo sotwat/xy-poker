@@ -607,12 +607,7 @@ function App() {
               />
             )}</footer>
 
-          {/* Ad Banner Placeholder */}
-          <div className="ad-banner-container">
-            <div className="ad-placeholder">
-              <span className="ad-label">Advertisement</span>
-            </div>
-          </div>
+
         </>
       )}
     </div>
