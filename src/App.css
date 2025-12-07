@@ -12,13 +12,14 @@
   color: white;
   padding: 0.3rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  /* Setup for absolute positioning of children */
 }
 
 .app-header h1 {
   font-size: 1rem;
   margin: 0;
   text-align: center;
-  position: relative;
 }
 
 .app-header .version {
@@ -31,10 +32,8 @@
   font-weight: normal;
 }
 
-/* Explicitly hide version in ANY view that is not the Lobby */
-.app:not(.view-lobby) .version {
-  display: none !important;
-}
+/* Remove the rule that hid version in non-lobby views */
+/* .app:not(.view-lobby) .version { display: none !important; } */
 
 /* Hide header when result screen is shown */
 body:has(.game-result-overlay) .app-header {

@@ -438,7 +438,8 @@ function App() {
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
-        <h1>XY Poker {isLobbyView && <span className="version">12080217</span>}</h1>
+        <h1>XY Poker</h1>
+        <span className="version">12080225</span>
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
