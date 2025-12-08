@@ -9,6 +9,7 @@ interface GameResultProps {
     gameState: GameState;
     onRestart: () => void;
     onClose: () => void;
+    onViewBoard: () => void; // New prop
     p1Name?: string;
     p2Name?: string;
     ratingUpdates?: {
@@ -21,14 +22,16 @@ export const GameResult: React.FC<GameResultProps> = ({
     gameState,
     onRestart,
     onClose,
+    onViewBoard,
     p1Name = 'Player 1',
     p2Name = 'Player 2',
     ratingUpdates
 }) => {
+    // ... (existing helper logic same as before) ...
     const { players, winner } = gameState;
     const p1 = players[0];
     const p2 = players[1];
-    const dice = players[0].dice; // Shared dice
+    const dice = players[0].dice;
 
     // Helper to get readable hand name
     const getHandName = (type: string) => {
@@ -47,7 +50,6 @@ export const GameResult: React.FC<GameResultProps> = ({
         if (p1Res.rankValue > p2Res.rankValue) colWinner = 'p1';
         else if (p2Res.rankValue > p1Res.rankValue) colWinner = 'p2';
         else {
-            // Tie-break with kickers
             let p1Wins = false;
             let p2Wins = false;
             for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
@@ -77,7 +79,6 @@ export const GameResult: React.FC<GameResultProps> = ({
     let xWinner = 'draw';
     if (p1XScore > p2XScore) xWinner = 'p1';
     else if (p2XScore > p1XScore) xWinner = 'p2';
-    // If equal, it's a draw (no +1 bonus awarded, or both got base points and are equal)
 
 
     return (
@@ -168,8 +169,11 @@ export const GameResult: React.FC<GameResultProps> = ({
                 </div>
 
                 <div className="button-group">
-                    <button className="btn-secondary view-board-btn" onClick={() => { playClickSound(); onClose(); }}>
+                    <button className="btn-secondary view-board-btn" onClick={() => { playClickSound(); onViewBoard(); }}>
                         View Board
+                    </button>
+                    <button className="btn-secondary quit-btn" onClick={() => { playClickSound(); onClose(); }}>
+                        Back to Lobby
                     </button>
                     <button className="btn-primary restart-btn" onClick={() => { playClickSound(); onRestart(); }}>
                         Play Again

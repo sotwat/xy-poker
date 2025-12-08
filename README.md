@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081215` (2025-12-08 12:15)
+**Latest Version:** `12081225` (2025-12-08 12:25)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081215** - **Fix Card Selection:**
-   - **Bug Fix:** Restored missing `isCurrentPlayer` prop to Hand component, fixing the inability to select cards.
-   - **Previous:** Fix Bot Fallback Logic (v12081200).
+1. **v12081225** - **Fix UI Navigation:**
+   - **Improvement:** "View Board" button now keeps you on the game screen instead of quitting to lobby. Added separate "Back to Lobby" button.
+   - **Previous:** Fix Card Selection (v12081215).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

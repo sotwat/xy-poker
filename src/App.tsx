@@ -499,7 +499,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081215</span>}
+        {showVersion && <span className="version">12081225</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -645,9 +645,23 @@ function App() {
             )}
 
             {phase === 'ended' && !showResultsModal && (
-              <button className="btn-primary" onClick={() => setShowResultsModal(true)}>
-                Show Results
-              </button>
+              <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
+                <button className="btn-primary" onClick={() => setShowResultsModal(true)}>
+                  Show Results
+                </button>
+                <button className="btn-secondary" onClick={() => {
+                  playClickSound();
+                  setMode('online');
+                  setRoomId(null);
+                  setPlayerRole(null);
+                  setIsOnlineGame(false);
+                  setIsQuickMatch(false);
+                  setRatingUpdates(null);
+                  dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+                }}>
+                  Back to Lobby
+                </button>
+              </div>
             )}
 
             {phase === 'ended' && showResultsModal && (
@@ -663,6 +677,9 @@ function App() {
                   setIsQuickMatch(false);
                   setRatingUpdates(null);
                   dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+                }}
+                onViewBoard={() => {
+                  setShowResultsModal(false);
                 }}
                 p1Name={p1DisplayName}
                 p2Name={p2DisplayName}
