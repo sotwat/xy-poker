@@ -205,6 +205,20 @@ function App() {
     isQuickMatchRef.current = isQuickMatch;
   }, [isQuickMatch]);
 
+  // Timeout ref for Quick Match Bot Fallback
+  const quickMatchTimeoutRef = useRef<any>(null);
+
+  useEffect(() => {
+    isQuickMatchRef.current = isQuickMatch;
+    // Clear timeout if quick match ends (game starts or cancelled)
+    if (!isQuickMatch && quickMatchTimeoutRef.current) {
+      clearTimeout(quickMatchTimeoutRef.current);
+      quickMatchTimeoutRef.current = null;
+    }
+  }, [isQuickMatch]);
+
+
+
   // Determine if we are in the Lobby view (where version and title inputs are shown)
   // Lobby view is:
   // 1. Local mode AND Setup phase
@@ -267,6 +281,30 @@ function App() {
     setShowResultsModal(false);
   };
 
+  const startBotMatch = () => {
+    console.log('Quick Match Timeout: Starting Bot Match');
+    // Cancel socket request
+    if (roomId) {
+      socket.emit('cancel_matchmaking', { roomId });
+    }
+    // Switch to Local Mode vs AI
+    setIsQuickMatch(false);
+    setMode('local');
+    setRoomId(null);
+    setPlayerRole(null);
+    setIsOnlineGame(false);
+    setOpponentName('AI (Bot)');
+
+    // Reset state and start
+    dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+
+    // Slight delay to allow state updates before starting
+    setTimeout(() => {
+      playSuccessSound();
+      dispatch({ type: 'START_GAME' });
+    }, 500);
+  };
+
   const handleCreateRoom = () => {
     socket.emit('create_room', { playerName }, (response: any) => {
       setRoomId(response.roomId);
@@ -290,6 +328,13 @@ function App() {
 
   const handleQuickMatch = () => {
     setIsQuickMatch(true);
+
+    // Start 15s Timer
+    if (quickMatchTimeoutRef.current) clearTimeout(quickMatchTimeoutRef.current);
+    quickMatchTimeoutRef.current = setTimeout(() => {
+      startBotMatch();
+    }, 15000);
+
     socket.emit('quick_match', { playerName }, (response: any) => {
       if (response.success) {
         setRoomId(response.roomId);
@@ -298,14 +343,27 @@ function App() {
         if (response.opponentName) {
           setOpponentName(response.opponentName);
         }
+        // If match found immediately (rare/callback), timer will be cleared by isQuickMatch change or explicit clear
+        if (quickMatchTimeoutRef.current) {
+          clearTimeout(quickMatchTimeoutRef.current);
+          quickMatchTimeoutRef.current = null;
+        }
       } else {
         setIsQuickMatch(false);
+        if (quickMatchTimeoutRef.current) {
+          clearTimeout(quickMatchTimeoutRef.current);
+          quickMatchTimeoutRef.current = null;
+        }
       }
     });
   };
 
   const handleCancelMatchmaking = () => {
     playClickSound();
+    if (quickMatchTimeoutRef.current) {
+      clearTimeout(quickMatchTimeoutRef.current);
+      quickMatchTimeoutRef.current = null;
+    }
     socket.emit('cancel_matchmaking', { roomId });
     setRoomId(null);
     setPlayerRole(null);
@@ -415,7 +473,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081117</span>}
+        {showVersion && <span className="version">12081130</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
