@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081200` (2025-12-08 12:00)
+**Latest Version:** `12081215` (2025-12-08 12:15)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081200** - **Fix Bot Fallback Logic:**
-   - **Bug Fix:** Removed logic that prematurely cancelled the fallback timer upon successfully joining the matchmaking queue. Now it correctly waits 15s.
-   - **Previous:** Refs implementation (v12081155).
+1. **v12081215** - **Fix Card Selection:**
+   - **Bug Fix:** Restored missing `isCurrentPlayer` prop to Hand component, fixing the inability to select cards.
+   - **Previous:** Fix Bot Fallback Logic (v12081200).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

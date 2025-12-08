@@ -499,7 +499,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081200</span>}
+        {showVersion && <span className="version">12081215</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -619,6 +619,7 @@ function App() {
                     selectedCardId={selectedCardId}
                     onCardSelect={handleCardSelect}
                     isHidden={false}
+                    isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
                   />
                 </div>
                 <div className="action-bar">
