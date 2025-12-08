@@ -26,7 +26,7 @@ export const INITIAL_GAME_STATE: GameState = {
 };
 
 export type GameAction =
-    | { type: 'START_GAME' }
+    | { type: 'START_GAME'; payload?: { initialDice?: number[] } }
     | { type: 'PLACE_CARD'; cardId: string; colIndex: number }
     | { type: 'DRAW_CARD' }
     | { type: 'TOGGLE_HIDDEN'; cardId: string } // Only for cards on board? Or during placement? "Hidden placement". Usually you decide when placing.
@@ -79,7 +79,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             // Usually yes, the dice values are the "stakes" for each column.
             // So I will generate 5 dice values and give them to both players (or store in GameState).
 
-            const dice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+            // Use provided dice or generate random (Local/Fallback)
+            const dice = action.payload?.initialDice
+                ? action.payload.initialDice
+                : Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
 
             // Randomize starting player
             const startingPlayer = Math.floor(Math.random() * 2);

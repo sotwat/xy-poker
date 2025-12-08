@@ -129,13 +129,13 @@ function App() {
       playSuccessSound();
     });
 
-    socket.on('game_start', ({ roomId }: any) => {
+    socket.on('game_start', ({ roomId, initialDice }: any) => {
       setRoomId(roomId);
       // Determine if we should show animation (yes for everyone)
       setIsQuickMatch(false);
       setIsOnlineGame(true);
       playSuccessSound();
-      dispatch({ type: 'START_GAME' });
+      dispatch({ type: 'START_GAME', payload: { initialDice } });
       setShowDiceAnimation(true);
       setShowResultsModal(false);
     });
@@ -509,7 +509,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081440</span>}
+        {showVersion && <span className="version">12081452</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button

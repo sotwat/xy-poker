@@ -251,12 +251,15 @@ io.on('connection', (socket) => {
                     }
                 };
 
+                const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+
                 io.to(roomId).emit('game_start', {
                     roomId,
                     p1Name: hostName,
                     p2Name: guestName,
                     p1Rating: 1500,
-                    p2Rating: 1500
+                    p2Rating: 1500,
+                    initialDice // Send synchronized dice
                 });
 
                 console.log(`Quick match: User ${socket.id} (${guestName}) joined ${room.players[0].id} (${hostName}) in room ${roomId}, game auto-starting`);
