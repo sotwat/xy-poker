@@ -241,7 +241,23 @@ io.on('connection', (socket) => {
                 io.to(socket.id).emit('opponent_joined', { opponentName: hostName });
 
                 // Auto-start game for quick match
-                io.to(roomId).emit('auto_start_game');
+                // Initialize game state for tracking
+                games[roomId] = {
+                    gameState: {
+                        p1Rating: 1500, // Placeholder
+                        p2Rating: 1500,
+                        p1BrowserId: 'temp',
+                        p2BrowserId: 'temp'
+                    }
+                };
+
+                io.to(roomId).emit('game_start', {
+                    roomId,
+                    p1Name: hostName,
+                    p2Name: guestName,
+                    p1Rating: 1500,
+                    p2Rating: 1500
+                });
 
                 console.log(`Quick match: User ${socket.id} (${guestName}) joined ${room.players[0].id} (${hostName}) in room ${roomId}, game auto-starting`);
             } else {

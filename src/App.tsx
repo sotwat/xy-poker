@@ -114,7 +114,14 @@ function App() {
 
     socket.on('auto_start_game', () => {
       console.log('Auto-starting Quick Match game');
-      setIsQuickMatch(false); // Reset flag to allow transition to game
+      setIsQuickMatch(false);
+      setIsOnlineGame(true);
+      playSuccessSound();
+
+      // Both host and guest should start the game locally
+      dispatch({ type: 'START_GAME' });
+      setShowDiceAnimation(true);
+      setShowResultsModal(false);
     });
 
     socket.on('opponent_joined', ({ name }) => {
@@ -124,14 +131,13 @@ function App() {
 
     socket.on('game_start', ({ roomId }: any) => {
       setRoomId(roomId);
-      // Auto-start if it's a quick match
-      if (isQuickMatchRef.current) {
-        setIsQuickMatch(false);
-        setIsOnlineGame(true);
-        playSuccessSound();
-        dispatch({ type: 'START_GAME' });
-        setShowResultsModal(false);
-      }
+      // Determine if we should show animation (yes for everyone)
+      setIsQuickMatch(false);
+      setIsOnlineGame(true);
+      playSuccessSound();
+      dispatch({ type: 'START_GAME' });
+      setShowDiceAnimation(true);
+      setShowResultsModal(false);
     });
 
     socket.on('player_data', (data: any) => {
@@ -501,7 +507,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081340</span>}
+        {showVersion && <span className="version">12081347</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
