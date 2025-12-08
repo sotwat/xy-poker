@@ -15,9 +15,34 @@ const nouns = [
 ];
 
 export function generateRandomPlayerName(): string {
-    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-    const noun = nouns[Math.floor(Math.random() * nouns.length)];
-    const number = Math.floor(Math.random() * 100);
+    let name = '';
+    // Retry limit to prevent infinite loops
+    for (let i = 0; i < 50; i++) {
+        const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+        const noun = nouns[Math.floor(Math.random() * nouns.length)];
 
-    return `${adjective} ${noun} ${number}`;
+        // Use Camelcase concatenation to save space
+        let candidate = `${adjective}${noun}`;
+
+        if (candidate.length <= 10) {
+            // If space remains, optionally add a number
+            const remaining = 10 - candidate.length;
+            if (remaining >= 1 && Math.random() > 0.3) {
+                // Generate a number that fits
+                // e.g. remaining 2 -> max 99.
+                const max = Math.pow(10, remaining) - 1;
+                if (max > 0) {
+                    const num = Math.floor(Math.random() * (max + 1));
+                    candidate += num;
+                }
+            }
+            name = candidate;
+            break;
+        }
+    }
+
+    // Fallback (guaranteed <= 10)
+    if (!name) return 'Player' + Math.floor(Math.random() * 9999);
+
+    return name;
 }
