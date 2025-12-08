@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081333` (2025-12-08 13:33)
+**Latest Version:** `12081340` (2025-12-08 13:40)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081333** - **Fix: Dice Animation Visibility:**
-   - **Fix:** Resolved z-index/stacking context issue by moving animation overlay to application root.
-   - **Previous:** New Feature: Dice Roll Animation (v12081315).
+1. **v12081340** - **Fix: Dice Animation Staging:**
+   - **Fix:** Restructured App rendering to ensure Battlefield is hidden until Dice Animation completes.
+   - **Previous:** Fix: Dice Animation Visibility (v12081333).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

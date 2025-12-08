@@ -501,7 +501,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081333</span>}
+        {showVersion && <span className="version">12081340</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -527,7 +527,7 @@ function App() {
         )}
       </header>
 
-      {phase !== 'setup' && (
+      {!showDiceAnimation && phase !== 'setup' && (
         <GameInfo
           gameState={gameState}
           isOnlineMode={mode === 'online'}
@@ -538,161 +538,165 @@ function App() {
         />
       )}
 
-      {mode === 'online' && isQuickMatch ? (
-        <div className="setup-screen">
-          <div className="waiting-message">
-            <h3>🎲 Quick Match</h3>
-            <h2>Waiting for opponent...</h2>
-            <div className="loading-spinner"></div>
-            <p>Your game will start automatically when an opponent joins</p>
-            <button className="btn-cancel" onClick={handleCancelMatchmaking}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      ) : isLobbyView ? (
-        <Lobby
-          onCreateRoom={handleCreateRoom}
-          onJoinRoom={handleJoinRoom}
-          onQuickMatch={handleQuickMatch}
-          onCancelMatchmaking={handleCancelMatchmaking}
-          roomId={roomId}
-          isConnected={isConnected}
-          playerRole={playerRole}
-          playerName={playerName}
-          onPlayerNameChange={setPlayerName}
-          rating={myRating}
-        />
-      ) : (
+      {/* Main Content Area */}
+      {!showDiceAnimation && (
         <>
-          <main className="game-board">
-            {phase === 'setup' && (
-              <div className="setup-screen">
-                {isQuickMatch ? (
-                  <div className="waiting-message">
-                    <h3>🎲 Quick Match</h3>
-                    <h2>Waiting for opponent...</h2>
-                    <div className="loading-spinner"></div>
-                    <p>Your game will start automatically when an opponent joins</p>
-                  </div>
-                ) : mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
-                  <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
-                ) : (
-                  <div className="waiting-message">
-                    <h3>Waiting for Host to start game...</h3>
-                    <div className="loading-spinner"></div>
+          {mode === 'online' && isQuickMatch ? (
+            <div className="setup-screen">
+              <div className="waiting-message">
+                <h3>🎲 Quick Match</h3>
+                <h2>Waiting for opponent...</h2>
+                <div className="loading-spinner"></div>
+                <p>Your game will start automatically when an opponent joins</p>
+                <button className="btn-cancel" onClick={handleCancelMatchmaking}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : isLobbyView ? (
+            <Lobby
+              onCreateRoom={handleCreateRoom}
+              onJoinRoom={handleJoinRoom}
+              onQuickMatch={handleQuickMatch}
+              onCancelMatchmaking={handleCancelMatchmaking}
+              roomId={roomId}
+              isConnected={isConnected}
+              playerRole={playerRole}
+              playerName={playerName}
+              onPlayerNameChange={setPlayerName}
+              rating={myRating}
+            />
+          ) : (
+            <>
+              <main className="game-board">
+                {phase === 'setup' && (
+                  <div className="setup-screen">
+                    {isQuickMatch ? (
+                      <div className="waiting-message">
+                        <h3>🎲 Quick Match</h3>
+                        <h2>Waiting for opponent...</h2>
+                        <div className="loading-spinner"></div>
+                        <p>Your game will start automatically when an opponent joins</p>
+                      </div>
+                    ) : mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
+                      <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
+                    ) : (
+                      <div className="waiting-message">
+                        <h3>Waiting for Host to start game...</h3>
+                        <div className="loading-spinner"></div>
+                      </div>
+                    )}
+
+                    {/* Ad Banner for Local Mode Setup */}
+                    {mode === 'local' && phase === 'setup' && (
+                      <div className="ad-banner-container" style={{ position: 'absolute', bottom: '20px', width: '90%', left: '50%', transform: 'translateX(-50%)' }}>
+                        <p style={{ color: '#666', fontSize: '0.8rem' }}>Ad Banner Space</p>
+                      </div>
+                    )}
                   </div>
                 )}
+                {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
+                  <div className="play-area">
 
-                {/* Ad Banner for Local Mode Setup */}
-                {mode === 'local' && phase === 'setup' && (
-                  <div className="ad-banner-container" style={{ position: 'absolute', bottom: '20px', width: '90%', left: '50%', transform: 'translateX(-50%)' }}>
-                    <p style={{ color: '#666', fontSize: '0.8rem' }}>Ad Banner Space</p>
+
+                    <SharedBoard
+                      playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
+                      opponentBoard={players[isOnlineGame && playerRole === 'guest' ? 0 : 1].board}
+                      dice={players[0].dice} // Shared dice
+                      onColumnClick={handleColumnClick}
+                      isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                      revealAll={phase === 'ended'}
+                      winningColumns={phase === 'ended' ? calculateWinningColumns() : undefined}
+                      xWinner={phase === 'ended' ? calculateXWinner() : undefined}
+                      bottomPlayerId={(isOnlineGame && playerRole === 'guest') ? 'p2' : 'p1'}
+                    />
                   </div>
                 )}
-              </div>
-            )}
-            {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
-              <div className="play-area">
+              </main>
 
+              <footer className="controls">
 
-                <SharedBoard
-                  playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
-                  opponentBoard={players[isOnlineGame && playerRole === 'guest' ? 0 : 1].board}
-                  dice={players[0].dice} // Shared dice
-                  onColumnClick={handleColumnClick}
-                  isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
-                  revealAll={phase === 'ended'}
-                  winningColumns={phase === 'ended' ? calculateWinningColumns() : undefined}
-                  xWinner={phase === 'ended' ? calculateXWinner() : undefined}
-                  bottomPlayerId={(isOnlineGame && playerRole === 'guest') ? 'p2' : 'p1'}
-                />
-              </div>
-            )}
-          </main>
-
-          <footer className="controls">
-
-            {phase === 'playing' && (
-              <>
-                <div className="hand-container">
-                  <Hand
-                    hand={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].hand}
-                    selectedCardId={selectedCardId}
-                    onCardSelect={handleCardSelect}
-                    isHidden={false}
-                    isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
-                  />
-                </div>
-                <div className="action-bar">
-                  <div className="place-controls">
-                    <label className="toggle-hidden">
-                      <input
-                        type="checkbox"
-                        checked={placeHidden}
-                        onChange={(e) => setPlaceHidden(e.target.checked)}
-                        disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
+                {phase === 'playing' && (
+                  <>
+                    <div className="hand-container">
+                      <Hand
+                        hand={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].hand}
+                        selectedCardId={selectedCardId}
+                        onCardSelect={handleCardSelect}
+                        isHidden={false}
+                        isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
                       />
-                      Place Face Down ({3 - currentPlayer.hiddenCardsCount} left)
-                    </label>
+                    </div>
+                    <div className="action-bar">
+                      <div className="place-controls">
+                        <label className="toggle-hidden">
+                          <input
+                            type="checkbox"
+                            checked={placeHidden}
+                            onChange={(e) => setPlaceHidden(e.target.checked)}
+                            disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
+                          />
+                          Place Face Down ({3 - currentPlayer.hiddenCardsCount} left)
+                        </label>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {phase === 'scoring' && (
+                  <button className="btn-primary" onClick={() => dispatch({ type: 'CALCULATE_SCORE' })}>
+                    Reveal & Calculate Scores
+                  </button>
+                )}
+
+                {phase === 'ended' && !showResultsModal && (
+                  <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
+                    <button className="btn-primary" onClick={() => setShowResultsModal(true)}>
+                      Show Results
+                    </button>
+                    <button className="btn-secondary" onClick={() => {
+                      playClickSound();
+                      setMode('online');
+                      setRoomId(null);
+                      setPlayerRole(null);
+                      setIsOnlineGame(false);
+                      setIsQuickMatch(false);
+                      setRatingUpdates(null);
+                      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+                    }}>
+                      Back to Lobby
+                    </button>
                   </div>
-                </div>
-              </>
-            )}
+                )}
 
-            {phase === 'scoring' && (
-              <button className="btn-primary" onClick={() => dispatch({ type: 'CALCULATE_SCORE' })}>
-                Reveal & Calculate Scores
-              </button>
-            )}
-
-            {phase === 'ended' && !showResultsModal && (
-              <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
-                <button className="btn-primary" onClick={() => setShowResultsModal(true)}>
-                  Show Results
-                </button>
-                <button className="btn-secondary" onClick={() => {
-                  playClickSound();
-                  setMode('online');
-                  setRoomId(null);
-                  setPlayerRole(null);
-                  setIsOnlineGame(false);
-                  setIsQuickMatch(false);
-                  setRatingUpdates(null);
-                  dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
-                }}>
-                  Back to Lobby
-                </button>
-              </div>
-            )}
-
-            {phase === 'ended' && showResultsModal && (
-              <GameResult
-                gameState={gameState}
-                onRestart={handleStartGame}
-                onClose={() => {
-                  setShowResultsModal(false);
-                  setMode('online');
-                  setRoomId(null);
-                  setPlayerRole(null);
-                  setIsOnlineGame(false);
-                  setIsQuickMatch(false);
-                  setRatingUpdates(null);
-                  dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
-                }}
-                onViewBoard={() => {
-                  setShowResultsModal(false);
-                }}
-                p1Name={p1DisplayName}
-                p2Name={p2DisplayName}
-                ratingUpdates={ratingUpdates}
-              />
-            )}
-          </footer>
-
-
+                {phase === 'ended' && showResultsModal && (
+                  <GameResult
+                    gameState={gameState}
+                    onRestart={handleStartGame}
+                    onClose={() => {
+                      setShowResultsModal(false);
+                      setMode('online');
+                      setRoomId(null);
+                      setPlayerRole(null);
+                      setIsOnlineGame(false);
+                      setIsQuickMatch(false);
+                      setRatingUpdates(null);
+                      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+                    }}
+                    onViewBoard={() => {
+                      setShowResultsModal(false);
+                    }}
+                    p1Name={p1DisplayName}
+                    p2Name={p2DisplayName}
+                    ratingUpdates={ratingUpdates}
+                  />
+                )}
+              </footer>
+            </>
+          )}
         </>
       )}
+
       {showDiceAnimation && (
         <DiceRollOverlay
           targetValues={players[0].dice}

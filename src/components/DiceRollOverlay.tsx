@@ -14,6 +14,7 @@ export const DiceRollOverlay: React.FC<DiceRollOverlayProps> = ({ targetValues, 
     const [stage, setStage] = useState<'ready' | 'rolling' | 'finished'>('ready');
 
     useEffect(() => {
+        console.log('[DiceRollOverlay] Mounted. Target Values:', targetValues);
         // Auto start rolling
         setStage('rolling');
         const intervals: any[] = [];
