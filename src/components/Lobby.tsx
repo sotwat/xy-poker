@@ -62,7 +62,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <div className="player-rating-display" style={{
                         marginTop: '8px',
                         fontSize: '0.9rem',
-                        color: '#ffd700',
+                        color: '#ffffff',
                         fontWeight: 'bold',
                         textShadow: '0 1px 2px rgba(0,0,0,0.5)'
                     }}>

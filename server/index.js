@@ -53,7 +53,7 @@ async function getOrCreatePlayer(browserId) {
 
     const { data: newPlayer, error: createError } = await supabase
         .from('players')
-        .insert([{ browser_id: browserId, rating: 1000 }])
+        .insert([{ browser_id: browserId, rating: 1500 }])
         .select()
         .single();
 

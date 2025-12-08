@@ -415,7 +415,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12080334</span>}
+        {showVersion && <span className="version">12081055</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -490,7 +490,13 @@ function App() {
                     <p>Your game will start automatically when an opponent joins</p>
                   </div>
                 ) : mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
-                  <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
+                  <>
+                    <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
+                    <div className="ad-banner-container">
+                      {/* Ad Banner Space */}
+                      <p style={{ color: '#666', fontSize: '0.8rem' }}>Ad Banner Space</p>
+                    </div>
+                  </>
                 ) : (
                   <div className="waiting-message">
                     <h3>Waiting for Host to start game...</h3>
