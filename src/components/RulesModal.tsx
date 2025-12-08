@@ -52,6 +52,42 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                             </div>
                         </div>
                     </section>
+
+                    <section>
+                        <h3>🏆 Hand Rankings (Strongest to Weakest)</h3>
+                        <div className="rankings-grid">
+                            <div className="ranking-column">
+                                <h4>X-Axis (Horizontal - 5 Cards)</h4>
+                                <ol className="hand-list">
+                                    <li>Royal Flush</li>
+                                    <li>Straight Flush</li>
+                                    <li>Four of a Kind</li>
+                                    <li>Full House</li>
+                                    <li>Flush</li>
+                                    <li>Straight</li>
+                                    <li>Three of a Kind</li>
+                                    <li>Two Pair</li>
+                                    <li>One Pair</li>
+                                    <li>High Card</li>
+                                </ol>
+                            </div>
+                            <div className="ranking-column">
+                                <h4>Y-Axis (Vertical - 3 Cards)</h4>
+                                <ol className="hand-list">
+                                    <li>Three Card Flush <span className="note">(2+ Jokers)</span></li>
+                                    <li>Pure Straight Flush <span className="note">(No Joker)</span></li>
+                                    <li>Three of a Kind</li>
+                                    <li>Straight Flush</li>
+                                    <li>Pure Straight <span className="note">(No Joker)</span></li>
+                                    <li>Flush</li>
+                                    <li>Pure One Pair <span className="note">(No Joker)</span></li>
+                                    <li>Straight</li>
+                                    <li>One Pair</li>
+                                    <li>High Card</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>
