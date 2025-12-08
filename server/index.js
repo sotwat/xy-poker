@@ -71,7 +71,7 @@ const games = {}; // To store game-specific data for quick matches
 io.on('connection', (socket) => {
     console.log('New client connected:', socket.id);
 
-    socket.on('join_quick_match', async ({ browserId }) => {
+    socket.on('join_quick_match', async ({ browserId, playerName }) => {
         // If no browserId provided (old client), generate a random temp one or fail
         const bId = browserId || `temp_${socket.id}`;
 
@@ -84,11 +84,12 @@ io.on('connection', (socket) => {
 
         socket.browserId = bId;
         socket.rating = player.rating;
+        socket.playerName = playerName || `Player (R:${player.rating})`; // Store name
 
         // Add to queue
         quickMatchQueue.push(socket);
         socket.emit('quick_match_joined', { rating: player.rating });
-        console.log(`User ${socket.id} (Rating: ${player.rating}) joined quick match queue. Queue size: ${quickMatchQueue.length}`);
+        console.log(`User ${socket.id} (${socket.playerName}) joined quick match queue. Queue size: ${quickMatchQueue.length}`);
 
         // Check for match
         if (quickMatchQueue.length >= 2) {
@@ -109,12 +110,6 @@ io.on('connection', (socket) => {
             // Initialize game state (REMOVED default rating, will effectively be handled in game logic if needed, but here we just manage room)
             games[roomId] = {
                 gameState: {
-                    // ... minimal state tracking for server if needed, mostly client-side driven currently?
-                    // Wait, previous implementation relied on clients driving state? 
-                    // Looking at existing code, server mainly relays actions. 
-                    // But we need to track SCORE here to update ratings?
-                    // Or we trust the 'game_end' event from client?
-                    // Ideally server should validate, but for now we trust clients.
                     p1Rating: p1.rating,
                     p2Rating: p2.rating,
                     p1BrowserId: p1.browserId,
@@ -122,12 +117,17 @@ io.on('connection', (socket) => {
                 }
             };
 
+            const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+
             io.to(roomId).emit('game_start', {
                 roomId,
-                p1Name: `Player (R:${p1.rating})`,
-                p2Name: `Player (R:${p2.rating})`,
+                p1Name: p1.playerName,
+                p2Name: p2.playerName,
                 p1Rating: p1.rating,
-                p2Rating: p2.rating
+                p2Rating: p2.rating,
+                p1Id: p1.id,
+                p2Id: p2.id,
+                initialDice
             });
         }
     });
@@ -259,7 +259,9 @@ io.on('connection', (socket) => {
                     p2Name: guestName,
                     p1Rating: 1500,
                     p2Rating: 1500,
-                    initialDice // Send synchronized dice
+                    initialDice, // Send synchronized dice
+                    p1Id: room.players[0].id,
+                    p2Id: socket.id
                 });
 
                 console.log(`Quick match: User ${socket.id} (${guestName}) joined ${room.players[0].id} (${hostName}) in room ${roomId}, game auto-starting`);

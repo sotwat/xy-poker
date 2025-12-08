@@ -129,12 +129,22 @@ function App() {
       playSuccessSound();
     });
 
-    socket.on('game_start', ({ roomId, initialDice }: any) => {
+    socket.on('game_start', ({ roomId, initialDice, p1Name, p2Name, p1Id, p2Id }: any) => {
       setRoomId(roomId);
       // Determine if we should show animation (yes for everyone)
       setIsQuickMatch(false);
       setIsOnlineGame(true);
       playSuccessSound();
+
+      // Robustly set Role and Opponent Name from server authoritative data
+      if (socket.id === p1Id) {
+        setPlayerRole('host');
+        setOpponentName(p2Name || 'Player 2');
+      } else if (socket.id === p2Id) {
+        setPlayerRole('guest');
+        setOpponentName(p1Name || 'Player 1');
+      }
+
       dispatch({ type: 'START_GAME', payload: { initialDice } });
       setShowDiceAnimation(true);
       setShowResultsModal(false);
@@ -509,7 +519,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081457</span>}
+        {showVersion && <span className="version">12081504</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
