@@ -78,8 +78,13 @@
     color: #ccc;
 }
 
+.hand-name.p1-text {
+    color: #4facfe;
+    font-weight: bold;
+}
+
 .hand-name.p2-text {
-    color: #e53935;
+    color: #ff5858;
     font-weight: bold;
 }
 
