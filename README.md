@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081452` (2025-12-08 14:52)
+**Latest Version:** `12081457` (2025-12-08 14:57)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081452** - **Fix: Online Dice Synch:**
-   - **Fix:** Synchronized dice values between players in Online Match. Server now generates and broadcasts dice values.
-   - **Previous:** Fix: Mobile Dice Sizing (Final - v12081440).
+1. **v12081457** - **Fix: Surrender Penalty:**
+   - **Feature:** Implemented rating penalty for surrendering in Quick Match (Loss for surrenderer, Win for opponent).
+   - **Previous:** Fix: Online Dice Synch (v12081452).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

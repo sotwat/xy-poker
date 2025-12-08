@@ -310,7 +310,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('surrender', ({ roomId }) => {
+    socket.on('surrender', async ({ roomId }) => {
         if (roomId && rooms[roomId]) {
             // Determine winner (opponent of surrendering player)
             const room = rooms[roomId];
@@ -319,6 +319,49 @@ io.on('connection', (socket) => {
             if (surrenderIndex !== -1) {
                 const winnerIndex = surrenderIndex === 0 ? 1 : 0;
                 const winner = winnerIndex === 0 ? 'p1' : 'p2';
+
+                // Process Rating Update if game exists (Quick Match)
+                const game = games[roomId];
+                if (game && !game.processed) {
+                    game.processed = true;
+
+                    const p1Rating = game.gameState.p1Rating;
+                    const p2Rating = game.gameState.p2Rating;
+
+                    // Surrender is a loss for surrenderer
+                    let p1Actual = 0.5;
+                    if (winner === 'p1') p1Actual = 1;
+                    if (winner === 'p2') p1Actual = 0;
+
+                    const p2Actual = 1 - p1Actual;
+
+                    const p1Change = calculateEloChange(p1Rating, p2Rating, p1Actual);
+                    const p2Change = calculateEloChange(p2Rating, p1Rating, p2Actual);
+
+                    const newP1Rating = p1Rating + p1Change;
+                    const newP2Rating = p2Rating + p2Change;
+
+                    console.log(`Surrender in ${roomId}: P1 (${p1Rating} -> ${newP1Rating}), P2 (${p2Rating} -> ${newP2Rating})`);
+
+                    // Update DB
+                    try {
+                        await supabase.from('players').update({ rating: newP1Rating }).eq('browser_id', game.gameState.p1BrowserId);
+                        await supabase.from('players').update({ rating: newP2Rating }).eq('browser_id', game.gameState.p2BrowserId);
+
+                        // Emit updates to room
+                        io.to(roomId).emit('rating_update', {
+                            p1: { old: p1Rating, new: newP1Rating, change: p1Change },
+                            p2: { old: p2Rating, new: newP2Rating, change: p2Change }
+                        });
+                    } catch (err) {
+                        console.error('Error updating ratings on surrender:', err);
+                    }
+
+                    // Cleanup room after delay
+                    setTimeout(() => {
+                        delete games[roomId];
+                    }, 5000);
+                }
 
                 // Notify all players in room
                 io.to(roomId).emit('game_end_surrender', { winner, surrendererId: socket.id });
