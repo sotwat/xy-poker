@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081533` (2025-12-08 15:33)
+**Latest Version:** `12081546` (2025-12-08 15:46)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081533** - **Fix: Name Reset:**
-   - **Fix:** Forced reset of all player names by updating local storage key (migrates everyone to new short name format).
-   - **Previous:** Fix: Name Length Limit (v12081525).
+1. **v12081546** - **Fix: Rating Display Update:**
+   - **Fix:** Ensure client-side rating display (`myRating`) is updated immediately upon receiving rating update event (fixes "Rate doesn't change" visual bug).
+   - **Previous:** Fix: Name Reset (v12081533).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

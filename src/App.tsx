@@ -159,6 +159,13 @@ function App() {
     socket.on('rating_update', (updates: any) => {
       console.log('Rating updates received:', updates);
       setRatingUpdates(updates);
+
+      // Update local rating state immediately so Lobby shows correct value
+      if (playerRoleRef.current === 'host') {
+        setMyRating(updates.p1.new);
+      } else if (playerRoleRef.current === 'guest') {
+        setMyRating(updates.p2.new);
+      }
     });
 
     socket.on('game_action', (action: any) => {
@@ -519,7 +526,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081533</span>}
+        {showVersion && <span className="version">12081546</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
