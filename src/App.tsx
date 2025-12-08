@@ -10,6 +10,7 @@ import { GameInfo } from './components/GameInfo';
 import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
 import { DiceRollOverlay } from './components/DiceRollOverlay';
+import { RulesModal } from './components/RulesModal';
 import { socket, connectSocket } from './logic/online';
 import './App.css';
 
@@ -23,6 +24,7 @@ function App() {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [placeHidden, setPlaceHidden] = useState(false);
   const [showDiceAnimation, setShowDiceAnimation] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   // Online State
   const [mode, setMode] = useState<'local' | 'online'>('local');
@@ -527,7 +529,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081559</span>}
+        {showVersion && <span className="version">12081845</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -605,7 +607,18 @@ function App() {
                         <p>Your game will start automatically when an opponent joins</p>
                       </div>
                     ) : mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
-                      <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
+                      <div className="setup-actions" style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+                        <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
+                        {mode === 'local' && (
+                          <button
+                            className="btn-secondary"
+                            style={{ fontSize: '0.9rem', padding: '8px 16px', backgroundColor: 'rgba(255,255,255,0.1)' }}
+                            onClick={() => { playClickSound(); setShowRules(true); }}
+                          >
+                            📖 How to Play
+                          </button>
+                        )}
+                      </div>
                     ) : (
                       <div className="waiting-message">
                         <h3>Waiting for Host to start game...</h3>
@@ -729,6 +742,8 @@ function App() {
           onComplete={() => setShowDiceAnimation(false)}
         />
       )}
+      {/* Rules Overlay */}
+      {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
     </div>
   );
 }

@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081559` (2025-12-08 15:59)
+**Latest Version:** `12081845` (2025-12-08 18:45)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081559** - **Fix: Rating Missing (Quick Match):**
-   - **Fix:** Fixed issue where Quick Match used placeholder ratings and IDs, preventing real rating updates. Now correctly fetches and uses player data for both Host and Guest in the Immediate Queue path.
-   - **Previous:** Fix: Rating Display Update (v12081546).
+1. **v12081845** - **Feature: Game Rules:**
+   - **Feature:** Added "How to Play" (Rules) Modal to Local Mode Setup screen.
+   - **Previous:** Fix: Rating Missing (Quick Match) (v12081559).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).
