@@ -39,7 +39,7 @@ function App() {
 
   // Player Names - Generate random name for uniqueness
   const [playerName, setPlayerName] = useState(() => {
-    const saved = localStorage.getItem('xypoker_playerName');
+    const saved = localStorage.getItem('xypoker_playerName_v2'); // Reset names by changing key
     return saved || generateRandomPlayerName();
   });
   const [opponentName, setOpponentName] = useState('Player 2');
@@ -302,7 +302,7 @@ function App() {
   }, [phase, mode, gameState]);
 
   useEffect(() => {
-    localStorage.setItem('xypoker_playerName', playerName);
+    localStorage.setItem('xypoker_playerName_v2', playerName);
   }, [playerName]);
 
   useEffect(() => {
@@ -519,7 +519,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081525</span>}
+        {showVersion && <span className="version">12081533</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
