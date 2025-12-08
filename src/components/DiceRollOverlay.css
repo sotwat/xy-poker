@@ -28,14 +28,11 @@
 }
 
 @media (max-width: 600px) {
-    .dice-container-large .dice {
-        font-size: 1.5rem;
-        /* Reduce size by half for mobile */
-    }
 
+    /* Use scale as requested by user to shrink the entire container uniformly */
     .dice-container-large {
-        gap: 1rem;
-        /* Reduce gap */
+        transform: scale(0.5);
+        transform-origin: center center;
     }
 }
 
