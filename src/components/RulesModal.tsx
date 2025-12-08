@@ -74,14 +74,10 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                             <div className="ranking-column">
                                 <h4>Y-Axis (Vertical - 3 Cards)</h4>
                                 <ol className="hand-list">
-                                    <li>Three Card Flush <span className="note">(2+ Jokers)</span></li>
-                                    <li>Pure Straight Flush <span className="note">(No Joker)</span></li>
-                                    <li>Three of a Kind</li>
                                     <li>Straight Flush</li>
-                                    <li>Pure Straight <span className="note">(No Joker)</span></li>
-                                    <li>Flush</li>
-                                    <li>Pure One Pair <span className="note">(No Joker)</span></li>
+                                    <li>Three of a Kind</li>
                                     <li>Straight</li>
+                                    <li>Flush</li>
                                     <li>One Pair</li>
                                     <li>High Card</li>
                                 </ol>

@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081850` (2025-12-08 18:50)
+**Latest Version:** `12081859` (2025-12-08 18:59)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081850** - **Feature: Rules Detail:**
-   - **Feature:** Added X/Y Hand Rankings (Strength Order) to Rules Modal.
-   - **Previous:** Feature: Game Rules (v12081845).
+1. **v12081859** - **Update: Rules:**
+   - **Update:** Removed Joker and Three Card Flush from Rules (Jokers are disabled in this game).
+   - **Previous:** Feature: Rules Detail (v12081850).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).
