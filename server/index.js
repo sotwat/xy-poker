@@ -221,7 +221,25 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('quick_match', ({ playerName }, callback) => {
+    socket.on('quick_match', async ({ playerName, browserId }, callback) => {
+        // Authenticate / Fetch Data
+        const bId = browserId || `temp_${socket.id}`;
+        const player = await getOrCreatePlayer(bId);
+
+        if (!player) {
+            // Fallback if DB fails? Or Error?
+            // Let's fallback to temp to allow play even if DB is down, but rating won't save.
+            // But user complaining about rating, so...
+            // For now assume DB works.
+        }
+
+        const rating = player ? player.rating : 1500;
+
+        // Store on socket
+        socket.browserId = bId;
+        socket.rating = rating;
+        socket.playerName = playerName || `Player`;
+
         // Check if there's a room waiting for a player
         if (matchmakingQueue.length > 0) {
             // Join the first available room
@@ -229,25 +247,32 @@ io.on('connection', (socket) => {
             const room = rooms[roomId];
 
             if (room && room.players.length === 1) {
-                const hostName = room.players[0].name;
-                const guestName = playerName || 'Player 2';
+                const p1 = room.players[0]; // Host
+                const hostName = p1.name;
+                const guestName = socket.playerName;
 
-                room.players.push({ id: socket.id, name: guestName });
+                // Add Guest to Room
+                room.players.push({
+                    id: socket.id,
+                    name: guestName,
+                    browserId: socket.browserId,
+                    rating: socket.rating
+                });
                 socket.join(roomId);
                 callback({ success: true, roomId, role: 'guest', opponentName: hostName });
 
                 // Notify both players with opponent names and auto-start
-                io.to(room.players[0].id).emit('opponent_joined', { opponentName: guestName });
+                io.to(p1.id).emit('opponent_joined', { opponentName: guestName });
                 io.to(socket.id).emit('opponent_joined', { opponentName: hostName });
 
                 // Auto-start game for quick match
                 // Initialize game state for tracking
                 games[roomId] = {
                     gameState: {
-                        p1Rating: 1500, // Placeholder
-                        p2Rating: 1500,
-                        p1BrowserId: 'temp',
-                        p2BrowserId: 'temp'
+                        p1Rating: p1.rating,
+                        p2Rating: socket.rating,
+                        p1BrowserId: p1.browserId,
+                        p2BrowserId: socket.browserId
                     }
                 };
 
@@ -257,32 +282,40 @@ io.on('connection', (socket) => {
                     roomId,
                     p1Name: hostName,
                     p2Name: guestName,
-                    p1Rating: 1500,
-                    p2Rating: 1500,
+                    p1Rating: p1.rating,
+                    p2Rating: socket.rating,
                     initialDice, // Send synchronized dice
-                    p1Id: room.players[0].id,
+                    p1Id: p1.id,
                     p2Id: socket.id
                 });
 
-                console.log(`Quick match: User ${socket.id} (${guestName}) joined ${room.players[0].id} (${hostName}) in room ${roomId}, game auto-starting`);
+                console.log(`Quick match: User ${socket.id} (${guestName}) joined ${p1.id} (${hostName}) in room ${roomId}, game auto-starting`);
             } else {
                 // Room became invalid, create new one
                 matchmakingQueue.length = 0; // Clear invalid queue
-                createMatchmakingRoom(socket, playerName, callback);
+                createMatchmakingRoom(socket, socket.playerName, socket.browserId, socket.rating, callback);
             }
         } else {
             // No rooms waiting, create new one
-            createMatchmakingRoom(socket, playerName, callback);
+            createMatchmakingRoom(socket, socket.playerName, socket.browserId, socket.rating, callback);
         }
     });
 
-    function createMatchmakingRoom(socket, playerName, callback) {
+    function createMatchmakingRoom(socket, playerName, browserId, rating, callback) {
         const roomId = Math.floor(1000 + Math.random() * 9000).toString();
-        rooms[roomId] = { players: [{ id: socket.id, name: playerName || 'Player 1' }], isQuickMatch: true };
+        rooms[roomId] = {
+            players: [{
+                id: socket.id,
+                name: playerName || 'Player 1',
+                browserId: browserId,
+                rating: rating
+            }],
+            isQuickMatch: true
+        };
         socket.join(roomId);
         matchmakingQueue.push(roomId);
         callback({ success: true, roomId, role: 'host', waiting: true });
-        console.log(`Quick match room ${roomId} created by ${socket.id} (${playerName || 'Player 1'}), waiting for opponent`);
+        console.log(`Quick match room ${roomId} created by ${socket.id} (${playerName}), waiting for opponent`);
     }
 
     socket.on('cancel_matchmaking', ({ roomId }) => {
