@@ -102,7 +102,6 @@ export const GameResult: React.FC<GameResultProps> = ({
                         <div>Dice</div>
                         <div>P1</div>
                         <div>P2</div>
-                        <div>Winner</div>
                     </div>
                     {columnResults.map((res, idx) => (
                         <div key={idx} className="table-row">
@@ -110,9 +109,6 @@ export const GameResult: React.FC<GameResultProps> = ({
                             <div className="dice-val">{res.dice}</div>
                             <div className={`hand-name ${res.winner === 'p1' ? 'win' : ''}`}>{res.p1Hand}</div>
                             <div className={`hand-name ${res.winner === 'p2' ? 'win' : ''}`}>{res.p2Hand}</div>
-                            <div className={`winner-col ${res.winner}`}>
-                                {res.winner === 'p1' ? p1Name : res.winner === 'p2' ? p2Name : 'Draw'}
-                            </div>
                         </div>
                     ))}
 
@@ -126,9 +122,6 @@ export const GameResult: React.FC<GameResultProps> = ({
                         </div>
                         <div className={`hand-name ${xWinner === 'p2' ? 'win' : ''}`}>
                             {getHandName(p2XRes.type)} <span className="score-detail">({p2XScore})</span>
-                        </div>
-                        <div className={`winner-col ${xWinner}`}>
-                            {xWinner === 'p1' ? p1Name : xWinner === 'p2' ? p2Name : 'Draw'}
                         </div>
                     </div>
                 </div>
