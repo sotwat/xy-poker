@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081352` (2025-12-08 13:52)
+**Latest Version:** `12081409` (2025-12-08 14:09)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081352** - **Fix: Mobile Dice Sizing:**
-   - **Fix:** Reduced dice animation size for mobile devices to prevent cutoff.
-   - **Previous:** Feature: Local Dice Animation (v12081351).
+1. **v12081409** - **Fix: Mobile Dice Sizing (CSS Fix):**
+   - **Fix:** Corrected CSS selector name for dice sizing to apply correctly on mobile.
+   - **Previous:** Fix: Mobile Dice Sizing (v12081352) - *Failed due to typo*.
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).
