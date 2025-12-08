@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081255` (2025-12-08 12:55)
+**Latest Version:** `12081258` (2025-12-08 12:58)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081255** - **UI Polish Stg 2:**
-   - **Update:** Replaced "P1/P2" headers with Player Names and colored winning hand names in Game Result table.
-   - **Previous:** Remove Winner Column (v12081245).
+1. **v12081258** - **UI Polish Final:**
+   - **Update:** Complete UI refinement with optimized Mobile Score Box sizing.
+   - **Previous:** UI Polish Stg 2 (v12081255).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).
