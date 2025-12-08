@@ -54,191 +54,187 @@
 .table-header,
 .table-row {
     display: grid;
+    grid-template-columns: 0.5fr 0.5fr 2fr 2fr 1fr;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+    padding: 0.5rem;
+}
 
-    .table-header,
-    .table-row {
-        display: grid;
-        grid-template-columns: 0.5fr 0.5fr 2fr 2fr;
-        gap: 1rem;
-        align-items: center;
-        text-align: center;
-        padding: 0.5rem;
+.table-header {
+    font-weight: bold;
+    color: #888;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.5rem;
+}
+
+.table-row {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+
+.hand-name {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.hand-name.p2-text {
+    color: #e53935;
+    font-weight: bold;
+}
+
+.draw-text {
+    color: #ffa726;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.winner-col.p1 {
+    color: #4facfe;
+}
+
+.winner-col.p2 {
+    color: #ff5858;
+}
+
+
+@media (max-width: 600px) {
+    .game-result-modal {
+        transform: scale(0.8) translateY(25px);
+        width: 100%;
+    }
+}
+
+.score-box.winner-box {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    border: 2px solid #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+    animation: winner-glow 2s infinite ease-in-out;
+}
+
+@keyframes winner-glow {
+    0% {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
     }
 
-    .table-header {
-        font-weight: bold;
-        color: #888;
-        border-bottom: 1px solid #444;
-        padding-bottom: 0.5rem;
+    50% {
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
     }
 
-    .table-row {
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 4px;
+    100% {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+}
+
+.winner-col.draw {
+    color: #888;
+}
+
+.table-divider {
+    height: 1px;
+    background: #444;
+    margin: 0.5rem 0;
+}
+
+.x-hand-row {
+    background: rgba(255, 215, 0, 0.05);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.final-scores {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.score-box {
+    background: #333;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 150px;
+}
+
+.score-box.p1 {
+    border-bottom: 4px solid #4facfe;
+}
+
+.score-box.p2 {
+    border-bottom: 4px solid #ff5858;
+}
+
+.score-box h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #aaa;
+}
+
+.score-val {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.bonus-val {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.restart-btn,
+.view-board-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 600px) {
+    .game-result-modal {
+        padding: 0.25rem;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: translateY(-20px);
     }
 
-    .hand-name {
-        font-size: 0.9rem;
-        color: #ccc;
+    .game-result-modal h2 {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
     }
 
-    .hand-name.p1-text {
-        color: #4facfe;
-        font-weight: bold;
-    }
-
-    .hand-name.p2-text {
-        color: #ff5858;
-        font-weight: bold;
-    }
-
-    .draw-text {
-        color: #ffa726;
-        font-weight: bold;
-        font-size: 1.2em;
-    }
-
-    /* Removed .winner-col styles as column is removed */
-
-
-    @media (max-width: 600px) {
-        .game-result-modal {
-            transform: scale(0.8) translateY(25px);
-            width: 100%;
-        }
-    }
-
-    .score-box.winner-box {
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-        border: 2px solid #ffd700;
-        background: rgba(255, 215, 0, 0.1);
-        animation: winner-glow 2s infinite ease-in-out;
-    }
-
-    @keyframes winner-glow {
-        0% {
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-        }
-
-        50% {
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
-        }
-
-        100% {
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-        }
-    }
-
-    .winner-col.draw {
-        color: #888;
-    }
-
-    .table-divider {
-        height: 1px;
-        background: #444;
-        margin: 0.5rem 0;
-    }
-
-    .x-hand-row {
-        background: rgba(255, 215, 0, 0.05);
-        border: 1px solid rgba(255, 215, 0, 0.2);
+    .winner-announcement {
+        margin-top: 30px;
+        margin-bottom: 0.5rem;
     }
 
     .final-scores {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        margin-top: 1rem;
+        gap: 0.25rem;
+        margin: 0 0 0.15rem 0;
+        transform: translateY(-50px);
     }
 
     .score-box {
-        background: #333;
-        padding: 1.5rem;
-        border-radius: 12px;
-        text-align: center;
-        min-width: 150px;
-    }
-
-    .score-box.p1 {
-        border-bottom: 4px solid #4facfe;
-    }
-
-    .score-box.p2 {
-        border-bottom: 4px solid #ff5858;
+        padding: 0.5625rem;
+        min-width: 135px;
     }
 
     .score-box h3 {
-        margin: 0;
-        font-size: 1rem;
-        color: #aaa;
+        font-size: 1.2375rem;
     }
 
     .score-val {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin: 0.5rem 0;
+        font-size: 2.025rem;
+        margin: 0.3375rem 0;
     }
 
     .bonus-val {
-        font-size: 0.8rem;
-        color: #888;
-    }
-
-    .button-group {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .restart-btn,
-    .view-board-btn {
-        padding: 1rem 2rem;
-        font-size: 1.1rem;
-    }
-
-    @media (max-width: 600px) {
-        .game-result-modal {
-            padding: 0.25rem;
-            width: 95%;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: translateY(-20px);
-        }
-
-        .game-result-modal h2 {
-            font-size: 0.8rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .winner-announcement {
-            margin-top: 30px;
-            margin-bottom: 0.5rem;
-        }
-
-        .final-scores {
-            gap: 0.25rem;
-            margin: 0 0 0.15rem 0;
-            transform: translateY(-50px);
-        }
-
-        .score-box {
-            padding: 0.4rem;
-            min-width: 90px;
-        }
-
-        .score-box h3 {
-            font-size: 0.9rem;
-        }
-
-        .score-val {
-            font-size: 1.5rem;
-            margin: 0.2rem 0;
-        }
-
-        .bonus-val {
-            font-size: 0.7rem;
-        }
+        font-size: 1.125rem;
     }
 
     .results-table {
@@ -249,10 +245,10 @@
 
     .table-header,
     .table-row {
-        grid-template-columns: 0.5fr 0.5fr 2fr 2fr;
-        font-size: 0.6rem;
-        gap: 0.25rem;
-        padding: 0.25rem;
+        grid-template-columns: 0.5fr 0.5fr 1.5fr 1.5fr 1fr;
+        font-size: 0.5rem;
+        gap: 0.15rem;
+        padding: 0.15rem;
     }
 
     .button-group {
