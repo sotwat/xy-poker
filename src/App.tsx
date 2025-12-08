@@ -501,7 +501,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081315</span>}
+        {showVersion && <span className="version">12081333</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -688,17 +688,16 @@ function App() {
                 ratingUpdates={ratingUpdates}
               />
             )}
-
-            {showDiceAnimation && (
-              <DiceRollOverlay
-                targetValues={players[0].dice}
-                onComplete={() => setShowDiceAnimation(false)}
-              />
-            )}
           </footer>
 
 
         </>
+      )}
+      {showDiceAnimation && (
+        <DiceRollOverlay
+          targetValues={players[0].dice}
+          onComplete={() => setShowDiceAnimation(false)}
+        />
       )}
     </div>
   );
