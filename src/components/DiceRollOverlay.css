@@ -31,7 +31,7 @@
 
     /* Use scale as requested by user to shrink the entire container uniformly */
     .dice-container-large {
-        transform: scale(0.2);
+        transform: scale(0.3);
         transform-origin: center center;
     }
 }
