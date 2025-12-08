@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081130` (2025-12-08 11:30)
+**Latest Version:** `12081145` (2025-12-08 11:45)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081130** - **Quick Match Fallback:**
-   - **Bot Fallback:** If opponent not found in 15s, Quick Match switches to Bot Match (Local/AI).
-   - **UI:** Standardized version bump.
+1. **v12081145** - **Deployment Verification:**
+   - **Version Bump:** Updated to current time to verify deployment propagation.
+   - **Previous:** Quick Match Bot Fallback (v12081130).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).
