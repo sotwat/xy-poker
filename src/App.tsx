@@ -42,11 +42,41 @@ function App() {
   });
   const [opponentName, setOpponentName] = useState('Player 2');
 
+  // Refs for accessing reliable state in event listeners
+  const modeRef = useRef(mode);
+  const roomIdRef = useRef(roomId);
+
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
+  useEffect(() => {
+    roomIdRef.current = roomId;
+  }, [roomId]);
+
   // Use ref to track playerRole for event handlers
   const playerRoleRef = useRef(playerRole);
   useEffect(() => {
     playerRoleRef.current = playerRole;
   }, [playerRole]);
+
+  // Use ref for isQuickMatch to access in socket listeners
+  const isQuickMatchRef = useRef(isQuickMatch);
+  useEffect(() => {
+    isQuickMatchRef.current = isQuickMatch;
+  }, [isQuickMatch]);
+
+  // Timeout ref for Quick Match Bot Fallback
+  const quickMatchTimeoutRef = useRef<any>(null);
+
+  useEffect(() => {
+    // Clear timeout if quick match ends (game starts or cancelled)
+    if (!isQuickMatch && quickMatchTimeoutRef.current) {
+      clearTimeout(quickMatchTimeoutRef.current);
+      quickMatchTimeoutRef.current = null;
+    }
+  }, [isQuickMatch]);
+
 
   // Initialize Socket
   useEffect(() => {
@@ -118,6 +148,9 @@ function App() {
     });
 
     socket.on('game_end_surrender', ({ winner }) => {
+      // Ignore if we are in local mode (bot match)
+      if (modeRef.current === 'local') return;
+
       // Handle surrender ending the game
       console.log('[SURRENDER] Received game_end_surrender event, winner:', winner);
 
@@ -140,6 +173,13 @@ function App() {
     });
 
     socket.on('player_left', () => {
+      // Ignore if we are in local mode (bot match)
+      // This is critical because cancelling matchmaking might trigger player_left from server
+      if (modeRef.current === 'local') {
+        console.log('Ignored player_left event because we are in local mode');
+        return;
+      }
+
       // Opponent left/cancelled - return to lobby
       console.log('Opponent left the room');
       setMode('online');
@@ -198,26 +238,6 @@ function App() {
 
   const { currentPlayerIndex, players, phase } = gameState;
   const currentPlayer = players[currentPlayerIndex];
-
-  // Use ref for isQuickMatch to access in socket listeners
-  const isQuickMatchRef = useRef(isQuickMatch);
-  useEffect(() => {
-    isQuickMatchRef.current = isQuickMatch;
-  }, [isQuickMatch]);
-
-  // Timeout ref for Quick Match Bot Fallback
-  const quickMatchTimeoutRef = useRef<any>(null);
-
-  useEffect(() => {
-    isQuickMatchRef.current = isQuickMatch;
-    // Clear timeout if quick match ends (game starts or cancelled)
-    if (!isQuickMatch && quickMatchTimeoutRef.current) {
-      clearTimeout(quickMatchTimeoutRef.current);
-      quickMatchTimeoutRef.current = null;
-    }
-  }, [isQuickMatch]);
-
-
 
   // Determine if we are in the Lobby view (where version and title inputs are shown)
   // Lobby view is:
@@ -283,10 +303,18 @@ function App() {
 
   const startBotMatch = () => {
     console.log('Quick Match Timeout: Starting Bot Match');
+
+    // Get current roomId using ref
+    const currentRoomId = roomIdRef.current;
+
     // Cancel socket request
-    if (roomId) {
-      socket.emit('cancel_matchmaking', { roomId });
+    if (currentRoomId) {
+      console.log(`Cancelling matchmaking for roomId: ${currentRoomId}`);
+      socket.emit('cancel_matchmaking', { roomId: currentRoomId });
+    } else {
+      console.log('No roomId found to cancel matchmaking.');
     }
+
     // Switch to Local Mode vs AI
     setIsQuickMatch(false);
     setMode('local');
@@ -337,6 +365,7 @@ function App() {
 
     socket.emit('quick_match', { playerName }, (response: any) => {
       if (response.success) {
+        // NOTE: response.roomId should be set immediately
         setRoomId(response.roomId);
         setPlayerRole(response.role);
         setIsOnlineGame(true);
@@ -473,7 +502,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081145</span>}
+        {showVersion && <span className="version">12081155</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
