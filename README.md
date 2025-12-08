@@ -45,12 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081225` (2025-12-08 12:25)
+**Latest Version:** `12081233` (2025-12-08 12:33)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081225** - **Fix UI Navigation:**
-   - **Improvement:** "View Board" button now keeps you on the game screen instead of quitting to lobby. Added separate "Back to Lobby" button.
-   - **Previous:** Fix Card Selection (v12081215).
+1. **v12081233** - **Revert UI Changes:**
+   - **Revert:** Reverted Game Result UI enhancements due to reported bugs. Restored previous stable layout (v12081225).
+   - **Previous:** (Reverted) Game Result UI Enhancements (v12081230).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).
