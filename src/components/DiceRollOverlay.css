@@ -21,6 +21,23 @@
     gap: 2rem;
 }
 
+.roll-dice-container .dice {
+    font-size: 3rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 600px) {
+    .roll-dice-container .dice {
+        font-size: 1.5rem;
+        /* Reduce size by half for mobile */
+    }
+
+    .roll-dice-container {
+        gap: 1rem;
+        /* Reduce gap */
+    }
+}
+
 .dice-roll-title {
     color: white;
     font-size: 2.5rem;
