@@ -3,18 +3,15 @@ import './Dice.css';
 
 interface DiceProps {
     value: number;
+    size?: 'small' | 'medium' | 'large';
+    className?: string;
 }
 
-export const Dice: React.FC<DiceProps> = ({ value }) => {
+export const Dice: React.FC<DiceProps> = ({ value, size = 'medium', className = '' }) => {
     // Map value to dot positions
-    // 1: center
-    // 2: top-left, bottom-right
-    // 3: top-left, center, bottom-right
-    // 4: corners
-    // 5: corners + center
-    // 6: 2 rows of 3
-
+    // ...
     const renderDots = () => {
+        // ... (same as before)
         const dots = [];
         if (value === 1 || value === 3 || value === 5) dots.push(<div key="c" className="dot center" />);
         if (value >= 2) {
@@ -33,7 +30,7 @@ export const Dice: React.FC<DiceProps> = ({ value }) => {
     };
 
     return (
-        <div className="dice">
+        <div className={`dice ${size} ${className}`}>
             {renderDots()}
         </div>
     );

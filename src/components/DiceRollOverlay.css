@@ -1,0 +1,122 @@
+.dice-roll-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    /* Higher than results modal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.dice-roll-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.dice-roll-title {
+    color: white;
+    font-size: 2.5rem;
+    text-shadow: 0 0 10px rgba(79, 172, 254, 0.8);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.dice-container-large {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.rolling-dice {
+    transition: transform 0.2s;
+}
+
+.rolling-dice.shaking {
+    animation: shake 0.1s infinite;
+}
+
+.rolling-dice.landed {
+    transform: scale(1.1);
+    animation: land-pulse 0.3s ease-out;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+
+    30% {
+        transform: translate(3px, 2px) rotate(0deg);
+    }
+
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+
+    70% {
+        transform: translate(3px, 1px) rotate(-1deg);
+    }
+
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+
+    90% {
+        transform: translate(1px, 2px) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}
+
+@keyframes land-pulse {
+    0% {
+        transform: scale(1.1);
+        filter: brightness(1.5);
+    }
+
+    50% {
+        transform: scale(1.3);
+        filter: brightness(2);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    100% {
+        transform: scale(1.1);
+        filter: brightness(1);
+    }
+}
+
+@media (max-width: 600px) {
+    .dice-container-large {
+        gap: 0.5rem;
+    }
+
+    .dice-roll-title {
+        font-size: 1.5rem;
+    }
+}

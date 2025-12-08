@@ -45,12 +45,13 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081300` (2025-12-08 13:00)
+**Latest Version:** `12081315` (2025-12-08 13:15)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081300** - **UI Streamline:**
-   - **Update:** Removed "Column" number column from Game Result table.
-   - **Previous:** UI Polish Final (v12081258).
+1. **v12081315** - **New Feature: Dice Roll Animation:**
+   - **Feature:** Added a dramatic dice roll animation at the start of every battle to reveal the game dice.
+   - **Technical:** Implemented `DiceRollOverlay` and scalable Dice components.
+   - **Previous:** UI Streamline (v12081300).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

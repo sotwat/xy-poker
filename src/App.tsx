@@ -9,6 +9,7 @@ import { Hand } from './components/Hand';
 import { GameInfo } from './components/GameInfo';
 import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
+import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { socket, connectSocket } from './logic/online';
 import './App.css';
 
@@ -21,6 +22,7 @@ function App() {
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [placeHidden, setPlaceHidden] = useState(false);
+  const [showDiceAnimation, setShowDiceAnimation] = useState(false);
 
   // Online State
   const [mode, setMode] = useState<'local' | 'online'>('local');
@@ -499,7 +501,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081300</span>}
+        {showVersion && <span className="version">12081315</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -685,7 +687,15 @@ function App() {
                 p2Name={p2DisplayName}
                 ratingUpdates={ratingUpdates}
               />
-            )}</footer>
+            )}
+
+            {showDiceAnimation && (
+              <DiceRollOverlay
+                targetValues={players[0].dice}
+                onComplete={() => setShowDiceAnimation(false)}
+              />
+            )}
+          </footer>
 
 
         </>
