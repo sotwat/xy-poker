@@ -54,7 +54,7 @@
 .table-header,
 .table-row {
     display: grid;
-    grid-template-columns: 0.5fr 0.5fr 2fr 2fr;
+    grid-template-columns: 0.5fr 2fr 2fr;
     gap: 1rem;
     align-items: center;
     text-align: center;
@@ -250,7 +250,7 @@
 
     .table-header,
     .table-row {
-        grid-template-columns: 0.5fr 0.5fr 1.5fr 1.5fr;
+        grid-template-columns: 0.5fr 1.5fr 1.5fr;
         font-size: 0.5rem;
         gap: 0.15rem;
         padding: 0.15rem;

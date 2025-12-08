@@ -98,14 +98,12 @@ export const GameResult: React.FC<GameResultProps> = ({
 
                 <div className="results-table">
                     <div className="table-header">
-                        <div>Column</div>
                         <div>Dice</div>
                         <div>{p1Name}</div>
                         <div>{p2Name}</div>
                     </div>
                     {columnResults.map((res, idx) => (
                         <div key={idx} className="table-row">
-                            <div>{idx + 1}</div>
                             <div className="dice-val">{res.dice}</div>
                             <div className={`hand-name ${res.winner === 'p1' ? 'p1-text' : ''}`}>{res.p1Hand}</div>
                             <div className={`hand-name ${res.winner === 'p2' ? 'p2-text' : ''}`}>{res.p2Hand}</div>
@@ -116,7 +114,6 @@ export const GameResult: React.FC<GameResultProps> = ({
 
                     <div className="table-row x-hand-row">
                         <div>X-Hand</div>
-                        <div></div>
                         <div className={`hand-name ${xWinner === 'p1' ? 'p1-text' : ''}`}>
                             {getHandName(p1XRes.type)} <span className="score-detail">({p1XScore})</span>
                         </div>
