@@ -100,19 +100,15 @@ export const GameResult: React.FC<GameResultProps> = ({
                     <div className="table-header">
                         <div>Column</div>
                         <div>Dice</div>
-                        <div>P1</div>
-                        <div>P2</div>
-                        <div>Winner</div>
+                        <div>{p1Name}</div>
+                        <div>{p2Name}</div>
                     </div>
                     {columnResults.map((res, idx) => (
                         <div key={idx} className="table-row">
                             <div>{idx + 1}</div>
                             <div className="dice-val">{res.dice}</div>
-                            <div className={`hand-name ${res.winner === 'p1' ? 'win' : ''}`}>{res.p1Hand}</div>
-                            <div className={`hand-name ${res.winner === 'p2' ? 'win' : ''}`}>{res.p2Hand}</div>
-                            <div className={`winner-col ${res.winner}`}>
-                                {res.winner === 'p1' ? p1Name : res.winner === 'p2' ? p2Name : 'Draw'}
-                            </div>
+                            <div className={`hand-name ${res.winner === 'p1' ? 'p1-text' : ''}`}>{res.p1Hand}</div>
+                            <div className={`hand-name ${res.winner === 'p2' ? 'p2-text' : ''}`}>{res.p2Hand}</div>
                         </div>
                     ))}
 
@@ -121,14 +117,11 @@ export const GameResult: React.FC<GameResultProps> = ({
                     <div className="table-row x-hand-row">
                         <div>X-Hand</div>
                         <div></div>
-                        <div className={`hand-name ${xWinner === 'p1' ? 'win' : ''}`}>
+                        <div className={`hand-name ${xWinner === 'p1' ? 'p1-text' : ''}`}>
                             {getHandName(p1XRes.type)} <span className="score-detail">({p1XScore})</span>
                         </div>
-                        <div className={`hand-name ${xWinner === 'p2' ? 'win' : ''}`}>
+                        <div className={`hand-name ${xWinner === 'p2' ? 'p2-text' : ''}`}>
                             {getHandName(p2XRes.type)} <span className="score-detail">({p2XScore})</span>
-                        </div>
-                        <div className={`winner-col ${xWinner}`}>
-                            {xWinner === 'p1' ? p1Name : xWinner === 'p2' ? p2Name : 'Draw'}
                         </div>
                     </div>
                 </div>
