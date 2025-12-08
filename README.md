@@ -45,14 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081347` (2025-12-08 13:47)
+**Latest Version:** `12081351` (2025-12-08 13:51)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081347** - **Fix: Quick Match Auto-Start:**
-   - **Fix:** Server now correctly initializes game session and emits `game_start` for Quick Matches.
-   - **Fix:** Client correctly triggers Start Game and Animation on `game_start` signal.
-   - **Fix:** Animation Visibility logic improved.
-   - **Previous:** Fix: Dice Animation Staging (v12081340).
+1. **v12081351** - **Feature: Local Dice Animation:**
+   - **Feature:** Enabled Dice Roll Animation for Local Mode (vs AI) and Quick Match Bot Fallback.
+   - **Previous:** Fix: Quick Match Auto-Start (v12081347).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

@@ -306,6 +306,7 @@ function App() {
   const handleStartGame = () => {
     playClickSound();
     dispatch({ type: 'START_GAME' });
+    setShowDiceAnimation(true);
     setShowResultsModal(false);
   };
 
@@ -338,6 +339,7 @@ function App() {
     setTimeout(() => {
       playSuccessSound();
       dispatch({ type: 'START_GAME' });
+      setShowDiceAnimation(true);
     }, 500);
   };
 
@@ -507,7 +509,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081347</span>}
+        {showVersion && <span className="version">12081351</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
