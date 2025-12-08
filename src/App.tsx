@@ -372,11 +372,8 @@ function App() {
         if (response.opponentName) {
           setOpponentName(response.opponentName);
         }
-        // If match found immediately (rare/callback), timer will be cleared by isQuickMatch change or explicit clear
-        if (quickMatchTimeoutRef.current) {
-          clearTimeout(quickMatchTimeoutRef.current);
-          quickMatchTimeoutRef.current = null;
-        }
+        // DO NOT clear timer here. We are just in the queue.
+        // Timer clears only on game_start or cancel.
       } else {
         setIsQuickMatch(false);
         if (quickMatchTimeoutRef.current) {
@@ -502,7 +499,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081155</span>}
+        {showVersion && <span className="version">12081200</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
