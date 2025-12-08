@@ -64,7 +64,11 @@ export const Lobby: React.FC<LobbyProps> = ({
                         fontSize: '0.9rem',
                         color: '#ffffff',
                         fontWeight: 'bold',
-                        textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: '4px 12px',
+                        borderRadius: '12px',
+                        display: 'inline-block',
+                        textShadow: 'none'
                     }}>
                         Your Rating: <span style={{ fontSize: '1.1rem' }}>{rating}</span>
                     </div>

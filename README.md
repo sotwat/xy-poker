@@ -45,14 +45,13 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081055` (2025-12-08 10:55)
+**Latest Version:** `12081117` (2025-12-08 11:17)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081055** - **UI & Config Updates:**
-   - **Initial Rating:** Reset to 1500 (from 1000).
-   - **Rating Visibility:** Changed text color to White for better readability.
-   - **Layout:** Added Ad Banner placeholder to Local (vs AI) setup screen.
-   - **Compliance:** Verified Vercel project deletion.
+1. **v12081117** - **UI Tweaks:**
+   - **Ad Banner:** Moved to the absolute bottom of the Local Selection screen.
+   - **Rating:** Added black pill-shape background to rating text for visibility.
+   - **Version:** Bumped to match update time.
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

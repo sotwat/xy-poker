@@ -415,7 +415,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081055</span>}
+        {showVersion && <span className="version">12081117</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -490,17 +490,18 @@ function App() {
                     <p>Your game will start automatically when an opponent joins</p>
                   </div>
                 ) : mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
-                  <>
-                    <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
-                    <div className="ad-banner-container">
-                      {/* Ad Banner Space */}
-                      <p style={{ color: '#666', fontSize: '0.8rem' }}>Ad Banner Space</p>
-                    </div>
-                  </>
+                  <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
                 ) : (
                   <div className="waiting-message">
                     <h3>Waiting for Host to start game...</h3>
                     <div className="loading-spinner"></div>
+                  </div>
+                )}
+
+                {/* Ad Banner for Local Mode Setup */}
+                {mode === 'local' && phase === 'setup' && (
+                  <div className="ad-banner-container" style={{ position: 'absolute', bottom: '20px', width: '90%', left: '50%', transform: 'translateX(-50%)' }}>
+                    <p style={{ color: '#666', fontSize: '0.8rem' }}>Ad Banner Space</p>
                   </div>
                 )}
               </div>
