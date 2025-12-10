@@ -45,12 +45,15 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081958` (2025-12-08 19:58)
+**Latest Version:** `12082015` (2025-12-08 20:15)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081958** - **Fix: Room Auto-Start Reliability:**
+1. **v12082015** - **Feature: Turn Timer:**
+   - **Feature:** Added 60s Turn Timer.
+   - **Logic:** Auto-places random card if time runs out.
+   - **UI:** Visible timer with active player's color border.
+2. **v12081958** - **Fix: Room Auto-Start Reliability:**
    - **Fix:** Fixed server race condition in Room Join (await socket.join). Updated Lobby text to reflect auto-start.
-   - **Previous:** Feature: Room Auto-Start (v12081955).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

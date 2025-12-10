@@ -11,6 +11,7 @@ import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
 import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { RulesModal } from './components/RulesModal';
+import { TurnTimer } from './components/TurnTimer';
 import { socket, connectSocket } from './logic/online';
 import './App.css';
 
@@ -38,6 +39,10 @@ function App() {
   // Rating State
   const [myRating, setMyRating] = useState<number | null>(null);
   const [ratingUpdates, setRatingUpdates] = useState<any>(null);
+
+  // Turn Timer State
+  const [timeLeft, setTimeLeft] = useState(60);
+  const turnTimerRef = useRef<any>(null);
 
   // Player Names - Generate random name for uniqueness
   const [playerName, setPlayerName] = useState(() => {
@@ -322,6 +327,92 @@ function App() {
     }
   }, [mode, isOnlineGame]);
 
+  // Turn Timer Logic
+  useEffect(() => {
+    if (phase !== 'playing' || showDiceAnimation) return;
+
+    // Reset timer on turn change
+    setTimeLeft(60);
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          handleAutoPlay();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    turnTimerRef.current = timer;
+
+    return () => clearInterval(timer);
+  }, [currentPlayerIndex, phase, showDiceAnimation]); // Reset when turn changes
+
+  const handleAutoPlay = () => {
+    if (phase !== 'playing') return;
+
+    // Check if it's "MY" turn to act.
+    // In Local: App handles both.
+    // In Online: Only handle if it is MY turn.
+
+    let myPlayerIndex = 0;
+    if (isOnlineGame) {
+      myPlayerIndex = playerRole === 'host' ? 0 : 1;
+    }
+
+    // Safety: If online and not my turn, DO NOT auto-play for opponent (they handle their own)
+    if (isOnlineGame && currentPlayerIndex !== myPlayerIndex) {
+      console.log("Timer expired for opponent - waiting for their move...");
+      return;
+    }
+
+    console.log("Timer expired - Auto-playing random move");
+
+    const currentPlayer = gameState.players[currentPlayerIndex];
+    if (currentPlayer.hand.length === 0) return; // Should not happen in playing phase
+
+    // Pick random card
+    const randomCardIndex = Math.floor(Math.random() * currentPlayer.hand.length);
+    const card = currentPlayer.hand[randomCardIndex];
+
+    // Find valid columns
+    const validCols = [];
+    for (let c = 0; c < 5; c++) {
+      if (!currentPlayer.board[0][c] || !currentPlayer.board[1][c] || !currentPlayer.board[2][c]) {
+        // Check specific row availability is complex with current structure?
+        // Actually board is [row][col]. 
+        // Logic: We place in column. Game logic finds first empty row from bottom (2->0) or top?
+        // Game logic `placeCard(player, card, colIndex)` handles row placement.
+        // We just need to check if column is full.
+        if (!currentPlayer.board[0][c]) { // If top row is empty, column has space
+          validCols.push(c);
+        }
+      }
+    }
+
+    if (validCols.length === 0) return; // Board full?
+
+    const randomCol = validCols[Math.floor(Math.random() * validCols.length)];
+
+    const action = {
+      type: 'PLACE_AND_DRAW',
+      payload: {
+        cardId: card.id,
+        colIndex: randomCol,
+        isHidden: false // Random placement is public
+      }
+    };
+
+    dispatch(action as any);
+    playClickSound();
+
+    if (isOnlineGame && roomId) {
+      socket.emit('game_action', { roomId, action });
+    }
+  };
+
   const handleStartGame = () => {
     playClickSound();
     dispatch({ type: 'START_GAME' });
@@ -531,7 +622,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081958</span>}
+        {showVersion && <span className="version">12082015</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -598,6 +689,15 @@ function App() {
             />
           ) : (
             <>
+              {/* Turn Timer Conditionally Rendered */}
+              {!showDiceAnimation && phase === 'playing' && (
+                <TurnTimer
+                  timeLeft={timeLeft}
+                  totalTime={60}
+                  currentPlayerIndex={currentPlayerIndex}
+                  isMyTurn={(!isOnlineGame) || (playerRole === 'host' && currentPlayerIndex === 0) || (playerRole === 'guest' && currentPlayerIndex === 1)}
+                />
+              )}
               <main className="game-board">
                 {phase === 'setup' && (
                   <div className="setup-screen">
