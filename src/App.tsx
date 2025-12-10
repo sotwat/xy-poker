@@ -677,10 +677,10 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12082100</span>}
+        {showVersion && <span className="version">12082131</span>}
 
         {/* Auth Button (Top Right) */}
-        {!isOnlineGame && phase !== 'playing' && (
+        {false && !isOnlineGame && phase !== 'playing' && (
           <div className="auth-status" style={{ position: 'absolute', top: 10, right: 10, zIndex: 50 }}>
             {session ? (
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
