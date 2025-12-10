@@ -529,7 +529,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081910</span>}
+        {showVersion && <span className="version">12081920</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -666,19 +666,22 @@ function App() {
                         isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
                       />
                     </div>
-                    <div className="action-bar">
-                      <div className="place-controls">
-                        <label className="toggle-hidden">
-                          <input
-                            type="checkbox"
-                            checked={placeHidden}
-                            onChange={(e) => setPlaceHidden(e.target.checked)}
-                            disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
-                          />
-                          Place Face Down ({3 - currentPlayer.hiddenCardsCount} left)
-                        </label>
+                    {/* Only show action controls during my turn */}
+                    {currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0) && (
+                      <div className="action-bar">
+                        <div className="place-controls">
+                          <label className="toggle-hidden">
+                            <input
+                              type="checkbox"
+                              checked={placeHidden}
+                              onChange={(e) => setPlaceHidden(e.target.checked)}
+                              disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
+                            />
+                            Place Face Down ({3 - currentPlayer.hiddenCardsCount} left)
+                          </label>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </>
                 )}
 
