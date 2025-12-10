@@ -423,6 +423,13 @@ function App() {
 
   const handleStartGame = () => {
     playClickSound();
+
+    // Explicitly reset disguise for manual local starts (e.g. from Setup screen)
+    if (mode === 'local') {
+      setIsBotDisguise(false);
+      setOpponentName('AI');
+    }
+
     dispatch({ type: 'START_GAME' });
     setShowDiceAnimation(true);
     setShowResultsModal(false);
@@ -633,7 +640,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12082030</span>}
+        {showVersion && <span className="version">12082035</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
