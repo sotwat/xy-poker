@@ -39,6 +39,7 @@ function App() {
   // Rating State
   const [myRating, setMyRating] = useState<number | null>(null);
   const [ratingUpdates, setRatingUpdates] = useState<any>(null);
+  const [isBotDisguise, setIsBotDisguise] = useState(false);
 
   // Turn Timer State
   const [timeLeft, setTimeLeft] = useState(60);
@@ -285,8 +286,13 @@ function App() {
   const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
 
   // AI Turn Logic (Example)
+  // AI Turn Logic (Example)
   useEffect(() => {
     if (mode === 'local' && phase === 'playing' && currentPlayerIndex === 1) {
+      // Disguised Bot: 2000ms - 5000ms delay
+      // Standard AI: 1000ms fixed
+      const delay = isBotDisguise ? (2000 + Math.random() * 3000) : 1000;
+
       const timer = setTimeout(() => {
         const move = getBestMove(gameState, 1);
         dispatch({
@@ -298,10 +304,10 @@ function App() {
           }
         });
         playClickSound();
-      }, 1000);
+      }, delay);
       return () => clearTimeout(timer);
     }
-  }, [gameState, mode]);
+  }, [gameState, mode, isBotDisguise]); // Added isBotDisguise dependency
 
   useEffect(() => {
     if (phase === 'ended') {
@@ -440,7 +446,10 @@ function App() {
     setRoomId(null);
     setPlayerRole(null);
     setIsOnlineGame(false);
-    setOpponentName('AI (Bot)');
+
+    // Disguise as Human
+    setOpponentName(generateRandomPlayerName());
+    setIsBotDisguise(true);
 
     // Reset state and start
     dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
@@ -622,7 +631,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12082015</span>}
+        {showVersion && <span className="version">12082025</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -633,6 +642,8 @@ function App() {
                 setIsOnlineGame(false);
                 setRoomId(null);
                 setPlayerRole(null);
+                setIsBotDisguise(false); // Reset disguise for explicit local mode
+                setOpponentName('AI');   // Explicit AI name
                 dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
               }}
             >
