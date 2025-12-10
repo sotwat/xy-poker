@@ -33,7 +33,7 @@
 
 .app-header .version {
   position: absolute;
-  right: 1rem;
+  right: 0.2rem;
   top: 50%;
   transform: translateY(-50%);
   font-size: 0.6rem;
