@@ -214,59 +214,64 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join_room', async ({ roomId, playerName, browserId }, callback) => {
-        const room = rooms[roomId];
-        if (room && room.players.length < 2) {
-            // Fetch rating
-            const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`);
-            const rating = player ? player.rating : 1500;
+        try {
+            const room = rooms[roomId];
+            if (room && room.players.length < 2) {
+                // Fetch rating
+                const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`);
+                const rating = player ? player.rating : 1500;
 
-            const guestPlayer = {
-                id: socket.id,
-                name: playerName || 'Player 2',
-                browserId: browserId,
-                rating: rating
-            };
+                const guestPlayer = { 
+                    id: socket.id, 
+                    name: playerName || 'Player 2',
+                    browserId: browserId,
+                    rating: rating
+                };
 
-            room.players.push(guestPlayer);
-            socket.join(roomId);
+                room.players.push(guestPlayer);
+                await socket.join(roomId);
 
-            // Send opponent name to guest
-            const hostPlayer = room.players[0];
-            const hostName = hostPlayer.name;
-            callback({ success: true, opponentName: hostName });
+                // Send opponent name to guest
+                const hostPlayer = room.players[0];
+                const hostName = hostPlayer.name;
+                callback({ success: true, opponentName: hostName });
 
-            // Notify host that P2 joined with their name
-            io.to(hostPlayer.id).emit('player_joined', { playerId: socket.id, playerName: guestPlayer.name });
-            console.log(`User ${socket.id} joined room ${roomId}`);
+                // Notify host that P2 joined with their name
+                io.to(hostPlayer.id).emit('player_joined', { playerId: socket.id, playerName: guestPlayer.name });
+                console.log(`User ${socket.id} joined room ${roomId}`);
 
-            // AUTO-START GAME for Room Match
-            console.log(`Room ${roomId} is full, auto-starting game...`);
+                // AUTO-START GAME for Room Match
+                console.log(`Room ${roomId} is full, auto-starting game...`);
 
-            // Initialize game state tracking
-            games[roomId] = {
-                gameState: {
+                // Initialize game state tracking
+                games[roomId] = {
+                    gameState: {
+                        p1Rating: hostPlayer.rating,
+                        p2Rating: guestPlayer.rating,
+                        p1BrowserId: hostPlayer.browserId,
+                        p2BrowserId: guestPlayer.browserId
+                    }
+                };
+
+                const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+
+                io.to(roomId).emit('game_start', {
+                    roomId,
+                    p1Name: hostPlayer.name,
+                    p2Name: guestPlayer.name,
                     p1Rating: hostPlayer.rating,
                     p2Rating: guestPlayer.rating,
-                    p1BrowserId: hostPlayer.browserId,
-                    p2BrowserId: guestPlayer.browserId
-                }
-            };
+                    p1Id: hostPlayer.id,
+                    p2Id: guestPlayer.id,
+                    initialDice
+                });
 
-            const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
-
-            io.to(roomId).emit('game_start', {
-                roomId,
-                p1Name: hostPlayer.name,
-                p2Name: guestPlayer.name,
-                p1Rating: hostPlayer.rating,
-                p2Rating: guestPlayer.rating,
-                p1Id: hostPlayer.id,
-                p2Id: guestPlayer.id,
-                initialDice
-            });
-
-        } else {
-            callback({ success: false, message: 'Room not found or full' });
+            } else {
+                callback({ success: false, message: 'Room not found or full' });
+            }
+        } catch (error) {
+            console.error('Error in join_room:', error);
+            callback({ success: false, message: 'Internal server error' });
         }
     });
 

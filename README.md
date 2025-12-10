@@ -45,13 +45,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081955` (2025-12-08 19:55)
+**Latest Version:** `12081958` (2025-12-08 19:58)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081955** - **Feature: Room Auto-Start:**
-   - **Feature:** Room Matches now auto-start immediately when an opponent joins (like Quick Match).
-   - **Update:** Ratings are now tracked in Room Matches as well.
-   - **Previous:** Fix: Hidden Count Leak (v12081920).
+1. **v12081958** - **Fix: Room Auto-Start Reliability:**
+   - **Fix:** Fixed server race condition in Room Join (await socket.join). Updated Lobby text to reflect auto-start.
+   - **Previous:** Feature: Room Auto-Start (v12081955).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).

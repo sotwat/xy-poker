@@ -133,8 +133,8 @@ export const Lobby: React.FC<LobbyProps> = ({
                             </button>
                         )}
                     </div>
-                    <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for host to start game...'}</p>
-                    {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent to join...</div>}
+                    <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for game to start...'}</p>
+                    {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent... Game starts automatically.</div>}
                     {playerRole === 'guest' && <div className="loading-spinner">Connected to Room</div>}
                     <button className="btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
                         Cancel
