@@ -45,12 +45,13 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12082025` (2025-12-08 20:25)
+**Latest Version:** `12082030` (2025-12-08 20:30)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12082025** - **Feature: Disguised Bot:**
+1. **v12082030** - **Fix: Bot Disguise Name:**
+   - **Fix:** Prevented "AI" name overwrite when starting Disguised Bot match.
+2. **v12082025** - **Feature: Disguised Bot:**
    - **Feature:** Quick Match Fallback bots now have random names and human-like "thinking" delays (2-5s).
-   - **UX:** Players cannot distinguish fallback bots from real players.
 2. **v12082015** - **Feature: Turn Timer:**
    - **Feature:** Added 60s Turn Timer.
 2. **v12081958** - **Fix: Room Auto-Start Reliability:**
