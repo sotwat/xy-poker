@@ -363,14 +363,16 @@ function App() {
   };
 
   const handleCreateRoom = () => {
-    socket.emit('create_room', { playerName }, (response: any) => {
+    const browserId = getBrowserId();
+    socket.emit('create_room', { playerName, browserId }, (response: any) => {
       setRoomId(response.roomId);
       setPlayerRole('host');
     });
   };
 
   const handleJoinRoom = (id: string) => {
-    socket.emit('join_room', { roomId: id, playerName }, (response: any) => {
+    const browserId = getBrowserId();
+    socket.emit('join_room', { roomId: id, playerName, browserId }, (response: any) => {
       if (response.success) {
         setRoomId(id);
         setPlayerRole('guest');
@@ -529,7 +531,7 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12081920</span>}
+        {showVersion && <span className="version">12081955</span>}
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button

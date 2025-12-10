@@ -193,29 +193,78 @@ io.on('connection', (socket) => {
 
     // ... existing action handlers ...
 
-    socket.on('create_room', ({ playerName }, callback) => {
+    socket.on('create_room', async ({ playerName, browserId }, callback) => {
         const roomId = Math.floor(1000 + Math.random() * 9000).toString();
-        rooms[roomId] = { players: [{ id: socket.id, name: playerName || 'Player 1' }] };
+
+        // Fetch rating
+        const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`);
+        const rating = player ? player.rating : 1500;
+
+        rooms[roomId] = {
+            players: [{
+                id: socket.id,
+                name: playerName || 'Player 1',
+                browserId: browserId,
+                rating: rating
+            }]
+        };
         socket.join(roomId);
         callback({ roomId });
-        console.log(`Room ${roomId} created by ${socket.id}`);
+        console.log(`Room ${roomId} created by ${socket.id} (Rating: ${rating})`);
     });
 
-    socket.on('join_room', ({ roomId, playerName }, callback) => {
+    socket.on('join_room', async ({ roomId, playerName, browserId }, callback) => {
         const room = rooms[roomId];
         if (room && room.players.length < 2) {
-            room.players.push({ id: socket.id, name: playerName || 'Player 2' });
+            // Fetch rating
+            const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`);
+            const rating = player ? player.rating : 1500;
+
+            const guestPlayer = {
+                id: socket.id,
+                name: playerName || 'Player 2',
+                browserId: browserId,
+                rating: rating
+            };
+
+            room.players.push(guestPlayer);
             socket.join(roomId);
 
             // Send opponent name to guest
-            const hostName = room.players[0].name;
+            const hostPlayer = room.players[0];
+            const hostName = hostPlayer.name;
             callback({ success: true, opponentName: hostName });
 
             // Notify host that P2 joined with their name
-            io.to(room.players[0].id).emit('player_joined', { playerId: socket.id, playerName: playerName || 'Player 2' });
+            io.to(hostPlayer.id).emit('player_joined', { playerId: socket.id, playerName: guestPlayer.name });
             console.log(`User ${socket.id} joined room ${roomId}`);
 
-            // Start game? Host can start.
+            // AUTO-START GAME for Room Match
+            console.log(`Room ${roomId} is full, auto-starting game...`);
+
+            // Initialize game state tracking
+            games[roomId] = {
+                gameState: {
+                    p1Rating: hostPlayer.rating,
+                    p2Rating: guestPlayer.rating,
+                    p1BrowserId: hostPlayer.browserId,
+                    p2BrowserId: guestPlayer.browserId
+                }
+            };
+
+            const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+
+            io.to(roomId).emit('game_start', {
+                roomId,
+                p1Name: hostPlayer.name,
+                p2Name: guestPlayer.name,
+                p1Rating: hostPlayer.rating,
+                p2Rating: guestPlayer.rating,
+                p1Id: hostPlayer.id,
+                p2Id: guestPlayer.id,
+                initialDice
+            });
+
         } else {
             callback({ success: false, message: 'Room not found or full' });
         }

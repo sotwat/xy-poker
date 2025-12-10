@@ -45,12 +45,13 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12081920` (2025-12-08 19:20)
+**Latest Version:** `12081955` (2025-12-08 19:55)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12081920** - **Fix: Hidden Count Leak:**
-   - **Fix:** "Place Face Down" control is now hidden during opponent's turn, preventing display of opponent's remaining count.
-   - **Previous:** Update: Rules Correction (v12081910).
+1. **v12081955** - **Feature: Room Auto-Start:**
+   - **Feature:** Room Matches now auto-start immediately when an opponent joins (like Quick Match).
+   - **Update:** Ratings are now tracked in Room Matches as well.
+   - **Previous:** Fix: Hidden Count Leak (v12081920).
 2. **v12080225** - **UI Restoration:**
    - Removed Ad Banner (reverted unrequested layout change).
    - Removed Opponent Hand display (reverted unrequested UI).
