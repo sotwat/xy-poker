@@ -42,24 +42,61 @@ function calculateEloChange(playerRating, opponentRating, actualScore) {
 const matchmakingQueue = []; // This was already here, but the new code implies a 'quickMatchQueue'
 
 // Helper to get or create player
-async function getOrCreatePlayer(browserId) {
-    const { data: existing, error } = await supabase
+// Helper to get or create player with Account Linking
+async function getOrCreatePlayer(browserId, userId) {
+    // 1. If userId is provided, try to find by User ID first (Primary Identity)
+    if (userId) {
+        const { data: userPlayer } = await supabase
+            .from('players')
+            .select('*')
+            .eq('user_id', userId)
+            .single();
+
+        if (userPlayer) return userPlayer;
+    }
+
+    // 2. Fallback: Find by Browser ID (Device Identity)
+    const { data: browserPlayer } = await supabase
         .from('players')
         .select('*')
         .eq('browser_id', browserId)
         .single();
 
-    if (existing) return existing;
+    // 3. Account Linking: If logged in (userId) but no user profile found,
+    // AND we found a browser profile that is UNCLAIMED (user_id is null),
+    // then LINK this browser profile to the account.
+    if (userId && browserPlayer && !browserPlayer.user_id) {
+        console.log(`Linking browser profile ${browserId} to user ${userId}`);
+        const { data: linkedPlayer, error: linkError } = await supabase
+            .from('players')
+            .update({ user_id: userId })
+            .eq('browser_id', browserId)
+            .select()
+            .single();
+
+        if (!linkError) return linkedPlayer;
+    }
+
+    // 4. Return browser player if found (and not linked above)
+    if (browserPlayer) return browserPlayer;
+
+    // 5. Create NEW player
+    // If logged in, create with user_id. Else, just browser_id.
+    const newPlayerData = {
+        browser_id: browserId,
+        rating: 1500,
+        ...(userId ? { user_id: userId } : {})
+    };
 
     const { data: newPlayer, error: createError } = await supabase
         .from('players')
-        .insert([{ browser_id: browserId, rating: 1500 }])
+        .insert([newPlayerData])
         .select()
         .single();
 
     if (createError) {
         console.error('Error creating player:', createError);
-        return null;
+        return null; // Should handle gracefully
     }
     return newPlayer;
 }
@@ -71,18 +108,18 @@ const games = {}; // To store game-specific data for quick matches
 io.on('connection', (socket) => {
     console.log('New client connected:', socket.id);
 
-    socket.on('join_quick_match', async ({ browserId, playerName }) => {
+    socket.on('join_quick_match', async ({ browserId, playerName, userId }) => {
         // If no browserId provided (old client), generate a random temp one or fail
         const bId = browserId || `temp_${socket.id}`;
 
         // Fetch player data
-        const player = await getOrCreatePlayer(bId);
+        const player = await getOrCreatePlayer(bId, userId);
         if (!player) {
             socket.emit('error', 'Failed to fetch player data');
             return;
         }
 
-        socket.browserId = bId;
+        socket.browserId = player.browser_id; // Use canonical DB Browser ID for updates
         socket.rating = player.rating;
         socket.playerName = playerName || `Player (R:${player.rating})`; // Store name
 
@@ -132,8 +169,8 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('get_player_data', async ({ browserId }) => {
-        const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`);
+    socket.on('get_player_data', async ({ browserId, userId }) => {
+        const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`, userId);
         if (player) {
             socket.emit('player_data', { rating: player.rating });
         }
@@ -193,18 +230,19 @@ io.on('connection', (socket) => {
 
     // ... existing action handlers ...
 
-    socket.on('create_room', async ({ playerName, browserId }, callback) => {
-        const roomId = Math.floor(1000 + Math.random() * 9000).toString();
+    socket.on('create_room', async ({ playerName, browserId, userId }, callback) => {
+        const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-        // Fetch rating
-        const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`);
+        // Fetch player data for rating
+        const player = await getOrCreatePlayer(browserId, userId);
         const rating = player ? player.rating : 1500;
 
         rooms[roomId] = {
             players: [{
                 id: socket.id,
                 name: playerName || 'Player 1',
-                browserId: browserId,
+                browserId: player ? player.browser_id : browserId, // Use player's browser_id, or original if player not found
+                userId: player ? player.user_id : userId, // Use player's user_id, or original if player not found
                 rating: rating
             }]
         };
@@ -213,16 +251,16 @@ io.on('connection', (socket) => {
         console.log(`Room ${roomId} created by ${socket.id} (Rating: ${rating})`);
     });
 
-    socket.on('join_room', async ({ roomId, playerName, browserId }, callback) => {
+    socket.on('join_room', async ({ roomId, playerName, browserId, userId }, callback) => {
         try {
             const room = rooms[roomId];
             if (room && room.players.length < 2) {
-                // Fetch rating
-                const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`);
+                // Fetch player data
+                const player = await getOrCreatePlayer(browserId, userId);
                 const rating = player ? player.rating : 1500;
 
-                const guestPlayer = { 
-                    id: socket.id, 
+                const guestPlayer = {
+                    id: socket.id,
                     name: playerName || 'Player 2',
                     browserId: browserId,
                     rating: rating

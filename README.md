@@ -45,13 +45,15 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12082035` (2025-12-08 20:35)
+**Latest Version:** `12082100` (2025-12-08 21:00)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12082035** - **Fix: Local Mode Disguise Leak:**
+1. **v12082100** - **Feature: Email Accounts:**
+   - **Feature:** Added Email/Password Sign Up & Login.
+   - **Data:** Accounts can link existing device ratings.
+   - **Requirement:** Database migration required (`user_id` column).
+2. **v12082035** - **Fix: Local Mode Disguise Leak:**
    - **Fix:** Ensured standard "Local (vs AI)" games always start as "AI" (removed random name leak).
-2. **v12082030** - **Fix: Bot Disguise Name:**
-   - **Fix:** Prevented "AI" name overwrite when starting Disguised Bot match.
 2. **v12082015** - **Feature: Turn Timer:**
    - **Feature:** Added 60s Turn Timer.
 2. **v12081958** - **Fix: Room Auto-Start Reliability:**

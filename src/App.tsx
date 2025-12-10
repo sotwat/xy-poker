@@ -12,7 +12,9 @@ import { Lobby } from './components/Lobby';
 import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { RulesModal } from './components/RulesModal';
 import { TurnTimer } from './components/TurnTimer';
+import { AuthModal } from './components/AuthModal';
 import { socket, connectSocket } from './logic/online';
+import { supabase } from './supabase';
 import './App.css';
 
 import { getBestMove } from './logic/ai';
@@ -40,6 +42,10 @@ function App() {
   const [myRating, setMyRating] = useState<number | null>(null);
   const [ratingUpdates, setRatingUpdates] = useState<any>(null);
   const [isBotDisguise, setIsBotDisguise] = useState(false);
+
+  // Auth State
+  const [session, setSession] = useState<any>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Turn Timer State
   const [timeLeft, setTimeLeft] = useState(60);
@@ -243,12 +249,15 @@ function App() {
   }, []); // Empty dependency array - only run once on mount
 
   // Fetch rating on connect
+  // (Moved to combined effect above to include session dependency)
+  /*
   useEffect(() => {
     if (isConnected) {
       const id = getBrowserId(); // Use utility to get or create
       socket.emit('get_player_data', { browserId: id });
     }
   }, [isConnected]);
+  */
 
   // Sync State on Change (Host only)
   useEffect(() => {
@@ -324,6 +333,31 @@ function App() {
   useEffect(() => {
     localStorage.setItem('xypoker_playerName_v2', playerName);
   }, [playerName]);
+
+  // Auth Listener
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch data when connection or session changes
+  useEffect(() => {
+    if (isConnected) {
+      const id = getBrowserId(); // Use utility to get or create
+      const userId = session?.user?.id;
+      // Re-fetch player data when session maps
+      socket.emit('get_player_data', { browserId: id, userId });
+    }
+  }, [isConnected, session]); // Trigger on session change too
 
   useEffect(() => {
     if (mode === 'local') {
@@ -473,7 +507,8 @@ function App() {
 
   const handleCreateRoom = () => {
     const browserId = getBrowserId();
-    socket.emit('create_room', { playerName, browserId }, (response: any) => {
+    const userId = session?.user?.id;
+    socket.emit('create_room', { playerName, browserId, userId }, (response: any) => {
       setRoomId(response.roomId);
       setPlayerRole('host');
     });
@@ -481,7 +516,8 @@ function App() {
 
   const handleJoinRoom = (id: string) => {
     const browserId = getBrowserId();
-    socket.emit('join_room', { roomId: id, playerName, browserId }, (response: any) => {
+    const userId = session?.user?.id;
+    socket.emit('join_room', { roomId: id, playerName, browserId, userId }, (response: any) => {
       if (response.success) {
         setRoomId(id);
         setPlayerRole('guest');
@@ -504,7 +540,8 @@ function App() {
     }, 15000);
 
     const browserId = getBrowserId();
-    socket.emit('quick_match', { playerName, browserId }, (response: any) => {
+    const userId = session?.user?.id;
+    socket.emit('quick_match', { playerName, browserId, userId }, (response: any) => {
       if (response.success) {
         // NOTE: response.roomId should be set immediately
         setRoomId(response.roomId);
@@ -640,7 +677,32 @@ function App() {
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <h1>XY Poker</h1>
-        {showVersion && <span className="version">12082035</span>}
+        {showVersion && <span className="version">12082100</span>}
+
+        {/* Auth Button (Top Right) */}
+        {!isOnlineGame && phase !== 'playing' && (
+          <div className="auth-status" style={{ position: 'absolute', top: 10, right: 10, zIndex: 50 }}>
+            {session ? (
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.8rem', color: '#aaa' }}>{session.user.email}</span>
+                <button
+                  onClick={() => supabase.auth.signOut()}
+                  style={{ padding: '4px 8px', fontSize: '0.8rem', background: '#333', border: '1px solid #555', color: '#fff', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAuthModal(true)}
+                style={{ padding: '6px 12px', background: '#4da8da', border: 'none', color: '#000', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
+              >
+                Login / Sign Up
+              </button>
+            )}
+          </div>
+        )}
+
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
@@ -709,6 +771,13 @@ function App() {
             />
           ) : (
             <>
+              {/* Auth Modal */}
+              <AuthModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                onSuccess={() => setShowAuthModal(false)}
+              />
+
               {/* Turn Timer Conditionally Rendered */}
               {!showDiceAnimation && phase === 'playing' && (
                 <TurnTimer
