@@ -231,7 +231,7 @@ io.on('connection', (socket) => {
     // ... existing action handlers ...
 
     socket.on('create_room', async ({ playerName, browserId, userId }, callback) => {
-        const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const roomId = Math.floor(1000 + Math.random() * 9000).toString();
 
         // Fetch player data for rating
         const player = await getOrCreatePlayer(browserId, userId);

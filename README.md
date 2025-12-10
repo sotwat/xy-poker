@@ -45,13 +45,14 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12082131` (2025-12-08 21:31)
+**Latest Version:** `12082145` (2025-12-08 21:45)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12082131** - **Config: Hide Auth:**
+1. **v12082145** - **UI & Config:**
+   - **UI:** Aligned Version number with Title row.
+   - **Config:** Room IDs are now 4-digit numbers.
+2. **v12082131** - **Config: Hide Auth:**
    - **Config:** Temporarily hidden Login/Sign Up button.
-2. **v12082100** - **Feature: Email Accounts:**
-   - **Feature:** Added Email/Password Sign Up & Login.
    - **Data:** Accounts can link existing device ratings.
    - **Requirement:** Database migration required (`user_id` column).
 2. **v12082035** - **Fix: Local Mode Disguise Leak:**

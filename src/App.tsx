@@ -676,8 +676,10 @@ function App() {
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
-        <h1>XY Poker</h1>
-        {showVersion && <span className="version">12082131</span>}
+        <div className="header-title-row">
+          <h1>XY Poker</h1>
+          {showVersion && <span className="version">12082145</span>}
+        </div>
 
         {/* Auth Button (Top Right) */}
         {false && !isOnlineGame && phase !== 'playing' && (
