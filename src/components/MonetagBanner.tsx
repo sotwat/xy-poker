@@ -35,18 +35,14 @@ const MonetagBanner: React.FC<MonetagBannerProps> = ({ width = 320, height = 50 
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <style>body { margin: 0; display: flex; justify-content: center; align-items: center; background: #fafafa; font-family: sans-serif; font-size: 10px; color: #aaa; }</style>
+                    <style>
+                        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: transparent; }
+                    </style>
                 </head>
                 <body>
-                    <!-- PASTE YOUR MONETAG BANNER/IN-PAGE ZONE SCRIPT HERE -->
-                    <div style="text-align: center;">
-                        MONETAG BANNER SPACE<br>
-                        (Paste Script in components/MonetagBanner.tsx)
-                    </div>
-                    
-                    <!-- Example:
-                    <script src="https://alwingulla.com/link/to/your/script"></script>
-                    -->
+                    <script>
+                        (function(s){s.dataset.zone='10307517',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
+                    </script>
                 </body>
                 </html>
             `);
