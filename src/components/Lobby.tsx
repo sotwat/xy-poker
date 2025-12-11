@@ -26,7 +26,6 @@ export const Lobby: React.FC<LobbyProps> = ({
     playerRole,
     playerName,
     onPlayerNameChange,
-    onPlayerNameChange,
     rating,
     onShowRules
 }) => {

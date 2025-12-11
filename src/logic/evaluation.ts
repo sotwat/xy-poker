@@ -93,7 +93,12 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
     // 6. Pure One Pair
     // Pair is Adjacent.
     if (isPair) {
-        if (isPair01 || isPair12) {
+        // Use POSITIONAL ranks check
+        const posRanks = cards.map(c => getRankValue(c.rank));
+        const isAdj01 = posRanks[0] === posRanks[1];
+        const isAdj12 = posRanks[1] === posRanks[2];
+
+        if (isAdj01 || isAdj12) {
             // Adjacent
             const pairRank = isPair01 ? ranks[0] : ranks[1];
             const kicker = isPair01 ? ranks[2] : ranks[0];
