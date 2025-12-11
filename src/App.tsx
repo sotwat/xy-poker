@@ -679,7 +679,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12082175</span>}
+          {showVersion && <span className="version">12082182</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -822,7 +822,7 @@ function App() {
 
                     {/* Ad Banner for Local Mode Setup */}
                     {mode === 'local' && phase === 'setup' && (
-                      <div style={{ position: 'absolute', bottom: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                      <div style={{ position: 'absolute', bottom: '0', width: '100%', display: 'flex', justifyContent: 'center', zIndex: 10 }}>
                         <MonetagBanner width={320} height={50} />
                       </div>
                     )}

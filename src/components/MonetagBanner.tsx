@@ -25,6 +25,7 @@ const MonetagBanner: React.FC<MonetagBannerProps> = ({ width = 320, height = 50 
         iframe.style.border = 'none';
         iframe.style.overflow = 'hidden';
         iframe.scrolling = 'no';
+        iframe.sandbox.add('allow-scripts', 'allow-forms', 'allow-popups');
 
         container.appendChild(iframe);
 
