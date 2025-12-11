@@ -38,6 +38,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [isQuickMatch, setIsQuickMatch] = useState(false);
+  const [isRankedGame, setIsRankedGame] = useState(false); // Track if current game is ranked
   const [scoringStep, setScoringStep] = useState(-1); // -1: hidden, 0-4: cols, 5: row
 
   // Rating State
@@ -273,10 +274,11 @@ function App() {
       playSuccessSound();
     });
 
-    socket.on('game_start', ({ roomId, initialDice, p1Name, p2Name, p1Id, p2Id }: any) => {
+    socket.on('game_start', ({ roomId, initialDice, p1Name, p2Name, p1Id, p2Id, isRanked }: any) => {
       setRoomId(roomId);
       // Determine if we should show animation (yes for everyone)
       setIsQuickMatch(false);
+      setIsRankedGame(!!isRanked); // Set ranked status
       setIsOnlineGame(true);
       playSuccessSound();
 
@@ -398,7 +400,8 @@ function App() {
 
   // Rating: Handle Game End Report (Host only)
   useEffect(() => {
-    if (isOnlineGame && playerRole === 'host' && roomId && gameState.phase === 'ended' && gameState.winner !== null) {
+    // Only report for RANKED games
+    if (isOnlineGame && isRankedGame && playerRole === 'host' && roomId && gameState.phase === 'ended' && gameState.winner !== null) {
       socket.emit('report_game_end', {
         roomId,
         winner: gameState.winner,

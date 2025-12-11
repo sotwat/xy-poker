@@ -301,7 +301,8 @@ io.on('connection', (socket) => {
                     p2Rating: guestPlayer.rating,
                     p1Id: hostPlayer.id,
                     p2Id: guestPlayer.id,
-                    initialDice
+                    initialDice,
+                    isRanked: false // Room matches are unranked
                 });
 
             } else {
@@ -378,7 +379,8 @@ io.on('connection', (socket) => {
                     p2Rating: socket.rating,
                     initialDice, // Send synchronized dice
                     p1Id: p1.id,
-                    p2Id: socket.id
+                    p2Id: socket.id,
+                    isRanked: true // Flag as ranked for rating updates
                 });
 
                 console.log(`Quick match: User ${socket.id} (${guestName}) joined ${p1.id} (${hostName}) in room ${roomId}, game auto-starting`);
