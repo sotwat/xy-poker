@@ -275,7 +275,7 @@ function App() {
       playSuccessSound();
     });
 
-    socket.on('game_start', ({ roomId, initialDice, p1Name, p2Name, p1Id, p2Id, isRanked }: any) => {
+    socket.on('game_start', ({ roomId, initialDice, initialDeck, p1Name, p2Name, p1Id, p2Id, isRanked }: any) => {
       setRoomId(roomId);
       // Determine if we should show animation (yes for everyone)
       setIsQuickMatch(false);
@@ -292,7 +292,7 @@ function App() {
         setOpponentName(p1Name || 'Player 1');
       }
 
-      dispatch({ type: 'START_GAME', payload: { initialDice } });
+      dispatch({ type: 'START_GAME', payload: { initialDice, initialDeck } });
       setShowDiceAnimation(true);
       setShowResultsModal(false);
     });
@@ -930,7 +930,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12112415</span>}
+          {showVersion && <span className="version">12112420</span>}
         </div>
 
         {/* Auth Button (Top Right) */}

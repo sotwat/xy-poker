@@ -101,6 +101,33 @@ async function getOrCreatePlayer(browserId, userId) {
     return newPlayer;
 }
 
+// --- Deck Utilities (Server Side) ---
+const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
+const RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+
+function createDeck() {
+    const deck = [];
+    for (const suit of SUITS) {
+        for (const rank of RANKS) {
+            deck.push({
+                suit,
+                rank,
+                id: `${suit}-${rank}`,
+            });
+        }
+    }
+    return deck;
+}
+
+function shuffleDeck(deck) {
+    const newDeck = [...deck];
+    for (let i = newDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
+    }
+    return newDeck;
+}
+
 // New structure for quick match queue, using sockets directly
 const quickMatchQueue = [];
 const games = {}; // To store game-specific data for quick matches
@@ -292,6 +319,7 @@ io.on('connection', (socket) => {
                 };
 
                 const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+                const initialDeck = shuffleDeck(createDeck());
 
                 io.to(roomId).emit('game_start', {
                     roomId,
@@ -302,6 +330,7 @@ io.on('connection', (socket) => {
                     p1Id: hostPlayer.id,
                     p2Id: guestPlayer.id,
                     initialDice,
+                    initialDeck,
                     isRanked: false // Room matches are unranked
                 });
 
@@ -370,6 +399,7 @@ io.on('connection', (socket) => {
                 };
 
                 const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+                const initialDeck = shuffleDeck(createDeck());
 
                 io.to(roomId).emit('game_start', {
                     roomId,
@@ -378,6 +408,7 @@ io.on('connection', (socket) => {
                     p1Rating: p1.rating,
                     p2Rating: socket.rating,
                     initialDice, // Send synchronized dice
+                    initialDeck, // Send synchronized deck
                     p1Id: p1.id,
                     p2Id: socket.id,
                     isRanked: true // Flag as ranked for rating updates

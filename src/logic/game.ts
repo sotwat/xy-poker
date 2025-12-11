@@ -26,7 +26,7 @@ export const INITIAL_GAME_STATE: GameState = {
 };
 
 export type GameAction =
-    | { type: 'START_GAME'; payload?: { initialDice?: number[] } }
+    | { type: 'START_GAME'; payload?: { initialDice?: number[]; initialDeck?: Card[] } }
     | { type: 'PLACE_CARD'; cardId: string; colIndex: number }
     | { type: 'DRAW_CARD' }
     | { type: 'TOGGLE_HIDDEN'; cardId: string } // Only for cards on board? Or during placement? "Hidden placement". Usually you decide when placing.
@@ -45,7 +45,11 @@ export type GameAction =
 export function gameReducer(state: GameState, action: GameAction): GameState {
     switch (action.type) {
         case 'START_GAME': {
-            const deck = shuffleDeck(createDeck()); // No Jokers
+            // Use provided deck (Synced Online) or create new shuffled one (Local/Fallback)
+            const deck = action.payload?.initialDeck
+                ? [...action.payload.initialDeck]
+                : shuffleDeck(createDeck());
+
             const { drawn: p1Hand, remaining: deck1 } = drawCards(deck, 4);
             const { drawn: p2Hand, remaining: deck2 } = drawCards(deck1, 4);
 
