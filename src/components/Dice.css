@@ -67,8 +67,96 @@
     transform: translateY(-50%);
 }
 
-.middle-right {
-    top: 50%;
-    right: 0.8em;
-    transform: translateY(-50%);
+
+/* Skins */
+.dice.white {
+    background: white;
+    border-color: #ccc;
+}
+
+.dice.white .dot {
+    background: #333;
+}
+
+.dice.red {
+    background: #d32f2f;
+    border-color: #b71c1c;
+}
+
+.dice.red .dot {
+    background: white;
+}
+
+.dice.blue {
+    background: #1976d2;
+    border-color: #0d47a1;
+}
+
+.dice.blue .dot {
+    background: white;
+}
+
+.dice.green {
+    background: #388e3c;
+    border-color: #1b5e20;
+}
+
+.dice.green .dot {
+    background: white;
+}
+
+.dice.yellow {
+    background: #fbc02d;
+    border-color: #f57f17;
+}
+
+.dice.yellow .dot {
+    background: #333;
+}
+
+.dice.purple {
+    background: #7b1fa2;
+    border-color: #4a148c;
+}
+
+.dice.purple .dot {
+    background: white;
+}
+
+.dice.black {
+    background: #212121;
+    border-color: #000;
+}
+
+.dice.black .dot {
+    background: #ffd700;
+    /* Gold dots */
+    box-shadow: 0 0 2px rgba(255, 215, 0, 0.5);
+}
+
+.dice.pink {
+    background: #e91e63;
+    border-color: #c2185b;
+}
+
+.dice.pink .dot {
+    background: white;
+}
+
+.dice.orange {
+    background: #f57c00;
+    border-color: #e65100;
+}
+
+.dice.orange .dot {
+    background: white;
+}
+
+.dice.teal {
+    background: #00796b;
+    border-color: #004d40;
+}
+
+.dice.teal .dot {
+    background: white;
 }

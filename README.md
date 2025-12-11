@@ -45,23 +45,24 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12082220` (2025-12-08 22:20)
+**Latest Version:** `12111800` (2025-12-11 18:00)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12082220** - **Fix:**
-   - **Fix:** Isolated Ads to Lobby only (using iframe + local HTML).
-   - **Fix:** Prevented global ad script from bleeding into gameplay.
-2. **v12082215** - **Config:**
-   - **Config:** Added Google Search Console verification file (`google366b9bac74209802.html`).
-2. **v12082195** - **Config:**
-   - **Config:** Enabled Monetag In-Page Push (Global Index script).
-2. **v12082160** - **Feature: Ad Network:**
-   - **Feature:** Added `RewardAdButton` comp. Recommended AppLixir/Monetag.
-2. **v12082131** - **Config: Hide Auth:**
+1. **v12111800** (2025-12-11): Added Dice Skin Reward System (10 skins, Unlock via Ads).
+2. **v12111750** (2025-12-11): Fixed version numbering to match date/time. Reverted to PC-only Global Ads.
+3. **v12111740** (2025-12-11): Hotfixed Ad Iframe Sandbox permissions.
+4. **v12082250** (2025-12-08): Fixed stubborn ad persistence via Service Worker unregistration.
+5. **v12082245** (2025-12-08): Improved Ad Isolation (Iframe + Local HTML).
+6. **v12082240** (2025-12-08): Added Google Search Console verification.
+7. **v12082235** (2025-12-08): Added SEO Meta Tags & Robots.txt.
+8. **v12082225** (2025-12-08): Configured In-Page Push (Global) & Disabled Banner temporary.
+9. **v12082220** (2025-12-08): Mobile Optimization (Bottom Ad 0px) & Sandbox Fix.
+10. **v12082215** (2025-12-08): Configured Monetag In-Page Push & Direct Link.
+11. **v12082131** - **Config: Hide Auth:**
    - **Config:** Temporarily hidden Login/Sign Up button.
    - **Data:** Accounts can link existing device ratings.
    - **Requirement:** Database migration required (`user_id` column).
-2. **v12082035** - **Fix: Local Mode Disguise Leak:**
+12. **v12082035** - **Fix: Local Mode Disguise Leak:**
    - **Fix:** Ensured standard "Local (vs AI)" games always start as "AI" (removed random name leak).
 2. **v12082015** - **Feature: Turn Timer:**
    - **Feature:** Added 60s Turn Timer.

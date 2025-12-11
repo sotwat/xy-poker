@@ -67,3 +67,18 @@ export interface GameState {
     turnCount: number;
     winner: string | null; // Player ID
 }
+
+export type DiceSkin = 'white' | 'red' | 'blue' | 'green' | 'yellow' | 'purple' | 'black' | 'pink' | 'orange' | 'teal';
+
+export const AVAILABLE_DICE_SKINS: { id: DiceSkin; name: string; color: string }[] = [
+    { id: 'white', name: 'White', color: '#ffffff' },
+    { id: 'red', name: 'Red', color: '#d32f2f' },
+    { id: 'blue', name: 'Blue', color: '#1976d2' },
+    { id: 'green', name: 'Green', color: '#388e3c' },
+    { id: 'yellow', name: 'Yellow', color: '#fbc02d' },
+    { id: 'purple', name: 'Purple', color: '#7b1fa2' },
+    { id: 'black', name: 'Black', color: '#212121' },
+    { id: 'pink', name: 'Pink', color: '#e91e63' },
+    { id: 'orange', name: 'Orange', color: '#f57c00' },
+    { id: 'teal', name: 'Teal', color: '#00796b' },
+];

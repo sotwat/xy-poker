@@ -1,17 +1,17 @@
 import React from 'react';
 import './Dice.css';
+import type { DiceSkin } from '../logic/types';
 
 interface DiceProps {
     value: number;
     size?: 'small' | 'medium' | 'large';
     className?: string;
+    skin?: DiceSkin;
 }
 
-export const Dice: React.FC<DiceProps> = ({ value, size = 'medium', className = '' }) => {
+export const Dice: React.FC<DiceProps> = ({ value, size = 'medium', className = '', skin = 'white' }) => {
     // Map value to dot positions
-    // ...
     const renderDots = () => {
-        // ... (same as before)
         const dots = [];
         if (value === 1 || value === 3 || value === 5) dots.push(<div key="c" className="dot center" />);
         if (value >= 2) {
@@ -30,7 +30,7 @@ export const Dice: React.FC<DiceProps> = ({ value, size = 'medium', className = 
     };
 
     return (
-        <div className={`dice ${size} ${className}`}>
+        <div className={`dice ${size} ${className} ${skin}`}>
             {renderDots()}
         </div>
     );

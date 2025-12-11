@@ -3,17 +3,17 @@ import { gameReducer, INITIAL_GAME_STATE } from './logic/game';
 import { evaluateYHand, evaluateXHand } from './logic/evaluation';
 import { calculateXHandScores } from './logic/scoring';
 import { recordGameResult } from './logic/aiLearning';
-import type { Card } from './logic/types';
+import type { Card, DiceSkin } from './logic/types';
 import { SharedBoard } from './components/SharedBoard';
 import { Hand } from './components/Hand';
 import { GameInfo } from './components/GameInfo';
 import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
+import { DiceSkinStore } from './components/DiceSkinStore';
 import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { RulesModal } from './components/RulesModal';
 import { TurnTimer } from './components/TurnTimer';
 import { AuthModal } from './components/AuthModal';
-import MonetagBanner from './components/MonetagBanner';
 import { socket, connectSocket } from './logic/online';
 import { supabase } from './supabase';
 import './App.css';
@@ -62,6 +62,32 @@ function App() {
   // Refs for accessing reliable state in event listeners
   const modeRef = useRef(mode);
   const roomIdRef = useRef(roomId);
+
+  // Dice Skin State
+  const [showSkinStore, setShowSkinStore] = useState(false);
+  const [unlockedSkins, setUnlockedSkins] = useState<DiceSkin[]>(() => {
+    const saved = localStorage.getItem('xypoker_unlockedSkins');
+    return saved ? JSON.parse(saved) : ['white'];
+  });
+  const [selectedSkin, setSelectedSkin] = useState<DiceSkin>(() => {
+    const saved = localStorage.getItem('xypoker_selectedSkin');
+    return (saved as DiceSkin) || 'white';
+  });
+
+  const handleUnlockSkin = (skinId: DiceSkin) => {
+    const newUnlocked = [...unlockedSkins, skinId];
+    setUnlockedSkins(newUnlocked);
+    localStorage.setItem('xypoker_unlockedSkins', JSON.stringify(newUnlocked));
+
+    // Auto-select upon unlock
+    setSelectedSkin(skinId);
+    localStorage.setItem('xypoker_selectedSkin', skinId);
+  };
+
+  const handleSelectSkin = (skinId: DiceSkin) => {
+    setSelectedSkin(skinId);
+    localStorage.setItem('xypoker_selectedSkin', skinId);
+  };
 
   useEffect(() => {
     modeRef.current = mode;
@@ -679,7 +705,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12082220</span>}
+          {showVersion && <span className="version">12111800</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -771,6 +797,7 @@ function App() {
               playerName={playerName}
               onPlayerNameChange={setPlayerName}
               rating={myRating}
+              onOpenSkinStore={() => setShowSkinStore(true)}
             />
           ) : (
             <>
@@ -779,6 +806,16 @@ function App() {
                 isOpen={showAuthModal}
                 onClose={() => setShowAuthModal(false)}
                 onSuccess={() => setShowAuthModal(false)}
+              />
+
+              {/* Skin Store Modal */}
+              <DiceSkinStore
+                isOpen={showSkinStore}
+                onClose={() => setShowSkinStore(false)}
+                unlockedSkins={unlockedSkins}
+                selectedSkin={selectedSkin}
+                onUnlock={handleUnlockSkin}
+                onSelect={handleSelectSkin}
               />
 
               {/* Turn Timer Conditionally Rendered */}
@@ -799,32 +836,33 @@ function App() {
                         <h2>Waiting for opponent...</h2>
                         <div className="loading-spinner"></div>
                         <p>Your game will start automatically when an opponent joins</p>
-                      </div>
-                    ) : mode === 'local' || (mode === 'online' && playerRole === 'host') ? (
-                      <div className="setup-actions" style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
-                        <button className="btn-primary" onClick={handleStartGame}>Start Game</button>
-                        {mode === 'local' && (
-                          <button
-                            className="btn-secondary"
-                            style={{ fontSize: '0.9rem', padding: '8px 16px', backgroundColor: 'rgba(255,255,255,0.1)' }}
-                            onClick={() => { playClickSound(); setShowRules(true); }}
-                          >
-                            📖 How to Play
-                          </button>
-                        )}
+                        <button className="btn-cancel" onClick={handleCancelMatchmaking}>
+                          Cancel
+                        </button>
                       </div>
                     ) : (
-                      <div className="waiting-message">
-                        <h3>Waiting for Host to start game...</h3>
-                        <div className="loading-spinner"></div>
-                      </div>
-                    )}
-
-                    {/* Ad Banner for Local Mode Setup */}
-                    {mode === 'local' && phase === 'setup' && (
-                      <div style={{ position: 'absolute', bottom: '0', width: '100%', display: 'flex', justifyContent: 'center', zIndex: 10 }}>
-                        <MonetagBanner width={320} height={50} />
-                      </div>
+                      <>
+                        <div className="logo-area">
+                          <h1>XY Poker</h1>
+                          <p>Strategic Card & Dice Battle</p>
+                        </div>
+                        <div className="setup-actions">
+                          <button className="btn-primary" onClick={handleStartGame}>
+                            Start Game
+                          </button>
+                          <button
+                            className="btn-secondary"
+                            style={{ marginTop: '1rem', padding: '8px 16px', fontSize: '0.9rem' }}
+                            onClick={() => { playClickSound(); setShowSkinStore(true); }}
+                          >
+                            🎨 Dice Skins
+                          </button>
+                        </div>
+                        {/*
+                          Previous Ad Banner location was here.
+                          Ads are now global on desktop index.html.
+                        */}
+                      </>
                     )}
                   </div>
                 )}
@@ -833,15 +871,16 @@ function App() {
 
 
                     <SharedBoard
-                      playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
-                      opponentBoard={players[isOnlineGame && playerRole === 'guest' ? 0 : 1].board}
-                      dice={players[0].dice} // Shared dice
+                      playerBoard={currentPlayerIndex === 0 ? players[0].board : players[1].board}
+                      opponentBoard={currentPlayerIndex === 0 ? players[1].board : players[0].board}
+                      dice={currentPlayerIndex === 0 ? players[0].dice : players[1].dice}
                       onColumnClick={handleColumnClick}
-                      isCurrentPlayer={phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                      isCurrentPlayer={(!isOnlineGame) || (playerRole === 'host' && currentPlayerIndex === 0) || (playerRole === 'guest' && currentPlayerIndex === 1)}
                       revealAll={phase === 'ended'}
                       winningColumns={phase === 'ended' ? calculateWinningColumns() : undefined}
                       xWinner={phase === 'ended' ? calculateXWinner() : undefined}
-                      bottomPlayerId={(isOnlineGame && playerRole === 'guest') ? 'p2' : 'p1'}
+                      bottomPlayerId={currentPlayerIndex === 0 ? 'p1' : 'p2'}
+                      selectedSkin={selectedSkin}
                     />
                   </div>
                 )}
@@ -935,8 +974,9 @@ function App() {
 
       {showDiceAnimation && (
         <DiceRollOverlay
-          targetValues={players[0].dice}
+          targetValues={gameState.players[currentPlayerIndex].dice}
           onComplete={() => setShowDiceAnimation(false)}
+          selectedSkin={selectedSkin}
         />
       )}
       {/* Rules Overlay */}

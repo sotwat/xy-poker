@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Dice } from './Dice';
 import './DiceRollOverlay.css';
 import { playClickSound } from '../utils/sound';
+import type { DiceSkin } from '../logic/types';
 
 interface DiceRollOverlayProps {
     targetValues: number[];
     onComplete: () => void;
+    selectedSkin: DiceSkin;
 }
 
-export const DiceRollOverlay: React.FC<DiceRollOverlayProps> = ({ targetValues, onComplete }) => {
+export const DiceRollOverlay: React.FC<DiceRollOverlayProps> = ({ targetValues, onComplete, selectedSkin }) => {
     const [displayValues, setDisplayValues] = useState<number[]>([1, 1, 1, 1, 1]);
     const [rolling, setRolling] = useState<boolean[]>([true, true, true, true, true]);
     const [stage, setStage] = useState<'ready' | 'rolling' | 'finished'>('ready');
@@ -75,7 +77,7 @@ export const DiceRollOverlay: React.FC<DiceRollOverlayProps> = ({ targetValues, 
                 <div className="dice-container-large">
                     {displayValues.map((val, idx) => (
                         <div key={idx} className={`rolling-dice ${rolling[idx] ? 'shaking' : 'landed'}`}>
-                            <Dice value={val} size="large" />
+                            <Dice value={val} size="large" skin={selectedSkin} />
                         </div>
                     ))}
                 </div>

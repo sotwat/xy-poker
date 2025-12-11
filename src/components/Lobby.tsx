@@ -13,6 +13,7 @@ interface LobbyProps {
     playerName: string;
     onPlayerNameChange: (name: string) => void;
     rating?: number | null;
+    onOpenSkinStore: () => void;
 }
 
 export const Lobby: React.FC<LobbyProps> = ({
@@ -25,7 +26,8 @@ export const Lobby: React.FC<LobbyProps> = ({
     playerRole,
     playerName,
     onPlayerNameChange,
-    rating
+    rating,
+    onOpenSkinStore
 }) => {
     const [joinId, setJoinId] = useState('');
 
@@ -80,6 +82,13 @@ export const Lobby: React.FC<LobbyProps> = ({
                     🎲 Quick Match
                 </button>
                 <p className="quick-match-hint">Play against a random opponent</p>
+                <button
+                    className="btn-secondary"
+                    style={{ marginTop: '12px', fontSize: '0.9rem', padding: '6px 12px' }}
+                    onClick={() => { playClickSound(); onOpenSkinStore(); }}
+                >
+                    🎨 Dice Skins
+                </button>
             </div>
 
             <div className="divider">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Card as CardType } from '../logic/types';
+import type { Card as CardType, DiceSkin } from '../logic/types';
 import { Card } from './Card';
 import { Dice } from './Dice';
 import './SharedBoard.css';
@@ -14,6 +14,7 @@ interface SharedBoardProps {
     winningColumns?: ('p1' | 'p2' | 'draw')[];
     xWinner?: 'p1' | 'p2' | 'draw'; // X-hand winner for row highlighting
     bottomPlayerId?: 'p1' | 'p2'; // 'p1' means P1 is at bottom (blue), 'p2' means P2 is at bottom (red)
+    selectedSkin: DiceSkin;
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -25,7 +26,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     revealAll = false,
     winningColumns,
     xWinner,
-    bottomPlayerId = 'p1' // Default to P1 at bottom
+    bottomPlayerId = 'p1', // Default to P1 at bottom
+    selectedSkin
 }) => {
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const [pressTimer, setPressTimer] = useState<number | null>(null);
@@ -128,7 +130,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
 
                 {/* Central Dice */}
                 <div className="dice-row">
-                    <Dice value={dice[colIndex]} />
+                    <Dice value={dice[colIndex]} skin={selectedSkin} />
                 </div>
 
                 {/* Player Side (Bottom) */}
