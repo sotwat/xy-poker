@@ -36,6 +36,9 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
         return { cardId: hand[0]?.id || '', colIndex: 0, isHidden: false };
     }
 
+    // Shuffle columns to avoid left-side bias in ties
+    validColumns.sort(() => Math.random() - 0.5);
+
     let bestMove = { cardId: hand[0].id, colIndex: validColumns[0], isHidden: false };
     let bestScore = -Infinity;
 
@@ -56,7 +59,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
             // STRATEGY: Spread Moves (Human-like behavior)
             // Reward starting new columns slightly to prevent just stacking one column vertically.
             if (emptySlotIdx === 0) {
-                score += 40; // Spread bonus
+                score += 120; // Spread bonus (Increased to prevent clustering)
             }
 
             // STRATEGY 2: Low Value Column Sacrifice (Rush Bonus)
@@ -111,75 +114,97 @@ function evaluateColumnPlacement(cards: (Card | null)[], _colIndex: number, dice
     const validCards = cards.filter(c => c !== null) as Card[];
     if (validCards.length === 0) return 0;
 
-    // Get learning data for adaptive strategy
     const learning = getLearningData();
-
     let score = 0;
     const numCards = validCards.length;
-
-    // STRATEGY 3: Pure Hand Priority
-    // Definition: "Pure" now implies Ordered/Adjacent.
-    // Check if cards form an Ordered sequence or Adjacent pair.
-
     const ranks = validCards.map(c => c.rank);
     const sortedRanks = [...ranks].sort((a, b) => a - b);
+    const maxRank = sortedRanks[sortedRanks.length - 1];
+    const avgRank = ranks.reduce((sum, r) => sum + r, 0) / ranks.length;
 
-    // Check for Pure Potential (Ordered)
-    // If we have 2 cards, they must be adjacent in RANK to be Pure Straight potential.
-    // AND they must be in correct relative positions if we are considering the slot?
-    // AI places a card in `emptySlotIdx`.
-    // Instead of complex logic, allow AI to reward `Consecutive` cards highly.
+    // --- BASE SCORES (Rank & Usage) ---
+    // Instead of raw AvgRank * Dice, we assess "Quality of Placement".
 
+    // 1. High Card Bonus (only if alone or synergy)
+    // In high stakes columns, we want High Cards.
+    if (diceValue >= 4) {
+        if (maxRank >= 11) score += 50 * diceValue; // Good use of high dice
+        else if (maxRank <= 8 && numCards === 1) score -= 30 * diceValue; // WASTE of high dice (Opportunity Cost)
+    }
+
+    // --- SYNERGY CHECKS ---
     let isConsecutive = false;
+    let isGapConsecutive = false; // e.g. 5, 7 (needs 6)
+
     if (numCards >= 2) {
-        isConsecutive = true;
+        let cons = true;
         for (let i = 1; i < sortedRanks.length; i++) {
             if (sortedRanks[i] !== sortedRanks[i - 1] + 1) {
-                isConsecutive = false;
+                cons = false;
                 break;
             }
         }
+        isConsecutive = cons;
+
+        // Check for 1-gap (e.g. 5, 7) - Good for Straight potential
+        if (!isConsecutive && numCards === 2 && sortedRanks[1] === sortedRanks[0] + 2) {
+            isGapConsecutive = true;
+        }
     }
 
+    // Pure Multiplier (Ordered & Adjacent)
     const pureMultiplier = (isConsecutive && diceValue >= 4) ? 1.5 : 1.0;
 
-    // Trips (Three of a Kind)
+    // 2. Pairs / Trips
     const uniqueRanks = new Set(ranks);
-    if (numCards === 3 && uniqueRanks.size === 1) {
-        score += 400 * diceValue * learning.tripPreference;
-    } else if (numCards === 2 && uniqueRanks.size === 1) {
-        score += 160 * diceValue * learning.tripPreference;
+    const isTrips = numCards === 3 && uniqueRanks.size === 1;
+    const isPair = numCards >= 2 && uniqueRanks.size < numCards;
+
+    if (isTrips) {
+        score += 500 * diceValue * learning.tripPreference;
+    } else if (isPair) {
+        score += 200 * diceValue * learning.tripPreference;
     }
 
-    // Flush
+    // 3. Flush
     const suits = validCards.map(c => c.suit);
     const uniqueSuits = new Set(suits);
-    if (uniqueSuits.size === 1 && numCards >= 2) {
-        let flushScore = 120 * diceValue * learning.flushPreference;
-        if (numCards === 3) flushScore += 100;
+    const isFlush = uniqueSuits.size === 1 && numCards >= 2;
 
-        // Boost for Pure Flush (Sequential & Suited)
-        // Use pureMultiplier here logic
-        if (isConsecutive && diceValue >= 5) flushScore *= pureMultiplier; // Use the variable
-
+    if (isFlush) {
+        let flushScore = 150 * diceValue * learning.flushPreference;
+        if (numCards === 3) flushScore += 150;
+        if (isConsecutive && diceValue >= 5) flushScore *= 1.3;
         score += flushScore;
     }
 
-    // Straight (consecutive ranks)
+    // 4. Straight
     if (isConsecutive) {
-        let straightScore = 140 * diceValue * learning.straightPreference;
-        if (numCards === 3) straightScore += 120;
-
-        // Boost for Pure Straight.
-        // pureMultiplier already captures (isConsecutive && dice >= 4).
-        straightScore *= pureMultiplier;
-
-        score += straightScore;
+        score += 180 * diceValue * learning.straightPreference * pureMultiplier;
+    } else if (isGapConsecutive) {
+        score += 80 * diceValue; // Decent setup
     }
 
-    // High cards in high dice columns
-    const avgRank = ranks.reduce((sum, r) => sum + r, 0) / ranks.length;
-    score += avgRank * diceValue * 5;
+    // --- ANTI-SYNERGY PENALTY ---
+    // If cards don't match (No Pair, No Flush, No Straight/Gap), and Rank Diff is large -> BAD
+    const hasSynergy = isPair || isFlush || isConsecutive || isGapConsecutive;
+    if (numCards >= 2 && !hasSynergy) {
+        const diff = sortedRanks[sortedRanks.length - 1] - sortedRanks[0];
+        if (diff > 4) {
+            // e.g. 2 and 10. Very hard to make straight. No pair. No flush.
+            score -= 100 * diceValue; // Punish cluttering the column
+        } else {
+            score -= 20 * diceValue; // Mild penalty for non-matching
+        }
+
+        // Punish ruining a high card with a low card
+        if (sortedRanks[0] <= 8 && sortedRanks[1] >= 11) {
+            score -= 150;
+        }
+    }
+
+    // Add small bonus for simple high ranks to break 0 ties
+    score += avgRank * 2;
 
     return score;
 }
