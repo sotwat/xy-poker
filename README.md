@@ -53,10 +53,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12111835` (2025-12-11 18:35)
+**Latest Version:** `12111845` (2025-12-11 18:45)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12111830** (2025-12-11): **Docs Update** - Perfected README & added Deployment script.
+1. **v12111845** (2025-12-11): **Docs Update** - Added Setup Instructions & DB Schema for continuity.
+2. **v12111835** (2025-12-11): **Docs Update** - Added Critical Deployment Policy.
+3. **v12111830** (2025-12-11): **Docs Update** - Perfected README & added Deployment script.
 2. **v12111800** (2025-12-11): **Feature** - Added Dice Skin Reward System (10 skins, Unlock via Ads).
 3. **v12111750** (2025-12-11): **Fix** - Corrected version numbering. Reverted to PC-only Global Ads.
 4. **v12111740** (2025-12-11): **Fix** - Hotfixed Ad Iframe Sandbox permissions.
@@ -88,12 +90,44 @@ A 2-player poker card game with both local and online multiplayer modes.
   - Auto-start when matched.
   - Rating-based matching (basic queue).
 
-#### 3. Monetization & Rewards
+### 3. Monetization & Rewards
 - **Dice Skins:** Users can unlock 10 different dice skins by watching Rewarded Ads (Direct Link).
 - **Ad Network:** Monetag Integration.
   - **Rewarded Ads:** Used for Skin Unlocks (`RewardAdButton`).
   - **In-Page Push:** PC Only (Global config).
   - **Banner Ads:** Disabled/Removed for UX.
+
+## 💻 Local Developement Setup
+
+### 1. Prerequisites
+- Node.js (v18+)
+- Supabase Account (for Ratings)
+
+### 2. Environment Variables
+Create `.env` in root:
+```env
+VITE_SUPABASE_URL=your_project_url
+VITE_SUPABASE_KEY=your_anon_key
+```
+
+### 3. Quick Start
+```bash
+# Install dependencies
+npm install
+cd server && npm install && cd ..
+
+# Start Dev Server (Frontend + Backend)
+npm run dev   # Frontend: http://localhost:5173
+npm run start # Backend: http://localhost:3000
+```
+
+### 4. Database Schema (Supabase)
+Table: `ratings`
+- `id` (uuid, PK)
+- `browser_id` (text, unique) - Anonymous ID stored in localStorage
+- `rating` (int4) - Elo rating (Default: 1500)
+- `user_id` (uuid, FK, nullable) - Linked Auth ID
+- `wins`, `losses`, `games_played` (int4)
 
 ## Project Structure
 
