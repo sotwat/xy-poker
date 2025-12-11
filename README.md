@@ -45,12 +45,13 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12082165` (2025-12-08 21:65)
+**Latest Version:** `12082168` (2025-12-08 21:68)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12082165** - **Feature: Ad Network:**
+1. **v12082168** - **Config:**
+   - **Config:** Added Monetag verification file (`sw.js`).
+2. **v12082165** - **Feature: Ad Network:**
    - **Feature:** Switched to **Monetag** integration (`MonetagBanner`, `RewardAdButton`).
-   - **Deprecated:** Adsterra/AppLixir references (unified to Monetag).
 2. **v12082160** - **Feature: Ad Network:**
    - **Feature:** Added `RewardAdButton` comp. Recommended AppLixir/Monetag.
 2. **v12082131** - **Config: Hide Auth:**
