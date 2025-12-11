@@ -45,14 +45,13 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12082158` (2025-12-08 21:58)
+**Latest Version:** `12082160` (2025-12-08 21:60)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12082158** - **Feature: Ad Network:**
+1. **v12082160** - **Feature: Ad Network:**
+   - **Feature:** Added `RewardAdButton` comp. Recommended AppLixir/Monetag.
+2. **v12082158** - **Feature: Ad Network:**
    - **Feature:** Added `AdsterraBanner` component for easy ad integration.
-   - **Note:** Requires Adsterra Script in `src/components/AdsterraBanner.tsx`.
-2. **v12082153** - **UI:**
-   - **UI:** Shifted Version number closer to right edge.
 2. **v12082131** - **Config: Hide Auth:**
    - **Config:** Temporarily hidden Login/Sign Up button.
    - **Data:** Accounts can link existing device ratings.
