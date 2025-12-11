@@ -898,7 +898,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12112354</span>}
+          {showVersion && <span className="version">12112356</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -990,6 +990,7 @@ function App() {
               playerName={playerName}
               onPlayerNameChange={setPlayerName}
               rating={myRating}
+              onShowRules={() => { playClickSound(); setShowRules(true); }}
             />
           ) : (
             <>
@@ -1059,6 +1060,13 @@ function App() {
                             onClick={() => { playClickSound(); setShowSkinStore(true); }}
                           >
                             🎨 Skin Shop
+                          </button>
+                          <button
+                            className="btn-secondary"
+                            style={{ marginTop: '1rem', marginLeft: '10px', padding: '8px 16px', fontSize: '0.9rem' }}
+                            onClick={() => { playClickSound(); setShowRules(true); }}
+                          >
+                            📖 Rules
                           </button>
                         </div>
                         {/*
