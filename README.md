@@ -43,13 +43,18 @@ A 2-player poker card game with both local and online multiplayer modes.
 - Include version number in commit message
 - Example: `fix: translateYで座標を40px上に移動 v12061302`
 
-#### 5. Deployment Policy
-**AI Agent must ALWAYS run the deployment command manually**
-- Do NOT assume Git Push triggers deployment (it does not for this project).
-- **Procedure:**
-  1. Commit & Push changes to Git.
-  2. Run `npm run deploy`.
-  3. Verify the output says "Success".
+#### 5. Deployment Policy (STRICT)
+**You MUST perform BOTH steps for every update:**
+
+1.  **Frontend (Cloudflare Pages):**
+    *   Command: `npm run deploy`
+    *   *Note: This pushes the built assets directly to Cloudflare.*
+
+2.  **Backend/Source (Render & GitHub):**
+    *   Command: `git push origin main`
+    *   *Note: This triggers the Render build for the backend AND saves your source code.*
+
+**WARNING:** If you only do one, the game will be out of sync (e.g., Code updated but Backend old, or vice versa). **ALWAYS DO BOTH.**
 
 ## Current Project State
 
@@ -94,14 +99,7 @@ A 2-player poker card game with both local and online multiplayer modes.
 #### 2. Game Modes
 - **Local (vs AI):** 
   - Instant start.
-  - [x] Analyze `App.tsx` scoring logic and `SharedBoard.tsx` rendering <!-- id: 0 -->
-- [x] Add `speakText` function to `utils/sound.ts` <!-- id: 0 -->
-- [x] Create a map of Hand Type IDs to readable strings (e.g. 'ThreeOfAKind' -> "Three of a Kind") <!-- id: 1 -->
-- [x] Update `App.tsx` scoring animation loop: <!-- id: 2 -->
-    - [x] Calculate winning hand type for current step.
-    - [x] Trigger `speakText` with the hand name when highlighting.
-- [x] Verify timing and synchronization <!-- id: 3 -->
-- [ ] Update documentation and deploy <!-- id: 4 -->
+
 - **Online (Private Room):**
   - Host/Guest role.
   - Room ID sharing.
