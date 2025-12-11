@@ -58,10 +58,11 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12112320` (2025-12-11 23:20)
+**Latest Version:** `12112337` (2025-12-11 23:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12112320** (2025-12-11): **Rules** - Removed Jokers entirely and refined "Pure" hand definitions (Positional Order/Adjacency).
+1. **v12112337** (2025-12-11): **Policy** - Enforced strict version timestamping compliance. Re-deployed all environments.
+2. **v12112320** (2025-12-11): **Rules** - Removed Jokers entirely and refined "Pure" hand definitions (Positional Order/Adjacency).
 2. **v12112317** (2025-12-11): **AI** - Enhanced AI logic with user-provided strategies (Dice context, Low-col sacrifice, Pure hand priority, Early hidden).
 3. **v12112310** (2025-12-11): **Audio** - Added Voice Announcements for winning hand names during scoring animation.
 3. **v12112305** (2025-12-11): **FX** - Added sequential scoring animation (Cols Right-to-Left → X-Hand Row in Yellow).
