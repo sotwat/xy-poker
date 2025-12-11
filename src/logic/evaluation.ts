@@ -36,7 +36,6 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
     let isPair = false;
     let isTrips = false;
     let isPair01 = false;
-    let isPair12 = false;
 
     if (ranks[0] === ranks[1] && ranks[1] === ranks[2]) {
         isTrips = true;
@@ -45,7 +44,6 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
         isPair01 = true;
     } else if (ranks[1] === ranks[2]) {
         isPair = true;
-        isPair12 = true;
     } else if (ranks[0] === ranks[2]) { // Split pair
         isPair = true;
     }
