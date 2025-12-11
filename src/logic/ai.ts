@@ -53,6 +53,12 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
             // 1. Evaluate Column (Y-Hand)
             let score = evaluateColumnPlacement(potentialCards, col, diceValue, emptySlotIdx) * yHandWeight;
 
+            // STRATEGY: Spread Moves (Human-like behavior)
+            // Reward starting new columns slightly to prevent just stacking one column vertically.
+            if (emptySlotIdx === 0) {
+                score += 40; // Spread bonus
+            }
+
             // STRATEGY 2: Low Value Column Sacrifice (Rush Bonus)
             // If dice is 1 or 2, winning is low value.
             // If we can finish the column (slot 2) quickly, we get a bonus card.
@@ -61,11 +67,11 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
                 // Reduce emphasis on making a "strong" hand here
                 score *= 0.7;
 
-                // Heavily reward filling the column (Speed)
+                // Reward filling the column (Speed), but less aggressively
                 if (emptySlotIdx === 2) {
                     // Check if opponent hasn't filled it yet
                     if (opponent.board[2][col] === null) {
-                        score += 250; // Big bonus for rushing
+                        score += 100; // Reduced from 250 to avoid obsessive rushing
                     }
                 }
             }
@@ -252,8 +258,16 @@ function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: numb
     return blockValue;
 }
 
-function shouldHideCard(move: { cardId: string, colIndex: number }, hand: Card[], player: GameState['players'][0], _board: (Card | null)[][], turnCount: number): boolean {
+function shouldHideCard(move: { cardId: string, colIndex: number }, hand: Card[], player: GameState['players'][0], board: (Card | null)[][], turnCount: number): boolean {
     if (player.hiddenCardsCount >= 3) return false;
+
+    // CRITICAL FIX: Cannot hide 3rd card in a column if 2 are already hidden
+    let hiddenInCol = 0;
+    for (let r = 0; r < 3; r++) {
+        const card = board[r][move.colIndex];
+        if (card && card.isHidden) hiddenInCol++;
+    }
+    if (hiddenInCol >= 2) return false;
 
     const card = hand.find(c => c.id === move.cardId);
     if (!card) return false;
