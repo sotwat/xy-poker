@@ -43,9 +43,17 @@ A 2-player poker card game with both local and online multiplayer modes.
 - Include version number in commit message
 - Example: `fix: translateYで座標を40px上に移動 v12061302`
 
+#### 5. Deployment Policy
+**AI Agent must ALWAYS run the deployment command manually**
+- Do NOT assume Git Push triggers deployment (it does not for this project).
+- **Procedure:**
+  1. Commit & Push changes to Git.
+  2. Run `npm run deploy`.
+  3. Verify the output says "Success".
+
 ## Current Project State
 
-**Latest Version:** `12111830` (2025-12-11 18:30)
+**Latest Version:** `12111835` (2025-12-11 18:35)
 
 ### Recent Changes (Last 10 Updates)
 1. **v12111830** (2025-12-11): **Docs Update** - Perfected README & added Deployment script.
