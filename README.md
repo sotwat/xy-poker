@@ -45,42 +45,19 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12111800` (2025-12-11 18:00)
+**Latest Version:** `12111830` (2025-12-11 18:30)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12111800** (2025-12-11): Added Dice Skin Reward System (10 skins, Unlock via Ads).
-2. **v12111750** (2025-12-11): Fixed version numbering to match date/time. Reverted to PC-only Global Ads.
-3. **v12111740** (2025-12-11): Hotfixed Ad Iframe Sandbox permissions.
-4. **v12082250** (2025-12-08): Fixed stubborn ad persistence via Service Worker unregistration.
-5. **v12082245** (2025-12-08): Improved Ad Isolation (Iframe + Local HTML).
-6. **v12082240** (2025-12-08): Added Google Search Console verification.
-7. **v12082235** (2025-12-08): Added SEO Meta Tags & Robots.txt.
-8. **v12082225** (2025-12-08): Configured In-Page Push (Global) & Disabled Banner temporary.
-9. **v12082220** (2025-12-08): Mobile Optimization (Bottom Ad 0px) & Sandbox Fix.
-10. **v12082215** (2025-12-08): Configured Monetag In-Page Push & Direct Link.
-11. **v12082131** - **Config: Hide Auth:**
-   - **Config:** Temporarily hidden Login/Sign Up button.
-   - **Data:** Accounts can link existing device ratings.
-   - **Requirement:** Database migration required (`user_id` column).
-12. **v12082035** - **Fix: Local Mode Disguise Leak:**
-   - **Fix:** Ensured standard "Local (vs AI)" games always start as "AI" (removed random name leak).
-2. **v12082015** - **Feature: Turn Timer:**
-   - **Feature:** Added 60s Turn Timer.
-2. **v12081958** - **Fix: Room Auto-Start Reliability:**
-   - **Fix:** Fixed server race condition in Room Join (await socket.join). Updated Lobby text to reflect auto-start.
-2. **v12080225** - **UI Restoration:**
-   - Removed Ad Banner (reverted unrequested layout change).
-   - Removed Opponent Hand display (reverted unrequested UI).
-   - Fixed "Local (vs AI)" button not working (logic fix).
-   - Restored layout to match `v12071815` quality.
-3. **v12080217** - Updated version timestamp and fix deployment.
-4. **v12080112** - (Reverted) Added Google AdSense global script.
-5. **v12080050** - (Reverted) Added bottom ad banner placeholder.
-6. **v12071815** - Applied Red theme for Red Player (Guest).
-7. **v12071805** - Fixed X-Hand highlight bug.
-8. **v12071800** - Updated result table player names.
-9. **v12071759** - Fixed shared board highlights in online mode.
-10. **v12071752** - Fixed online result screen swapped names bug.
+1. **v12111830** (2025-12-11): **Docs Update** - Perfected README & added Deployment script.
+2. **v12111800** (2025-12-11): **Feature** - Added Dice Skin Reward System (10 skins, Unlock via Ads).
+3. **v12111750** (2025-12-11): **Fix** - Corrected version numbering. Reverted to PC-only Global Ads.
+4. **v12111740** (2025-12-11): **Fix** - Hotfixed Ad Iframe Sandbox permissions.
+5. **v12082250** (2025-12-08): **Fix** - Fixed stubborn ad persistence via Service Worker unregistration.
+6. **v12082245** (2025-12-08): **Fix** - Improved Ad Isolation (Iframe + Local HTML).
+7. **v12082240** (2025-12-08): **Config** - Added Google Search Console verification.
+8. **v12082235** (2025-12-08): **Config** - Added SEO Meta Tags & Robots.txt.
+9. **v12082225** (2025-12-08): **Config** - Configured In-Page Push (Global) & Disabled Banner temporary.
+10. **v12082220** (2025-12-08): **Config** - Mobile Optimization (Bottom Ad 0px) & Sandbox Fix.
 
 ### Current Features
 
@@ -103,6 +80,13 @@ A 2-player poker card game with both local and online multiplayer modes.
   - Auto-start when matched.
   - Rating-based matching (basic queue).
 
+#### 3. Monetization & Rewards
+- **Dice Skins:** Users can unlock 10 different dice skins by watching Rewarded Ads (Direct Link).
+- **Ad Network:** Monetag Integration.
+  - **Rewarded Ads:** Used for Skin Unlocks (`RewardAdButton`).
+  - **In-Page Push:** PC Only (Global config).
+  - **Banner Ads:** Disabled/Removed for UX.
+
 ## Project Structure
 
 ```
@@ -110,11 +94,13 @@ xy-poker/
 ├── src/
 │   ├── components/      # React components
 │   │   ├── SharedBoard.tsx/.css
+│   │   ├── DiceSkinStore.tsx/.css  # Skin Shop UI
 │   │   ├── GameInfo.tsx/.css
 │   │   ├── Hand.tsx/.css
 │   │   ├── Lobby.tsx/.css
 │   │   └── GameResult.tsx/.css
 │   ├── logic/          # Game logic
+│   │   ├── types.ts    # Game Types (Card, Skin, etc)
 │   │   ├── game.ts     # Game state reducer
 │   │   ├── evaluation.ts
 │   │   ├── scoring.ts
@@ -130,21 +116,21 @@ xy-poker/
 ```
 
 ## 🏗 Infrastructure & Deployment Status
-**Current Architecture (As of Dec 8, 2025)**
+**Current Architecture (As of Dec 11, 2025)**
 
 ### 1. Frontend Hosting
 - **Primary:** **Cloudflare Pages**
-  - **URL:** [https://xy-poker.pages.dev/](https://xy-poker.pages.dev/)
-  - **Status:** **Active (Live)**
+- **URL:** [https://xy-poker.pages.dev/](https://xy-poker.pages.dev/)
+- **Status:** **Active (Live)**
+- **Deployment Method:** **Manual / CLI**
+  - **Reason:** Project is not linked to Git Provider in Cloudflare Dashboard.
+  - **Command:** `npm run deploy` (requires Wrangler auth).
 
 ### 2. Backend Hosting (Socket.IO)
 - **Primary:** **Render** (Free Tier)
-  - URL: `https://xy-poker-server.onrender.com`
+- **URL:** `https://xy-poker-server.onrender.com`
 - **Database:** **Supabase** (PostgreSQL)
   - Stores: Player ratings, Browser IDs.
-
-### 3. Monetization
-- **Status:** **Disabled/Removed** (AdSense and banners removed at user request).
 
 ## 🛠 Tech Stack
 - **Frontend:** React 18, TypeScript, Vite
@@ -152,3 +138,4 @@ xy-poker/
 - **Realtime:** Socket.IO Client/Server (v4)
 - **Database:** Supabase (@supabase/supabase-js)
 - **Audio:** Custom sound utilities
+- **Monetization:** Monetag (Direct Link, In-Page Push)
