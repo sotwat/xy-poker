@@ -1200,7 +1200,7 @@ function App() {
                         // Small delay to ensure state reset before queuing
                         setTimeout(() => handleQuickMatch(), 100);
                       } else {
-                        handleRestartGame();
+                        handleStartGame();
                       }
                     }}
                     onClose={() => {
