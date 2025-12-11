@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Card as CardType } from '../logic/types';
+import type { Card as CardType, CardSkin } from '../logic/types';
 import './Card.css';
 
 interface CardProps {
@@ -14,6 +14,7 @@ interface CardProps {
     onMouseLeave?: () => void;
     onTouchStart?: () => void;
     onTouchEnd?: () => void;
+    skin?: CardSkin;
 }
 
 const SUIT_ICONS: Record<string, string> = {
@@ -43,7 +44,8 @@ export const Card: React.FC<CardProps> = ({
     onMouseUp,
     onMouseLeave,
     onTouchStart,
-    onTouchEnd
+    onTouchEnd,
+    skin = 'classic'
 }) => {
 
     // If hidden but peeking, show card face with overlay
@@ -52,7 +54,7 @@ export const Card: React.FC<CardProps> = ({
     if (shouldHide) {
         return (
             <div
-                className={`card hidden ${isSelected ? 'selected' : ''}`}
+                className={`card hidden ${isSelected ? 'selected' : ''} card-back-${skin}`}
                 onClick={onClick}
                 onMouseDown={onMouseDown}
                 onMouseUp={onMouseUp}
@@ -65,7 +67,7 @@ export const Card: React.FC<CardProps> = ({
         );
     }
 
-    const label = card.suit === 'joker' ? 'JOKER' : (RANK_LABELS[card.rank] || card.rank.toString());
+    const label = RANK_LABELS[card.rank] || card.rank.toString();
     const icon = SUIT_ICONS[card.suit];
 
     return (

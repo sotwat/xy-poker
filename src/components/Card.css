@@ -26,20 +26,178 @@
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
 
+/* CARD SKINS */
+
+/* Base hidden card style overrides based on skin */
 .card.hidden {
-  background: #2c3e50;
   border: 2px solid #fff;
+  background: #333;
+  /* Fallback */
+}
+
+/* 1. Classic */
+.card-back-classic .card-back {
+  background: repeating-linear-gradient(45deg, #2c3e50, #2c3e50 10px, #34495e 10px, #34495e 20px);
+}
+
+/* 2. Red Modern */
+.card-back-red-modern {
+  border-color: #ffcdd2 !important;
+}
+
+.card-back-red-modern .card-back {
+  background: radial-gradient(circle at center, #d32f2f, #b71c1c);
+  background-size: 20px 20px;
+  background-image: radial-gradient(circle, #e57373 1px, transparent 1px);
+}
+
+/* 3. Blue Modern */
+.card-back-blue-modern {
+  border-color: #bbdefb !important;
+}
+
+.card-back-blue-modern .card-back {
+  background: linear-gradient(135deg, #1565c0 25%, #0d47a1 25%, #0d47a1 50%, #1565c0 50%, #1565c0 75%, #0d47a1 75%, #0d47a1 100%);
+  background-size: 20px 20px;
+}
+
+/* 4. Luxury Gold */
+.card-back-gold-luxury {
+  border-color: #ffd700 !important;
+}
+
+.card-back-gold-luxury .card-back {
+  background: linear-gradient(45deg, #ffd700, #ffecb3, #ffb300, #ffd700);
+  background-size: 200% 200%;
+  animation: shimmer 5s ease infinite;
+}
+
+/* 5. Cyber Neon */
+.card-back-cyber-neon {
+  border-color: #00e5ff !important;
+  box-shadow: 0 0 5px #00e5ff !important;
+}
+
+.card-back-cyber-neon .card-back {
+  background: #000;
+  background-image: linear-gradient(0deg, transparent 24%, rgba(0, 229, 255, .3) 25%, rgba(0, 229, 255, .3) 26%, transparent 27%, transparent 74%, rgba(0, 229, 255, .3) 75%, rgba(0, 229, 255, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 229, 255, .3) 25%, rgba(0, 229, 255, .3) 26%, transparent 27%, transparent 74%, rgba(0, 229, 255, .3) 75%, rgba(0, 229, 255, .3) 76%, transparent 77%, transparent);
+  background-size: 30px 30px;
+}
+
+/* 6. Dark Matter */
+.card-back-dark-matter {
+  border-color: #424242 !important;
+}
+
+.card-back-dark-matter .card-back {
+  background: #202020;
+  background-image: radial-gradient(grey 1px, transparent 0);
+  background-size: 10px 10px;
+}
+
+/* 7. Wood Grain */
+.card-back-wood-grain {
+  border-color: #d7ccc8 !important;
+}
+
+.card-back-wood-grain .card-back {
+  background: #8d6e63;
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, .07) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(255, 255, 255, .13) 50%, transparent 50%),
+    linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .17) 50%),
+    linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .19) 50%);
+  background-size: 13px, 29px, 37px, 53px;
+}
+
+/* 8. Matrix */
+.card-back-matrix {
+  border-color: #00c853 !important;
+}
+
+.card-back-matrix .card-back {
+  background: #000;
+  color: #00c853;
+  font-family: monospace;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-back-matrix .card-back::before {
+  content: "010101 101010 001100";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  font-size: 8px;
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+/* 9. Sunset */
+.card-back-sunset {
+  border-color: #ff4081 !important;
+}
+
+.card-back-sunset .card-back {
+  background: linear-gradient(to bottom, #ff4081, #ff80ab, #ffd180);
+}
+
+/* 10. Royal Purple */
+.card-back-royal-purple {
+  border-color: #b388ff !important;
+}
+
+.card-back-royal-purple .card-back {
+  background: #6200ea;
+  background-image: radial-gradient(circle, #7c4dff 10%, transparent 10%), radial-gradient(circle, #7c4dff 10%, transparent 10%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
+/* 11. Cool Mint */
+.card-back-cool-mint {
+  border-color: #a7ffeb !important;
+}
+
+.card-back-cool-mint .card-back {
+  background: #a7ffeb;
+  background-image: repeating-linear-gradient(45deg, #a7ffeb 0, #a7ffeb 2px, #1de9b6 2px, #1de9b6 4px);
+}
+
+/* 12. Dragon Scale */
+.card-back-dragon-scale {
+  border-color: #bf360c !important;
+}
+
+.card-back-dragon-scale .card-back {
+  background: #bf360c;
+  background-image:
+    radial-gradient(circle at 100% 150%, #bf360c 24%, #ff5722 25%, #ff5722 28%, #bf360c 29%, #bf360c 36%, #ff5722 36%, #ff5722 40%, transparent 40%, transparent),
+    radial-gradient(circle at 0 150%, #bf360c 24%, #ff5722 25%, #ff5722 28%, #bf360c 29%, #bf360c 36%, #ff5722 36%, #ff5722 40%, transparent 40%, transparent),
+    radial-gradient(circle at 50% 100%, #ff5722 10%, #bf360c 11%, #bf360c 23%, #ff5722 24%, #ff5722 30%, #bf360c 31%, #bf360c 43%, #ff5722 44%, #ff5722 50%, #bf360c 51%, #bf360c 63%, #ff5722 64%, #ff5722 71%, transparent 71%, transparent),
+    radial-gradient(circle at 100% 50%, #ff5722 5%, #bf360c 6%, #bf360c 15%, #ff5722 16%, #ff5722 20%, #bf360c 21%, #bf360c 30%, #ff5722 31%, #ff5722 35%, #bf360c 36%, #bf360c 45%, #ff5722 46%, #ff5722 49%, transparent 50%, transparent),
+    radial-gradient(circle at 0 50%, #ff5722 5%, #bf360c 6%, #bf360c 15%, #ff5722 16%, #ff5722 20%, #bf360c 21%, #bf360c 30%, #ff5722 31%, #ff5722 35%, #bf360c 36%, #bf360c 45%, #ff5722 46%, #ff5722 49%, transparent 50%, transparent);
+  background-size: 20px 20px;
 }
 
 .card-back {
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(45deg,
-      #2c3e50,
-      #2c3e50 10px,
-      #34495e 10px,
-      #34495e 20px);
   border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .card.hearts,

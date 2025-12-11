@@ -114,7 +114,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             // 1. Check Hidden limit
             if (isHidden) {
                 if (player.hiddenCardsCount >= 3) return state; // Max 3
-                if (card.suit === 'joker') return state; // Joker cannot be hidden
                 // "Cannot hide all 3 cards in a column".
                 // We check this when placing the 3rd card?
                 // If col has 2 hidden cards, and we place 3rd hidden -> Invalid.

@@ -16,6 +16,14 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     const board = player.board;
     const dice = player.dice;
 
+    // STRATEGY 1: Dice Average Context
+    const avgDice = dice.reduce((a, b) => a + b, 0) / 5;
+    // High average -> Y-Hand is critical. Low average -> X-Hand is critical.
+    const isHighStakes = avgDice >= 3.5;
+
+    const yHandWeight = isHighStakes ? 1.2 : 0.8;
+    const xHandWeight = isHighStakes ? 0.8 : 1.2;
+
     // Identify valid columns
     const validColumns: number[] = [];
     for (let c = 0; c < 5; c++) {
@@ -40,17 +48,37 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
             const potentialCards = [...currentCards];
             potentialCards[emptySlotIdx] = card;
 
-            let score = evaluateColumnPlacement(potentialCards, col, dice[col], emptySlotIdx);
+            const diceValue = dice[col];
+
+            // 1. Evaluate Column (Y-Hand)
+            let score = evaluateColumnPlacement(potentialCards, col, diceValue, emptySlotIdx) * yHandWeight;
+
+            // STRATEGY 2: Low Value Column Sacrifice (Rush Bonus)
+            // If dice is 1 or 2, winning is low value.
+            // If we can finish the column (slot 2) quickly, we get a bonus card.
+            // But we must be careful not to ruin X-Hand (Row 2).
+            if (diceValue <= 2) {
+                // Reduce emphasis on making a "strong" hand here
+                score *= 0.7;
+
+                // Heavily reward filling the column (Speed)
+                if (emptySlotIdx === 2) {
+                    // Check if opponent hasn't filled it yet
+                    if (opponent.board[2][col] === null) {
+                        score += 250; // Big bonus for rushing
+                    }
+                }
+            }
 
             // X-hand strategy (bottom row)
             if (emptySlotIdx === 2) {
                 const learning = getLearningData();
-                score += evaluateXHandPotential(board, card, col) * learning.xHandFocus;
+                let xScore = evaluateXHandPotential(board, card, col) * learning.xHandFocus;
 
-                // Bonus for completing column first - INCREASED + LEARNING
-                if (opponent.board[2][col] === null) {
-                    score += 150 * learning.bonusAggression;
-                }
+                // If rushing a low value col, X-Hand quality matters LESS (sacrifice),
+                // but we still shouldn't break a Royal Flush potential if possible.
+                // We apply xHandWeight to the "Strategic Value" of the X-Hand.
+                score += xScore * xHandWeight;
             }
 
             // Opponent blocking strategy
@@ -67,7 +95,8 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     }
 
     // Strategic hidden card placement
-    bestMove.isHidden = shouldHideCard(bestMove, hand, player, board);
+    // STRATEGY 4: Use Hidden Cards Early
+    bestMove.isHidden = shouldHideCard(bestMove, hand, player, board, gameState.turnCount);
 
     return bestMove;
 }
@@ -82,51 +111,69 @@ function evaluateColumnPlacement(cards: (Card | null)[], _colIndex: number, dice
     let score = 0;
     const numCards = validCards.length;
 
-    // Trips (Three of a Kind) - SIGNIFICANTLY INCREASED + LEARNING
+    // STRATEGY 3: Pure Hand Priority
+    // Definition: "Pure" now implies Ordered/Adjacent.
+    // Check if cards form an Ordered sequence or Adjacent pair.
+
     const ranks = validCards.map(c => c.rank);
+    const sortedRanks = [...ranks].sort((a, b) => a - b);
+
+    // Check for Pure Potential (Ordered)
+    // If we have 2 cards, they must be adjacent in RANK to be Pure Straight potential.
+    // AND they must be in correct relative positions if we are considering the slot?
+    // AI places a card in `emptySlotIdx`.
+    // Instead of complex logic, allow AI to reward `Consecutive` cards highly.
+
+    let isConsecutive = false;
+    if (numCards >= 2) {
+        isConsecutive = true;
+        for (let i = 1; i < sortedRanks.length; i++) {
+            if (sortedRanks[i] !== sortedRanks[i - 1] + 1) {
+                isConsecutive = false;
+                break;
+            }
+        }
+    }
+
+    const pureMultiplier = (isConsecutive && diceValue >= 4) ? 1.5 : 1.0;
+
+    // Trips (Three of a Kind)
     const uniqueRanks = new Set(ranks);
     if (numCards === 3 && uniqueRanks.size === 1) {
-        score += 400 * diceValue * learning.tripPreference; // Learning applied
+        score += 400 * diceValue * learning.tripPreference;
     } else if (numCards === 2 && uniqueRanks.size === 1) {
         score += 160 * diceValue * learning.tripPreference;
     }
 
-    // Flush - SIGNIFICANTLY INCREASED + LEARNING
-    const suits = validCards.map(c => c.suit).filter(s => s !== 'joker');
+    // Flush
+    const suits = validCards.map(c => c.suit);
     const uniqueSuits = new Set(suits);
     if (uniqueSuits.size === 1 && numCards >= 2) {
-        score += 120 * diceValue * learning.flushPreference; // Learning applied
-        if (numCards === 3) {
-            score += 100 * diceValue * learning.flushPreference;
-        }
+        let flushScore = 120 * diceValue * learning.flushPreference;
+        if (numCards === 3) flushScore += 100;
+
+        // Boost for Pure Flush (Sequential & Suited)
+        // Use pureMultiplier here logic
+        if (isConsecutive && diceValue >= 5) flushScore *= pureMultiplier; // Use the variable
+
+        score += flushScore;
     }
 
-    // Straight (consecutive ranks) - SIGNIFICANTLY INCREASED + LEARNING
-    if (numCards >= 2) {
-        const sortedRanks = [...ranks].sort((a, b) => a - b);
-        let consecutive = true;
-        for (let i = 1; i < sortedRanks.length; i++) {
-            if (sortedRanks[i] !== sortedRanks[i - 1] + 1) {
-                consecutive = false;
-                break;
-            }
-        }
-        if (consecutive) {
-            score += 140 * diceValue * learning.straightPreference; // Learning applied
-            if (numCards === 3) {
-                score += 120 * diceValue * learning.straightPreference;
-            }
-        }
+    // Straight (consecutive ranks)
+    if (isConsecutive) {
+        let straightScore = 140 * diceValue * learning.straightPreference;
+        if (numCards === 3) straightScore += 120;
+
+        // Boost for Pure Straight.
+        // pureMultiplier already captures (isConsecutive && dice >= 4).
+        straightScore *= pureMultiplier;
+
+        score += straightScore;
     }
 
-    // High cards in high dice columns - INCREASED
+    // High cards in high dice columns
     const avgRank = ranks.reduce((sum, r) => sum + r, 0) / ranks.length;
     score += avgRank * diceValue * 5;
-
-    // Joker bonus - INCREASED
-    if (validCards.some(c => c.suit === 'joker')) {
-        score += 200 * diceValue;
-    }
 
     return score;
 }
@@ -141,24 +188,24 @@ function evaluateXHandPotential(board: (Card | null)[][], newCard: Card, colInde
 
     let score = 0;
 
-    // Check for X-hand patterns (similar to Y-hand but for 5 cards)
+    // Check for X-hand patterns (for 5 cards)
     const ranks = validCards.map(c => c.rank);
-    const suits = validCards.map(c => c.suit).filter(s => s !== 'joker');
 
-    // Pairs, trips, quads - INCREASED
+    // Pairs, trips, quads
     const rankCounts = new Map<number, number>();
     ranks.forEach(r => rankCounts.set(r, (rankCounts.get(r) || 0) + 1));
     const maxCount = Math.max(...rankCounts.values());
 
-    if (maxCount >= 2) score += maxCount * 60; // Was 30
+    if (maxCount >= 2) score += maxCount * 60;
 
-    // Flush potential - INCREASED
+    // Flush potential
+    const suits = validCards.map(c => c.suit);
     const uniqueSuits = new Set(suits);
     if (uniqueSuits.size === 1 && validCards.length >= 3) {
-        score += 100; // Was 50
+        score += 100;
     }
 
-    // Straight potential - INCREASED
+    // Straight potential
     const sortedRanks = [...new Set(ranks)].sort((a, b) => a - b);
     if (sortedRanks.length >= 3) {
         let maxConsecutive = 1;
@@ -171,12 +218,10 @@ function evaluateXHandPotential(board: (Card | null)[][], newCard: Card, colInde
                 current = 1;
             }
         }
-        if (maxConsecutive >= 3) score += maxConsecutive * 50; // Was 25
+        if (maxConsecutive >= 3) score += maxConsecutive * 50;
     }
 
-    // High cards in bottom row are valuable - INCREASED
-    if (newCard.rank >= 12) score += 80; // Was 40
-    if (newCard.suit === 'joker') score += 200; // Was 100
+    if (newCard.rank >= 12) score += 80;
 
     return score;
 }
@@ -187,9 +232,8 @@ function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: numb
 
     if (oppCards.length < 2) return 0;
 
-    // Check if opponent has a strong hand forming
     const oppRanks = oppCards.map(c => c.rank);
-    const oppSuits = oppCards.map(c => c.suit).filter(s => s !== 'joker');
+    const oppSuits = oppCards.map(c => c.suit);
 
     let blockValue = 0;
 
@@ -205,32 +249,37 @@ function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: numb
         blockValue += 25;
     }
 
-    // We can't really "block" by placing in our own board, but we can prioritize
-    // completing our columns faster than opponent
     return blockValue;
 }
 
-function shouldHideCard(move: { cardId: string, colIndex: number }, hand: Card[], player: GameState['players'][0], _board: (Card | null)[][]): boolean {
+function shouldHideCard(move: { cardId: string, colIndex: number }, hand: Card[], player: GameState['players'][0], _board: (Card | null)[][], turnCount: number): boolean {
     if (player.hiddenCardsCount >= 3) return false;
 
     const card = hand.find(c => c.id === move.cardId);
-    if (!card || card.suit === 'joker') return false;
+    if (!card) return false;
 
     const learning = getLearningData();
-
-    // Strategic hiding: Hide high-value cards in important columns
     const col = move.colIndex;
     const diceValue = player.dice[col];
 
-    // Hide high cards (J, Q, K, A) in high dice columns (4, 5, 6)
+    // STRATEGY 4: Early Hidden Card Usage
+    // "Use hidden rights early to reduce information"
+    const isEarlyGame = turnCount <= 8;
+    let baseProb = 0.0;
+
+    // Hide high cards (J, Q, K, A) in high dice columns
     if (card.rank >= 11 && diceValue >= 4) {
-        return Math.random() < (0.4 * learning.hidingStrategy / 0.3); // Adapt based on learning
+        baseProb = 0.4;
+    }
+    // Strategic hiding for mid-high cards
+    else if (card.rank >= 10) {
+        baseProb = 0.25;
     }
 
-    // Hide strategically to prevent opponent from reading our hand
-    if (card.rank >= 10) {
-        return Math.random() < (0.25 * learning.hidingStrategy / 0.3);
+    // Boost probability in early game
+    if (isEarlyGame) {
+        baseProb *= 1.5;
     }
 
-    return false;
+    return Math.random() < (baseProb * learning.hidingStrategy / 0.3);
 }

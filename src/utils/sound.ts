@@ -46,3 +46,24 @@ export const playSuccessSound = () => {
         console.warn('Audio playback not supported:', error);
     }
 };
+
+export const speakText = (text: string) => {
+    if (!('speechSynthesis' in window)) return;
+    try {
+        // Cancel any pending speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US'; // Default to English as hands are likely English terms, or use 'ja-JP' if user prefers names read in Japanese.
+        // User asked for "役名を読み上げる" -> likely wants English hand names read out (e.g. "Three of a kind")
+        // as they are English in the types.
+        // Let's stick to English pronunciation for Poker terms usually.
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 0.8;
+
+        window.speechSynthesis.speak(utterance);
+    } catch (e) {
+        console.warn('Speech synthesis failed:', e);
+    }
+};

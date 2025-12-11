@@ -3,13 +3,13 @@ import { gameReducer, INITIAL_GAME_STATE } from './logic/game';
 import { evaluateYHand, evaluateXHand } from './logic/evaluation';
 import { calculateXHandScores } from './logic/scoring';
 import { recordGameResult } from './logic/aiLearning';
-import type { Card, DiceSkin } from './logic/types';
+import type { Card, DiceSkin, CardSkin, BoardSkin } from './logic/types';
 import { SharedBoard } from './components/SharedBoard';
 import { Hand } from './components/Hand';
 import { GameInfo } from './components/GameInfo';
 import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
-import { DiceSkinStore } from './components/DiceSkinStore';
+import { SkinStore } from './components/SkinStore';
 import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { RulesModal } from './components/RulesModal';
 import { TurnTimer } from './components/TurnTimer';
@@ -20,7 +20,7 @@ import './App.css';
 
 import { getBestMove } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
-import { playClickSound, playSuccessSound } from './utils/sound';
+import { playClickSound, playSuccessSound, speakText } from './utils/sound';
 import { getBrowserId } from './utils/identity';
 
 function App() {
@@ -38,6 +38,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [isQuickMatch, setIsQuickMatch] = useState(false);
+  const [scoringStep, setScoringStep] = useState(-1); // -1: hidden, 0-4: cols, 5: row
 
   // Rating State
   const [myRating, setMyRating] = useState<number | null>(null);
@@ -63,31 +64,133 @@ function App() {
   const modeRef = useRef(mode);
   const roomIdRef = useRef(roomId);
 
-  // Dice Skin State
+  // SKIN STATE MANAGEMENT & EXPIRY
+  const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 hours
   const [showSkinStore, setShowSkinStore] = useState(false);
+
+  // -- GENERIC SKIN LOADER HELPER --
+  // We needed to duplicate this logic for Dice, Cards, Board to keep it clean and explicit
+  // or refactor into a custom hook. For now, duplication is safer to implement quickly.
+
+  // 1. DICE
   const [unlockedSkins, setUnlockedSkins] = useState<DiceSkin[]>(() => {
-    const saved = localStorage.getItem('xypoker_unlockedSkins');
-    return saved ? JSON.parse(saved) : ['white'];
+    return loadSkins<DiceSkin>('xypoker_unlockedSkins', 'xypoker_skinUnlockTimes', ['white']);
   });
   const [selectedSkin, setSelectedSkin] = useState<DiceSkin>(() => {
-    const saved = localStorage.getItem('xypoker_selectedSkin');
-    return (saved as DiceSkin) || 'white';
+    return loadSelectedSkin<DiceSkin>('xypoker_selectedSkin', 'white', unlockedSkins);
   });
 
+  // 2. CARDS
+  const [unlockedCardSkins, setUnlockedCardSkins] = useState<CardSkin[]>(() => {
+    return loadSkins<CardSkin>('xypoker_unlockedCardSkins', 'xypoker_cardUnlockTimes', ['classic']);
+  });
+  const [selectedCardSkin, setSelectedCardSkin] = useState<CardSkin>(() => {
+    return loadSelectedSkin<CardSkin>('xypoker_selectedCardSkin', 'classic', unlockedCardSkins);
+  });
+
+  // 3. BOARDS
+  const [unlockedBoardSkins, setUnlockedBoardSkins] = useState<BoardSkin[]>(() => {
+    return loadSkins<BoardSkin>('xypoker_unlockedBoardSkins', 'xypoker_boardUnlockTimes', ['classic-green']);
+  });
+  const [selectedBoardSkin, setSelectedBoardSkin] = useState<BoardSkin>(() => {
+    return loadSelectedSkin<BoardSkin>('xypoker_selectedBoardSkin', 'classic-green', unlockedBoardSkins);
+  });
+
+  // -- LOADERS --
+  function loadSkins<T extends string>(storageKey: string, timeKey: string, defaults: T[]): T[] {
+    const savedSkins = localStorage.getItem(storageKey);
+    const savedTimes = localStorage.getItem(timeKey);
+
+    let skins: T[] = savedSkins ? JSON.parse(savedSkins) : defaults;
+    let times: Record<string, number> = savedTimes ? JSON.parse(savedTimes) : {};
+
+    const now = Date.now();
+    let hasChanges = false;
+    let newSkins: T[] = [];
+    let newTimes: Record<string, number> = { ...times };
+
+    skins.forEach(skin => {
+      // Defaults never expire
+      if (defaults.includes(skin)) {
+        newSkins.push(skin);
+        return;
+      }
+
+      // Legacy migration: if unlocked but no time, set to NOW
+      if (!newTimes[skin as string]) {
+        newTimes[skin as string] = now;
+        hasChanges = true;
+      }
+
+      // Check Expiry
+      if (now - newTimes[skin as string] < SKIN_EXPIRY_MS) {
+        newSkins.push(skin);
+      } else {
+        console.log(`Skin expired: ${skin}`);
+        delete newTimes[skin as string];
+        hasChanges = true;
+      }
+    });
+
+    // Ensure defaults are always present (sanity check)
+    defaults.forEach(def => {
+      if (!newSkins.includes(def)) newSkins.push(def);
+    });
+
+    if (hasChanges) {
+      localStorage.setItem(storageKey, JSON.stringify(newSkins));
+      localStorage.setItem(timeKey, JSON.stringify(newTimes));
+    }
+    return newSkins;
+  }
+
+  function loadSelectedSkin<T extends string>(key: string, defaultSkin: T, unlockedList: T[]): T {
+    const saved = localStorage.getItem(key) as T;
+    if (saved && unlockedList.includes(saved)) {
+      return saved;
+    }
+    return defaultSkin;
+  }
+
+  // -- UNLOCK HANDLERS --
   const handleUnlockSkin = (skinId: DiceSkin) => {
-    const newUnlocked = [...unlockedSkins, skinId];
-    setUnlockedSkins(newUnlocked);
-    localStorage.setItem('xypoker_unlockedSkins', JSON.stringify(newUnlocked));
-
-    // Auto-select upon unlock
-    setSelectedSkin(skinId);
-    localStorage.setItem('xypoker_selectedSkin', skinId);
+    unlockSkinGeneric<DiceSkin>(skinId, unlockedSkins, setUnlockedSkins, 'xypoker_unlockedSkins', 'xypoker_skinUnlockTimes', setSelectedSkin, 'xypoker_selectedSkin');
+  };
+  const handleUnlockCardSkin = (skinId: CardSkin) => {
+    unlockSkinGeneric<CardSkin>(skinId, unlockedCardSkins, setUnlockedCardSkins, 'xypoker_unlockedCardSkins', 'xypoker_cardUnlockTimes', setSelectedCardSkin, 'xypoker_selectedCardSkin');
+  };
+  const handleUnlockBoardSkin = (skinId: BoardSkin) => {
+    unlockSkinGeneric<BoardSkin>(skinId, unlockedBoardSkins, setUnlockedBoardSkins, 'xypoker_unlockedBoardSkins', 'xypoker_boardUnlockTimes', setSelectedBoardSkin, 'xypoker_selectedBoardSkin');
   };
 
-  const handleSelectSkin = (skinId: DiceSkin) => {
-    setSelectedSkin(skinId);
-    localStorage.setItem('xypoker_selectedSkin', skinId);
-  };
+  function unlockSkinGeneric<T extends string>(
+    skinId: T,
+    currentList: T[],
+    setList: (l: T[]) => void,
+    listKey: string,
+    timeKey: string,
+    setSelect: (s: T) => void,
+    selectKey: string
+  ) {
+    const now = Date.now();
+    const newUnlocked = Array.from(new Set([...currentList, skinId]));
+    setList(newUnlocked);
+    localStorage.setItem(listKey, JSON.stringify(newUnlocked));
+
+    const loadedTimes = localStorage.getItem(timeKey);
+    const currentTimes = loadedTimes ? JSON.parse(loadedTimes) : {};
+    const newTimes = { ...currentTimes, [skinId]: now };
+    localStorage.setItem(timeKey, JSON.stringify(newTimes));
+
+    // Auto-select
+    setSelect(skinId);
+    localStorage.setItem(selectKey, skinId);
+  }
+
+  // -- SELECT HANDLERS --
+  const handleSelectSkin = (skinId: DiceSkin) => { setSelectedSkin(skinId); localStorage.setItem('xypoker_selectedSkin', skinId); };
+  const handleSelectCardSkin = (skinId: CardSkin) => { setSelectedCardSkin(skinId); localStorage.setItem('xypoker_selectedCardSkin', skinId); };
+  const handleSelectBoardSkin = (skinId: BoardSkin) => { setSelectedBoardSkin(skinId); localStorage.setItem('xypoker_selectedBoardSkin', skinId); };
 
   useEffect(() => {
     modeRef.current = mode;
@@ -347,13 +450,103 @@ function App() {
 
   useEffect(() => {
     if (phase === 'ended') {
-      setShowResultsModal(true);
+      // Start scoring animation sequence
+      // Steps: 0-4 (Cols), 5 (Row)
+
+      let step = 0;
+      setScoringStep(0);
+
+      // Pre-calculate winners and hand names for valid speech
+      const { players } = gameState;
+      const p1 = players[0];
+      const p2 = players[1];
+      const dice = p1.dice; // Shared dice values
+
+      // Helper to map type ID to readable string
+      const getReadableHandName = (typeId: string): string => {
+        // Simple mapping from PascalCase to Spaced String
+        // e.g. ThreeOfAKind -> Three of a Kind
+        return typeId.replace(/([A-Z])/g, ' $1').trim().replace(/ Of /g, ' of ').replace(/ A /g, ' a ');
+      };
+
+      // Col Results (Right-to-Left: 4 -> 0)
+      const colResults = Array.from({ length: 5 }, (_, i) => {
+        const colIndex = 4 - i; // 4, 3, 2, 1, 0
+        const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
+        const p2Cards = [p2.board[0][colIndex]!, p2.board[1][colIndex]!, p2.board[2][colIndex]!];
+
+        const p1Res = evaluateYHand(p1Cards, dice[colIndex]);
+        const p2Res = evaluateYHand(p2Cards, dice[colIndex]);
+
+        if (p1Res.rankValue > p2Res.rankValue) return { winner: 'p1', type: p1Res.type };
+        if (p2Res.rankValue > p1Res.rankValue) return { winner: 'p2', type: p2Res.type };
+
+        // Tie-breaker logic (Kicker)
+        for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
+          const k1 = p1Res.kickers[k] || 0;
+          const k2 = p2Res.kickers[k] || 0;
+          if (k1 > k2) return { winner: 'p1', type: p1Res.type };
+          if (k2 > k1) return { winner: 'p2', type: p2Res.type };
+        }
+        return { winner: 'draw', type: null };
+      });
+
+      // Row Result (X-Hand)
+      const p1XRes = evaluateXHand(p1.board[2] as Card[]);
+      const p2XRes = evaluateXHand(p2.board[2] as Card[]);
+      const { p1Score: p1X, p2Score: p2X } = calculateXHandScores(p1XRes, p2XRes);
+      let rowResult = { winner: 'draw', type: null as string | null };
+      if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type };
+      else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type };
+
+
+      // Initial Speech (Step 0)
+      const initialRes = colResults[0];
+      if (initialRes.winner !== 'draw' && initialRes.type) {
+        speakText(getReadableHandName(initialRes.type));
+      }
+      playClickSound();
+
+      const interval = setInterval(() => {
+        step++;
+        if (step <= 5) {
+          setScoringStep(step);
+          playClickSound();
+
+          // Speak logic
+          let res: { winner: string, type: string | null } | null = null;
+          if (step <= 4) {
+            res = colResults[step];
+          } else if (step === 5) {
+            res = rowResult;
+          }
+
+          if (res && res.winner !== 'draw' && res.type) {
+            // Slight delay for speech to not clash perfectly with click sound? 
+            // Or just fire it. Browsers handle overlapping/queuing or replace.
+            // speakText cancels previous, so it's fine.
+            speakText(getReadableHandName(res.type));
+          }
+
+        } else {
+          // Finished
+          clearInterval(interval);
+          setTimeout(() => {
+            setShowResultsModal(true);
+          }, 1000);
+        }
+      }, 800); // Increased to 800ms to allow speech time
+
       if (mode === 'local') {
         const { winner } = gameState;
         const aiWon = winner === 'p2';
         const isDraw = winner === null;
         recordGameResult(aiWon, isDraw);
       }
+
+      return () => clearInterval(interval);
+    } else {
+      setScoringStep(-1);
     }
   }, [phase, mode, gameState]);
 
@@ -705,7 +898,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12111845</span>}
+          {showVersion && <span className="version">12112320</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -797,7 +990,6 @@ function App() {
               playerName={playerName}
               onPlayerNameChange={setPlayerName}
               rating={myRating}
-              onOpenSkinStore={() => setShowSkinStore(true)}
             />
           ) : (
             <>
@@ -809,13 +1001,24 @@ function App() {
               />
 
               {/* Skin Store Modal */}
-              <DiceSkinStore
+              <SkinStore
                 isOpen={showSkinStore}
                 onClose={() => setShowSkinStore(false)}
+                // Dice
                 unlockedSkins={unlockedSkins}
                 selectedSkin={selectedSkin}
                 onUnlock={handleUnlockSkin}
                 onSelect={handleSelectSkin}
+                // Cards
+                unlockedCardSkins={unlockedCardSkins}
+                selectedCardSkin={selectedCardSkin}
+                onUnlockCard={handleUnlockCardSkin}
+                onSelectCard={handleSelectCardSkin}
+                // Boards
+                unlockedBoardSkins={unlockedBoardSkins}
+                selectedBoardSkin={selectedBoardSkin}
+                onUnlockBoard={handleUnlockBoardSkin}
+                onSelectBoard={handleSelectBoardSkin}
               />
 
               {/* Turn Timer Conditionally Rendered */}
@@ -855,7 +1058,7 @@ function App() {
                             style={{ marginTop: '1rem', padding: '8px 16px', fontSize: '0.9rem' }}
                             onClick={() => { playClickSound(); setShowSkinStore(true); }}
                           >
-                            🎨 Dice Skins
+                            🎨 Skin Shop
                           </button>
                         </div>
                         {/*
@@ -871,16 +1074,19 @@ function App() {
 
 
                     <SharedBoard
-                      playerBoard={currentPlayerIndex === 0 ? players[0].board : players[1].board}
-                      opponentBoard={currentPlayerIndex === 0 ? players[1].board : players[0].board}
-                      dice={currentPlayerIndex === 0 ? players[0].dice : players[1].dice}
+                      playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
+                      opponentBoard={players[isOnlineGame && playerRole === 'guest' ? 0 : 1].board}
+                      dice={players[currentPlayerIndex].dice}
                       onColumnClick={handleColumnClick}
-                      isCurrentPlayer={(!isOnlineGame) || (playerRole === 'host' && currentPlayerIndex === 0) || (playerRole === 'guest' && currentPlayerIndex === 1)}
+                      isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
                       revealAll={phase === 'ended'}
                       winningColumns={phase === 'ended' ? calculateWinningColumns() : undefined}
                       xWinner={phase === 'ended' ? calculateXWinner() : undefined}
-                      bottomPlayerId={currentPlayerIndex === 0 ? 'p1' : 'p2'}
+                      bottomPlayerId={isOnlineGame && playerRole === 'guest' ? 'p2' : 'p1'}
                       selectedSkin={selectedSkin}
+                      selectedCardSkin={selectedCardSkin}
+                      selectedBoardSkin={selectedBoardSkin}
+                      scoringStep={scoringStep}
                     />
                   </div>
                 )}

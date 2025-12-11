@@ -12,16 +12,11 @@ export function createDeck(): Card[] {
                 suit,
                 rank,
                 id: `${suit}-${rank}`,
-                isJoker: false,
             });
         }
     }
 
-    // Jokers removed per user request
-    // if (includeJokers) {
-    //     deck.push({ suit: 'joker', rank: 15 as Rank, id: 'joker-1', isJoker: true }); // Rank 15 for sorting/logic if needed
-    //     deck.push({ suit: 'joker', rank: 15 as Rank, id: 'joker-2', isJoker: true });
-    // }
+
 
     return deck;
 }

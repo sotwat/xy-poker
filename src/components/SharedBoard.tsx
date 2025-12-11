@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Card as CardType, DiceSkin } from '../logic/types';
+import type { Card as CardType, DiceSkin, CardSkin, BoardSkin } from '../logic/types';
 import { Card } from './Card';
 import { Dice } from './Dice';
 import './SharedBoard.css';
@@ -15,6 +15,9 @@ interface SharedBoardProps {
     xWinner?: 'p1' | 'p2' | 'draw'; // X-hand winner for row highlighting
     bottomPlayerId?: 'p1' | 'p2'; // 'p1' means P1 is at bottom (blue), 'p2' means P2 is at bottom (red)
     selectedSkin: DiceSkin;
+    selectedCardSkin: CardSkin;
+    selectedBoardSkin: BoardSkin;
+    scoringStep?: number;
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -27,7 +30,10 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     winningColumns,
     xWinner,
     bottomPlayerId = 'p1', // Default to P1 at bottom
-    selectedSkin
+    selectedSkin,
+    selectedCardSkin,
+    selectedBoardSkin,
+    scoringStep = -1
 }) => {
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const [pressTimer, setPressTimer] = useState<number | null>(null);
@@ -87,23 +93,28 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         // winningColumns[colIndex] returns 'p1' or 'p2' (the winner)
         const winner = winningColumns ? winningColumns[colIndex] : null;
 
+        // ANIMATION LOGIC:
+        // Steps 0-4 correspond to columns 4-0.
+        // Current Step 0 -> Show Col 4.
+        // Current Step 1 -> Show Col 4, 3.
+        // Condition: (4 - colIndex) <= scoringStep
+        // e.g. Col 4: (4-4)=0 <= 0 (Visible at Step 0+)
+        // e.g. Col 0: (4-0)=4 <= 4 (Visible at Step 4+)
+        const isColVisible = scoringStep >= (4 - colIndex);
+
         // Bottom Highlight Logic:
-        // Highlight if the winner MATCHES the bottom player ID.
-        // And apply class based on the winner ID (p1=Blue, p2=Red).
-        const isBottomWon = winner === bottomPlayerId;
+        const isBottomWon = winner === bottomPlayerId && isColVisible;
         const bottomWinningClass = isBottomWon ? `winning-slot-${bottomPlayerId}` : '';
 
         // Top Highlight Logic:
-        // Highlight if the winner MATCHES the top player ID.
-        const isTopWon = winner === topPlayerId;
+        const isTopWon = winner === topPlayerId && isColVisible;
         const topWinningClass = isTopWon ? `winning-slot-${topPlayerId}` : '';
 
         // X-Hand Highlight Logic
-        // Row 2 is the X-Hand row.
-        // For Opponent (Top), cards are [Row2, Row1, Row0], so Row 2 is idx 0.
-        // For Player (Bottom), cards are [Row0, Row1, Row2], so Row 2 is idx 2.
-        const isTopXWinner = xWinner === topPlayerId;
-        const isBottomXWinner = xWinner === bottomPlayerId;
+        // Highlight ONLY if scoringStep >= 5 (Row Step)
+        const isRowVisible = scoringStep >= 5;
+        const isTopXWinner = xWinner === topPlayerId && isRowVisible;
+        const isBottomXWinner = xWinner === bottomPlayerId && isRowVisible;
 
         return (
             <div
@@ -115,11 +126,12 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                     {opponentCards.map((card, idx) => (
                         <div
                             key={`opp-${idx}`}
-                            className={`card-slot opponent-slot ${topWinningClass} ${isTopXWinner && idx === 0 ? 'winning-row-x' : ''}`}
+                            className={`card-slot opponent-slot ${topWinningClass} ${isTopXWinner && idx === 0 ? 'winning-row-yellow' : ''}`}
                         >
                             {card ? (
                                 <Card
                                     card={revealAll ? { ...card, isHidden: false } : card}
+                                    skin={selectedCardSkin}
                                 />
                             ) : (
                                 <div className="empty-slot" onClick={() => isCurrentPlayer && onColumnClick(colIndex)} />
@@ -138,7 +150,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                     {playerCards.map((card, idx) => (
                         <div
                             key={`pl-${idx}`}
-                            className={`card-slot player-slot ${isBottomXWinner && idx === 2 ? 'winning-row-x' : ''
+                            className={`card-slot player-slot ${isBottomXWinner && idx === 2 ? 'winning-row-yellow' : ''
                                 } ${bottomWinningClass}`}
                         >
                             {card ? (
@@ -151,6 +163,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                                     onMouseLeave={() => handleCardPressEnd(card, colIndex, true)}
                                     onTouchStart={() => handleCardPressStart(card, colIndex, true)}
                                     onTouchEnd={() => handleCardPressEnd(card, colIndex, true)}
+                                    skin={selectedCardSkin}
                                 />
                             ) : (
                                 <div className="empty-slot" onClick={() => isCurrentPlayer && onColumnClick(colIndex)} />
@@ -163,7 +176,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     });
 
     return (
-        <div className="shared-board">
+        <div className={`shared-board board-theme-${selectedBoardSkin}`}>
             {columns}
         </div>
     );

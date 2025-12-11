@@ -13,7 +13,6 @@ interface LobbyProps {
     playerName: string;
     onPlayerNameChange: (name: string) => void;
     rating?: number | null;
-    onOpenSkinStore: () => void;
 }
 
 export const Lobby: React.FC<LobbyProps> = ({
@@ -26,8 +25,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     playerRole,
     playerName,
     onPlayerNameChange,
-    rating,
-    onOpenSkinStore
+    rating
 }) => {
     const [joinId, setJoinId] = useState('');
 
@@ -82,74 +80,69 @@ export const Lobby: React.FC<LobbyProps> = ({
                     🎲 Quick Match
                 </button>
                 <p className="quick-match-hint">Play against a random opponent</p>
-                <button
-                    className="btn-secondary"
-                    style={{ marginTop: '12px', fontSize: '0.9rem', padding: '6px 12px' }}
-                    onClick={() => { playClickSound(); onOpenSkinStore(); }}
-                >
-                    🎨 Dice Skins
-                </button>
             </div>
 
             <div className="divider">
                 <span>OR</span>
             </div>
 
-            {!roomId ? (
-                <div className="lobby-actions">
-                    <div className="action-box">
-                        <h3>Create Room</h3>
-                        <p>Start a new game and invite a friend.</p>
-                        <button className="btn-primary" onClick={() => { playClickSound(); onCreateRoom(); }}>Create Room</button>
+            {
+                !roomId ? (
+                    <div className="lobby-actions">
+                        <div className="action-box">
+                            <h3>Create Room</h3>
+                            <p>Start a new game and invite a friend.</p>
+                            <button className="btn-primary" onClick={() => { playClickSound(); onCreateRoom(); }}>Create Room</button>
+                        </div>
+
+                        <div className="divider">OR</div>
+
+                        <div className="action-box">
+                            <h3>Join Room</h3>
+                            <p>Enter the Room ID to join.</p>
+                            <input
+                                type="text"
+                                placeholder="Room ID"
+                                value={joinId}
+                                onChange={(e) => setJoinId(e.target.value)}
+                                maxLength={4}
+                            />
+                            <button
+                                className="btn-secondary"
+                                onClick={() => { playClickSound(); onJoinRoom(joinId); }}
+                                disabled={joinId.length !== 4}
+                            >
+                                Join Room
+                            </button>
+                        </div>
                     </div>
-
-                    <div className="divider">OR</div>
-
-                    <div className="action-box">
-                        <h3>Join Room</h3>
-                        <p>Enter the Room ID to join.</p>
-                        <input
-                            type="text"
-                            placeholder="Room ID"
-                            value={joinId}
-                            onChange={(e) => setJoinId(e.target.value)}
-                            maxLength={4}
-                        />
-                        <button
-                            className="btn-secondary"
-                            onClick={() => { playClickSound(); onJoinRoom(joinId); }}
-                            disabled={joinId.length !== 4}
-                        >
-                            Join Room
+                ) : (
+                    <div className="waiting-room">
+                        <h3>{playerRole === 'host' ? 'Room Created!' : 'Joined Room!'}</h3>
+                        <div className="room-id-display">
+                            Room ID: <span>{roomId}</span>
+                            {playerRole === 'host' && (
+                                <button
+                                    className="btn-icon copy-btn"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(roomId);
+                                        alert('Room ID copied!');
+                                    }}
+                                    title="Copy to Clipboard"
+                                >
+                                    📋
+                                </button>
+                            )}
+                        </div>
+                        <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for game to start...'}</p>
+                        {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent... Game starts automatically.</div>}
+                        {playerRole === 'guest' && <div className="loading-spinner">Connected to Room</div>}
+                        <button className="btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
+                            Cancel
                         </button>
                     </div>
-                </div>
-            ) : (
-                <div className="waiting-room">
-                    <h3>{playerRole === 'host' ? 'Room Created!' : 'Joined Room!'}</h3>
-                    <div className="room-id-display">
-                        Room ID: <span>{roomId}</span>
-                        {playerRole === 'host' && (
-                            <button
-                                className="btn-icon copy-btn"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(roomId);
-                                    alert('Room ID copied!');
-                                }}
-                                title="Copy to Clipboard"
-                            >
-                                📋
-                            </button>
-                        )}
-                    </div>
-                    <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for game to start...'}</p>
-                    {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent... Game starts automatically.</div>}
-                    {playerRole === 'guest' && <div className="loading-spinner">Connected to Room</div>}
-                    <button className="btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
-                        Cancel
-                    </button>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };

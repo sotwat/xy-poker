@@ -22,12 +22,13 @@
 
 @media (max-width: 600px) {
     .turn-timer {
-        top: auto;
-        bottom: 140px;
-        /* Above hand area */
-        right: 10px;
+        top: 55px;
+        bottom: auto;
+        right: 5px;
         width: 80px;
         padding: 5px 10px;
+        transform: scale(0.8);
+        transform-origin: top right;
     }
 }
 

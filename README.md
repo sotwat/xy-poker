@@ -53,10 +53,24 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12111845` (2025-12-11 18:45)
+**Latest Version:** `12112320` (2025-12-11 23:20)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12111845** (2025-12-11): **Docs Update** - Added Setup Instructions & DB Schema for continuity.
+1. **v12112320** (2025-12-11): **Rules** - Removed Jokers entirely and refined "Pure" hand definitions (Positional Order/Adjacency).
+2. **v12112317** (2025-12-11): **AI** - Enhanced AI logic with user-provided strategies (Dice context, Low-col sacrifice, Pure hand priority, Early hidden).
+3. **v12112310** (2025-12-11): **Audio** - Added Voice Announcements for winning hand names during scoring animation.
+3. **v12112305** (2025-12-11): **FX** - Added sequential scoring animation (Cols Right-to-Left → X-Hand Row in Yellow).
+3. **v12112245** (2025-12-11): **UI** - Adjusted mobile battle sidebar font sizes (smaller name/bonuses).
+3. **v12112240** (2025-12-11): **UI** - Removed redundant "Dice Skin" button from Online Lobby.
+3. **v12112235** (2025-12-11): **Feature** - Added 6 new skins (2 Dice, 2 Card, 2 Board) to total 12 per category.
+3. **v12112230** (2025-12-11): **Scaling** - Changed Skin Unlock Duration from 24h to 3h.
+3. **v12112222** (2025-12-11): **Feature** - Expanded Skin Shop (Added Card & Board Skins).
+3. **v12111913** (2025-12-11): **Fix** - Fixed Online Board Flipping Bug (Stabilized Player Perspective).
+3. **v12111910** (2025-12-11): **UI** - Repositioned Turn Timer on Mobile (Top-Right, 0.8x Scale).
+3. **v12111900** (2025-12-11): **Feature** - Implemented 24h Expiry for Ad-Unlocked Dice Skins.
+3. **v12111858** (2025-12-11): **Fix** - Fixed rendering of Dice Face 6 (Added missing dot CSS).
+3. **v12111855** (2025-12-11): **Fix** - Added Mobile Close Button & Improved Desktop Ad Reward Flow (Claim Button).
+3. **v12111845** (2025-12-11): **Docs Update** - Added Setup Instructions & DB Schema for continuity.
 2. **v12111835** (2025-12-11): **Docs Update** - Added Critical Deployment Policy.
 3. **v12111830** (2025-12-11): **Docs Update** - Perfected README & added Deployment script.
 2. **v12111800** (2025-12-11): **Feature** - Added Dice Skin Reward System (10 skins, Unlock via Ads).
@@ -80,8 +94,14 @@ A 2-player poker card game with both local and online multiplayer modes.
 #### 2. Game Modes
 - **Local (vs AI):** 
   - Instant start.
-  - Player vs AI logic.
-  - Game state resets on entry.
+  - [x] Analyze `App.tsx` scoring logic and `SharedBoard.tsx` rendering <!-- id: 0 -->
+- [x] Add `speakText` function to `utils/sound.ts` <!-- id: 0 -->
+- [x] Create a map of Hand Type IDs to readable strings (e.g. 'ThreeOfAKind' -> "Three of a Kind") <!-- id: 1 -->
+- [x] Update `App.tsx` scoring animation loop: <!-- id: 2 -->
+    - [x] Calculate winning hand type for current step.
+    - [x] Trigger `speakText` with the hand name when highlighting.
+- [x] Verify timing and synchronization <!-- id: 3 -->
+- [ ] Update documentation and deploy <!-- id: 4 -->
 - **Online (Private Room):**
   - Host/Guest role.
   - Room ID sharing.

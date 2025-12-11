@@ -161,12 +161,12 @@
 
     .score-item {
         font-weight: bold;
-        font-size: 0.75rem;
+        font-size: 0.65rem;
         padding: 0;
     }
 
     .bonus-item {
-        font-size: 0.65rem;
+        font-size: 0.55rem;
     }
 
     /* Positioning based on player index */
