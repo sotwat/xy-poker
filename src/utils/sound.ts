@@ -47,6 +47,21 @@ export const playSuccessSound = () => {
     }
 };
 
+// Helper to get voices robustly
+let cachedVoices: SpeechSynthesisVoice[] = [];
+
+const loadVoices = () => {
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+        cachedVoices = voices;
+    }
+};
+
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices(); // Init
+}
+
 export const speakText = (text: string) => {
     if (!('speechSynthesis' in window)) return;
     try {
@@ -54,10 +69,23 @@ export const speakText = (text: string) => {
         window.speechSynthesis.cancel();
 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US'; // Default to English as hands are likely English terms, or use 'ja-JP' if user prefers names read in Japanese.
-        // User asked for "役名を読み上げる" -> likely wants English hand names read out (e.g. "Three of a kind")
-        // as they are English in the types.
-        // Let's stick to English pronunciation for Poker terms usually.
+
+        // Ensure voices are loaded
+        if (cachedVoices.length === 0) {
+            cachedVoices = window.speechSynthesis.getVoices();
+        }
+
+        // Try to pick a consistent English voice
+        // generic 'en-US' preference
+        const voice = cachedVoices.find(v => v.lang === 'en-US' && !v.name.includes('Google')) ||
+            cachedVoices.find(v => v.lang === 'en-US') ||
+            cachedVoices.find(v => v.lang.startsWith('en'));
+
+        if (voice) {
+            utterance.voice = voice;
+        }
+
+        utterance.lang = 'en-US';
         utterance.rate = 1.0;
         utterance.pitch = 1.0;
         utterance.volume = 0.8;

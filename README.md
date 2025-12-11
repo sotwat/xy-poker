@@ -58,10 +58,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12112359` (2025-12-11 23:59)
+**Latest Version:** `12112415` (2025-12-11 24:15)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12112359** (2025-12-11): **Fix** - Corrected "Pure One Pair" detection to be strictly adjacent (Row 0-1 or 1-2).
+1. **v12112415** (2025-12-11): **Fix** - Addressed "Double Voice" bug by forcing specific voice selection and guarding scoring animation.
+2. **v12112404** (2025-12-11): **Fix** - Restricted rate updates to Quick Match only and reset all ratings.
+2. **v12112359** (2025-12-11): **Fix** - Corrected "Pure One Pair" detection to be strictly adjacent (Row 0-1 or 1-2).
 2. **v12112356** (2025-12-11): **UI** - Restored "Rules" button in Online Lobby and Local Setup screen.
 2. **v12112354** (2025-12-11): **Fix** - Corrected "Pure Straight" detection to require strict board order (Row 1->2->3 or 3->2->1).
 2. **v12112347** (2025-12-11): **Fix** - Addressed "Left-Side Bias" in AI. Implemented opportunity cost logic and shuffled column evaluation.
