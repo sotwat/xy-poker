@@ -1,32 +1,38 @@
 import React, { useState } from 'react';
 
-// Example for AppLixir or generic Rewarded Video
-// You typically strip this out or replace with real SDK calls
-interface RewardAdButtonProps {
-    onReward: () => void;
-    label?: string;
-}
+// Monetag Rewarded Interstitial Integration
+// 1. Add the Monetag Multi-Tag or Direct Rewarded Script to your index.html <head>
+// 2. Use the window.monetag.showRewarded() or equivalent API provided in their dashboard.
 
-const RewardAdButton: React.FC<RewardAdButtonProps> = ({ onReward, label = "Watch Ad for Bonus" }) => {
+const RewardAdButton: React.FC<{ onReward: () => void }> = ({ onReward }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleClick = () => {
         setIsLoading(true);
 
-        // MOCK IMPLEMENTATION
-        // In production, you would call:
-        // invokeAppLixirVideoAd(options, callback);
+        console.log("Requesting Monetag Reward Ad...");
 
-        console.log("Requesting Reward Ad...");
+        // ----------------------------------------------------------------
+        // MONETAG INTEGRATION PLACEHOLDER
+        // ----------------------------------------------------------------
+        // Example:
+        // if (window.showMonetagReward) {
+        //    window.showMonetagReward().then(() => {
+        //        onReward();
+        //        setIsLoading(false);
+        //    }).catch(() => setIsLoading(false));
+        // }
+        // ----------------------------------------------------------------
 
-        // Simulate 5 seconds ad
+        // MOCK SIMULATION
         setTimeout(() => {
-            const success = window.confirm("Did the user watch the ad to the end? (Simulating Ad Network Callback)");
+            // In real impl, this confirm disappears and the Ad SDK controls the flow
+            const success = window.confirm("Monetag Mock: Did user watch ad? (Click OK to simulate Success)");
             setIsLoading(false);
             if (success) {
                 onReward();
             }
-        }, 2000);
+        }, 1500);
     };
 
     return (
@@ -34,7 +40,7 @@ const RewardAdButton: React.FC<RewardAdButtonProps> = ({ onReward, label = "Watc
             onClick={handleClick}
             disabled={isLoading}
             style={{
-                background: 'linear-gradient(45deg, #FFD700, #FFA500)',
+                background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)', // Monetag-ish colors?
                 border: 'none',
                 borderRadius: '20px',
                 padding: '10px 20px',
@@ -50,7 +56,7 @@ const RewardAdButton: React.FC<RewardAdButtonProps> = ({ onReward, label = "Watc
         >
             {isLoading ? 'Loading Ad...' : (
                 <>
-                    <span>📺</span> {label}
+                    <span>🎁</span> Watch Ad for Bonus
                 </>
             )}
         </button>

@@ -13,7 +13,7 @@ import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { RulesModal } from './components/RulesModal';
 import { TurnTimer } from './components/TurnTimer';
 import { AuthModal } from './components/AuthModal';
-import AdsterraBanner from './components/AdsterraBanner';
+import MonetagBanner from './components/MonetagBanner';
 import { socket, connectSocket } from './logic/online';
 import { supabase } from './supabase';
 import './App.css';
@@ -679,7 +679,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12082160</span>}
+          {showVersion && <span className="version">12082165</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -823,7 +823,7 @@ function App() {
                     {/* Ad Banner for Local Mode Setup */}
                     {mode === 'local' && phase === 'setup' && (
                       <div style={{ position: 'absolute', bottom: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                        <AdsterraBanner width={320} height={50} />
+                        <MonetagBanner width={320} height={50} />
                       </div>
                     )}
                   </div>
