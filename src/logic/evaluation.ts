@@ -70,11 +70,15 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
     // 4. Pure Straight
     // Straight, Ordered, Mixed Suits.
     if (isStraight && !isFlush) {
-        const isAsc = ranks[0] + 1 === ranks[1] && ranks[1] + 1 === ranks[2];
-        const isDesc = ranks[0] - 1 === ranks[1] && ranks[1] - 1 === ranks[2];
-        // A-2-3 checks
-        const isA23Asc = ranks[0] === 14 && ranks[1] === 2 && ranks[2] === 3;
-        const is32ADesc = ranks[0] === 3 && ranks[1] === 2 && ranks[2] === 14;
+        // Use POSITIONAL ranks for "Pure" check (Row 0, 1, 2)
+        const posRanks = cards.map(c => getRankValue(c.rank));
+
+        const isAsc = posRanks[0] + 1 === posRanks[1] && posRanks[1] + 1 === posRanks[2];
+        const isDesc = posRanks[0] - 1 === posRanks[1] && posRanks[1] - 1 === posRanks[2];
+
+        // A-2-3 checks (A=14)
+        const isA23Asc = posRanks[0] === 14 && posRanks[1] === 2 && posRanks[2] === 3; // A-2-3 (Top to Bottom)
+        const is32ADesc = posRanks[0] === 3 && posRanks[1] === 2 && posRanks[2] === 14; // 3-2-A (Top to Bottom)
 
         if (isAsc || isDesc || isA23Asc || is32ADesc) {
             return { type: 'PureStraight', score: diceValue, rankValue: 6, kickers: [straightHigh] };
