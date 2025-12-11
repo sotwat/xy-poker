@@ -58,10 +58,11 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12112420` (2025-12-11 24:20)
+**Latest Version:** `12112423` (2025-12-11 24:23)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12112420** (2025-12-11): **Critical Fix** - Fixed "Turn Deadlock" by synchronizing initial Deck state from server.
+1. **v12112423** (2025-12-11): **UX** - "Play Again" in Online Match now searches for a new Quick Match instead of a rematch.
+2. **v12112420** (2025-12-11): **Critical Fix** - Fixed "Turn Deadlock" by synchronizing initial Deck state from server.
 2. **v12112415** (2025-12-11): **Fix** - Addressed "Double Voice" bug by forcing specific voice selection and guarding scoring animation.
 2. **v12112404** (2025-12-11): **Fix** - Restricted rate updates to Quick Match only and reset all ratings.
 2. **v12112359** (2025-12-11): **Fix** - Corrected "Pure One Pair" detection to be strictly adjacent (Row 0-1 or 1-2).

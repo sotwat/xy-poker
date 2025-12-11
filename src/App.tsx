@@ -930,7 +930,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12112420</span>}
+          {showVersion && <span className="version">12112423</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1193,20 +1193,23 @@ function App() {
                 {phase === 'ended' && showResultsModal && (
                   <GameResult
                     gameState={gameState}
-                    onRestart={handleStartGame}
+                    onRestart={() => {
+                      if (isOnlineGame) {
+                        // For online, "Play Again" means "Find New Match"
+                        handleCancelMatchmaking(); // Leave current room
+                        // Small delay to ensure state reset before queuing
+                        setTimeout(() => handleQuickMatch(), 100);
+                      } else {
+                        handleRestartGame();
+                      }
+                    }}
                     onClose={() => {
+                      if (isOnlineGame) handleCancelMatchmaking(); // Leave room
+                      else setMode('online'); // Back to lobby
                       setShowResultsModal(false);
-                      setMode('online');
-                      setRoomId(null);
-                      setPlayerRole(null);
-                      setIsOnlineGame(false);
-                      setIsQuickMatch(false);
-                      setRatingUpdates(null);
-                      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+                      setScoringStep(-1);
                     }}
-                    onViewBoard={() => {
-                      setShowResultsModal(false);
-                    }}
+                    onViewBoard={() => setShowResultsModal(false)}
                     p1Name={p1DisplayName}
                     p2Name={p2DisplayName}
                     ratingUpdates={ratingUpdates}
