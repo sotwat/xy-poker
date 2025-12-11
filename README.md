@@ -45,13 +45,16 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12082195` (2025-12-08 21:95)
+**Latest Version:** `12082220` (2025-12-08 22:20)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12082195** - **Config:**
+1. **v12082220** - **Fix:**
+   - **Fix:** Isolated Ads to Lobby only (using iframe + local HTML).
+   - **Fix:** Prevented global ad script from bleeding into gameplay.
+2. **v12082215** - **Config:**
+   - **Config:** Added Google Search Console verification file (`google366b9bac74209802.html`).
+2. **v12082195** - **Config:**
    - **Config:** Enabled Monetag In-Page Push (Global Index script).
-2. **v12082188** - **Hotfix:**
-   - **Hotfix:** Disabled Ad Banner temporarily to fix white screen crash.
 2. **v12082160** - **Feature: Ad Network:**
    - **Feature:** Added `RewardAdButton` comp. Recommended AppLixir/Monetag.
 2. **v12082131** - **Config: Hide Auth:**
