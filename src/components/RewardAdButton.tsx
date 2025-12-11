@@ -10,29 +10,23 @@ const RewardAdButton: React.FC<{ onReward: () => void }> = ({ onReward }) => {
     const handleClick = () => {
         setIsLoading(true);
 
-        console.log("Requesting Monetag Reward Ad...");
+        // Open Monetag Direct Link in new tab
+        window.open('https://otieu.com/4/10307496', '_blank');
 
-        // ----------------------------------------------------------------
-        // MONETAG INTEGRATION PLACEHOLDER
-        // ----------------------------------------------------------------
-        // Example:
-        // if (window.showMonetagReward) {
-        //    window.showMonetagReward().then(() => {
-        //        onReward();
-        //        setIsLoading(false);
-        //    }).catch(() => setIsLoading(false));
-        // }
-        // ----------------------------------------------------------------
+        // Since we can't reliably track if they "finished" watching a direct link ad (it's just a page),
+        // we simulate a reward after a delay or immediately upon return.
+        // For simple Direct Link, the act of clicking is often the "conversion" or step.
+        // We'll set a timeout to re-enable the button or give reward.
 
-        // MOCK SIMULATION
         setTimeout(() => {
-            // In real impl, this confirm disappears and the Ad SDK controls the flow
-            const success = window.confirm("Monetag Mock: Did user watch ad? (Click OK to simulate Success)");
+            // Automagically grant reward after 5 seconds of "processing"
+            // In a real Direct Link flow, you might want to show a "Claim" button afterwards.
+            const success = window.confirm("Did you visit the ad page? Click OK to claim reward.");
             setIsLoading(false);
             if (success) {
                 onReward();
             }
-        }, 1500);
+        }, 3000);
     };
 
     return (
