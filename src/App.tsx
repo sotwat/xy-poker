@@ -263,8 +263,14 @@ function App() {
     });
 
     socket.on('sync_state', (remoteState: any) => { // remoteState should be GameState
+      // Guard: Only accept sync if we are actually in a room
+      if (!roomIdRef.current) return;
+
       dispatch({ type: 'SYNC_STATE', payload: remoteState } as any);
-      setIsOnlineGame(true);
+      // setIsOnlineGame(true); // Don't force this true here? Or maybe fine if we are in room.
+      // Actually, if we are in lobby (roomId null), we returned above.
+      // If we are in room, we are seemingly online.
+      if (!isOnlineGame) setIsOnlineGame(true);
     });
 
     socket.on('auto_start_game', () => {
@@ -1025,7 +1031,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12130113</span>}
+          {showVersion && <span className="version">12130122</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1312,6 +1318,11 @@ function App() {
                     </button>
                     <button className="btn-secondary" onClick={() => {
                       playClickSound();
+                      // Emit leave room to stop receiving updates
+                      if (roomId) {
+                        socket.emit('leave_room', { roomId });
+                      }
+
                       setMode('online');
                       setRoomId(null);
                       setPlayerRole(null);
