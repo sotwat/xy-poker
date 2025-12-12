@@ -55,6 +55,12 @@ function App() {
   const [ratingUpdates, setRatingUpdates] = useState<any>(null);
   const [isBotDisguise, setIsBotDisguise] = useState(false);
   const processedGameRef = useRef<string | null>(null); // Guard for scoring animation
+  const gameStateRef = useRef(gameState); // Ref to access state in listeners
+
+  // Keep Ref updated
+  useEffect(() => {
+    gameStateRef.current = gameState;
+  }, [gameState]);
 
   // Auth State
   const [session, setSession] = useState<any>(null);
@@ -273,6 +279,17 @@ function App() {
       if (!isOnlineGame) setIsOnlineGame(true);
     });
 
+    socket.on('request_sync', () => {
+      // Host is authority.
+      if (playerRoleRef.current === 'host' && roomIdRef.current) {
+        console.log('Received sync request, broadcasting state');
+        socket.emit('sync_state', {
+          roomId: roomIdRef.current,
+          state: gameStateRef.current
+        });
+      }
+    });
+
     socket.on('auto_start_game', () => {
       console.log('Auto-starting Quick Match game');
       setIsQuickMatch(false);
@@ -396,6 +413,7 @@ function App() {
       socket.off('rating_update');
       socket.off('player_joined');
       socket.off('sync_state');
+      socket.off('request_sync');
       socket.off('auto_start_game');
       socket.off('opponent_joined');
       socket.off('game_action');
@@ -583,12 +601,12 @@ function App() {
       const gameSignature = `${roomId}-${gameState.winner}-${gameState.turnCount}`; // unique enough
       if (processedGameRef.current === gameSignature) {
         // Already started animation for this game end, do not restart
-        // But we need to keep the interval logic if it was in component state... 
+        // But we need to keep the interval logic if it was in component state...
         // Actually, if we return early, we might break the interval if this effect re-runs.
         // So if we return early, the animation stops.
 
-        // Better approach: Only GUARD the "Initial Speech" and "Start", 
-        // but allow the effect to mount? 
+        // Better approach: Only GUARD the "Initial Speech" and "Start",
+        // but allow the effect to mount?
         // No, if the effect re-mounts, we want to CONTINUE or just DO NOTHING if it's already done?
         // If we want to ensure it runs EXACTLY ONCE, we should just check if we are already scoring.
         // But `scoringStep` state will be preserved? No, `setScoringStep(-1)` is called in the else block.
@@ -633,7 +651,7 @@ function App() {
           }
 
           if (res && res.winner !== 'draw' && res.type) {
-            // Slight delay for speech to not clash perfectly with click sound? 
+            // Slight delay for speech to not clash perfectly with click sound?
             // Or just fire it. Browsers handle overlapping/queuing or replace.
             // speakText cancels previous, so it's fine.
             speakText(getReadableHandName(res.type));
@@ -757,7 +775,7 @@ function App() {
     for (let c = 0; c < 5; c++) {
       if (!currentPlayer.board[0][c] || !currentPlayer.board[1][c] || !currentPlayer.board[2][c]) {
         // Check specific row availability is complex with current structure?
-        // Actually board is [row][col]. 
+        // Actually board is [row][col].
         // Logic: We place in column. Game logic finds first empty row from bottom (2->0) or top?
         // Game logic `placeCard(player, card, colIndex)` handles row placement.
         // We just need to check if column is full.
@@ -1031,7 +1049,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12130129</span>}
+          {showVersion && <span className="version">12130132</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1155,14 +1173,25 @@ function App() {
                 onSelectBoard={handleSelectBoardSkin}
               />
 
-              {/* Turn Timer Conditionally Rendered */}
-              {!showDiceAnimation && phase === 'playing' && (
-                <TurnTimer
-                  timeLeft={timeLeft}
-                  totalTime={60}
-                  currentPlayerIndex={currentPlayerIndex}
-                  isMyTurn={(!isOnlineGame) || (playerRole === 'host' && currentPlayerIndex === 0) || (playerRole === 'guest' && currentPlayerIndex === 1)}
-                />
+              {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
+                <div className="game-status-bar">
+                  <TurnTimer
+                    timeLeft={timeLeft}
+                    totalTime={15}
+                    currentPlayerIndex={currentPlayerIndex}
+                    isMyTurn={
+                      (isOnlineGame && playerRole === 'host' && currentPlayerIndex === 0) ||
+                      (isOnlineGame && playerRole === 'guest' && currentPlayerIndex === 1) ||
+                      (mode === 'local' && currentPlayerIndex === 0)
+                    }
+                    onResync={() => {
+                      if (isOnlineGame && roomIdRef.current) {
+                        playClickSound();
+                        socket.emit('request_sync', { roomId: roomIdRef.current });
+                      }
+                    }}
+                  />
+                </div>
               )}
               <main className="game-board">
                 {phase === 'setup' && (

@@ -540,6 +540,12 @@ io.on('connection', (socket) => {
         socket.to(roomId).emit('sync_state', state);
     });
 
+    socket.on('request_sync', ({ roomId }) => {
+        // Relay request to room so someone (Host) can send state
+        console.log(`Sync requested in room ${roomId} by ${socket.id}`);
+        io.to(roomId).emit('request_sync', { requesterId: socket.id });
+    });
+
     socket.on('request_rematch', ({ roomId }) => {
         // Relay to opponent
         const room = rooms[roomId];
