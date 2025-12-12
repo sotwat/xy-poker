@@ -542,7 +542,13 @@ io.on('connection', (socket) => {
 
     socket.on('request_rematch', ({ roomId }) => {
         // Relay to opponent
-        socket.to(roomId).emit('rematch_requested', { requesterName: socket.playerName });
+        const room = rooms[roomId];
+        if (room) {
+            const player = room.players.find(p => p.id === socket.id);
+            const name = player ? player.name : 'Opponent';
+            socket.to(roomId).emit('rematch_requested', { requesterName: name });
+            console.log(`Rematch requested in room ${roomId} by ${name} (${socket.id})`);
+        }
     });
 
     socket.on('accept_rematch', ({ roomId }) => {
