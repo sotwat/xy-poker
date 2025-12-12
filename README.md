@@ -61,8 +61,8 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12122312** (2025-12-12): **UX** - Refined Online Result Flow: Scoring animation plays for both players, but Result Modal only opens automatically for the player who clicked "Calculate".
-2. **v12122305** (2025-12-12): **Fix & UX** - Fixed Rematch Notification (restored listener), corrected CSS, and disabled auto-transition to result screen for opponents in online matches.
+1. **v12130040** (2025-12-13): **Polish** - Slowed down result speech interval (1.5s) and made scoring highlight border thicker/brighter.
+2. **v12122321** (2025-12-12): **Feature** - Implemented "Auto-Finish" flow. When both boards are full, "FINISH!!" animation plays and scores are calculated automatically. Manual reveal button removed.
 3. **v12122215** (2025-12-12): **Feature** - Added "Rematch" functionality for ID-based Room Matches.
 3. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
 3. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.

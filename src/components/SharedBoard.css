@@ -32,7 +32,10 @@
     background: rgba(79, 172, 254, 0.15);
     border-radius: 12px;
     padding: 8px;
-    box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+    border: 3px solid rgba(79, 172, 254, 0.8);
+    /* Added border */
+    box-shadow: 0 0 25px rgba(79, 172, 254, 0.6);
+    /* Increased shadow */
     animation: glow-p1 2s ease-in-out infinite;
 }
 
@@ -40,7 +43,10 @@
     background: rgba(255, 88, 88, 0.15);
     border-radius: 12px;
     padding: 8px;
-    box-shadow: 0 0 20px rgba(255, 88, 88, 0.4);
+    border: 3px solid rgba(255, 88, 88, 0.8);
+    /* Added border */
+    box-shadow: 0 0 25px rgba(255, 88, 88, 0.6);
+    /* Increased shadow */
     animation: glow-p2 2s ease-in-out infinite;
 }
 
@@ -48,11 +54,13 @@
 
     0%,
     100% {
-        box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+        box-shadow: 0 0 25px rgba(79, 172, 254, 0.6);
+        border-color: rgba(79, 172, 254, 0.8);
     }
 
     50% {
-        box-shadow: 0 0 30px rgba(79, 172, 254, 0.7);
+        box-shadow: 0 0 40px rgba(79, 172, 254, 0.9);
+        border-color: rgba(79, 172, 254, 1);
     }
 }
 
@@ -60,17 +68,20 @@
 
     0%,
     100% {
-        box-shadow: 0 0 20px rgba(255, 88, 88, 0.4);
+        box-shadow: 0 0 25px rgba(255, 88, 88, 0.6);
+        border-color: rgba(255, 88, 88, 0.8);
     }
 
     50% {
-        box-shadow: 0 0 30px rgba(255, 88, 88, 0.7);
+        box-shadow: 0 0 40px rgba(255, 88, 88, 0.9);
+        border-color: rgba(255, 88, 88, 1);
     }
 }
 
 /* Winning row styles for X-hand - solid gold border */
 .card-slot.winning-row-yellow {
-    border: 3px solid #ffd700;
+    border: 4px solid #ffd700;
+    /* Thicker border */
     animation: glow-yellow 1.5s ease-in-out infinite;
     z-index: 10;
 }
@@ -79,11 +90,11 @@
 
     0%,
     100% {
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
     }
 
     50% {
-        box-shadow: 0 0 25px rgba(255, 215, 0, 0.9);
+        box-shadow: 0 0 35px rgba(255, 215, 0, 1.0);
     }
 }
 
