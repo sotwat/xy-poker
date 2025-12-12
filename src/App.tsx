@@ -28,7 +28,11 @@ function App() {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [placeHidden, setPlaceHidden] = useState(false);
   const [showDiceAnimation, setShowDiceAnimation] = useState(false);
-  const [showRules, setShowRules] = useState(false);
+  const [showVersion, setShowVersion] = useState(true);
+
+  // Rematch State
+  const [rematchRequested, setRematchRequested] = useState(false);
+  const [rematchInvited, setRematchInvited] = useState(false);
 
   // Online State
   const [mode, setMode] = useState<'local' | 'online'>('local');
@@ -766,11 +770,7 @@ function App() {
     });
   };
 
-  const handleJoinRoom = (id: string) => {
-    const browserId = getBrowserId();
-    const userId = session?.user?.id;
-    socket.emit('join_room', { roomId: id, playerName, browserId, userId }, (response: any) => {
-      if (response.success) {
+  ```
         setRoomId(id);
         setPlayerRole('guest');
         if (response.opponentName) {
@@ -780,6 +780,27 @@ function App() {
         alert(response.message);
       }
     });
+  };
+
+  const handleRestart = () => {
+    if (onlineMode) {
+      if (isQuickMatch) {
+        // Quick Match -> Find New
+        handleLeaveRoom();
+        setTimeout(() => {
+          handleJoinQuickMatch();
+        }, 100);
+      } else {
+        // Room Match -> Request Rematch
+        if (!rematchRequested) {
+          socket.emit('request_rematch', { roomId });
+          setRematchRequested(true);
+        }
+      }
+    } else {
+      // Offline -> Instant Restart
+      resetGame();
+    }
   };
 
   const handleQuickMatch = () => {
@@ -926,11 +947,11 @@ function App() {
   };
 
   return (
-    <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
-      <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
+    <div className={`app ${ isLobbyView ? 'view-lobby' : 'view-game' } phase - ${ phase } `}>
+      <header className={`app - header ${ (phase === 'playing' || phase === 'scoring') ? 'battle-mode' : '' } `}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12122200</span>}
+          {showVersion && <span className="version">12122215</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1230,6 +1251,42 @@ function App() {
       )}
       {/* Rules Overlay */}
       {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
+      {/* Rematch Modal */}
+      {rematchInvited && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Rematch Request</h3>
+            <p>Opponent wants to play again.</p>
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => {
+                 setRematchInvited(false);
+                 // Optional: emit decline?
+              }}>Cancel</button>
+              <button className="btn-primary" onClick={() => {
+                socket.emit('accept_rematch', { roomId });
+              }}>OK</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Waiting for Rematch Modal (Optional feedback for requester) */}
+      {rematchRequested && !rematchInvited && (
+          <div style={{
+              position: 'fixed',
+              top: '100px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(0,0,0,0.8)',
+              padding: '10px 20px',
+              borderRadius: '20px',
+              color: 'white',
+              zIndex: 3000
+          }}>
+              Waiting for opponent...
+          </div>
+      )}
+
     </div>
   );
 }

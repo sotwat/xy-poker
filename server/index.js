@@ -540,6 +540,40 @@ io.on('connection', (socket) => {
         socket.to(roomId).emit('sync_state', state);
     });
 
+    socket.on('request_rematch', ({ roomId }) => {
+        // Relay to opponent
+        socket.to(roomId).emit('rematch_requested', { requesterName: socket.playerName });
+    });
+
+    socket.on('accept_rematch', ({ roomId }) => {
+        // Restart game for this room
+        const room = rooms[roomId];
+        if (room && room.players.length === 2) {
+            console.log(`Rematch accepted in room ${roomId}. Restarting game...`);
+
+            // Re-roll Dice and Deck
+            const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+            const initialDeck = shuffleDeck(createDeck());
+
+            const p1 = room.players[0];
+            const p2 = room.players[1];
+
+            // Notify both to start new game
+            io.to(roomId).emit('game_start', {
+                roomId,
+                p1Name: p1.name,
+                p2Name: p2.name,
+                p1Rating: p1.rating,
+                p2Rating: p2.rating,
+                p1Id: p1.id,
+                p2Id: p2.id,
+                initialDice,
+                initialDeck,
+                isRanked: room.isQuickMatch // Preserve match type
+            });
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
         // Cleanup rooms...
