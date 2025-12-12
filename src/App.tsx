@@ -33,7 +33,9 @@ function App() {
 
   // Rematch State
   const [rematchRequested, setRematchRequested] = useState(false);
+
   const [rematchInvited, setRematchInvited] = useState(false);
+  const [autoPlayResults, setAutoPlayResults] = useState(false);
 
   // Online State
   const [mode, setMode] = useState<'local' | 'online'>('local');
@@ -277,6 +279,13 @@ function App() {
 
     socket.on('opponent_joined', ({ name }) => {
       setOpponentName(name);
+      setOpponentName(name);
+      playSuccessSound();
+    });
+
+    socket.on('rematch_requested', ({ requesterName }) => {
+      console.log('Rematch requested by:', requesterName);
+      setRematchInvited(true);
       playSuccessSound();
     });
 
@@ -459,6 +468,11 @@ function App() {
 
   useEffect(() => {
     if (phase === 'ended') {
+      // Gate: Only auto-play if Local Mode OR (Online Mode AND explicitly requested)
+      if (mode === 'online' && !autoPlayResults) {
+        return;
+      }
+
       // Start scoring animation sequence
       // Steps: 0-4 (Cols), 5 (Row)
 
@@ -585,7 +599,7 @@ function App() {
     } else {
       setScoringStep(-1);
     }
-  }, [phase, mode, gameState]);
+  }, [phase, mode, gameState, autoPlayResults]);
 
   useEffect(() => {
     localStorage.setItem('xypoker_playerName_v2', playerName);
@@ -955,7 +969,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12122237</span>}
+          {showVersion && <span className="version">12122305</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1190,15 +1204,33 @@ function App() {
                 )}
 
                 {phase === 'scoring' && (
-                  <button className="btn-primary" onClick={() => dispatch({ type: 'CALCULATE_SCORE' })}>
+                  <button className="btn-primary" onClick={() => {
+                    playClickSound();
+                    setAutoPlayResults(true); // I clicked it, so I want to see it
+                    dispatch({ type: 'CALCULATE_SCORE' });
+                  }}>
                     Reveal & Calculate Scores
                   </button>
                 )}
 
                 {phase === 'ended' && !showResultsModal && (
                   <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
-                    <button className="btn-primary" onClick={() => setShowResultsModal(true)}>
-                      Show Results
+                    <button className="btn-primary" onClick={() => {
+                      playClickSound();
+                      setAutoPlayResults(true); // Manually trigger if it was suppressed
+                      // If it was already finished (scoringStep > 5 or modal closed), this might just re-run effect?
+                      // Actually if modal was closed, we might want to just open modal.
+                      // But for simplicity, let's just Open Modal if animation is done?
+                      // No, let's just Set Show Results Modal directly if we want to skip.
+                      // But user wants to SEE the result?
+                      // If scoringStep == -1, we should Start Animation.
+                      if (scoringStep === -1) {
+                        setAutoPlayResults(true);
+                      } else {
+                        setShowResultsModal(true);
+                      }
+                    }}>
+                      {scoringStep === -1 ? 'Show Results' : 'Show Details'}
                     </button>
                     <button className="btn-secondary" onClick={() => {
                       playClickSound();

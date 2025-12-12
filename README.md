@@ -61,7 +61,7 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12122237** (2025-12-12): **Fix** - Added missing CSS for Rematch Modal to ensure it appears on top of result screen.
+1. **v12122305** (2025-12-12): **Fix & UX** - Fixed Rematch Notification (restored listener), corrected CSS, and disabled auto-transition to result screen for opponents in online matches.
 2. **v12122223** (2025-12-12): **Ads** - Enabled Vignette Ad (Zone 10310001) for mobile devices.
 3. **v12122215** (2025-12-12): **Feature** - Added "Rematch" functionality for ID-based Room Matches.
 3. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
