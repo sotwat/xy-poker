@@ -35,6 +35,7 @@ function App() {
   const [rematchRequested, setRematchRequested] = useState(false);
 
   const [rematchInvited, setRematchInvited] = useState(false);
+  const [showFinishAnimation, setShowFinishAnimation] = useState(false);
   const [autoPlayResults, setAutoPlayResults] = useState(false);
 
   // Online State
@@ -395,6 +396,7 @@ function App() {
     };
   }, []); // Empty dependency array - only run once on mount
 
+
   // Fetch rating on connect
   // (Moved to combined effect above to include session dependency)
   /*
@@ -428,6 +430,24 @@ function App() {
 
   const { currentPlayerIndex, players, phase } = gameState;
   const currentPlayer = players[currentPlayerIndex];
+
+  // Auto-Finish Logic
+  useEffect(() => {
+    if (phase === 'scoring') {
+      // 1. Show Finish Animation
+      setShowFinishAnimation(true);
+      playSuccessSound(); // Use success sound for "Finish!"
+
+      // 2. Wait 2 seconds, then Calculate
+      const timer = setTimeout(() => {
+        setShowFinishAnimation(false);
+        // Dispatch calculate (locally for both players, as they both reach this phase)
+        dispatch({ type: 'CALCULATE_SCORE' });
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
 
   // Determine if we are in the Lobby view (where version and title inputs are shown)
   // Lobby view is:
@@ -578,6 +598,7 @@ function App() {
           // Finished
           clearInterval(interval);
           setTimeout(() => {
+            // Auto-show modal for everyone now that finish is automatic
             setShowResultsModal(true);
           }, 1000);
         }
@@ -964,7 +985,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12122312</span>}
+          {showVersion && <span className="version">12122321</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1199,13 +1220,9 @@ function App() {
                 )}
 
                 {phase === 'scoring' && (
-                  <button className="btn-primary" onClick={() => {
-                    playClickSound();
-                    setAutoPlayResults(true); // I clicked it, so I want to see it
-                    dispatch({ type: 'CALCULATE_SCORE' });
-                  }}>
-                    Reveal & Calculate Scores
-                  </button>
+                  <div className="status-message">
+                    Calculating Scores...
+                  </div>
                 )}
 
                 {phase === 'ended' && !showResultsModal && (
@@ -1306,6 +1323,13 @@ function App() {
           zIndex: 3000
         }}>
           Waiting for opponent...
+        </div>
+      )}
+
+      {/* Finish Animation Overlay */}
+      {showFinishAnimation && (
+        <div className="finish-overlay">
+          <h1 className="finish-text">FINISH!!</h1>
         </div>
       )}
 
