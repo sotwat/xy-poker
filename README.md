@@ -61,8 +61,8 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12130132** (2025-12-13): **Fix** - Added manual "Resync" button (↻) in Opponent's Turn indicator to resolve deadlocks. Server now relays sync requests.
-2. **v12130129** (2025-12-13): **Fix** - Fixed audio disappearing issue on mobile/desktop by using a shared AudioContext (preventing resource leak).
+1. **v12130140** (2025-12-13): **Fix** - Fixed persistent "FINISH" text and countdown timer on result screen by stricter phase checking.
+2. **v12130132** (2025-12-13): **Fix** - Added manual "Resync" button (↻) in Opponent's Turn indicator to resolve deadlocks. Server now relays sync requests.
 3. **v12122215** (2025-12-12): **Feature** - Added "Rematch" functionality for ID-based Room Matches.
 3. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
 3. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.

@@ -1049,7 +1049,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12130132</span>}
+          {showVersion && <span className="version">12130140</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1173,7 +1173,8 @@ function App() {
                 onSelectBoard={handleSelectBoardSkin}
               />
 
-              {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
+              {/* Turn Timer Conditionally Rendered - ONLY during playing */}
+              {(phase === 'playing') && (
                 <div className="game-status-bar">
                   <TurnTimer
                     timeLeft={timeLeft}
@@ -1440,9 +1441,9 @@ function App() {
         )
       }
 
-      {/* Finish Animation Overlay */}
+      {/* Finish Animation Overlay - only during scoring */}
       {
-        showFinishAnimation && (
+        showFinishAnimation && phase === 'scoring' && (
           <div className="finish-overlay">
             <h1 className="finish-text">FINISH!!</h1>
           </div>
