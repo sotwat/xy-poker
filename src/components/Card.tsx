@@ -13,10 +13,9 @@ interface CardProps {
     onMouseUp?: () => void;
     onMouseLeave?: () => void;
     onTouchStart?: () => void;
-    onTouchStart?: () => void;
     onTouchEnd?: () => void;
     skin?: CardSkin;
-    size?: 'normal' | 'small';
+    size?: 'normal' | 'small' | 'xs';
 }
 
 const SUIT_ICONS: Record<string, string> = {

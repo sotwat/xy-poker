@@ -290,3 +290,20 @@
 .card.small .card-center {
   font-size: 16px;
 }
+
+/* XS SIZE VARIANT (Extra Small) */
+.card.xs {
+  width: 30px;
+  height: 45px;
+  padding: 1px;
+  border-radius: 3px;
+}
+
+.card.xs .card-top,
+.card.xs .card-bottom {
+  font-size: 7px;
+}
+
+.card.xs .card-center {
+  font-size: 12px;
+}
