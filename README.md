@@ -58,12 +58,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12122223` (2025-12-12 22:23)
+**Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12122223** (2025-12-12): **Ads** - Enabled Vignette Ad (Zone 10310001) for mobile devices.
-2. **v12122215** (2025-12-12): **Feature** - Added "Rematch" functionality for ID-based Room Matches.
-3. **v12122200** (2025-12-12): **Fix** - Fixed logic to correctly detect and rank "Pure Straight Flush".
+1. **v12122237** (2025-12-12): **Fix** - Added missing CSS for Rematch Modal to ensure it appears on top of result screen.
+2. **v12122223** (2025-12-12): **Ads** - Enabled Vignette Ad (Zone 10310001) for mobile devices.
+3. **v12122215** (2025-12-12): **Feature** - Added "Rematch" functionality for ID-based Room Matches.
 3. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
 3. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.
 2. **v12120958** (2025-12-12): **SEO** - Added Japanese keywords and title for "XYポーカー" discovery.
