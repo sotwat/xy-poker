@@ -297,6 +297,8 @@ function App() {
       setIsRankedGame(!!isRanked); // Set ranked status
       setIsOnlineGame(true);
       playSuccessSound();
+      setRematchRequested(false);
+      setRematchInvited(false);
 
       // Robustly set Role and Opponent Name from server authoritative data
       if (socket.id === p1Id) {
@@ -986,7 +988,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12130048</span>}
+          {showVersion && <span className="version">12130053</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1303,6 +1305,7 @@ function App() {
                 // Optional: emit decline?
               }}>Cancel</button>
               <button className="btn-primary" onClick={() => {
+                setRematchInvited(false); // Close modal immediately
                 socket.emit('accept_rematch', { roomId });
               }}>OK</button>
             </div>
