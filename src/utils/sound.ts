@@ -1,7 +1,21 @@
 // Simple sound utility using Web Audio API
+// Shared AudioContext to prevent "limit reached" errors
+let sharedAudioContext: AudioContext | null = null;
+
+const getAudioContext = () => {
+    if (!sharedAudioContext) {
+        sharedAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    // Mobile browsers often verify user interaction before resuming
+    if (sharedAudioContext.state === 'suspended') {
+        sharedAudioContext.resume().catch(e => console.warn('AudioContext resume failed:', e));
+    }
+    return sharedAudioContext;
+};
+
 export const playClickSound = () => {
     try {
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const audioContext = getAudioContext();
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
 
@@ -18,14 +32,13 @@ export const playClickSound = () => {
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.1);
     } catch (error) {
-        // Silently fail if audio is not supported
         console.warn('Audio playback not supported:', error);
     }
 };
 
 export const playSuccessSound = () => {
     try {
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const audioContext = getAudioContext();
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
 

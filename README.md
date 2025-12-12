@@ -61,8 +61,8 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12130122** (2025-12-13): **Fix** - Fixed bug where GameInfo persisted in lobby after returning from room match (improved room exit handling).
-2. **v12130113** (2025-12-13): **Feature** - Added "Auto-Play" button (bottom right) for both Local and Online modes. AI takes over player's turn when active.
+1. **v12130129** (2025-12-13): **Fix** - Fixed audio disappearing issue on mobile/desktop by using a shared AudioContext (preventing resource leak).
+2. **v12130122** (2025-12-13): **Fix** - Fixed bug where GameInfo persisted in lobby after returning from room match (improved room exit handling).
 3. **v12122215** (2025-12-12): **Feature** - Added "Rematch" functionality for ID-based Room Matches.
 3. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
 3. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.
