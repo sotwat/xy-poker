@@ -54,6 +54,23 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
     // This hand type is not in the provided snippet, but would typically be the highest.
     // Assuming it's handled elsewhere or not applicable in this specific re-ordering.
 
+    // 53. Pure Straight Flush (Rank 9)
+    // Both Flush AND Pure Straight
+    if (isFlush && isStraight) {
+        // Use POSITIONAL ranks check (same as Pure Straight)
+        const posRanks = cards.map(c => getRankValue(c.rank));
+        const isAsc = posRanks[0] + 1 === posRanks[1] && posRanks[1] + 1 === posRanks[2];
+        const isDesc = posRanks[0] - 1 === posRanks[1] && posRanks[1] - 1 === posRanks[2];
+
+        // A-2-3 checks (A=14)
+        const isA23Asc = posRanks[0] === 14 && posRanks[1] === 2 && posRanks[2] === 3; // A-2-3 (Top to Bottom)
+        const is32ADesc = posRanks[0] === 3 && posRanks[1] === 2 && posRanks[2] === 14; // 3-2-A (Top to Bottom)
+
+        if (isAsc || isDesc || isA23Asc || is32ADesc) {
+            return { type: 'PureStraightFlush', score: diceValue, rankValue: 9, kickers: [straightHigh] };
+        }
+    }
+
     // 2. Three of a Kind
     if (isTrips) {
         return { type: 'ThreeOfAKind', score: diceValue, rankValue: 8, kickers: [ranks[0]] };
