@@ -36,7 +36,7 @@ function App() {
 
   const [rematchInvited, setRematchInvited] = useState(false);
   const [showFinishAnimation, setShowFinishAnimation] = useState(false);
-  const [autoPlayResults, setAutoPlayResults] = useState(false);
+
 
   // Online State
   const [mode, setMode] = useState<'local' | 'online'>('local');
@@ -615,7 +615,8 @@ function App() {
     } else {
       setScoringStep(-1);
     }
-  }, [phase, mode, gameState, autoPlayResults]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, mode]);
 
   useEffect(() => {
     localStorage.setItem('xypoker_playerName_v2', playerName);
@@ -985,7 +986,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12130040</span>}
+          {showVersion && <span className="version">12130048</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1229,7 +1230,7 @@ function App() {
                   <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
                     <button className="btn-primary" onClick={() => {
                       playClickSound();
-                      setAutoPlayResults(true); // Manually trigger if it was suppressed
+
                       // If it was already finished (scoringStep > 5 or modal closed), this might just re-run effect?
                       // Actually if modal was closed, we might want to just open modal.
                       // But for simplicity, let's just Open Modal if animation is done?
@@ -1237,7 +1238,7 @@ function App() {
                       // But user wants to SEE the result?
                       // If scoringStep == -1, we should Start Animation.
                       if (scoringStep === -1) {
-                        setAutoPlayResults(true);
+                        setScoringStep(0); // Restart animation manually if needed
                       } else {
                         setShowResultsModal(true);
                       }
