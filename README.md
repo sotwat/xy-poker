@@ -58,11 +58,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12121054` (2025-12-12 10:54)
+**Latest Version:** `12121110` (2025-12-12 11:10)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12121054** (2025-12-12): **Feature** - Added visual card examples to Rules modal.
-2. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.
+1. **v12121110** (2025-12-12): **Fix** - Refactored visual rules to use native small card styles (fixed rendering issues).
+2. **v12121054** (2025-12-12): **Feature** - Added visual card examples to Rules modal.
+3. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.
 2. **v12120958** (2025-12-12): **SEO** - Added Japanese keywords and title for "XYポーカー" discovery.
 2. **v12112502** (2025-12-11): **Infra** - Enabled DUAL Desktop ads (`nap5k` + `groleegni`).
 2. **v12112455** (2025-12-11): **Infra** - Removed Google AdSense; Switched Desktop ad to Zone 10307517.

@@ -26,9 +26,7 @@ const HandExample: React.FC<{ title: string; note?: string; cards: ReturnType<ty
         </div>
         <div className="hand-cards">
             {cards.map((card, i) => (
-                <div key={i} className="mini-card-scale">
-                    <Card card={card} />
-                </div>
+                <Card key={i} card={card} size="small" />
             ))}
         </div>
     </div>

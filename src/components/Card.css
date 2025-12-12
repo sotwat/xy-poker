@@ -273,3 +273,20 @@
   pointer-events: none;
   z-index: 1;
 }
+
+/* SMALL SIZE VARIANT (for Rules, etc) */
+.card.small {
+  width: 36px;
+  height: 54px;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.card.small .card-top,
+.card.small .card-bottom {
+  font-size: 8px;
+}
+
+.card.small .card-center {
+  font-size: 16px;
+}

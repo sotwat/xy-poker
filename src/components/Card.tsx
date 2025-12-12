@@ -13,8 +13,10 @@ interface CardProps {
     onMouseUp?: () => void;
     onMouseLeave?: () => void;
     onTouchStart?: () => void;
+    onTouchStart?: () => void;
     onTouchEnd?: () => void;
     skin?: CardSkin;
+    size?: 'normal' | 'small';
 }
 
 const SUIT_ICONS: Record<string, string> = {
@@ -45,7 +47,8 @@ export const Card: React.FC<CardProps> = ({
     onMouseLeave,
     onTouchStart,
     onTouchEnd,
-    skin = 'classic'
+    skin = 'classic',
+    size = 'normal'
 }) => {
 
     // If hidden but peeking, show card face with overlay
@@ -54,7 +57,7 @@ export const Card: React.FC<CardProps> = ({
     if (shouldHide) {
         return (
             <div
-                className={`card hidden ${isSelected ? 'selected' : ''} card-back-${skin}`}
+                className={`card ${size} hidden ${isSelected ? 'selected' : ''} card-back-${skin}`}
                 onClick={onClick}
                 onMouseDown={onMouseDown}
                 onMouseUp={onMouseUp}
@@ -72,7 +75,7 @@ export const Card: React.FC<CardProps> = ({
 
     return (
         <div
-            className={`card ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''} ${isPeeking ? 'peeking' : ''}`}
+            className={`card ${size} ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''} ${isPeeking ? 'peeking' : ''}`}
             onClick={onClick}
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
