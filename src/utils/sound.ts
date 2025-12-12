@@ -108,3 +108,36 @@ export const speakText = (text: string) => {
         console.warn('Speech synthesis failed:', e);
     }
 };
+
+export const warmupAudio = () => {
+    // 1. Resume AudioContext
+    getAudioContext();
+
+    // 2. Unlock SpeechSynthesis (especially for iOS)
+    if ('speechSynthesis' in window) {
+        // Just resume/cancel to wake it up, or play silent
+        if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+        }
+        // Some browsers need an actual speak call to unlock
+        // But we don't want to interrupt if something is playing?
+        // Actually, playing an empty string is a common hack.
+        // However, if we do this on EVERY click, it might cancel currently playing speech.
+        // We really only need to do this ONCE.
+        // Let's implement a 'hasWarmedUp' flag.
+    }
+};
+
+let hasWarmedUpSpeech = false;
+export const initSpeech = () => {
+    if (hasWarmedUpSpeech || !('speechSynthesis' in window)) return;
+
+    try {
+        const utterance = new SpeechSynthesisUtterance('');
+        utterance.volume = 0;
+        window.speechSynthesis.speak(utterance);
+        hasWarmedUpSpeech = true;
+    } catch (e) {
+        console.warn('Speech init failed:', e);
+    }
+};

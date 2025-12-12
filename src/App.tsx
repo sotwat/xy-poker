@@ -20,7 +20,7 @@ import './App.css';
 
 import { getBestMove } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
-import { playClickSound, playSuccessSound, speakText } from './utils/sound';
+import { playClickSound, playSuccessSound, speakText, warmupAudio, initSpeech } from './utils/sound';
 import { getBrowserId } from './utils/identity';
 
 function App() {
@@ -808,6 +808,8 @@ function App() {
 
   const handleStartGame = () => {
     playClickSound();
+    warmupAudio(); // Resume AudioContext
+    initSpeech();  // Unlock SpeechSynthesis
 
     // Explicitly reset disguise for manual local starts (e.g. from Setup screen)
     if (mode === 'local') {
@@ -1016,6 +1018,12 @@ function App() {
   };
 
   const handleColumnClick = (colIndex: number) => {
+    // Determine if it is valid to click
+
+    // Resume Audio on interaction just in case
+    warmupAudio();
+    initSpeech();
+
     if (phase !== 'playing') return;
     if (!selectedCardId) return;
 
@@ -1049,7 +1057,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12130140</span>}
+          {showVersion && <span className="version">12130856</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
