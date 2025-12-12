@@ -58,12 +58,12 @@ A 2-player poker card game with both local and online multiplayer modes.
 
 ## Current Project State
 
-**Latest Version:** `12121503` (2025-12-12 15:03)
+**Latest Version:** `12121504` (2025-12-12 15:04)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12121503** (2025-12-12): **Text** - Updated "Row (0, 1, 2)" to "Row (1, 2, 3)" in Rules for clarity.
-2. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
-3. **v12121115** (2025-12-12): **UI** - Updated visual rules to use "XS" size cards (30x45px) for better layout.
+1. **v12121504** (2025-12-12): **Text** - Corrected "Row 2" to "Row 3" in "Game Flow" rules.
+2. **v12121503** (2025-12-12): **Text** - Updated "Row (0, 1, 2)" to "Row (1, 2, 3)" in Rules for clarity.
+3. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
 3. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.
 2. **v12120958** (2025-12-12): **SEO** - Added Japanese keywords and title for "XYポーカー" discovery.
 2. **v12112502** (2025-12-11): **Infra** - Enabled DUAL Desktop ads (`nap5k` + `groleegni`).

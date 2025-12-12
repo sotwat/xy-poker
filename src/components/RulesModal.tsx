@@ -49,7 +49,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                         <h3>🎲 Game Flow</h3>
                         <ul>
                             <li><strong>Turns:</strong> Players take turns placing <strong>1 Card</strong> from their hand onto the <strong>5x3 Grid</strong>.</li>
-                            <li><strong>X-Axis (Rows):</strong> The bottom row (Row 2, 5 cards) forms a standard Poker Hand. Stronger hand wins bonus points.</li>
+                            <li><strong>X-Axis (Rows):</strong> The bottom row (Row 3, 5 cards) forms a standard Poker Hand. Stronger hand wins bonus points.</li>
                             <li><strong>Y-Axis (Columns):</strong> Each of the 5 columns (3 cards vertical) forms a "3-Card Hand". The strength is multiplied by the column's <strong>Dice Value</strong>.</li>
                         </ul>
                     </section>
