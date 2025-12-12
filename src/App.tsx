@@ -29,6 +29,7 @@ function App() {
   const [placeHidden, setPlaceHidden] = useState(false);
   const [showDiceAnimation, setShowDiceAnimation] = useState(false);
   const [showRules, setShowRules] = useState(false);
+  const [isAutoPlay, setIsAutoPlay] = useState(false);
 
 
   // Rematch State
@@ -487,6 +488,42 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [gameState, mode, isBotDisguise]); // Added isBotDisguise dependency
+
+  // User Auto-Play Logic (Both Local P1 and Online Self)
+  useEffect(() => {
+    // Check if Auto is ON, game is playing, and it's MY turn
+    const isMyTurn = (mode === 'local' && currentPlayerIndex === 0) ||
+      (isOnlineGame && playerRole === 'host' && currentPlayerIndex === 0) ||
+      (isOnlineGame && playerRole === 'guest' && currentPlayerIndex === 1);
+
+    if (isAutoPlay && phase === 'playing' && isMyTurn) {
+      const delay = 800; // Slightly faster than bot? Or standard.
+
+      const timer = setTimeout(() => {
+        // Use AI to find best move for ME
+        const myIndex = currentPlayerIndex;
+        const move = getBestMove(gameState, myIndex);
+
+        const action = {
+          type: 'PLACE_AND_DRAW',
+          payload: {
+            cardId: move.cardId,
+            colIndex: move.colIndex,
+            isHidden: move.isHidden
+          }
+        };
+
+        playClickSound(); // Feedback
+        dispatch(action as any);
+
+        if (isOnlineGame && roomId) {
+          socket.emit('game_action', { roomId, action });
+        }
+      }, delay);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState]); // Added isBotDisguise dependency
 
   useEffect(() => {
     if (phase === 'ended') {
@@ -988,7 +1025,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12130053</span>}
+          {showVersion && <span className="version">12130113</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1141,7 +1178,10 @@ function App() {
                           <p>Strategic Card & Dice Battle</p>
                         </div>
                         <div className="setup-actions">
-                          <button className="btn-primary" onClick={handleStartGame}>
+                          <button className="btn-primary" onClick={() => {
+                            setIsAutoPlay(false); // Ensure Auto is OFF when manually starting
+                            handleStartGame();
+                          }}>
                             Start Game
                           </button>
                           <button
@@ -1218,7 +1258,30 @@ function App() {
                           </label>
                         </div>
                       </div>
+
                     )}
+
+                    {/* Check if it is valid for ME to see controls (My turn or Auto is on?) */}
+                    {/* Actually, show Auto toggle always? Or only during my turn? */}
+                    {/* Better always visible in footer if playing */}
+                    <div style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}>
+                      <button
+                        className={`btn-secondary ${isAutoPlay ? 'active-auto' : ''}`}
+                        style={{
+                          padding: '5px 10px',
+                          fontSize: '0.8rem',
+                          background: isAutoPlay ? '#e91e63' : '#666',
+                          color: 'white',
+                          border: isAutoPlay ? '2px solid white' : 'none'
+                        }}
+                        onClick={() => {
+                          playClickSound();
+                          setIsAutoPlay(!isAutoPlay);
+                        }}
+                      >
+                        Auto: {isAutoPlay ? 'ON' : 'OFF'}
+                      </button>
+                    </div>
                   </>
                 )}
 
@@ -1282,62 +1345,71 @@ function App() {
             </>
           )}
         </>
-      )}
+      )
+      }
 
-      {showDiceAnimation && (
-        <DiceRollOverlay
-          targetValues={gameState.players[currentPlayerIndex].dice}
-          onComplete={() => setShowDiceAnimation(false)}
-          selectedSkin={selectedSkin}
-        />
-      )}
+      {
+        showDiceAnimation && (
+          <DiceRollOverlay
+            targetValues={gameState.players[currentPlayerIndex].dice}
+            onComplete={() => setShowDiceAnimation(false)}
+            selectedSkin={selectedSkin}
+          />
+        )
+      }
       {/* Rules Overlay */}
       {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
       {/* Rematch Modal */}
-      {rematchInvited && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Rematch Request</h3>
-            <p>Opponent wants to play again.</p>
-            <div className="modal-actions">
-              <button className="btn-secondary" onClick={() => {
-                setRematchInvited(false);
-                // Optional: emit decline?
-              }}>Cancel</button>
-              <button className="btn-primary" onClick={() => {
-                setRematchInvited(false); // Close modal immediately
-                socket.emit('accept_rematch', { roomId });
-              }}>OK</button>
+      {
+        rematchInvited && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h3>Rematch Request</h3>
+              <p>Opponent wants to play again.</p>
+              <div className="modal-actions">
+                <button className="btn-secondary" onClick={() => {
+                  setRematchInvited(false);
+                  // Optional: emit decline?
+                }}>Cancel</button>
+                <button className="btn-primary" onClick={() => {
+                  setRematchInvited(false); // Close modal immediately
+                  socket.emit('accept_rematch', { roomId });
+                }}>OK</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* Waiting for Rematch Modal (Optional feedback for requester) */}
-      {rematchRequested && !rematchInvited && (
-        <div style={{
-          position: 'fixed',
-          top: '100px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'rgba(0,0,0,0.8)',
-          padding: '10px 20px',
-          borderRadius: '20px',
-          color: 'white',
-          zIndex: 3000
-        }}>
-          Waiting for opponent...
-        </div>
-      )}
+      {
+        rematchRequested && !rematchInvited && (
+          <div style={{
+            position: 'fixed',
+            top: '100px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(0,0,0,0.8)',
+            padding: '10px 20px',
+            borderRadius: '20px',
+            color: 'white',
+            zIndex: 3000
+          }}>
+            Waiting for opponent...
+          </div>
+        )
+      }
 
       {/* Finish Animation Overlay */}
-      {showFinishAnimation && (
-        <div className="finish-overlay">
-          <h1 className="finish-text">FINISH!!</h1>
-        </div>
-      )}
+      {
+        showFinishAnimation && (
+          <div className="finish-overlay">
+            <h1 className="finish-text">FINISH!!</h1>
+          </div>
+        )
+      }
 
-    </div>
+    </div >
   );
 }
 
