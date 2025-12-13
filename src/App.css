@@ -462,7 +462,9 @@ body:has(.game-result-overlay) .app-header {
 }
 
 .finish-text {
-  font-size: 6rem;
+  font-size: clamp(3rem, 15vw, 6rem);
+  text-align: center;
+  width: 100%;
   font-weight: 900;
   color: #ffcc00;
   /* Gold */
