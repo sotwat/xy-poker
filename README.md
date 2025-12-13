@@ -61,14 +61,6 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-2. **v12112452** (2025-12-11): **Infra** - Added new Desktop-only ad script (Zone 10310001).
-2. **v12112447** (2025-12-11): **Revert** - Removed Desktop ad script.
-2. **v12112444** (2025-12-11): **Infra** - Updated Desktop-only ad script with new provider tag.
-2. **v12112423** (2025-12-11): **UX** - "Play Again" in Online Match now searches for a new Quick Match instead of a rematch.
-2. **v12112420** (2025-12-11): **Critical Fix** - Fixed "Turn Deadlock" by synchronizing initial Deck state from server.
-2. **v12112415** (2025-12-11): **Fix** - Addressed "Double Voice" bug by forcing specific voice selection and guarding scoring animation.
-2. **v12112404** (2025-12-11): **Fix** - Restricted rate updates to Quick Match only and reset all ratings.
-2. **v12112359** (2025-12-11): **Fix** - Corrected "Pure One Pair" detection to be strictly adjacent (Row 0-1 or 1-2).
 2. **v12112356** (2025-12-11): **UI** - Restored "Rules" button in Online Lobby and Local Setup screen.
 2. **v12112354** (2025-12-11): **Fix** - Corrected "Pure Straight" detection to require strict board order (Row 1->2->3 or 3->2->1).
 2. **v12112347** (2025-12-11): **Fix** - Addressed "Left-Side Bias" in AI. Implemented opportunity cost logic and shuffled column evaluation.

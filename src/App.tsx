@@ -25,6 +25,7 @@ import { getBrowserId } from './utils/identity';
 
 function App() {
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
+  const [phase, setPhase] = useState<'setup' | 'playing' | 'scoring' | 'ended'>('setup');
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [placeHidden, setPlaceHidden] = useState(false);
   const [showDiceAnimation, setShowDiceAnimation] = useState(false);
@@ -455,7 +456,7 @@ function App() {
     }
   }, [gameState.phase, gameState.winner, isOnlineGame, playerRole, roomId]);
 
-  const { currentPlayerIndex, players, phase } = gameState;
+  const { currentPlayerIndex, players } = gameState;
   const currentPlayer = players[currentPlayerIndex];
 
   // Auto-Finish Logic
@@ -939,19 +940,6 @@ function App() {
     playClickSound();
     if (quickMatchTimeoutRef.current) {
       clearTimeout(quickMatchTimeoutRef.current);
-      quickMatchTimeoutRef.current = null;
-    }
-    socket.emit('cancel_matchmaking', { roomId });
-    setRoomId(null);
-    setPlayerRole(null);
-    setIsQuickMatch(false);
-    setIsOnlineGame(false);
-  };
-
-  const handleSurrender = () => {
-    playClickSound();
-    if (!window.confirm('Surrender? This will end the game.')) {
-      return;
     }
 
     if (mode === 'local') {
@@ -1001,6 +989,20 @@ function App() {
     if (p1XScore > p2XScore) return 'p1';
     if (p2XScore > p1XScore) return 'p2';
     return 'draw';
+  };
+
+  const handleSurrender = () => {
+    playClickSound();
+    if (!window.confirm('Surrender? This will end the game.')) {
+      return;
+    }
+
+    if (mode === 'local') {
+      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+      setPhase('setup');
+    } else {
+      socket.emit('surrender', { roomId });
+    }
   };
 
   const handleCardSelect = (cardId: string) => {
@@ -1057,7 +1059,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12131220</span>}
+          {showVersion && <span className="version">12131240</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1367,6 +1369,7 @@ function App() {
                       setIsOnlineGame(false);
                       setIsQuickMatch(false);
                       setRatingUpdates(null);
+                      setPhase('setup'); // Force reset phase
                       dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
                     }}>
                       Back to Lobby
@@ -1380,7 +1383,10 @@ function App() {
                     onRestart={handleRestart}
                     onClose={() => {
                       if (isOnlineGame) handleCancelMatchmaking(); // Leave room
-                      else setMode('online'); // Back to lobby
+                      else {
+                        setMode('online'); // Back to lobby
+                        setPhase('setup');
+                      }
                       setShowResultsModal(false);
                       setScoringStep(-1);
                     }}
@@ -1457,8 +1463,7 @@ function App() {
           </div>
         )
       }
-
-    </div >
+    </div>
   );
 }
 
