@@ -68,6 +68,8 @@ export const ScoringOverlay: React.FC<ScoringOverlayProps> = ({
 
     const winnerCards = isMeWinner ? myCards : (isOppWinner ? oppCards : []);
     const winningHandName = result.type ? result.type.replace(/([A-Z])/g, ' $1').trim() : '';
+    const winnerLabel = isMeWinner ? 'YOU WIN' : (isOppWinner ? (isOnlineGame ? 'OPPONENT WINS' : 'AI WINS') : 'DRAW');
+    const winnerColor = isMeWinner ? '#4caf50' : (isOppWinner ? '#f44336' : '#999');
 
     const [animateIn, setAnimateIn] = useState(false);
 
@@ -89,10 +91,12 @@ export const ScoringOverlay: React.FC<ScoringOverlayProps> = ({
 
                     {winnerCards.length > 0 ? (
                         <div className="winner-showcase">
+                            <h3 className="winner-label" style={{ color: winnerColor }}>{winnerLabel}</h3>
                             <div className="cards-row">
                                 {winnerCards.map(c => (
                                     <div key={c.id} className="showcase-card">
-                                        <Card card={c} isHidden={false} skin={cardSkin} />
+                                        {/* Force reveal by cloning and setting isHidden to false */}
+                                        <Card card={{ ...c, isHidden: false }} isHidden={false} skin={cardSkin} />
                                     </div>
                                 ))}
                             </div>
