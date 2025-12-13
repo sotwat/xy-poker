@@ -61,14 +61,16 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
+1. **v12131255** (2025-12-13): **Fix** - Fixed Local AI inactivity by ensuring AI turn logic reacts to phase transitions.
+2. **v12131250** (2025-12-13): **Fix** - Restored missing phase synchronization logic that caused the game to kick back to lobby after dice roll animation.
 3. **v12112305** (2025-12-11): **FX** - Added sequential scoring animation (Cols Right-to-Left → X-Hand Row in Yellow).
-3. **v12112245** (2025-12-11): **UI** - Adjusted mobile battle sidebar font sizes (smaller name/bonuses).
-3. **v12112240** (2025-12-11): **UI** - Removed redundant "Dice Skin" button from Online Lobby.
-3. **v12112235** (2025-12-11): **Feature** - Added 6 new skins (2 Dice, 2 Card, 2 Board) to total 12 per category.
-3. **v12112230** (2025-12-11): **Scaling** - Changed Skin Unlock Duration from 24h to 3h.
-3. **v12112222** (2025-12-11): **Feature** - Expanded Skin Shop (Added Card & Board Skins).
-3. **v12111913** (2025-12-11): **Fix** - Fixed Online Board Flipping Bug (Stabilized Player Perspective).
-3. **v12111910** (2025-12-11): **UI** - Repositioned Turn Timer on Mobile (Top-Right, 0.8x Scale).
+4. **v12112245** (2025-12-11): **UI** - Adjusted mobile battle sidebar font sizes (smaller name/bonuses).
+5. **v12112240** (2025-12-11): **UI** - Removed redundant "Dice Skin" button from Online Lobby.
+6. **v12112235** (2025-12-11): **Feature** - Added 6 new skins (2 Dice, 2 Card, 2 Board) to total 12 per category.
+7. **v12112230** (2025-12-11): **Scaling** - Changed Skin Unlock Duration from 24h to 3h.
+8. **v12112222** (2025-12-11): **Feature** - Expanded Skin Shop (Added Card & Board Skins).
+9. **v12111913** (2025-12-11): **Fix** - Fixed Online Board Flipping Bug (Stabilized Player Perspective).
+10. **v12111910** (2025-12-11): **UI** - Repositioned Turn Timer on Mobile (Top-Right, 0.8x Scale).
 3. **v12111900** (2025-12-11): **Feature** - Implemented 24h Expiry for Ad-Unlocked Dice Skins.
 3. **v12111858** (2025-12-11): **Fix** - Fixed rendering of Dice Face 6 (Added missing dot CSS).
 3. **v12111855** (2025-12-11): **Fix** - Added Mobile Close Button & Improved Desktop Ad Reward Flow (Claim Button).

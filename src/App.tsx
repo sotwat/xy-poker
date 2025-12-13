@@ -522,7 +522,7 @@ function App() {
       }, delay);
       return () => clearTimeout(timer);
     }
-  }, [gameState, mode, isBotDisguise]); // Added isBotDisguise dependency
+  }, [gameState, mode, isBotDisguise, phase]); // Added phase dependency
 
   // User Auto-Play Logic (Both Local P1 and Online Self)
   useEffect(() => {
@@ -1069,7 +1069,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12131250</span>}
+          {showVersion && <span className="version">12131255</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
