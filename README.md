@@ -61,8 +61,8 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12131140** (2025-12-13): **Fix** - Fixed "FINISH" text overflowing on mobile screens by using responsive font sizing (`clamp`).
-2. **v12130856** (2025-12-13): **Fix** - Implemented "Audio Warmup" (unlocks SpeechSynthesis API on mobile during start/interaction) to fix silent voice announcements.
+1. **v12131215** (2025-12-13): **Feature** - Implemented "Cinematic Scoring" animation. Winning cards pop up (magnified) to the center, synced with speech and text effects.
+2. **v12131140** (2025-12-13): **Fix** - Fixed "FINISH" text overflowing on mobile screens by using responsive font sizing (`clamp`).
 3. **v12122215** (2025-12-12): **Feature** - Added "Rematch" functionality for ID-based Room Matches.
 3. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
 3. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.
