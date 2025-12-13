@@ -494,7 +494,7 @@ function App() {
   useEffect(() => {
     if (gameState.winner) {
       setPhase('ended');
-    } else if (gameState.turnCount === 18 && !gameState.winner) {
+    } else if (gameState.phase === 'scoring') {
       setPhase('scoring');
     } else if (gameState.turnCount > 0) {
       setPhase('playing');
@@ -1069,7 +1069,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12131255</span>}
+          {showVersion && <span className="version">12131260</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
