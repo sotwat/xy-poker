@@ -503,7 +503,7 @@ function App() {
 
   // AI Turn Logic (Example)
   useEffect(() => {
-    if (mode === 'local' && phase === 'playing' && currentPlayerIndex === 1) {
+    if (mode === 'local' && phase === 'playing' && currentPlayerIndex === 1 && !showDiceAnimation) {
       // Disguised Bot: 2000ms - 5000ms delay
       // Standard AI: 1000ms fixed
       const delay = isBotDisguise ? (2000 + Math.random() * 3000) : 1000;
@@ -522,7 +522,7 @@ function App() {
       }, delay);
       return () => clearTimeout(timer);
     }
-  }, [gameState, mode, isBotDisguise, phase]); // Added phase dependency
+  }, [gameState, mode, isBotDisguise, phase, showDiceAnimation]); // Added showDiceAnimation dependency
 
   // User Auto-Play Logic (Both Local P1 and Online Self)
   useEffect(() => {
@@ -531,7 +531,7 @@ function App() {
       (isOnlineGame && playerRole === 'host' && currentPlayerIndex === 0) ||
       (isOnlineGame && playerRole === 'guest' && currentPlayerIndex === 1);
 
-    if (isAutoPlay && phase === 'playing' && isMyTurn) {
+    if (isAutoPlay && phase === 'playing' && isMyTurn && !showDiceAnimation) {
       const delay = 800; // Slightly faster than bot? Or standard.
 
       const timer = setTimeout(() => {
@@ -558,7 +558,7 @@ function App() {
 
       return () => clearTimeout(timer);
     }
-  }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState]); // Added isBotDisguise dependency
+  }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState, showDiceAnimation]); // Added showDiceAnimation dependency
 
   useEffect(() => {
     if (phase === 'ended') {
@@ -1069,7 +1069,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12131260</span>}
+          {showVersion && <span className="version">12131555</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
