@@ -61,8 +61,8 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12131555** (2025-12-13): **Fix** - Prevented AI and Auto-Play from making moves while the Dice Roll Animation is still visible.
-2. **v12131260** (2025-12-13): **Critical Fix** - Fixed "White Screen" crash in Local Battle caused by premature scoring trigger (removed incorrect turn check).
+1. **v12131558** (2025-12-13): **Fix** - Fixed missing result animation when playing a second Local game (reset scoring trigger).
+2. **v12131555** (2025-12-13): **Fix** - Prevented AI and Auto-Play from making moves while the Dice Roll Animation is still visible.
 3. **v12112305** (2025-12-11): **FX** - Added sequential scoring animation (Cols Right-to-Left → X-Hand Row in Yellow).
 4. **v12112245** (2025-12-11): **UI** - Adjusted mobile battle sidebar font sizes (smaller name/bonuses).
 5. **v12112240** (2025-12-11): **UI** - Removed redundant "Dice Skin" button from Online Lobby.
