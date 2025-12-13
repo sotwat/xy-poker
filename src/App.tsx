@@ -663,6 +663,7 @@ function App() {
         } else {
           // Finished
           clearInterval(interval);
+          setScoringStep(6); // Mark as complete so overlay doesn't reappear on View Board
           setTimeout(() => {
             setShowResultsModal(true);
           }, 1000);
@@ -1059,7 +1060,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12131230</span>}
+          {showVersion && <span className="version">12131245</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
