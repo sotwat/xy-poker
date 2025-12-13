@@ -61,14 +61,6 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-2. **v12112356** (2025-12-11): **UI** - Restored "Rules" button in Online Lobby and Local Setup screen.
-2. **v12112354** (2025-12-11): **Fix** - Corrected "Pure Straight" detection to require strict board order (Row 1->2->3 or 3->2->1).
-2. **v12112347** (2025-12-11): **Fix** - Addressed "Left-Side Bias" in AI. Implemented opportunity cost logic and shuffled column evaluation.
-2. **v12112342** (2025-12-11): **Fix** - Fixed AI bug allowing 3 hidden cards in one column. Adjusted strategy to spread moves and rush less.
-2. **v12112337** (2025-12-11): **Policy** - Enforced strict version timestamping compliance. Re-deployed all environments.
-2. **v12112320** (2025-12-11): **Rules** - Removed Jokers entirely and refined "Pure" hand definitions (Positional Order/Adjacency).
-2. **v12112317** (2025-12-11): **AI** - Enhanced AI logic with user-provided strategies (Dice context, Low-col sacrifice, Pure hand priority, Early hidden).
-3. **v12112310** (2025-12-11): **Audio** - Added Voice Announcements for winning hand names during scoring animation.
 3. **v12112305** (2025-12-11): **FX** - Added sequential scoring animation (Cols Right-to-Left → X-Hand Row in Yellow).
 3. **v12112245** (2025-12-11): **UI** - Adjusted mobile battle sidebar font sizes (smaller name/bonuses).
 3. **v12112240** (2025-12-11): **UI** - Removed redundant "Dice Skin" button from Online Lobby.
