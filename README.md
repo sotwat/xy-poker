@@ -61,14 +61,6 @@ A 2-player poker card game with both local and online multiplayer modes.
 **Latest Version:** `12122237` (2025-12-12 22:37)
 
 ### Recent Changes (Last 10 Updates)
-1. **v12131245** (2025-12-13): **Fix** - Fixed issue where Scoring Overlay blocked the board view after closing results.
-2. **v12131230** (2025-12-13): **Polish** - Refined Cinematic Scoring: Hidden cards now reveal face-up during animation, and added "YOU WIN / OPPONENT WINS" labels.
-3. **v12122215** (2025-12-12): **Feature** - Added "Rematch" functionality for ID-based Room Matches.
-3. **v12121500** (2025-12-12): **Content** - Restored detailed game rules text and renamed "人工知能" to "AI".
-3. **v12121004** (2025-12-12): **SEO** - Implemented JSON-LD Schema, Canonical Link, and Sitemap.
-2. **v12120958** (2025-12-12): **SEO** - Added Japanese keywords and title for "XYポーカー" discovery.
-2. **v12112502** (2025-12-11): **Infra** - Enabled DUAL Desktop ads (`nap5k` + `groleegni`).
-2. **v12112455** (2025-12-11): **Infra** - Removed Google AdSense; Switched Desktop ad to Zone 10307517.
 2. **v12112452** (2025-12-11): **Infra** - Added new Desktop-only ad script (Zone 10310001).
 2. **v12112447** (2025-12-11): **Revert** - Removed Desktop ad script.
 2. **v12112444** (2025-12-11): **Infra** - Updated Desktop-only ad script with new provider tag.

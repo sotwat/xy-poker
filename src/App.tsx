@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect, useRef } from 'react';
+import { useReducer, useState, useEffect, useRef } from 'react';
 import { gameReducer, INITIAL_GAME_STATE } from './logic/game';
 import { evaluateYHand, evaluateXHand } from './logic/evaluation';
 import { calculateXHandScores } from './logic/scoring';
@@ -21,7 +21,6 @@ import './App.css';
 import { getBestMove } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, speakText, warmupAudio, initSpeech } from './utils/sound';
-import { ScoringOverlay } from './components/ScoringOverlay';
 import { getBrowserId } from './utils/identity';
 
 function App() {
@@ -550,90 +549,85 @@ function App() {
     }
   }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState]); // Added isBotDisguise dependency
 
-  // Memoize Scoring Results to share between Effect (Audio) and Overlay (Visual)
-  const scoringResults = React.useMemo(() => {
-    if (phase !== 'scoring' && phase !== 'ended') return null;
-
-    const { players } = gameState;
-    const p1 = players[0];
-    const p2 = players[1];
-    const dice = p1.dice; // Shared dice values
-
-    // Col Results (Right-to-Left: 4 -> 0)
-    const cols = Array.from({ length: 5 }, (_, i) => {
-      const colIndex = 4 - i; // 4, 3, 2, 1, 0
-      const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
-      const p2Cards = [p2.board[0][colIndex]!, p2.board[1][colIndex]!, p2.board[2][colIndex]!];
-
-      const p1Res = evaluateYHand(p1Cards, dice[colIndex]);
-      const p2Res = evaluateYHand(p2Cards, dice[colIndex]);
-
-      let result = { winner: 'draw', type: null as string | null };
-
-      if (p1Res.rankValue > p2Res.rankValue) result = { winner: 'p1', type: p1Res.type };
-      else if (p2Res.rankValue > p1Res.rankValue) result = { winner: 'p2', type: p2Res.type };
-      else {
-        // Tie-breaker logic (Kicker)
-        let resolved = false;
-        for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
-          const k1 = p1Res.kickers[k] || 0;
-          const k2 = p2Res.kickers[k] || 0;
-          if (k1 > k2) { result = { winner: 'p1', type: p1Res.type }; resolved = true; break; }
-          if (k2 > k1) { result = { winner: 'p2', type: p2Res.type }; resolved = true; break; }
-        }
-        if (!resolved) result = { winner: 'draw', type: null };
-      }
-      return result;
-    });
-
-    // Row Result (X-Hand)
-    const p1XRes = evaluateXHand(p1.board[2] as Card[]);
-    const p2XRes = evaluateXHand(p2.board[2] as Card[]);
-    const { p1Score: p1X, p2Score: p2X } = calculateXHandScores(p1XRes, p2XRes);
-
-    let rowResult = { winner: 'draw', type: null as string | null };
-    if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type };
-    else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type };
-
-    return { cols, row: rowResult };
-  }, [phase, gameState, gameState.players]); // Add players dependency
-
   useEffect(() => {
-    if (phase === 'scoring' && scoringResults) {
-      // 1. Show Finish Animation (handled by separate overlay for now? OR integrated?)
-      // We still want the "FINISH" text first? 
-      // User requested "Winning cards... appear".
-      // Let's keep "FINISH" text for initial 2 seconds, THEN start step 0?
-      // Current Logic:
-      // 1. setShowFinishAnimation(true)
-      // 2. Wait 2000ms.
-      // 3. setScoringStep(0) ?? No, currently `phase === 'scoring'` triggers animation for 2s, then `CALCULATE_SCORE` -> `phase === 'ended'`.
-      // WAIT.
-      // `phase === 'ended'` triggers the intervals.
-      // So `ScoringOverlay` should show during `phase === 'ended'` (steps 0-5).
-      // `phase === 'scoring'` shows "FINISH!!" text.
-
-      // So I just need to hook into the `phase === 'ended'` effect.
-      // And I need to use `scoringResults` there.
-    }
-  }, [phase, scoringResults]);
-
-  useEffect(() => {
-    if (phase === 'ended' && scoringResults) {
+    if (phase === 'ended') {
       // Start scoring animation sequence
       // Steps: 0-4 (Cols), 5 (Row)
 
-      const { cols: colResults, row: rowResult } = scoringResults;
       let step = 0;
       setScoringStep(0);
 
+      // Pre-calculate winners and hand names for valid speech
+      const { players } = gameState;
+      const p1 = players[0];
+      const p2 = players[1];
+      const dice = p1.dice; // Shared dice values
+
+      // Helper to map type ID to readable string
       const getReadableHandName = (typeId: string): string => {
+        // Simple mapping from PascalCase to Spaced String
+        // e.g. ThreeOfAKind -> Three of a Kind
         return typeId.replace(/([A-Z])/g, ' $1').trim().replace(/ Of /g, ' of ').replace(/ A /g, ' a ');
       };
 
-      const gameSignature = `${roomId}-${gameState.winner}-${gameState.turnCount}`;
-      if (processedGameRef.current === gameSignature) return;
+      // Col Results (Right-to-Left: 4 -> 0)
+      const colResults = Array.from({ length: 5 }, (_, i) => {
+        const colIndex = 4 - i; // 4, 3, 2, 1, 0
+        const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
+        const p2Cards = [p2.board[0][colIndex]!, p2.board[1][colIndex]!, p2.board[2][colIndex]!];
+
+        const p1Res = evaluateYHand(p1Cards, dice[colIndex]);
+        const p2Res = evaluateYHand(p2Cards, dice[colIndex]);
+
+        if (p1Res.rankValue > p2Res.rankValue) return { winner: 'p1', type: p1Res.type };
+        if (p2Res.rankValue > p1Res.rankValue) return { winner: 'p2', type: p2Res.type };
+
+        // Tie-breaker logic (Kicker)
+        for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
+          const k1 = p1Res.kickers[k] || 0;
+          const k2 = p2Res.kickers[k] || 0;
+          if (k1 > k2) return { winner: 'p1', type: p1Res.type };
+          if (k2 > k1) return { winner: 'p2', type: p2Res.type };
+        }
+        return { winner: 'draw', type: null };
+      });
+
+      // Row Result (X-Hand)
+      const p1XRes = evaluateXHand(p1.board[2] as Card[]);
+      const p2XRes = evaluateXHand(p2.board[2] as Card[]);
+
+      // Prevent multiple triggers for the same game end state
+      // Use roomId + winner or just simple phase check with reset
+      const gameSignature = `${roomId}-${gameState.winner}-${gameState.turnCount}`; // unique enough
+      if (processedGameRef.current === gameSignature) {
+        // Already started animation for this game end, do not restart
+        // But we need to keep the interval logic if it was in component state...
+        // Actually, if we return early, we might break the interval if this effect re-runs.
+        // So if we return early, the animation stops.
+
+        // Better approach: Only GUARD the "Initial Speech" and "Start",
+        // but allow the effect to mount?
+        // No, if the effect re-mounts, we want to CONTINUE or just DO NOTHING if it's already done?
+        // If we want to ensure it runs EXACTLY ONCE, we should just check if we are already scoring.
+        // But `scoringStep` state will be preserved? No, `setScoringStep(-1)` is called in the else block.
+        // Getting complicated. Simple fix:
+        // Just rely on speech cancel?
+        // The issue is likely the effect running twice quickly.
+        return;
+      }
       processedGameRef.current = gameSignature;
+
+      // Calculate Results locally for display
+      // The original colResults and rowResult calculations are already done above.
+      // This part of the instruction seems to be a re-calculation or a placeholder for a refactor.
+      // Keeping the original calculations and just adding the ref check.
+      // If `calculateColumnResults` and `calculateXHandScores` are new helper functions,
+      // they would need to be defined elsewhere. Assuming the existing `colResults` and `p1XRes`/`p2XRes`
+      // are the intended source for the `rowResult` calculation.
+      const { p1Score: p1X, p2Score: p2X } = calculateXHandScores(p1XRes, p2XRes);
+      let rowResult = { winner: 'draw', type: null as string | null };
+      if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type };
+      else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type };
 
       // Initial Speech (Step 0)
       const initialRes = colResults[0];
@@ -657,18 +651,21 @@ function App() {
           }
 
           if (res && res.winner !== 'draw' && res.type) {
+            // Slight delay for speech to not clash perfectly with click sound?
+            // Or just fire it. Browsers handle overlapping/queuing or replace.
+            // speakText cancels previous, so it's fine.
             speakText(getReadableHandName(res.type));
           }
 
         } else {
           // Finished
           clearInterval(interval);
-          setScoringStep(6); // Mark as complete so overlay doesn't reappear on View Board
           setTimeout(() => {
+            // Auto-show modal for everyone now that finish is automatic
             setShowResultsModal(true);
           }, 1000);
         }
-      }, 2000); // 2000ms per step for cinematic feel
+      }, 1500); // Increased to 1500ms to allow speech time
 
       if (mode === 'local') {
         const { winner } = gameState;
@@ -682,7 +679,7 @@ function App() {
       setScoringStep(-1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, mode, scoringResults]); // Added scoringResults dependency
+  }, [phase, mode]);
 
   useEffect(() => {
     localStorage.setItem('xypoker_playerName_v2', playerName);
@@ -1060,7 +1057,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12131245</span>}
+          {showVersion && <span className="version">12131220</span>}
         </div>
 
         {/* Auth Button (Top Right) */}
@@ -1409,22 +1406,6 @@ function App() {
           />
         )
       }
-
-      {/* Cinematic Scoring Overlay */}
-      {
-        phase === 'ended' && scoringStep >= 0 && scoringResults && !showResultsModal && (
-          <ScoringOverlay
-            gameState={gameState}
-            step={scoringStep}
-            results={scoringResults.cols}
-            rowResult={scoringResults.row}
-            cardSkin={selectedCardSkin}
-            isOnlineGame={isOnlineGame}
-            playerRole={playerRole}
-          />
-        )
-      }
-
       {/* Rules Overlay */}
       {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
       {/* Rematch Modal */}
