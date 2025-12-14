@@ -20,16 +20,14 @@ The following rules are **NON-NEGOTIABLE** and must be followed for every single
 - **Reason:** Margins cause reflows and unpredictable layout shifts.
 
 ### 3. Deployment Policy (STRICT)
-**Sync is Critical.** You must perform **BOTH** steps for every update:
-1.  **Frontend (Cloudflare Pages):**
+**Sync is Critical.** You must use the unified deployment script:
+1.  **Run Unified Deploy Script:**
     ```bash
     npm run deploy
     ```
-2.  **Backend/Source (Render & GitHub):**
-    ```bash
-    git push origin main
-    ```
-*Failure to do both will result in "Version Mismatch" errors and broken multiplayer states.*
+    *(This runs `./deploy_all.sh`, which enforces Git Commit -> Cloudflare Upload -> Render Push)*
+    
+*Do not run `wrangler` or `git push` manually unless you know exactly what you are doing.*
 
 ### 4. README Maintenance
 **全てのアップデートでREADMEを更新すること**
@@ -70,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `12142235` (2025-12-14 22:35)
+- **Current Version:** `12142240` (2025-12-14 22:40)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -85,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12142235** (2025-12-14): **Feature** - Enhanced My Page: Added "Win Rate" display and "Username" editing functionality.
+1. **v12142240** (2025-12-14): **Infrastructure** - Created `deploy_all.sh` to enforced synchronized deployment to Cloudflare and Render with a single command (`npm run deploy`).
+2. **v12142235** (2025-12-14): **Feature** - Enhanced My Page: Added "Win Rate" display and "Username" editing functionality.
 2. **v12142230** (2025-12-14): **Feature** - Implemented "My Page" with user stats (XP, Level), World Ranking, and Achievements system.
 3. **v12142218** (2025-12-14): **Polish** - Unified Auth terminology to "Sign In / Sign Out" for consistency, replacing "Login".
 4. **v12142215** (2025-12-14): **Bugfix** - Fixed "localhost" redirection error in email confirmation by explicitly setting the production URL.

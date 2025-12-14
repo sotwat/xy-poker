@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "node server/index.js",
-    "deploy": "npm run build && npx wrangler pages deploy dist --project-name xy-poker"
+    "deploy": "./deploy_all.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",
