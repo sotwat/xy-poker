@@ -213,7 +213,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
             selectFn = onSelectCard as (id: string) => void;
             PreviewComponent = ({ id }: { id: string }) => (
                 <div className={`preview-card card-back-${id}`}>
-                    <div className="card-inner"></div>
+                    <div className="card-back"></div>
                 </div>
             );
         } else {
