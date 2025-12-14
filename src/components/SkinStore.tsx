@@ -108,12 +108,12 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         return locked;
     };
 
-    const handleGacha = async (count: 1 | 10) => {
+    const handleGacha = async (count: 1 | 10, isFree: boolean = false) => {
         // if (!userId) { ... }  <-- Removed check to allow guests
 
         const cost = count === 1 ? GACHA_COST_SINGLE : GACHA_COST_MULTI;
 
-        if (userCoins < cost) {
+        if (!isFree && userCoins < cost) {
             alert(`Not enough coins! Need ${cost} coins.`);
             return;
         }
@@ -126,14 +126,16 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
         playClickSound();
 
-        // Deduct Coins
-        const newBalance = userCoins - cost;
-        setUserCoins(newBalance);
+        // Deduct Coins only if not free
+        if (!isFree) {
+            const newBalance = userCoins - cost;
+            setUserCoins(newBalance);
 
-        if (userId) {
-            await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
-        } else {
-            localStorage.setItem('xypoker_guest_coins', newBalance.toString());
+            if (userId) {
+                await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
+            } else {
+                localStorage.setItem('xypoker_guest_coins', newBalance.toString());
+            }
         }
 
         // Pool ALL valid items (Excluding Defaults)
@@ -175,16 +177,8 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
         setTimeout(async () => {
             setIsWatchingAd(false);
-            const newBalance = userCoins + AD_REWARD_COINS;
-            setUserCoins(newBalance);
-
-            if (userId) {
-                await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
-            } else {
-                localStorage.setItem('xypoker_guest_coins', newBalance.toString());
-            }
-
-            alert(`Thanks for watching! +${AD_REWARD_COINS} Coins!`);
+            // Reward: Free Single Gacha
+            handleGacha(1, true);
         }, 5000); // 5 sec simulated ad
     };
 
@@ -281,10 +275,11 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                     {userId && (
                         <div className="coin-balance">
                             <span className="coin-icon">🪙</span>
-                            <span className="coin-amount">{userCoins}</span>
-                            <button className="btn-add-coins" onClick={handleWatchAd} disabled={isWatchingAd}>
-                                {isWatchingAd ? '...' : '+'}
-                            </button>
+                            <div className="ad-box">
+                                <button className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
+                                    {isWatchingAd ? "Watching..." : "📺 Watch Ad for Free Gacha"}
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
