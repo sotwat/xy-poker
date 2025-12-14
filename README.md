@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12142310** (2025-12-14): **Feature** - Implemented In-Game Currency (Coins) & Gacha System, enabling skin unlocks via "Gacha" tab using earned coins.
+1. **v12142315** (2025-12-14): **Bugfix** - Fixed issue where signed-in users could not use Gacha (missing `userId` prop).
+2. **v12142310** (2025-12-14): **Feature** - Implemented In-Game Currency (Coins) & Gacha System, enabling skin unlocks via "Gacha" tab using earned coins.
 2. **v12142240** (2025-12-14): **Infrastructure** - Created `deploy_all.sh` to enforced synchronized deployment to Cloudflare and Render with a single command (`npm run deploy`).
 2. **v12142235** (2025-12-14): **Feature** - Enhanced My Page: Added "Win Rate" display and "Username" editing functionality.
 2. **v12142230** (2025-12-14): **Feature** - Implemented "My Page" with user stats (XP, Level), World Ranking, and Achievements system.

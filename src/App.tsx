@@ -1188,7 +1188,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12142310</span>}
+          {showVersion && <span className="version">12142315</span>}
         </div>
 
         <button
@@ -1320,6 +1320,7 @@ function App() {
               <SkinStore
                 isOpen={showSkinStore}
                 onClose={() => setShowSkinStore(false)}
+                userId={session?.user?.id}
                 // Dice
                 unlockedSkins={unlockedSkins}
                 selectedSkin={selectedSkin}
