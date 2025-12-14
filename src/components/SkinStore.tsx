@@ -241,52 +241,54 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         );
     };
 
+    if (showGachaReveal) {
+        return (
+            <GachaReveal
+                results={gachaResults}
+                onClose={() => setShowGachaReveal(false)}
+            />
+        );
+    }
+
     return (
         <div className="skin-store-overlay">
-            {showGachaReveal ? (
-                <GachaReveal
-                    results={gachaResults}
-                    onClose={() => setShowGachaReveal(false)}
-                />
-            ) : (
-                <div className="skin-store-modal">
-                    <button className="btn-close-x" onClick={() => { playClickSound(); onClose(); }}>×</button>
-                    <div className="store-header">
-                        <h2>Skin Shop</h2>
-                        {userId && (
-                            <div className="coin-balance">
-                                <span className="coin-icon">🪙</span>
-                                <span className="coin-amount">{userCoins}</span>
-                                <button className="btn-add-coins" onClick={handleWatchAd} disabled={isWatchingAd}>
-                                    {isWatchingAd ? '...' : '+'}
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Gacha Actions */}
-                    <div className="gacha-actions">
-                        <div className="gacha-option" onClick={() => handleGacha(1)}>
-                            <div className="gacha-label">Single Pull</div>
-                            <div className="gacha-cost">🪙 {GACHA_COST_SINGLE}</div>
+            <div className="skin-store-modal">
+                <button className="btn-close-x" onClick={() => { playClickSound(); onClose(); }}>×</button>
+                <div className="store-header">
+                    <h2>Skin Shop</h2>
+                    {userId && (
+                        <div className="coin-balance">
+                            <span className="coin-icon">🪙</span>
+                            <span className="coin-amount">{userCoins}</span>
+                            <button className="btn-add-coins" onClick={handleWatchAd} disabled={isWatchingAd}>
+                                {isWatchingAd ? '...' : '+'}
+                            </button>
                         </div>
-                        <div className="gacha-option special" onClick={() => handleGacha(10)}>
-                            <div className="gacha-label">10x Pull</div>
-                            <div className="gacha-cost">🪙 {GACHA_COST_MULTI}</div>
-                        </div>
-                    </div>
-
-                    <div className="store-tabs">
-                        <button className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`} onClick={() => setActiveTab('dice')}>Dice</button>
-                        <button className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`} onClick={() => setActiveTab('card')}>Cards</button>
-                        <button className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>Boards</button>
-                    </div>
-
-                    {renderContent()}
-
-                    <button className="btn-close" onClick={() => { playClickSound(); onClose(); }}>Close</button>
+                    )}
                 </div>
-            )}
+
+                {/* Gacha Actions */}
+                <div className="gacha-actions">
+                    <div className="gacha-option" onClick={() => handleGacha(1)}>
+                        <div className="gacha-label">Single Pull</div>
+                        <div className="gacha-cost">🪙 {GACHA_COST_SINGLE}</div>
+                    </div>
+                    <div className="gacha-option special" onClick={() => handleGacha(10)}>
+                        <div className="gacha-label">10x Pull</div>
+                        <div className="gacha-cost">🪙 {GACHA_COST_MULTI}</div>
+                    </div>
+                </div>
+
+                <div className="store-tabs">
+                    <button className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`} onClick={() => setActiveTab('dice')}>Dice</button>
+                    <button className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`} onClick={() => setActiveTab('card')}>Cards</button>
+                    <button className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>Boards</button>
+                </div>
+
+                {renderContent()}
+
+                <button className="btn-close" onClick={() => { playClickSound(); onClose(); }}>Close</button>
+            </div>
         </div>
     );
 };
