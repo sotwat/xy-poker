@@ -61,7 +61,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId }) => {
             const { data: pData } = await supabase
                 .from('players')
                 .select('*')
-                .eq('user_id', userId)
+                .eq('id', userId)
                 .single();
             if (pData) {
                 setProfile(pData);
