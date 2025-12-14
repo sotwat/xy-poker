@@ -40,7 +40,6 @@ type UnlockableItem = { type: 'dice' | 'card' | 'board', id: string };
 
 const GACHA_COST_SINGLE = 100;
 const GACHA_COST_MULTI = 1000;
-const AD_REWARD_COINS = 100;
 
 export const SkinStore: React.FC<SkinStoreProps> = ({
     isOpen, onClose, userId,
