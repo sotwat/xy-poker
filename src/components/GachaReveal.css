@@ -148,6 +148,55 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
+/* Multi Reveal Grid */
+.results-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.reveal-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.multi-reveal .reveal-preview {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+}
+
+.multi-reveal {
+    max-width: 500px;
+    width: 90%;
+}
+
+.reveal-preview {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.reveal-name {
+    font-size: 1rem;
+    color: #e0e0e0;
+    text-transform: capitalize;
+}
+
 .item-name {
     font-size: 2rem;
     color: white;

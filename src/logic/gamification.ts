@@ -1,25 +1,26 @@
 import { supabase } from '../supabase';
 
 // XP Constants
-const XP_WIN = 100;
-const XP_LOSS = 20;
-const XP_DRAW = 50;
+// const XP_WIN = 100; // Deprecated: Now based on score
+// const XP_LOSS = 20;
+// const XP_DRAW = 50;
 
 /**
- * Updates player gamification stats (XP, Level, Games Played, Wins).
+ * Updates player gamification stats (XP, Level, Games Played, Wins, Coins).
  * Should be called at the end of a game.
  */
 export async function updatePlayerStats(
     playerId: string,
-    result: 'win' | 'loss' | 'draw'
+    result: 'win' | 'loss' | 'draw',
+    score: number // Added score parameter
 ) {
     if (!playerId) return;
 
     // 1. Fetch current stats
     const { data: player, error } = await supabase
         .from('players')
-        .select('xp, level, games_played, wins')
-        .eq('id', playerId) // Assuming playerId is the UUID from 'players' table
+        .select('xp, level, games_played, wins, coins')
+        .eq('id', playerId)
         .single();
 
     if (error || !player) {
@@ -28,23 +29,23 @@ export async function updatePlayerStats(
     }
 
     // 2. Calculate New Values
-    let newXp = (player.xp || 0);
-    if (result === 'win') newXp += XP_WIN;
-    else if (result === 'loss') newXp += XP_LOSS;
-    else newXp += XP_DRAW;
+    // XP and Coins increase by the Score obtained
+    // Ensure score is positive for rewards (though game score allows negative, usually we reward raw performance or floored at 0)
+    const rewardValue = Math.max(0, Math.floor(score));
+
+    const newXp = (player.xp || 0) + rewardValue;
+    const newCoins = (player.coins || 0) + rewardValue;
 
     const newGames = (player.games_played || 0) + 1;
     const newWins = (player.wins || 0) + (result === 'win' ? 1 : 0);
 
     // Simple Level Formula: Level N requires roughly N*100 XP cumulative (linearish for now)
-    // Or let's use the one in UI: next = level*100 + level^2*50
     const currentLevel = player.level || 1;
-    const threshold = currentLevel * 100 + (currentLevel ** 2) * 50;
+    const nextLevelXp = currentLevel * 100 + (currentLevel ** 2) * 50;
 
     let newLevel = currentLevel;
-    if (newXp >= threshold) {
+    if (newXp >= nextLevelXp) {
         newLevel++;
-        // TODO: Could return { leveledUp: true } to show animation
     }
 
     // 3. Update DB
@@ -54,11 +55,12 @@ export async function updatePlayerStats(
             xp: newXp,
             level: newLevel,
             games_played: newGames,
-            wins: newWins
+            wins: newWins,
+            coins: newCoins
         })
         .eq('id', playerId);
 
-    return { newLevel, leveledUp: newLevel > currentLevel };
+    return { newLevel, leveledUp: newLevel > currentLevel, coinsEarned: rewardValue };
 }
 
 /**

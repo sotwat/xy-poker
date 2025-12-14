@@ -7,9 +7,12 @@ import { Dice } from './Dice';
 import { playClickSound } from '../utils/sound';
 import './SkinStore.css';
 
+import { supabase } from '../supabase';
+
 interface SkinStoreProps {
     isOpen: boolean;
     onClose: () => void;
+    userId?: string; // Added userId
 
     // Dice
     unlockedSkins: DiceSkin[];
@@ -35,31 +38,45 @@ import { GachaReveal } from './GachaReveal';
 type Tab = 'dice' | 'card' | 'board';
 type UnlockableItem = { type: 'dice' | 'card' | 'board', id: string };
 
+const GACHA_COST_SINGLE = 100;
+const GACHA_COST_MULTI = 1000;
+const AD_REWARD_COINS = 100;
+
 export const SkinStore: React.FC<SkinStoreProps> = ({
-    isOpen, onClose,
+    isOpen, onClose, userId,
     unlockedSkins, selectedSkin, onUnlock, onSelect,
     unlockedCardSkins, selectedCardSkin, onUnlockCard, onSelectCard,
     unlockedBoardSkins, selectedBoardSkin, onUnlockBoard, onSelectBoard
 }) => {
     const [activeTab, setActiveTab] = useState<Tab>('dice');
-    const [canClaim, setCanClaim] = useState(false);
-    const [gachaBannerShake, setGachaBannerShake] = useState(false);
+    const [userCoins, setUserCoins] = useState<number>(0);
+    // const [loadingCoins, setLoadingCoins] = useState(false);
 
     // Gacha State
-    const [pendingGacha, setPendingGacha] = useState(false);
-    const [gachaResult, setGachaResult] = useState<UnlockableItem | null>(null);
+    const [gachaResults, setGachaResults] = useState<UnlockableItem[]>([]);
     const [showGachaReveal, setShowGachaReveal] = useState(false);
+    const [isWatchingAd, setIsWatchingAd] = useState(false);
 
-    // Reset state when closing store
+    // Fetch coins on open
     useEffect(() => {
-        if (!isOpen) {
-            setCanClaim(false);
-            setPendingGacha(false);
-            setShowGachaReveal(false);
-            setGachaResult(null);
-            setActiveTab('dice');
+        if (isOpen && userId) {
+            fetchCoins();
         }
-    }, [isOpen]);
+    }, [isOpen, userId]);
+
+    const fetchCoins = async () => {
+        // setLoadingCoins(true);
+        const { data } = await supabase
+            .from('players')
+            .select('coins')
+            .eq('user_id', userId) // Must match update logic which uses user_id or player id? Wait, App passes update with internal ID. 
+            // We need to resolve internal ID or query by user_id if that's what we have. 
+            // App passes user_id as 'userId' prop usually? No, let's allow it to fetch by user_id effectively.
+            .single();
+
+        if (data) setUserCoins(data.coins || 0);
+        // setLoadingCoins(false);
+    };
 
     if (!isOpen) return null;
 
@@ -78,7 +95,18 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         return locked;
     };
 
-    const handleGachaAttempt = () => {
+    const handleGacha = async (count: 1 | 10) => {
+        if (!userId) {
+            alert("Please sign in to use Gacha!");
+            return;
+        }
+        const cost = count === 1 ? GACHA_COST_SINGLE : GACHA_COST_MULTI;
+
+        if (userCoins < cost) {
+            alert(`Not enough coins! Need ${cost} coins.`);
+            return;
+        }
+
         const locked = getLockedItems();
         if (locked.length === 0) {
             alert("All skins collected! You are amazing!");
@@ -86,34 +114,56 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         }
 
         playClickSound();
-        window.open('https://otieu.com/4/10307496', '_blank');
-        setPendingGacha(true);
-        setCanClaim(false);
 
-        // Simulate Ad Watch
-        setTimeout(() => {
-            setCanClaim(true);
-        }, 3000);
+        // Deduct Coins
+        const newBalance = userCoins - cost;
+        setUserCoins(newBalance);
+
+        // Optimistic update, but really should be transactional in DB
+        // For prototype, we update client side then DB
+        // Fetch internal ID first? Or just update by user_id
+        await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
+
+        const results: UnlockableItem[] = [];
+        for (let i = 0; i < count; i++) {
+            // If we run out of locked items, we just give duplicates (which do nothing currently, or give coins back?)
+            // User logic: "Gacha is ... random". 
+            // Simplification: We pick from ALL items (unlocked or not). If unlocked, it's a dupe (maybe 50 coins refund?).
+            // User Instruction: "Gacha...". Usually implies randomness.
+
+            // Let's pool ALL avail items
+            const allItems: UnlockableItem[] = [
+                ...AVAILABLE_DICE_SKINS.map(s => ({ type: 'dice' as const, id: s.id })),
+                ...AVAILABLE_CARD_SKINS.map(s => ({ type: 'card' as const, id: s.id })),
+                ...AVAILABLE_BOARD_SKINS.map(s => ({ type: 'board' as const, id: s.id }))
+            ];
+
+            const won = allItems[Math.floor(Math.random() * allItems.length)];
+            results.push(won);
+
+            // Unlock logic
+            if (won.type === 'dice' && !unlockedSkins.includes(won.id as DiceSkin)) onUnlock(won.id as DiceSkin);
+            if (won.type === 'card' && !unlockedCardSkins.includes(won.id as CardSkin)) onUnlockCard(won.id as CardSkin);
+            if (won.type === 'board' && !unlockedBoardSkins.includes(won.id as BoardSkin)) onUnlockBoard(won.id as BoardSkin);
+        }
+
+        setGachaResults(results);
+        setShowGachaReveal(true);
     };
 
-    const finalizeGacha = () => {
-        if (!canClaim || !pendingGacha) return;
+    const handleWatchAd = () => {
+        if (!userId) return;
+        setIsWatchingAd(true);
+        playClickSound();
+        window.open('https://otieu.com/4/10307496', '_blank'); // Ad Link
 
-        const locked = getLockedItems(); // Re-check
-        if (locked.length === 0) return;
-
-        const randomIndex = Math.floor(Math.random() * locked.length);
-        const wonItem = locked[randomIndex];
-
-        // Unlock it
-        if (wonItem.type === 'dice') onUnlock(wonItem.id as DiceSkin);
-        if (wonItem.type === 'card') onUnlockCard(wonItem.id as CardSkin);
-        if (wonItem.type === 'board') onUnlockBoard(wonItem.id as BoardSkin);
-
-        setGachaResult(wonItem);
-        setPendingGacha(false);
-        setCanClaim(false);
-        setShowGachaReveal(true);
+        setTimeout(async () => {
+            setIsWatchingAd(false);
+            const newBalance = userCoins + AD_REWARD_COINS;
+            setUserCoins(newBalance);
+            await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
+            alert(`Thanks for watching! +${AD_REWARD_COINS} Coins!`);
+        }, 5000); // 5 sec simulated ad
     };
 
     // Generic Handlers
@@ -125,11 +175,6 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         playClickSound();
         if (isUnlocked) {
             selectFn(id);
-        } else {
-            // Locked -> Redirect to Gacha
-            // Shake the banner to indicate "Use Gacha!"
-            setGachaBannerShake(true);
-            setTimeout(() => setGachaBannerShake(false), 500);
         }
     };
 
@@ -198,54 +243,44 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
     return (
         <div className="skin-store-overlay">
-            {showGachaReveal && gachaResult && (
-                <GachaReveal unlockedItem={gachaResult} onClose={() => setShowGachaReveal(false)} />
+            {showGachaReveal && (
+                <GachaReveal
+                    results={gachaResults}
+                    onClose={() => setShowGachaReveal(false)}
+                />
             )}
 
             <div className="skin-store-modal">
                 <button className="btn-close-x" onClick={() => { playClickSound(); onClose(); }}>×</button>
-                <h2>Skin Shop</h2>
-
-                {/* Gacha Banner */}
-                {!pendingGacha ? (
-                    <div className={`gacha-banner ${gachaBannerShake ? 'shake-hint' : ''}`} onClick={handleGachaAttempt}>
-                        <div className="gacha-icon">🎁</div>
-                        <div className="gacha-text">
-                            <h3>Mystery Gacha</h3>
-                            <p>Unlock Random Skin (3h)</p>
-                        </div>
-                        <div className="gacha-btn">WATCH AD</div>
-                    </div>
-                ) : (
-                    <div className="gacha-pending">
-                        <div className="watching-text">{canClaim ? 'Ready!' : 'Watching Ad...'}</div>
-                        {canClaim && (
-                            <button className="btn-claim-gacha pulse-animation" onClick={finalizeGacha}>
-                                OPEN GACHA!
+                <div className="store-header">
+                    <h2>Skin Shop</h2>
+                    {userId && (
+                        <div className="coin-balance">
+                            <span className="coin-icon">🪙</span>
+                            <span className="coin-amount">{userCoins}</span>
+                            <button className="btn-add-coins" onClick={handleWatchAd} disabled={isWatchingAd}>
+                                {isWatchingAd ? '...' : '+'}
                             </button>
-                        )}
+                        </div>
+                    )}
+                </div>
+
+                {/* Gacha Actions */}
+                <div className="gacha-actions">
+                    <div className="gacha-option" onClick={() => handleGacha(1)}>
+                        <div className="gacha-label">Single Pull</div>
+                        <div className="gacha-cost">🪙 {GACHA_COST_SINGLE}</div>
                     </div>
-                )}
+                    <div className="gacha-option special" onClick={() => handleGacha(10)}>
+                        <div className="gacha-label">10x Pull</div>
+                        <div className="gacha-cost">🪙 {GACHA_COST_MULTI}</div>
+                    </div>
+                </div>
 
                 <div className="store-tabs">
-                    <button
-                        className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`}
-                        onClick={() => { playClickSound(); setActiveTab('dice'); }}
-                    >
-                        Dice
-                    </button>
-                    <button
-                        className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`}
-                        onClick={() => { playClickSound(); setActiveTab('card'); }}
-                    >
-                        Cards
-                    </button>
-                    <button
-                        className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`}
-                        onClick={() => { playClickSound(); setActiveTab('board'); }}
-                    >
-                        Boards
-                    </button>
+                    <button className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`} onClick={() => setActiveTab('dice')}>Dice</button>
+                    <button className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`} onClick={() => setActiveTab('card')}>Cards</button>
+                    <button className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>Boards</button>
                 </div>
 
                 {renderContent()}

@@ -714,24 +714,33 @@ function App() {
         recordGameResult(aiWon, isDraw);
 
         // Update Gamification Stats (Only if logged in and I am Player 1 against AI)
-        if (dbPlayerId && !aiWon && !isDraw) {
-          // Win
-          updatePlayerStats(dbPlayerId, 'win').then(res => {
-            if (res?.leveledUp) alert("Level Up!");
+        if (dbPlayerId) {
+          // Calculate Score locally
+          const p1 = gameState.players[0];
+          const p2 = gameState.players[1];
+          // Determine if p1 has board[2] filled?
+          // At 'ended' phase, yes.
+          const p1XRes = evaluateXHand(p1.board[2] as Card[]);
+          const p2XRes = evaluateXHand(p2.board[2] as Card[]);
+          const { p1Score } = calculateXHandScores(p1XRes, p2XRes);
+
+          const myScore = p1Score;
+          let resultStr: 'win' | 'loss' | 'draw' = 'draw';
+          if (!aiWon && !isDraw) resultStr = 'win';
+          else if (aiWon) resultStr = 'loss';
+
+          updatePlayerStats(dbPlayerId, resultStr, myScore).then(res => {
+            if (res?.leveledUp) {
+              // Level Up Alert
+              alert(`Level Up! You are now Level ${res.newLevel}`);
+            }
+            if (res?.coinsEarned && res.coinsEarned > 0) {
+              // Optional: Show coin toast
+            }
           });
-          checkAchievements(dbPlayerId, gameState, 'win');
-        } else if (dbPlayerId && aiWon) {
-          updatePlayerStats(dbPlayerId, 'loss');
-          checkAchievements(dbPlayerId, gameState, 'loss');
-        } else if (dbPlayerId && isDraw) {
-          updatePlayerStats(dbPlayerId, 'draw');
-          checkAchievements(dbPlayerId, gameState, 'draw');
+          checkAchievements(dbPlayerId, gameState, resultStr);
         }
       }
-
-      return () => clearInterval(interval);
-    } else {
-      setScoringStep(-1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, mode]);
@@ -1179,7 +1188,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12142240</span>}
+          {showVersion && <span className="version">12142310</span>}
         </div>
 
         <button
