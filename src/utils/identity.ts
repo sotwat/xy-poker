@@ -5,7 +5,7 @@ export const getBrowserId = (): string => {
     const STORAGE_KEY = 'xy_poker_browser_id';
 
     // Check local storage
-    let id: string | null = localStorage.getItem(STORAGE_KEY);
+    const id: string | null = localStorage.getItem(STORAGE_KEY);
 
     // Check if valid UUID (simple check)
     if (!id || id.length < 10) {

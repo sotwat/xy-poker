@@ -1,0 +1,310 @@
+.mypage-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.mypage-content {
+    background: #1a1a1a;
+    width: 90%;
+    max-width: 500px;
+    height: 80vh;
+    border-radius: 12px;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: #eee;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.mypage-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+    gap: 15px;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mypage-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    background: linear-gradient(45deg, #fff, #aaa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.user-identity {
+    min-height: 24px;
+}
+
+.name-display-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.username {
+    font-size: 1rem;
+    color: #4da8da;
+    font-weight: bold;
+}
+
+.edit-icon-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.edit-icon-btn:hover {
+    color: #fff;
+}
+
+.name-edit-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.name-input {
+    background: #333;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 120px;
+}
+
+.save-btn,
+.cancel-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.save-btn {
+    background: #4da8da;
+    color: #000;
+}
+
+.cancel-btn {
+    background: #444;
+    color: #ccc;
+}
+
+.level-badge {
+    background: linear-gradient(135deg, #f09819 0%, #edde5d 100%);
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: #000;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 0 10px rgba(240, 152, 25, 0.4);
+}
+
+.level-label {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+.level-val {
+    font-size: 1.2rem;
+}
+
+.mypage-tabs {
+    display: flex;
+    background: #111;
+}
+
+.mypage-tabs button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 15px;
+    color: #666;
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.mypage-tabs button.active {
+    color: #fff;
+    border-bottom-color: #4da8da;
+    background: rgba(77, 168, 218, 0.05);
+}
+
+.mypage-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* Stats View */
+.stats-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+.stat-card {
+    background: #252525;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #333;
+}
+
+.stat-card label {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-card .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.stat-card .value.highlight {
+    color: #4da8da;
+}
+
+.xp-section {
+    grid-column: 1 / -1;
+    /* Full width */
+    margin-top: 20px;
+    background: #252525;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.xp-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.xp-bar-bg {
+    height: 10px;
+    background: #111;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4da8da, #00cdac);
+    border-radius: 5px;
+}
+
+/* Ranking View */
+.ranking-view table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ranking-view th {
+    text-align: left;
+    color: #666;
+    font-size: 0.8rem;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.ranking-view td {
+    padding: 12px 0;
+    border-bottom: 1px solid #222;
+    font-size: 0.95rem;
+}
+
+.ranking-view tr.highlight td {
+    color: #f09819;
+    font-weight: bold;
+}
+
+/* Achievements View */
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #252525;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px border #333;
+}
+
+.achievement-item .icon {
+    font-size: 1.5rem;
+    background: #333;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.achievement-item .info {
+    flex: 1;
+}
+
+.achievement-item .title {
+    font-weight: bold;
+    color: #eee;
+}
+
+.achievement-item .date {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.empty-state {
+    text-align: center;
+    color: #666;
+    margin-top: 50px;
+}

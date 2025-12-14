@@ -14,6 +14,8 @@ import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { RulesModal } from './components/RulesModal';
 import { TurnTimer } from './components/TurnTimer';
 import { AuthModal } from './components/AuthModal';
+import { MyPage } from './components/MyPage'; // [NEW]
+import { updatePlayerStats, checkAchievements } from './logic/gamification'; // [NEW]
 import { socket, connectSocket } from './logic/online';
 import { supabase } from './supabase';
 import './App.css';
@@ -63,8 +65,22 @@ function App() {
     gameStateRef.current = gameState;
   }, [gameState]);
 
-  // Auth State
+  // Supabase Session
   const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Turn Timer State
@@ -85,6 +101,19 @@ function App() {
   // SKIN STATE MANAGEMENT & EXPIRY
   const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 hours
   const [showSkinStore, setShowSkinStore] = useState(false);
+
+  // My Page State
+  const [showMyPage, setShowMyPage] = useState(false);
+  const [dbPlayerId, setDbPlayerId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      supabase.from('players').select('id').eq('user_id', session.user.id).single()
+        .then(({ data }) => {
+          if (data) setDbPlayerId(data.id);
+        });
+    }
+  }, [session]);
 
   // -- GENERIC SKIN LOADER HELPER --
   // We needed to duplicate this logic for Dice, Cards, Board to keep it clean and explicit
@@ -119,13 +148,13 @@ function App() {
     const savedSkins = localStorage.getItem(storageKey);
     const savedTimes = localStorage.getItem(timeKey);
 
-    let skins: T[] = savedSkins ? JSON.parse(savedSkins) : defaults;
-    let times: Record<string, number> = savedTimes ? JSON.parse(savedTimes) : {};
+    const skins: T[] = savedSkins ? JSON.parse(savedSkins) : defaults;
+    const times: Record<string, number> = savedTimes ? JSON.parse(savedTimes) : {};
 
     const now = Date.now();
     let hasChanges = false;
-    let newSkins: T[] = [];
-    let newTimes: Record<string, number> = { ...times };
+    const newSkins: T[] = [];
+    const newTimes: Record<string, number> = { ...times };
 
     skins.forEach(skin => {
       // Defaults never expire
@@ -683,6 +712,21 @@ function App() {
         const aiWon = winner === 'p2';
         const isDraw = winner === null;
         recordGameResult(aiWon, isDraw);
+
+        // Update Gamification Stats (Only if logged in and I am Player 1 against AI)
+        if (dbPlayerId && !aiWon && !isDraw) {
+          // Win
+          updatePlayerStats(dbPlayerId, 'win').then(res => {
+            if (res?.leveledUp) alert("Level Up!");
+          });
+          checkAchievements(dbPlayerId, gameState, 'win');
+        } else if (dbPlayerId && aiWon) {
+          updatePlayerStats(dbPlayerId, 'loss');
+          checkAchievements(dbPlayerId, gameState, 'loss');
+        } else if (dbPlayerId && isDraw) {
+          updatePlayerStats(dbPlayerId, 'draw');
+          checkAchievements(dbPlayerId, gameState, 'draw');
+        }
       }
 
       return () => clearInterval(interval);
@@ -1066,23 +1110,104 @@ function App() {
     setPlaceHidden(false);
   };
 
+  // Fullscreen Logic
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      // Check standard and vendor-prefixed properties
+      const isFs = !!(document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement ||
+        (document as any).msFullscreenElement);
+      setIsFullscreen(isFs);
+    };
+
+    document.addEventListener('fullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange);
+    document.addEventListener('mozfullscreenchange', handleFsChange);
+    document.addEventListener('MSFullscreenChange', handleFsChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFsChange);
+      document.removeEventListener('webkitfullscreenchange', handleFsChange);
+      document.removeEventListener('mozfullscreenchange', handleFsChange);
+      document.removeEventListener('MSFullscreenChange', handleFsChange);
+    };
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      const doc = document.documentElement as any;
+      const currentFs = document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement ||
+        (document as any).msFullscreenElement;
+
+      if (!currentFs) {
+        if (doc.requestFullscreen) {
+          await doc.requestFullscreen();
+        } else if (doc.webkitRequestFullscreen) {
+          await doc.webkitRequestFullscreen();
+        } else if (doc.mozRequestFullScreen) {
+          await doc.mozRequestFullScreen();
+        } else if (doc.msRequestFullscreen) {
+          await doc.msRequestFullscreen();
+        } else {
+          // Fallback for iOS Safari which usually doesn't support DOM fullscreen API
+          alert("Fullscreen API not supported on this device/browser.\nTry 'Add to Home Screen' for fullscreen experience.");
+        }
+      } else {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        } else if ((document as any).mozCancelFullScreen) {
+          await (document as any).mozCancelFullScreen();
+        } else if ((document as any).msExitFullscreen) {
+          await (document as any).msExitFullscreen();
+        }
+      }
+    } catch (err) {
+      console.error("Error toggling fullscreen:", err);
+      // alert("Error entering fullscreen: " + err); // Optional debug
+    }
+  };
+
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12131558</span>}
+          {showVersion && <span className="version">12142235</span>}
         </div>
 
+        <button
+          className="btn-fullscreen"
+          onClick={toggleFullscreen}
+          aria-label="Toggle Fullscreen"
+        >
+          {isFullscreen ? '⊠' : '⛶'}
+        </button>
+
         {/* Auth Button (Top Right) */}
-        {false && !isOnlineGame && phase !== 'playing' && (
+        {!isOnlineGame && phase !== 'playing' && (
           <div className="auth-status" style={{ position: 'absolute', top: 10, right: 10, zIndex: 50 }}>
             {session ? (
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8rem', color: '#aaa' }}>{session.user.email}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: '1.2' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#fff' }}>{session.user.email}</span>
+                  <span style={{ fontSize: '0.6rem', color: '#aaa' }}>ID: {session.user.id.slice(0, 8)}</span>
+                </div>
+                <button
+                  onClick={() => setShowMyPage(true)}
+                  style={{ padding: '4px 8px', fontSize: '0.7rem', background: '#4da8da', border: 'none', color: '#000', borderRadius: '4px', cursor: 'pointer', marginLeft: '10px', fontWeight: 'bold' }}
+                >
+                  My Page
+                </button>
                 <button
                   onClick={() => supabase.auth.signOut()}
-                  style={{ padding: '4px 8px', fontSize: '0.8rem', background: '#333', border: '1px solid #555', color: '#fff', borderRadius: '4px', cursor: 'pointer' }}
+                  style={{ padding: '4px 8px', fontSize: '0.7rem', background: 'rgba(0,0,0,0.5)', border: '1px solid #555', color: '#ccc', borderRadius: '4px', cursor: 'pointer', marginLeft: '5px' }}
                 >
                   Sign Out
                 </button>
@@ -1092,7 +1217,7 @@ function App() {
                 onClick={() => setShowAuthModal(true)}
                 style={{ padding: '6px 12px', background: '#4da8da', border: 'none', color: '#000', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
               >
-                Login / Sign Up
+                Sign In / Sign Up
               </button>
             )}
           </div>
@@ -1171,7 +1296,15 @@ function App() {
               <AuthModal
                 isOpen={showAuthModal}
                 onClose={() => setShowAuthModal(false)}
-                onSuccess={() => setShowAuthModal(false)}
+                onSuccess={() => {
+                  // fetchElo(); // Refetch elo on login
+                }}
+              />
+
+              <MyPage
+                isOpen={showMyPage}
+                onClose={() => setShowMyPage(false)}
+                userId={session?.user?.id || ''}
               />
 
               {/* Skin Store Modal */}

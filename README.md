@@ -70,21 +70,26 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `12131558` (2025-12-13 15:58)
+- **Current Version:** `12142235` (2025-12-14 22:35)
 - **Status:** **Stable**
 - **Last Critical Verification:**
-    - Local vs AI: ✅ Working (Fixed crash & animation)
+    - Local vs AI: ✅ Working
     - Online Match: ✅ Working
     - Deployment: ✅ Automated via scripts
+    - Code Health: ✅ Linting Improved
 
 ### Known Issues
-- **None.** All recent critical bugs (White Screen crash, AI deadlock, Animation persistence) have been resolved.
+- **None.** Codebase cleaned up.
 
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12131558** (2025-12-13): **Fix** - Fixed missing result animation when playing a second Local game (reset scoring trigger).
+1. **v12142235** (2025-12-14): **Feature** - Enhanced My Page: Added "Win Rate" display and "Username" editing functionality.
+2. **v12142230** (2025-12-14): **Feature** - Implemented "My Page" with user stats (XP, Level), World Ranking, and Achievements system.
+3. **v12142218** (2025-12-14): **Polish** - Unified Auth terminology to "Sign In / Sign Out" for consistency, replacing "Login".
+4. **v12142215** (2025-12-14): **Bugfix** - Fixed "localhost" redirection error in email confirmation by explicitly setting the production URL.
+5. **v12142210** (2025-12-14): **Polish** - Reverted Auth UI to English per user request and improved "Email Confirmation" feedback during Sign Up.
 2. **v12131555** (2025-12-13): **Fix** - Prevented AI and Auto-Play from making moves while the Dice Roll Animation is still visible.
 3. **v12131260** (2025-12-13): **Critical Fix** - Fixed "White Screen" crash in Local Battle caused by premature scoring trigger.
 4. **v12131255** (2025-12-13): **Fix** - Fixed Local AI inactivity by ensuring AI turn logic reacts to phase transitions.

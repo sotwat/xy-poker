@@ -54,7 +54,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
             const diceValue = dice[col];
 
             // 1. Evaluate Column (Y-Hand)
-            let score = evaluateColumnPlacement(potentialCards, col, diceValue, emptySlotIdx) * yHandWeight;
+            let score = evaluateColumnPlacement(potentialCards, diceValue) * yHandWeight;
 
             // STRATEGY: Spread Moves (Human-like behavior)
             // Reward starting new columns slightly to prevent just stacking one column vertically.
@@ -82,7 +82,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
             // X-hand strategy (bottom row)
             if (emptySlotIdx === 2) {
                 const learning = getLearningData();
-                let xScore = evaluateXHandPotential(board, card, col) * learning.xHandFocus;
+                const xScore = evaluateXHandPotential(board, card, col) * learning.xHandFocus;
 
                 // If rushing a low value col, X-Hand quality matters LESS (sacrifice),
                 // but we still shouldn't break a Royal Flush potential if possible.
@@ -91,7 +91,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
             }
 
             // Opponent blocking strategy
-            score += evaluateOpponentBlock(opponent, col, card, emptySlotIdx);
+            score += evaluateOpponentBlock(opponent, col);
 
             // Small randomness for variety
             score += Math.random() * 5;
@@ -110,7 +110,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     return bestMove;
 }
 
-function evaluateColumnPlacement(cards: (Card | null)[], _colIndex: number, diceValue: number, _slotIdx: number): number {
+function evaluateColumnPlacement(cards: (Card | null)[], diceValue: number): number {
     const validCards = cards.filter(c => c !== null) as Card[];
     if (validCards.length === 0) return 0;
 
@@ -257,7 +257,7 @@ function evaluateXHandPotential(board: (Card | null)[][], newCard: Card, colInde
     return score;
 }
 
-function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: number, _card: Card, _slotIdx: number): number {
+function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: number): number {
     const oppCol = [opponent.board[0][colIndex], opponent.board[1][colIndex], opponent.board[2][colIndex]];
     const oppCards = oppCol.filter(c => c !== null) as Card[];
 

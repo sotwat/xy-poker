@@ -44,6 +44,33 @@
 /* Remove the rule that hid version in non-lobby views */
 /* .app:not(.view-lobby) .version { display: none !important; } */
 
+.btn-fullscreen {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: 10px;
+  backdrop-filter: blur(5px);
+  transition: all 0.2s;
+}
+
+.btn-fullscreen:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.btn-fullscreen:active {
+  transform: scale(0.95);
+}
+
 /* Hide header when result screen is shown */
 body:has(.game-result-overlay) .app-header {
   display: none;

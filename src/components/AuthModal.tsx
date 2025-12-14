@@ -24,12 +24,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
         try {
             if (isSignUp) {
-                const { error } = await supabase.auth.signUp({
+                const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        emailRedirectTo: 'https://xy-poker.pages.dev',
+                    },
                 });
                 if (error) throw error;
-                // Auto-signin often happens automatically, but let's notify
+
+                // If user is created but no session, email confirmation is likely required
+                if (data.user && !data.session) {
+                    alert('Registration successful! Please check your email to confirm your account before logging in.');
+                    onClose();
+                    return;
+                }
+
                 alert('Account created! You are now logged in.');
                 onSuccess();
             } else {
