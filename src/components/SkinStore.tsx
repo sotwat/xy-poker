@@ -132,28 +132,32 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         // Fetch internal ID first? Or just update by user_id
         await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
 
-        const results: UnlockableItem[] = [];
-        for (let i = 0; i < count; i++) {
-            // If we run out of locked items, we just give duplicates (which do nothing currently, or give coins back?)
-            // User logic: "Gacha is ... random". 
-            // Simplification: We pick from ALL items (unlocked or not). If unlocked, it's a dupe (maybe 50 coins refund?).
-            // User Instruction: "Gacha...". Usually implies randomness.
+        // Pool ALL valid items (Excluding Defaults)
+        const defaults = ['white', 'classic', 'classic-green'];
+        let allItems: UnlockableItem[] = [
+            ...AVAILABLE_DICE_SKINS.filter(s => !defaults.includes(s.id)).map(s => ({ type: 'dice' as const, id: s.id })),
+            ...AVAILABLE_CARD_SKINS.filter(s => !defaults.includes(s.id)).map(s => ({ type: 'card' as const, id: s.id })),
+            ...AVAILABLE_BOARD_SKINS.filter(s => !defaults.includes(s.id)).map(s => ({ type: 'board' as const, id: s.id }))
+        ];
 
-            // Let's pool ALL avail items
-            const allItems: UnlockableItem[] = [
-                ...AVAILABLE_DICE_SKINS.map(s => ({ type: 'dice' as const, id: s.id })),
-                ...AVAILABLE_CARD_SKINS.map(s => ({ type: 'card' as const, id: s.id })),
-                ...AVAILABLE_BOARD_SKINS.map(s => ({ type: 'board' as const, id: s.id }))
-            ];
+        // Shuffle (Fisher-Yates) to ensure random unique selection
+        for (let i = allItems.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allItems[i], allItems[j]] = [allItems[j], allItems[i]];
+        }
 
-            const won = allItems[Math.floor(Math.random() * allItems.length)];
-            results.push(won);
+        // Take unique items
+        // If we want allow duplicates across user inventory but NOT in the single pull, 
+        // we just take the first N from the shuffled list.
+        // (Assuming pool size > 10, which it is: 12+12+12 = 36 - 3 = 33 items)
+        const results = allItems.slice(0, count);
 
-            // Unlock logic
+        // Process Unlocks
+        results.forEach(won => {
             if (won.type === 'dice' && !unlockedSkins.includes(won.id as DiceSkin)) onUnlock(won.id as DiceSkin);
             if (won.type === 'card' && !unlockedCardSkins.includes(won.id as CardSkin)) onUnlockCard(won.id as CardSkin);
             if (won.type === 'board' && !unlockedBoardSkins.includes(won.id as BoardSkin)) onUnlockBoard(won.id as BoardSkin);
-        }
+        });
 
         setGachaResults(results);
         setShowGachaReveal(true);
