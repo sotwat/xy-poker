@@ -71,7 +71,7 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
             return {
                 name: item?.name, color: item?.color, component: (
                     <div className={`preview-card-large card-back-${id}`}>
-                        <div className="card-inner"></div>
+                        <div className="card-back"></div>
                     </div>
                 )
             };

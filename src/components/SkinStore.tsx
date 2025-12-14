@@ -83,14 +83,22 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     // --- Gacha Logic ---
     const getLockedItems = (): UnlockableItem[] => {
         const locked: UnlockableItem[] = [];
+        const defaults = ['white', 'classic', 'classic-green'];
+
         AVAILABLE_DICE_SKINS.forEach(s => {
-            if (!unlockedSkins.includes(s.id as DiceSkin)) locked.push({ type: 'dice', id: s.id });
+            if (!defaults.includes(s.id) && !unlockedSkins.includes(s.id as DiceSkin)) {
+                locked.push({ type: 'dice', id: s.id });
+            }
         });
         AVAILABLE_CARD_SKINS.forEach(s => {
-            if (!unlockedCardSkins.includes(s.id as CardSkin)) locked.push({ type: 'card', id: s.id });
+            if (!defaults.includes(s.id) && !unlockedCardSkins.includes(s.id as CardSkin)) {
+                locked.push({ type: 'card', id: s.id });
+            }
         });
         AVAILABLE_BOARD_SKINS.forEach(s => {
-            if (!unlockedBoardSkins.includes(s.id as BoardSkin)) locked.push({ type: 'board', id: s.id });
+            if (!defaults.includes(s.id) && !unlockedBoardSkins.includes(s.id as BoardSkin)) {
+                locked.push({ type: 'board', id: s.id });
+            }
         });
         return locked;
     };
