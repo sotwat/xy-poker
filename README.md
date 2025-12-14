@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12150110** (2025-12-15): **Feature/Fix** - Massive Gacha & Shop Polish:
+1. **v12150115** (2025-12-15): **Feature** - Enabled Gacha & Coin Rewards for Guest Users! Coins are now saved to local storage for non-signed-in players.
+2. **v12150110** (2025-12-15): **Feature/Fix** - Massive Gacha & Shop Polish:
     - **10-Pull:** Unique items guaranteed per batch, grid layout (2x5), adjusted animation speed (0.5s).
     - **Visuals:** Fixed invisible card skins in Shop/Gacha (CSS fix) and ensured "Classic" items never drop from Gacha.
     - **UI:** Force full-screen display for Gacha reveal.

@@ -59,8 +59,13 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
     // Fetch coins on open
     useEffect(() => {
-        if (isOpen && userId) {
-            fetchCoins();
+        if (isOpen) {
+            if (userId) {
+                fetchCoins();
+            } else {
+                const saved = localStorage.getItem('xypoker_guest_coins');
+                if (saved) setUserCoins(parseInt(saved, 10));
+            }
         }
     }, [isOpen, userId]);
 
@@ -104,10 +109,8 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     };
 
     const handleGacha = async (count: 1 | 10) => {
-        if (!userId) {
-            alert("Please sign in to use Gacha!");
-            return;
-        }
+        // if (!userId) { ... }  <-- Removed check to allow guests
+
         const cost = count === 1 ? GACHA_COST_SINGLE : GACHA_COST_MULTI;
 
         if (userCoins < cost) {
@@ -127,10 +130,11 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         const newBalance = userCoins - cost;
         setUserCoins(newBalance);
 
-        // Optimistic update, but really should be transactional in DB
-        // For prototype, we update client side then DB
-        // Fetch internal ID first? Or just update by user_id
-        await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
+        if (userId) {
+            await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
+        } else {
+            localStorage.setItem('xypoker_guest_coins', newBalance.toString());
+        }
 
         // Pool ALL valid items (Excluding Defaults)
         const defaults = ['white', 'classic', 'classic-green'];
@@ -164,7 +168,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     };
 
     const handleWatchAd = () => {
-        if (!userId) return;
+        // if (!userId) return; <-- Allow guests
         setIsWatchingAd(true);
         playClickSound();
         window.open('https://otieu.com/4/10307496', '_blank'); // Ad Link
@@ -173,7 +177,13 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
             setIsWatchingAd(false);
             const newBalance = userCoins + AD_REWARD_COINS;
             setUserCoins(newBalance);
-            await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
+
+            if (userId) {
+                await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
+            } else {
+                localStorage.setItem('xypoker_guest_coins', newBalance.toString());
+            }
+
             alert(`Thanks for watching! +${AD_REWARD_COINS} Coins!`);
         }, 5000); // 5 sec simulated ad
     };
