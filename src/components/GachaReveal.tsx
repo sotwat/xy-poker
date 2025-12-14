@@ -49,11 +49,11 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
                     playClickSound(); // Sound for each reveal
                     if (currentIndex === results.length - 1) {
                         // End of sequence, wait a bit longer then show summary
-                        setTimeout(() => setShowSummary(true), 800);
+                        setTimeout(() => setShowSummary(true), 1000);
                     } else {
                         setCurrentIndex(prev => prev + 1);
                     }
-                }, 200); // 0.2s interval
+                }, 500); // 0.5s interval
                 return () => clearTimeout(timer);
             }
         }
@@ -61,29 +61,26 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
 
 
     // Helper for Single Item Display (Current Index)
-    const getSingleItemDetails = (index: number) => {
-        if (results.length === 0) return null;
-        const unlockedItem = results[index];
-
-        if (unlockedItem.type === 'dice') {
-            const item = AVAILABLE_DICE_SKINS.find(s => s.id === unlockedItem.id);
-            return { name: item?.name, color: item?.color, component: <Dice value={6} size="large" skin={unlockedItem.id as DiceSkin} /> };
+    const getItemDetails = (type: string, id: string) => {
+        if (type === 'dice') {
+            const item = AVAILABLE_DICE_SKINS.find(s => s.id === id);
+            return { name: item?.name, color: item?.color, component: <Dice value={6} size="large" skin={id as DiceSkin} /> };
         }
-        if (unlockedItem.type === 'card') {
-            const item = AVAILABLE_CARD_SKINS.find(s => s.id === unlockedItem.id);
+        if (type === 'card') {
+            const item = AVAILABLE_CARD_SKINS.find(s => s.id === id);
             return {
                 name: item?.name, color: item?.color, component: (
-                    <div className={`preview-card-large card-back-${unlockedItem.id}`}>
+                    <div className={`preview-card-large card-back-${id}`}>
                         <div className="card-inner"></div>
                     </div>
                 )
             };
         }
-        if (unlockedItem.type === 'board') {
-            const item = AVAILABLE_BOARD_SKINS.find(s => s.id === unlockedItem.id);
+        if (type === 'board') {
+            const item = AVAILABLE_BOARD_SKINS.find(s => s.id === id);
             return {
                 name: item?.name, color: item?.color, component: (
-                    <div className={`preview-board-large board-theme-${unlockedItem.id}`} style={{ background: unlockedItem.id === 'classic-green' ? undefined : item?.color }}>
+                    <div className={`preview-board-large board-theme-${id}`} style={{ background: id === 'classic-green' ? undefined : item?.color }}>
                         <div className="board-line"></div>
                     </div>
                 )
@@ -92,7 +89,7 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
         return { name: 'Unknown', color: '#fff', component: null };
     };
 
-    const currentItemDetails = getSingleItemDetails(currentIndex);
+    const currentItemDetails = results.length > 0 ? getItemDetails(results[currentIndex].type, results[currentIndex].id) : null;
 
     return (
         <div className={`gacha-reveal-overlay stage-${stage}`} onClick={stage === 'reveal' && (!isMulti || showSummary) ? onClose : undefined}>
@@ -134,16 +131,17 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
                         <>
                             <h2>Gacha Results!</h2>
                             <div className="results-grid">
-                                {results.map((item, idx) => (
-                                    <div key={idx} className="reveal-item">
-                                        <div className={`reveal-preview type-${item.type}`}>
-                                            {item.type === 'dice' && '🎲'}
-                                            {item.type === 'card' && '🃏'}
-                                            {item.type === 'board' && '🏁'}
+                                {results.map((item, idx) => {
+                                    const details = getItemDetails(item.type, item.id);
+                                    return (
+                                        <div key={idx} className="reveal-item">
+                                            <div className="reveal-preview-wrapper" style={{ transform: 'scale(0.8)' }}>
+                                                {details.component}
+                                            </div>
+                                            <div className="reveal-name">{details.name}</div>
                                         </div>
-                                        <div className="reveal-name">{item.id}</div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                             <button className="btn-collect" onClick={onClose}>Collect All</button>
                         </>
