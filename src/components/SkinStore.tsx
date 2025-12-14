@@ -69,7 +69,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         const { data } = await supabase
             .from('players')
             .select('coins')
-            .eq('user_id', userId) // Must match update logic which uses user_id or player id? Wait, App passes update with internal ID. 
+            .eq('id', userId)
             // We need to resolve internal ID or query by user_id if that's what we have. 
             // App passes user_id as 'userId' prop usually? No, let's allow it to fetch by user_id effectively.
             .single();
