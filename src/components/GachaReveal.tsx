@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { playGachaSoundSequence } from '../utils/sound';
+import { playGachaSoundSequence, playClickSound } from '../utils/sound';
 import { Dice } from './Dice';
 import { AVAILABLE_DICE_SKINS, AVAILABLE_CARD_SKINS, AVAILABLE_BOARD_SKINS, type DiceSkin } from '../logic/types';
 import './GachaReveal.css';
@@ -14,6 +14,8 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
 
 
     const [stage, setStage] = useState<'summon' | 'charging' | 'explosion' | 'reveal'>('summon');
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [showSummary, setShowSummary] = useState(false);
 
     useEffect(() => {
         // Start the cinematic sound sequence
@@ -39,10 +41,29 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
 
     const isMulti = results.length > 1;
 
-    // Helper for Single Item Display
-    const getSingleItemDetails = () => {
-        if (isMulti || results.length === 0) return null;
-        const unlockedItem = results[0];
+    // Rapid Reveal Sequence for Multi
+    useEffect(() => {
+        if (stage === 'reveal' && isMulti && !showSummary) {
+            if (currentIndex < results.length) {
+                const timer = setTimeout(() => {
+                    playClickSound(); // Sound for each reveal
+                    if (currentIndex === results.length - 1) {
+                        // End of sequence, wait a bit longer then show summary
+                        setTimeout(() => setShowSummary(true), 800);
+                    } else {
+                        setCurrentIndex(prev => prev + 1);
+                    }
+                }, 200); // 0.2s interval
+                return () => clearTimeout(timer);
+            }
+        }
+    }, [stage, isMulti, currentIndex, results.length, showSummary]);
+
+
+    // Helper for Single Item Display (Current Index)
+    const getSingleItemDetails = (index: number) => {
+        if (results.length === 0) return null;
+        const unlockedItem = results[index];
 
         if (unlockedItem.type === 'dice') {
             const item = AVAILABLE_DICE_SKINS.find(s => s.id === unlockedItem.id);
@@ -71,10 +92,10 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
         return { name: 'Unknown', color: '#fff', component: null };
     };
 
-    const singleItem = !isMulti ? getSingleItemDetails() : null;
+    const currentItemDetails = getSingleItemDetails(currentIndex);
 
     return (
-        <div className={`gacha-reveal-overlay stage-${stage}`} onClick={stage === 'reveal' ? onClose : undefined}>
+        <div className={`gacha-reveal-overlay stage-${stage}`} onClick={stage === 'reveal' && (!isMulti || showSummary) ? onClose : undefined}>
             {stage !== 'reveal' && (
                 <div className="trigger-container">
                     <div className="summon-circle"></div>
@@ -91,23 +112,25 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
             {stage === 'explosion' && <div className="white-flash"></div>}
 
             {stage === 'reveal' && (
-                <div className={`gacha-reveal-content ${isMulti ? 'multi-reveal' : 'single-reveal'}`} onClick={(e) => e.stopPropagation()}>
+                <div className="gacha-reveal-content full-screen-reveal" onClick={(e) => e.stopPropagation()}>
 
-                    {/* SINGLE ITEM REVEAL */}
-                    {!isMulti && singleItem && (
-                        <div className="reveal-container">
+                    {/* ITEM REVEAL SEQUENCE (Single or Rapid Multi) */}
+                    {(!showSummary) && currentItemDetails && (
+                        <div key={currentIndex} className="reveal-container animate-pop">
+                            {/* Key added to force re-render/animation for each item */}
                             <div className="god-rays"></div>
                             <h2 className="gacha-title">UNLOCKED!</h2>
-                            <div className="item-showcase" style={{ '--item-color': singleItem.color } as React.CSSProperties}>
-                                {singleItem.component}
+                            <div className="item-showcase" style={{ '--item-color': currentItemDetails.color } as React.CSSProperties}>
+                                {currentItemDetails.component}
                             </div>
-                            <div className="item-name">{singleItem.name}</div>
-                            <button className="btn-collect" onClick={onClose}>Collect</button>
+                            <div className="item-name">{currentItemDetails.name}</div>
+                            {!isMulti && <button className="btn-collect" onClick={onClose}>Collect</button>}
+                            {isMulti && <div className="multi-counter">{currentIndex + 1} / {results.length}</div>}
                         </div>
                     )}
 
-                    {/* MULTI ITEM REVEAL */}
-                    {isMulti && (
+                    {/* MULTI ITEM SUMMARY */}
+                    {isMulti && showSummary && (
                         <>
                             <h2>Gacha Results!</h2>
                             <div className="results-grid">
