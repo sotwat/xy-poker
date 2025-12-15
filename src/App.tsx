@@ -109,6 +109,28 @@ function App() {
   const [dbPlayerId, setDbPlayerId] = useState<string | null>(null);
   const [isPremium, setIsPremium] = useState(false); // [NEW] Premium Status
   const [isProfileLoaded, setIsProfileLoaded] = useState(false); // [NEW] Loading State
+
+  useEffect(() => {
+    // 0. Wait for session to initialize
+    if (isSessionLoading) return;
+
+    if (session?.user?.id) {
+      supabase.from('players').select('id, is_premium').eq('id', session.user.id).single()
+        .then(({ data }) => {
+          if (data) {
+            setDbPlayerId(data.id);
+            setIsPremium(!!data.is_premium);
+          }
+          setIsProfileLoaded(true);
+        })
+        .catch(() => {
+          setIsProfileLoaded(true);
+        });
+    } else {
+      // Guest or not signed in
+      setIsProfileLoaded(true);
+    }
+  }, [session, isSessionLoading]);
   useEffect(() => {
     // 1. Wait until profile is fully loaded
     if (!isProfileLoaded) return;
