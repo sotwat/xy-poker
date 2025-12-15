@@ -1275,7 +1275,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151747</span>}
+          {showVersion && <span className="version">12151810</span>}
         </div>
 
         <button
@@ -1655,63 +1655,65 @@ function App() {
               </footer>
             </>
           )}
+        </>
+      )}
 
-          {showDiceAnimation && (
-            <DiceRollOverlay
-              targetValues={gameState.players[currentPlayerIndex].dice}
-              onComplete={() => setShowDiceAnimation(false)}
-              selectedSkin={selectedSkin}
-            />
-          )}
-          {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
-          {showContactModal && (
-            <ContactForm
-              onClose={() => { playClickSound(); setShowContactModal(false); }}
-              playerId={session?.user?.id}
-            />
-          )}
+      {showDiceAnimation && (
+        <DiceRollOverlay
+          targetValues={gameState.players[currentPlayerIndex].dice}
+          onComplete={() => setShowDiceAnimation(false)}
+          selectedSkin={selectedSkin}
+        />
+      )}
+      {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
+      {showContactModal && (
+        <ContactForm
+          onClose={() => { playClickSound(); setShowContactModal(false); }}
+          playerId={session?.user?.id}
+        />
+      )}
 
-          {rematchInvited && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <h3>Rematch Request</h3>
-                <p>Opponent wants to play again.</p>
-                <div className="modal-actions">
-                  <button className="btn-secondary" onClick={() => {
-                    setRematchInvited(false);
-                  }}>Cancel</button>
-                  <button className="btn-primary" onClick={() => {
-                    setRematchInvited(false);
-                    socket.emit('accept_rematch', { roomId });
-                  }}>OK</button>
-                </div>
-              </div>
+      {rematchInvited && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Rematch Request</h3>
+            <p>Opponent wants to play again.</p>
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => {
+                setRematchInvited(false);
+              }}>Cancel</button>
+              <button className="btn-primary" onClick={() => {
+                setRematchInvited(false);
+                socket.emit('accept_rematch', { roomId });
+              }}>OK</button>
             </div>
-          )}
-
-          {rematchRequested && !rematchInvited && (
-            <div style={{
-              position: 'fixed',
-              top: '100px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              background: 'rgba(0,0,0,0.8)',
-              padding: '10px 20px',
-              borderRadius: '20px',
-              color: 'white',
-              zIndex: 3000
-            }}>
-              Waiting for opponent...
-            </div>
-          )}
-
-          {showFinishAnimation && phase === 'scoring' && (
-            <div className="finish-overlay">
-              <h1 className="finish-text">FINISH!!</h1>
-            </div>
-          )}
+          </div>
         </div>
-      );
+      )}
+
+      {rematchRequested && !rematchInvited && (
+        <div style={{
+          position: 'fixed',
+          top: '100px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'rgba(0,0,0,0.8)',
+          padding: '10px 20px',
+          borderRadius: '20px',
+          color: 'white',
+          zIndex: 3000
+        }}>
+          Waiting for opponent...
+        </div>
+      )}
+
+      {showFinishAnimation && phase === 'scoring' && (
+        <div className="finish-overlay">
+          <h1 className="finish-text">FINISH!!</h1>
+        </div>
+      )}
+    </div>
+  );
 }
 
-      export default App;
+export default App;

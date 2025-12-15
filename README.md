@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151747** (2025-12-15): **UI Fix** - Removed unauthorized turn display not requested by user.
+1. **v12151810** (2025-12-15): **Bugfix** - Fixed issue where players could not return to Lobby after online match.
+2. **v12151747** (2025-12-15): **UI Fix** - Removed unauthorized turn display not requested by user.
 2. **v12151625** (2025-12-15): **UI/UX** - Prevented modals from closing on overlay click; Improved Close button visibility.
 2. **v12151620** (2025-12-15): **Improv** - Added **Device/OS** input field to Contact Form.
 2. **v12151615** (2025-12-15): **Bugfix** - Fixed **iOS Fullscreen Audio** by implementing touch-to-unlock logic.
