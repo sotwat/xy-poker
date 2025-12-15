@@ -49,7 +49,7 @@ async function getOrCreatePlayer(browserId, userId) {
         const { data: userPlayer } = await supabase
             .from('players')
             .select('*')
-            .eq('user_id', userId)
+            .eq('id', userId)
             .single();
 
         if (userPlayer) return userPlayer;
@@ -62,20 +62,8 @@ async function getOrCreatePlayer(browserId, userId) {
         .eq('browser_id', browserId)
         .single();
 
-    // 3. Account Linking: If logged in (userId) but no user profile found,
-    // AND we found a browser profile that is UNCLAIMED (user_id is null),
-    // then LINK this browser profile to the account.
-    if (userId && browserPlayer && !browserPlayer.user_id) {
-        console.log(`Linking browser profile ${browserId} to user ${userId}`);
-        const { data: linkedPlayer, error: linkError } = await supabase
-            .from('players')
-            .update({ user_id: userId })
-            .eq('browser_id', browserId)
-            .select()
-            .single();
-
-        if (!linkError) return linkedPlayer;
-    }
+    // 3. Account Linking: DISABLED (Cannot update PK 'id' to link guest to auth user easily)
+    // if (userId && browserPlayer && !browserPlayer.user_id) { ... }
 
     // 4. Return browser player if found (and not linked above)
     if (browserPlayer) return browserPlayer;
@@ -85,7 +73,7 @@ async function getOrCreatePlayer(browserId, userId) {
     const newPlayerData = {
         browser_id: browserId,
         rating: 1500,
-        ...(userId ? { user_id: userId } : {})
+        ...(userId ? { id: userId } : {})
     };
 
     const { data: newPlayer, error: createError } = await supabase
