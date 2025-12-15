@@ -26,7 +26,17 @@ export const INITIAL_GAME_STATE: GameState = {
 };
 
 export type GameAction =
-    | { type: 'START_GAME'; payload?: { initialDice?: number[]; initialDeck?: Card[] } }
+    | {
+        type: 'START_GAME'; payload?: {
+            initialDice?: number[];
+            initialDeck?: Card[];
+            startingPlayer?: number;
+            playerConfig?: {
+                p1: { id: string; isDeveloper: boolean };
+                p2: { id: string; isDeveloper: boolean };
+            }
+        }
+    }
     | { type: 'PLACE_CARD'; cardId: string; colIndex: number }
     | { type: 'DRAW_CARD' }
     | { type: 'TOGGLE_HIDDEN'; cardId: string } // Only for cards on board? Or during placement? "Hidden placement". Usually you decide when placing.
@@ -88,17 +98,31 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
                 ? action.payload.initialDice
                 : Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
 
-            // Randomize starting player
-            const startingPlayer = Math.floor(Math.random() * 2);
+            // Randomize starting player (or use synced online)
+            const startingPlayer = (action.payload?.startingPlayer !== undefined)
+                ? action.payload.startingPlayer
+                : Math.floor(Math.random() * 2);
 
             return {
                 ...INITIAL_GAME_STATE,
                 phase: 'playing',
                 deck: deck2,
-                currentPlayerIndex: startingPlayer, // Rules: "Janken determines first". Now randomized.
+                currentPlayerIndex: startingPlayer,
                 players: [
-                    { ...INITIAL_PLAYER_STATE, id: 'p1', hand: p1Hand, dice },
-                    { ...INITIAL_PLAYER_STATE, id: 'p2', hand: p2Hand, dice },
+                    {
+                        ...INITIAL_PLAYER_STATE,
+                        id: action.payload?.playerConfig?.p1.id || 'p1',
+                        hand: p1Hand,
+                        dice,
+                        isDeveloper: action.payload?.playerConfig?.p1.isDeveloper
+                    },
+                    {
+                        ...INITIAL_PLAYER_STATE,
+                        id: action.payload?.playerConfig?.p2.id || 'p2',
+                        hand: p2Hand,
+                        dice,
+                        isDeveloper: action.payload?.playerConfig?.p2.isDeveloper
+                    },
                 ],
                 turnCount: 1,
             };

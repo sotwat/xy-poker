@@ -170,6 +170,8 @@ io.on('connection', (socket) => {
             };
 
             const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+            const initialDeck = shuffleDeck(createDeck());
+            const startingPlayer = Math.floor(Math.random() * 2);
 
             io.to(roomId).emit('game_start', {
                 roomId,
@@ -179,7 +181,12 @@ io.on('connection', (socket) => {
                 p2Rating: p2.rating,
                 p1Id: p1.id,
                 p2Id: p2.id,
-                initialDice
+                initialDice,
+                initialDeck,
+                startingPlayer,
+                p1IsPremium: !!p1.data.isPremium,
+                p2IsPremium: !!p2.data.isPremium,
+                isRanked: true // Quick Match is Ranked
             });
         }
     });
@@ -310,6 +317,7 @@ io.on('connection', (socket) => {
 
                 const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
                 const initialDeck = shuffleDeck(createDeck());
+                const startingPlayer = Math.floor(Math.random() * 2);
 
                 io.to(roomId).emit('game_start', {
                     roomId,
@@ -320,7 +328,11 @@ io.on('connection', (socket) => {
                     p1Id: hostPlayer.id,
                     p2Id: guestPlayer.id,
                     initialDice,
+                    initialDice,
                     initialDeck,
+                    startingPlayer,
+                    p1IsPremium: !!hostPlayer.isPremium,
+                    p2IsPremium: !!guestPlayer.isPremium,
                     isRanked: false // Room matches are unranked
                 });
 
