@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151821** (2025-12-15): **Bugfix** - Fixed Rating Persistence issue by ensuring User ID is used for updates instead of mutable Browser ID.
+1. **v12152230** (2025-12-15): **Improv** - "Play Again" in Quick Match now returns to matchmaking queue instead of instant restart.
+2. **v12151821** (2025-12-15): **Bugfix** - Fixed Rating Persistence issue by ensuring User ID is used for updates instead of mutable Browser ID.
 2. **v12151811** (2025-12-15): **UI Fix** - Removed Developer Badge from Auto Play button per user request.
 2. **v12151810** (2025-12-15): **Bugfix** - Fixed issue where players could not return to Lobby after online match.
 2. **v12151747** (2025-12-15): **UI Fix** - Removed unauthorized turn display not requested by user.

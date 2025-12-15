@@ -1024,7 +1024,19 @@ function App() {
     if (isOnlineGame) {
       if (isQuickMatch) {
         // Quick Match -> Find New
-        handleCancelMatchmaking();
+        // 1. Leave current room (socket event)
+        if (roomId) {
+          socket.emit('leave_room', { roomId });
+        }
+        // 2. Reset State but keep "Online" mode references if needed,
+        // actually handleQuickMatch sets up mostly everything.
+        // But let's clear the current game state first to be safe.
+        setRoomId(null);
+        setPlayerRole(null);
+        setPhase('setup');
+        setIsOnlineGame(false); // Temporarily false until match found
+
+        // 3. Start Search
         setTimeout(() => {
           handleQuickMatch();
         }, 100);
@@ -1275,7 +1287,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151821</span>}
+          {showVersion && <span className="version">12152230</span>}
         </div>
 
         <button
