@@ -1259,7 +1259,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151455</span>}
+          {showVersion && <span className="version">12151458</span>}
         </div>
 
         <button
@@ -1484,10 +1484,23 @@ function App() {
                             📬 Report
                           </button>
                         </div>
-                        {/*
-                          Previous Ad Banner location was here.
-                          Ads are now global on desktop index.html.
-                        */}
+                        <div className="beta-disclaimer" style={{
+                          marginTop: '2rem',
+                          padding: '12px',
+                          border: '1px solid rgba(255, 204, 0, 0.3)',
+                          borderRadius: '8px',
+                          backgroundColor: 'rgba(255, 204, 0, 0.05)',
+                          color: '#ccc',
+                          fontSize: '0.85rem',
+                          maxWidth: '400px',
+                          textAlign: 'center',
+                          lineHeight: '1.4'
+                        }}>
+                          <strong style={{ color: '#ffcc00', display: 'block', marginBottom: '4px' }}>⚠️ Development Build</strong>
+                          This game is currently in active development.<br />
+                          Please note that data loss or critical bugs may occur.<br />
+                          If you encounter any issues, please let us know via the <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => setShowContactModal(true)}>Report form</span>.
+                        </div>
                       </>
                     )}
                   </div>
