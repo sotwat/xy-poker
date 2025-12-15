@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
+import { DevBadge } from './DevBadge';
 import './MyPage.css';
 
 interface MyPageProps {
@@ -166,7 +167,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                                 ) : (
                                     <div className="name-display-row">
                                         <span className="username">
-                                            {isPremium && <span className="premium-badge" title="Developer">⛏️</span>}
+                                            {isPremium && <DevBadge />}
                                             {profile.username || 'No Name'}
                                         </span>
                                         <button onClick={() => setIsEditingName(true)} className="edit-icon-btn">✎</button>

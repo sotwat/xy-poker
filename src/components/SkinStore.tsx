@@ -8,6 +8,7 @@ import { playClickSound } from '../utils/sound';
 import './SkinStore.css';
 
 import { supabase } from '../supabase';
+import { DevBadge } from './DevBadge';
 
 interface SkinStoreProps {
     isOpen: boolean;
@@ -283,7 +284,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                         <span className="coin-icon">🪙</span> {userCoins}
                         <div className="ad-box">
                             <button className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
-                                {isWatchingAd ? "Watching..." : (isPremium ? "⛏️ Developer Free Gacha" : "📺 Watch Ad for Free Gacha")}
+                                {isWatchingAd ? "Watching..." : (isPremium ? <span><DevBadge /> Developer Free Gacha</span> : "📺 Watch Ad for Free Gacha")}
                             </button>
                         </div>
                     </div>

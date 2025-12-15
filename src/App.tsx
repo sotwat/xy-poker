@@ -11,6 +11,8 @@ import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
 import { SkinStore } from './components/SkinStore';
 import ContactForm from './components/ContactForm';
+import { DevBadge } from './components/DevBadge';
+import './App.css';
 
 import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { RulesModal } from './components/RulesModal';
@@ -20,8 +22,6 @@ import { MyPage } from './components/MyPage'; // [NEW]
 import { updatePlayerStats, checkAchievements } from './logic/gamification'; // [NEW]
 import { socket, connectSocket } from './logic/online';
 import { supabase } from './supabase';
-import './App.css';
-
 import { getBestMove } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, speakText, warmupAudio, initSpeech } from './utils/sound';
@@ -1255,7 +1255,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151600</span>}
+          {showVersion && <span className="version">12151605</span>}
         </div>
 
         <button
@@ -1572,15 +1572,12 @@ function App() {
                             border: isAutoPlay ? '2px solid white' : 'none'
                           }}
                           onClick={() => {
-                            if (!isPremium) {
-                              alert('Auto Play is a Developer feature! ⛏️\nThis is a special mode for developers.');
-                              return;
-                            }
                             playClickSound();
                             setIsAutoPlay(!isAutoPlay);
                           }}
                         >
-                          Auto: {isAutoPlay ? 'ON' : 'OFF'}
+                          <DevBadge />
+                          <span style={{ marginLeft: '4px' }}>Auto: {isAutoPlay ? 'ON' : 'OFF'}</span>
                         </button>
                       </div>
                     )}
