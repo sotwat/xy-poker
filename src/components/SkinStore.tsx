@@ -289,7 +289,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                     </div>
                 </div>
                 <div className="expiry-notice">
-                    ⚠️ 獲得したスキンは3時間で消滅します
+                    ⚠️ Discovered items expire in 3 hours.
                 </div>
 
                 {/* Gacha Actions */}
