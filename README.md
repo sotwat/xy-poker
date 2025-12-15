@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151555** (2025-12-15): **Feature** - Restricted **Auto Play** to Premium users only.
+1. **v12151558** (2025-12-15): **Feature** - Hidden **Auto Play** button for non-premium users.
+2. **v12151555** (2025-12-15): **Feature** - Restricted **Auto Play** to Premium users only.
 2. **v12151550** (2025-12-15): **Bugfix** - Forced `nowrap` on Face Down UI text to prevent line breaks.
 2. **v12151540** (2025-12-15): **Bugfix** - Fixed Face Down UI text wrapping and Local Premium Badge.
 2. **v12151515** (2025-12-15): **UI Update** - Added Fullscreen Recommendation to Disclaimer.
