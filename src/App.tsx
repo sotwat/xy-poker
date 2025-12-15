@@ -1255,7 +1255,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151550</span>}
+          {showVersion && <span className="version">12151555</span>}
         </div>
 
         <button
@@ -1566,15 +1566,22 @@ function App() {
                         style={{
                           padding: '5px 10px',
                           fontSize: '0.8rem',
-                          background: isAutoPlay ? '#e91e63' : '#666',
-                          color: 'white',
-                          border: isAutoPlay ? '2px solid white' : 'none'
+                          background: isAutoPlay ? '#e91e63' : (isPremium ? '#666' : '#444'),
+                          color: isPremium ? 'white' : '#aaa',
+                          border: isAutoPlay ? '2px solid white' : 'none',
+                          cursor: isPremium ? 'pointer' : 'not-allowed',
+                          opacity: isPremium ? 1 : 0.8
                         }}
                         onClick={() => {
                           playClickSound();
+                          if (!isPremium) {
+                            alert('Auto Play is a Premium feature! 💎\nPlease upgrade to unlock.');
+                            return;
+                          }
                           setIsAutoPlay(!isAutoPlay);
                         }}
                       >
+                        {!isPremium && <span style={{ marginRight: '4px' }}>🔒</span>}
                         Auto: {isAutoPlay ? 'ON' : 'OFF'}
                       </button>
                     </div>
