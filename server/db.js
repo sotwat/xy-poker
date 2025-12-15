@@ -7,7 +7,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load .env from the same directory as this file (server/.env)
-// In production (Render), these checks rely on environment variables being set in the dashboard.
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const supabaseUrl = process.env.SUPABASE_URL;
