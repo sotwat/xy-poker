@@ -11,6 +11,7 @@ interface ContactFormProps {
 const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCategory = 'request' }) => {
     const [category, setCategory] = useState<'request' | 'bug' | 'other'>(initialCategory);
     const [contactInfo, setContactInfo] = useState('');
+    const [deviceInfo, setDeviceInfo] = useState(navigator.userAgent);
     const [message, setMessage] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -30,7 +31,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
                     {
                         category,
                         user_contact: contactInfo || `Player:${playerId || 'Unknown'}`,
-                        message: message.trim(),
+                        message: `[Device: ${deviceInfo}]\n\n${message.trim()}`,
                     }
                 ]);
 
@@ -104,6 +105,17 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
                             placeholder="Email or User ID"
                             value={contactInfo}
                             onChange={e => setContactInfo(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Device / OS</label>
+                        <input
+                            type="text"
+                            value={deviceInfo}
+                            onChange={e => setDeviceInfo(e.target.value)}
+                            placeholder="e.g. iPhone, Chrome on Windows"
+                            style={{ fontSize: '0.8rem', color: '#aaa' }}
                         />
                     </div>
 
