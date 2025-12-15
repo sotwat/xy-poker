@@ -6,6 +6,7 @@ interface MyPageProps {
     isOpen: boolean;
     onClose: () => void;
     userId: string;
+    isPremium: boolean;
 }
 
 interface Profile {
@@ -30,7 +31,7 @@ interface LeaderboardEntry {
     id: string;
 }
 
-export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId }) => {
+export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremium }) => {
     const [activeTab, setActiveTab] = useState<'stats' | 'ranking' | 'achievements'>('stats');
     const [profile, setProfile] = useState<Profile | null>(null);
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -162,7 +163,10 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId }) => {
                                     </div>
                                 ) : (
                                     <div className="name-display-row">
-                                        <span className="username">{profile.username || 'No Name'}</span>
+                                        <span className="username">
+                                            {isPremium && <span className="premium-badge" title="Premium User">💎</span>}
+                                            {profile.username || 'No Name'}
+                                        </span>
                                         <button onClick={() => setIsEditingName(true)} className="edit-icon-btn">✎</button>
                                     </div>
                                 )}
