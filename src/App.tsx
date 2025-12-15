@@ -116,7 +116,7 @@ function App() {
 
     if (session?.user?.id) {
       console.log(`[DEBUG] Session found: ${session.user.id}. Fetching profile...`);
-      supabase.from('players').select('id, is_premium').eq('user_id', session.user.id).single()
+      supabase.from('players').select('id, is_premium').eq('id', session.user.id).single()
         .then(({ data, error }) => {
           if (error) {
             console.error('[DEBUG] Error fetching player profile:', error);
@@ -1239,7 +1239,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151415</span>}
+          {showVersion && <span className="version">12151416</span>}
         </div>
 
         <button
