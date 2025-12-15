@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151445** (2025-12-15): **Bugfix** - Server: Fixed invalid `user_id` queries and disabled broken linking logic.
+1. **v12151450** (2025-12-15): **UI Update** - Added Premium Badge (💎) to GameInfo panel.
+2. **v12151445** (2025-12-15): **Bugfix** - Server: Fixed invalid `user_id` queries and disabled broken linking logic.
 2. **v12151440** (2025-12-15): **Bugfix** - Fixed Coin Persistence (coins reappearing after reload).
 2. **v12151435** (2025-12-15): **Feature** - Name Sync: Lobby name now syncs with MyPage username.
 2. **v12151430** (2025-12-15): **UI Polish** - Translated expiry notice to English & styled.

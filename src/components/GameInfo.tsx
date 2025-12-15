@@ -28,6 +28,10 @@ export const GameInfo: React.FC<GameInfoProps> = ({
     const p1Name = myIndex === 0 ? myDisplayName : oppDisplayName;
     const p2Name = myIndex === 1 ? myDisplayName : oppDisplayName;
 
+    const p1 = players[0];
+    const p2 = players[1];
+
+
     return (
         <div className="game-info" data-my-index={isOnlineMode ? myIndex : 0}>
             <div className="status-bar">
@@ -67,12 +71,16 @@ export const GameInfo: React.FC<GameInfoProps> = ({
 
             <div className="scores">
                 <div className="player-score-row player-1">
-                    <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>{p1Name}: {players[0].score}</span>
-                    <span className="bonus-item">Bonuses: {players[0].bonusesClaimed}</span>
+                    <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
+                        {p1Name} {p1.isPremium && <span title="Premium Member">💎</span>}: {p1.score}
+                    </span>
+                    <span className="bonus-item">Bonuses: {p1.bonusesClaimed}</span>
                 </div>
                 <div className="player-score-row player-2">
-                    <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>{p2Name}: {players[1].score}</span>
-                    <span className="bonus-item">Bonuses: {players[1].bonusesClaimed}</span>
+                    <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
+                        {p2Name} {p2.isPremium && <span title="Premium Member">💎</span>}: {p2.score}
+                    </span>
+                    <span className="bonus-item">Bonuses: {p2.bonusesClaimed}</span>
                 </div>
             </div>
         </div>

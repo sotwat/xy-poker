@@ -258,7 +258,8 @@ io.on('connection', (socket) => {
                 name: playerName || 'Player 1',
                 browserId: player ? player.browser_id : browserId, // Use player's browser_id, or original if player not found
                 userId: player ? player.user_id : userId, // Use player's user_id, or original if player not found
-                rating: rating
+                rating: rating,
+                isPremium: !!player?.is_premium
             }]
         };
         socket.join(roomId);
@@ -278,9 +279,10 @@ io.on('connection', (socket) => {
                     id: socket.id,
                     name: playerName || 'Player 2',
                     browserId: browserId,
-                    rating: rating
+                    userId: userId,
+                    rating: rating,
+                    isPremium: !!player?.is_premium
                 };
-
                 room.players.push(guestPlayer);
                 await socket.join(roomId);
 

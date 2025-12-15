@@ -389,15 +389,13 @@ function App() {
       playSuccessSound();
     });
 
-    socket.on('game_start', ({ roomId, initialDice, initialDeck, p1Name, p2Name, p1Id, p2Id, isRanked }: any) => {
+    socket.on('game_start', ({ roomId, initialDice, initialDeck, p1Name, p2Name, p1Id, p2Id, isRanked, p1IsPremium, p2IsPremium }: any) => {
       setRoomId(roomId);
-      // Determine if we should show animation (yes for everyone)
-      setIsQuickMatch(false);
-      setIsRankedGame(!!isRanked); // Set ranked status
-      setIsOnlineGame(true);
-      playSuccessSound();
-      setRematchRequested(false);
-      setRematchInvited(false);
+      setPhase('playing');
+      setIsQuickMatch(false); // Clear quick match status
+      setIsOnlineGame(true); // Confirm online game status
+      setRematchRequested(false); // Clear any pending rematch requests
+      setRematchInvited(false); // Clear any pending rematch invitations
 
       // Robustly set Role and Opponent Name from server authoritative data
       if (socket.id === p1Id) {
@@ -408,9 +406,34 @@ function App() {
         setOpponentName(p1Name || 'Player 1');
       }
 
-      dispatch({ type: 'START_GAME', payload: { initialDice, initialDeck } });
-      setShowDiceAnimation(true);
-      setShowResultsModal(false);
+      // Set player name and opponent name based on role
+      // p1Name is always the host's name, p2Name is always the guest's name
+      if (playerRole === 'host') {
+        setPlayerName(p1Name);
+        setOpponentName(p2Name);
+      } else { // guest
+        setPlayerName(p2Name);
+        setOpponentName(p1Name);
+      }
+
+      setIsRankedGame(!!isRanked); // Update Ranked Flag
+
+      dispatch({
+        type: 'SYNC_STATE',
+        payload: {
+          ...INITIAL_GAME_STATE,
+          players: [
+            { ...INITIAL_GAME_STATE.players[0], id: p1Id, dice: initialDice, isPremium: !!p1IsPremium },
+            { ...INITIAL_GAME_STATE.players[1], id: p2Id, dice: initialDice, isPremium: !!p2IsPremium }
+          ],
+          deck: initialDeck,
+          phase: 'playing'
+        }
+      });
+      playSuccessSound();
+      console.log(`Game started in room ${roomId} (Ranked: ${isRanked})`);
+      setShowDiceAnimation(true); // Show dice animation for everyone
+      setShowResultsModal(false); // Ensure results modal is hidden
     });
 
     socket.on('player_data', (data: any) => {
@@ -1233,7 +1256,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151445</span>}
+          {showVersion && <span className="version">12151450</span>}
         </div>
 
         <button

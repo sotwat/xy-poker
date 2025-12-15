@@ -53,6 +53,7 @@ export interface PlayerState {
     score: number;
     hiddenCardsCount: number; // Max 3
     bonusesClaimed: number; // Count of bonuses won
+    isPremium?: boolean;
 }
 
 export type Phase = 'setup' | 'playing' | 'scoring' | 'ended';
