@@ -1287,7 +1287,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12152230</span>}
+          {showVersion && <span className="version">12162235</span>}
         </div>
 
         <button
@@ -1398,51 +1398,12 @@ function App() {
               onPlayerNameChange={setPlayerName}
               rating={myRating}
               onShowRules={() => { playClickSound(); setShowRules(true); }}
+              onShowMyPage={() => { playClickSound(); setShowMyPage(true); }}
             />
           ) : (
             <>
               {/* Auth Modal */}
-              <AuthModal
-                isOpen={showAuthModal}
-                onClose={() => setShowAuthModal(false)}
-                onSuccess={() => {
-                  // fetchElo(); // Refetch elo on login
-                }}
-              />
 
-              <MyPage
-                isOpen={showMyPage}
-                onClose={() => setShowMyPage(false)}
-                userId={dbPlayerId!}
-                isPremium={isPremium}
-                onNameChange={(newName) => {
-                  setPlayerName(newName);
-                  localStorage.setItem('xypoker_playerName_v2', newName);
-                }}
-              />
-
-              {/* Skin Store Modal */}
-              <SkinStore
-                isOpen={showSkinStore}
-                onClose={() => setShowSkinStore(false)}
-                userId={session?.user?.id}
-                isPremium={isPremium} // [NEW]
-                // Dice
-                unlockedSkins={unlockedSkins}
-                selectedSkin={selectedSkin}
-                onUnlock={handleUnlockSkin}
-                onSelect={handleSelectSkin}
-                // Cards
-                unlockedCardSkins={unlockedCardSkins}
-                selectedCardSkin={selectedCardSkin}
-                onUnlockCard={handleUnlockCardSkin}
-                onSelectCard={handleSelectCardSkin}
-                // Boards
-                unlockedBoardSkins={unlockedBoardSkins}
-                selectedBoardSkin={selectedBoardSkin}
-                onUnlockBoard={handleUnlockBoardSkin}
-                onSelectBoard={handleSelectBoardSkin}
-              />
 
               {/* Turn Timer Conditionally Rendered - ONLY during playing */}
               {(phase === 'playing') && (
@@ -1718,6 +1679,44 @@ function App() {
         </div>
       )}
 
+      {/* Modals moved to global scope */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => {
+          // fetchElo();
+        }}
+      />
+      <MyPage
+        isOpen={showMyPage}
+        onClose={() => setShowMyPage(false)}
+        userId={dbPlayerId!}
+        isPremium={isPremium}
+        onNameChange={(newName) => {
+          setPlayerName(newName);
+          localStorage.setItem('xypoker_playerName_v2', newName);
+        }}
+      />
+      <SkinStore
+        isOpen={showSkinStore}
+        onClose={() => setShowSkinStore(false)}
+        userId={session?.user?.id}
+        isPremium={isPremium}
+        unlockedSkins={unlockedSkins}
+        selectedSkin={selectedSkin}
+        onUnlock={handleUnlockSkin}
+        onSelect={handleSelectSkin}
+        unlockedCardSkins={unlockedCardSkins}
+        selectedCardSkin={selectedCardSkin}
+        onUnlockCard={handleUnlockCardSkin}
+        onSelectCard={handleSelectCardSkin}
+        unlockedBoardSkins={unlockedBoardSkins}
+        selectedBoardSkin={selectedBoardSkin}
+        onUnlockBoard={handleUnlockBoardSkin}
+        onSelectBoard={handleSelectBoardSkin}
+      />
+
+      {/* Finish Animation Overlay - only during scoring */}
       {showFinishAnimation && phase === 'scoring' && (
         <div className="finish-overlay">
           <h1 className="finish-text">FINISH!!</h1>

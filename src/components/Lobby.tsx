@@ -14,6 +14,7 @@ interface LobbyProps {
     onPlayerNameChange: (name: string) => void;
     rating?: number | null;
     onShowRules: () => void;
+    onShowMyPage: () => void;
 }
 
 export const Lobby: React.FC<LobbyProps> = ({
@@ -27,7 +28,8 @@ export const Lobby: React.FC<LobbyProps> = ({
     playerName,
     onPlayerNameChange,
     rating,
-    onShowRules
+    onShowRules,
+    onShowMyPage
 }) => {
     const [joinId, setJoinId] = useState('');
 
@@ -84,7 +86,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <p className="quick-match-hint">Play against a random opponent</p>
             </div>
 
-            <div className="lobby-helper-actions" style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <div className="lobby-helper-actions" style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '1rem' }}>
+                <button className="btn-secondary" onClick={() => { playClickSound(); onShowMyPage(); }}>
+                    👤 My Page
+                </button>
                 <button className="btn-secondary" onClick={() => { playClickSound(); onShowRules(); }}>
                     📖 Rules
                 </button>
