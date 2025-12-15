@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151540** (2025-12-15): **Bugfix** - Fixed Face Down UI text wrapping and Local Premium Badge.
+1. **v12151550** (2025-12-15): **Bugfix** - Forced `nowrap` on Face Down UI text to prevent line breaks.
+2. **v12151540** (2025-12-15): **Bugfix** - Fixed Face Down UI text wrapping and Local Premium Badge.
 2. **v12151515** (2025-12-15): **UI Update** - Added Fullscreen Recommendation to Disclaimer.
 2. **v12151505** (2025-12-15): **Config** - Enabled Ad Script on **Mobile** devices.
 2. **v12151502** (2025-12-15): **Config** - Updated Ad Script to new Vignette format (Zone: 10326935).

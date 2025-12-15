@@ -223,6 +223,7 @@ body:has(.game-result-overlay) .app-header {
   cursor: pointer;
   user-select: none;
   color: black;
+  white-space: nowrap;
 }
 
 .instruction {
@@ -335,7 +336,8 @@ body:has(.game-result-overlay) .app-header {
   }
 
   .toggle-hidden {
-    font-size: 0.8rem;
+    white-space: nowrap;
+    font-size: 0.75rem;
   }
 
   /* Hide header during battle on mobile */
