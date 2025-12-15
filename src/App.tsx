@@ -122,9 +122,6 @@ function App() {
             setIsPremium(!!data.is_premium);
           }
           setIsProfileLoaded(true);
-        })
-        .catch(() => {
-          setIsProfileLoaded(true);
         });
     } else {
       // Guest or not signed in
