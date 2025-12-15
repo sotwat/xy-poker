@@ -235,8 +235,17 @@ io.on('connection', (socket) => {
         console.log(`Game Over ${roomId}: P1 (${p1Rating} -> ${newP1Rating}), P2 (${p2Rating} -> ${newP2Rating})`);
 
         // Update DB
-        await supabase.from('players').update({ rating: newP1Rating }).eq('browser_id', room.gameState.p1BrowserId);
-        await supabase.from('players').update({ rating: newP2Rating }).eq('browser_id', room.gameState.p2BrowserId);
+        if (room.gameState.p1DbId) {
+            await supabase.from('players').update({ rating: newP1Rating }).eq('id', room.gameState.p1DbId);
+        } else {
+            await supabase.from('players').update({ rating: newP1Rating }).eq('browser_id', room.gameState.p1BrowserId);
+        }
+
+        if (room.gameState.p2DbId) {
+            await supabase.from('players').update({ rating: newP2Rating }).eq('id', room.gameState.p2DbId);
+        } else {
+            await supabase.from('players').update({ rating: newP2Rating }).eq('browser_id', room.gameState.p2BrowserId);
+        }
 
         // Emit updates to room
         io.to(roomId).emit('rating_update', {
@@ -345,10 +354,10 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('quick_match', async ({ playerName, browserId }, callback) => {
+    socket.on('quick_match', async ({ playerName, browserId, userId }, callback) => {
         // Authenticate / Fetch Data
         const bId = browserId || `temp_${socket.id}`;
-        const player = await getOrCreatePlayer(bId);
+        const player = await getOrCreatePlayer(bId, userId);
 
         if (!player) {
             // Fallback if DB fails? Or Error?
@@ -363,6 +372,7 @@ io.on('connection', (socket) => {
         socket.browserId = bId;
         socket.rating = rating;
         socket.playerName = playerName || `Player`;
+        socket.dbId = player ? player.id : null; // Store DB PK
 
         // Check if there's a room waiting for a player
         if (matchmakingQueue.length > 0) {
@@ -379,8 +389,10 @@ io.on('connection', (socket) => {
                 room.players.push({
                     id: socket.id,
                     name: guestName,
+                    name: guestName,
                     browserId: socket.browserId,
-                    rating: socket.rating
+                    rating: socket.rating,
+                    dbId: socket.dbId
                 });
                 socket.join(roomId);
                 callback({ success: true, roomId, role: 'guest', opponentName: hostName });
@@ -396,7 +408,9 @@ io.on('connection', (socket) => {
                         p1Rating: p1.rating,
                         p2Rating: socket.rating,
                         p1BrowserId: p1.browserId,
-                        p2BrowserId: socket.browserId
+                        p2BrowserId: socket.browserId,
+                        p1DbId: p1.dbId,
+                        p2DbId: socket.dbId
                     }
                 };
 
@@ -507,8 +521,17 @@ io.on('connection', (socket) => {
 
                     // Update DB
                     try {
-                        await supabase.from('players').update({ rating: newP1Rating }).eq('browser_id', game.gameState.p1BrowserId);
-                        await supabase.from('players').update({ rating: newP2Rating }).eq('browser_id', game.gameState.p2BrowserId);
+                        if (game.gameState.p1DbId) {
+                            await supabase.from('players').update({ rating: newP1Rating }).eq('id', game.gameState.p1DbId);
+                        } else {
+                            await supabase.from('players').update({ rating: newP1Rating }).eq('browser_id', game.gameState.p1BrowserId);
+                        }
+
+                        if (game.gameState.p2DbId) {
+                            await supabase.from('players').update({ rating: newP2Rating }).eq('id', game.gameState.p2DbId);
+                        } else {
+                            await supabase.from('players').update({ rating: newP2Rating }).eq('browser_id', game.gameState.p2BrowserId);
+                        }
 
                         // Emit updates to room
                         io.to(roomId).emit('rating_update', {
