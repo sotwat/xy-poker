@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12162235** (2025-12-16): **Improv** - Added "My Page" button to Online Lobby for easier access to profile and settings.
+1. **v12152243** (2025-12-15): **Bugfix** - Fixed server-side role assignment to ensure rating updates are processed correctly after a match.
+2. **v12162235** (2025-12-16): **Improv** - Added "My Page" button to Online Lobby for easier access to profile and settings.
 2. **v12152230** (2025-12-15): **Improv** - "Play Again" in Quick Match now returns to matchmaking queue instead of instant restart.
 2. **v12151821** (2025-12-15): **Bugfix** - Fixed Rating Persistence issue by ensuring User ID is used for updates instead of mutable Browser ID.
 2. **v12151811** (2025-12-15): **UI Fix** - Removed Developer Badge from Auto Play button per user request.

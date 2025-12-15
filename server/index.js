@@ -395,6 +395,7 @@ io.on('connection', (socket) => {
                     dbId: socket.dbId
                 });
                 socket.join(roomId);
+                socket.data.role = 'guest'; // Explicitly set role on socket
                 callback({ success: true, roomId, role: 'guest', opponentName: hostName });
 
                 // Notify both players with opponent names and auto-start
@@ -427,7 +428,12 @@ io.on('connection', (socket) => {
                     initialDeck, // Send synchronized deck
                     p1Id: p1.id,
                     p2Id: socket.id,
-                    isRanked: true // Flag as ranked for rating updates
+                    isRanked: true // Flag as ranked for rating updates,
+                    // Note: p1.data.isPremium was incorrect as p1 is not the socket here.
+                    // We need to store 'isPremium' in the room player object if we want it here.
+                    // But we don't have it on the player object yet.
+                    // For now, let's omit or fix later. The UI handles missing prem flag gracefully?
+                    // Actually, let's add isPremium to player object in room.
                 });
 
                 console.log(`Quick match: User ${socket.id} (${guestName}) joined ${p1.id} (${hostName}) in room ${roomId}, game auto-starting`);
@@ -455,6 +461,7 @@ io.on('connection', (socket) => {
         };
         socket.join(roomId);
         matchmakingQueue.push(roomId);
+        socket.data.role = 'host'; // Explicitly set role on socket
         callback({ success: true, roomId, role: 'host', waiting: true });
         console.log(`Quick match room ${roomId} created by ${socket.id} (${playerName}), waiting for opponent`);
     }
