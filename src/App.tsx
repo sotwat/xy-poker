@@ -1073,6 +1073,21 @@ function App() {
     });
   };
 
+  const returnToLobby = () => {
+    playClickSound();
+    if (roomId) {
+      socket.emit('leave_room', { roomId });
+    }
+    setMode('online');
+    setRoomId(null);
+    setPlayerRole(null);
+    setIsOnlineGame(false);
+    setIsQuickMatch(false);
+    setRatingUpdates(null);
+    setPhase('setup');
+    dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+  };
+
   const handleCancelMatchmaking = () => {
     playClickSound();
     if (quickMatchTimeoutRef.current) {
@@ -1599,15 +1614,8 @@ function App() {
                   <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
                     <button className="btn-primary" onClick={() => {
                       playClickSound();
-
-                      // If it was already finished (scoringStep > 5 or modal closed), this might just re-run effect?
-                      // Actually if modal was closed, we might want to just open modal.
-                      // But for simplicity, let's just Open Modal if animation is done?
-                      // No, let's just Set Show Results Modal directly if we want to skip.
-                      // But user wants to SEE the result?
-                      // If scoringStep == -1, we should Start Animation.
                       if (scoringStep === -1) {
-                        setScoringStep(0); // Restart animation manually if needed
+                        setScoringStep(0);
                       } else {
                         setShowResultsModal(true);
                       }
@@ -1615,20 +1623,7 @@ function App() {
                       {scoringStep === -1 ? 'Show Results' : 'Show Details'}
                     </button>
                     <button className="btn-secondary" onClick={() => {
-                      playClickSound();
-                      // Emit leave room to stop receiving updates
-                      if (roomId) {
-                        socket.emit('leave_room', { roomId });
-                      }
-
-                      setMode('online');
-                      setRoomId(null);
-                      setPlayerRole(null);
-                      setIsOnlineGame(false);
-                      setIsQuickMatch(false);
-                      setRatingUpdates(null);
-                      setPhase('setup'); // Force reset phase
-                      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+                      returnToLobby();
                     }}>
                       Back to Lobby
                     </button>
@@ -1638,98 +1633,85 @@ function App() {
                 {phase === 'ended' && showResultsModal && (
                   <GameResult
                     gameState={gameState}
+                    p1Name={p1DisplayName}
+                    p2Name={p2DisplayName}
+                    ratingUpdates={ratingUpdates}
                     onRestart={handleRestart}
+                    onViewBoard={() => setShowResultsModal(false)}
                     onClose={() => {
-                      if (isOnlineGame) handleCancelMatchmaking(); // Leave room
-                      else {
-                        setMode('online'); // Back to lobby
+                      if (isOnlineGame) {
+                        if (phase === 'ended') returnToLobby();
+                        else handleCancelMatchmaking();
+                      } else {
+                        // Local mode reset
+                        setMode('online');
                         setPhase('setup');
                       }
                       setShowResultsModal(false);
                       setScoringStep(-1);
                     }}
-                    onViewBoard={() => setShowResultsModal(false)}
-                    p1Name={p1DisplayName}
-                    p2Name={p2DisplayName}
-                    ratingUpdates={ratingUpdates}
                   />
                 )}
               </footer>
             </>
           )}
-        </>
-      )
-      }
 
-      {
-        showDiceAnimation && (
-          <DiceRollOverlay
-            targetValues={gameState.players[currentPlayerIndex].dice}
-            onComplete={() => setShowDiceAnimation(false)}
-            selectedSkin={selectedSkin}
-          />
-        )
-      }
-      {/* Rules Overlay */}
-      {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
-      {/* Contact Form Overlay */}
-      {showContactModal && (
-        <ContactForm
-          onClose={() => { playClickSound(); setShowContactModal(false); }}
-          playerId={session?.user?.id}
-        />
-      )}
-      {/* Rematch Modal */}
-      {
-        rematchInvited && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h3>Rematch Request</h3>
-              <p>Opponent wants to play again.</p>
-              <div className="modal-actions">
-                <button className="btn-secondary" onClick={() => {
-                  setRematchInvited(false);
-                  // Optional: emit decline?
-                }}>Cancel</button>
-                <button className="btn-primary" onClick={() => {
-                  setRematchInvited(false); // Close modal immediately
-                  socket.emit('accept_rematch', { roomId });
-                }}>OK</button>
+          {showDiceAnimation && (
+            <DiceRollOverlay
+              targetValues={gameState.players[currentPlayerIndex].dice}
+              onComplete={() => setShowDiceAnimation(false)}
+              selectedSkin={selectedSkin}
+            />
+          )}
+          {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
+          {showContactModal && (
+            <ContactForm
+              onClose={() => { playClickSound(); setShowContactModal(false); }}
+              playerId={session?.user?.id}
+            />
+          )}
+
+          {rematchInvited && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h3>Rematch Request</h3>
+                <p>Opponent wants to play again.</p>
+                <div className="modal-actions">
+                  <button className="btn-secondary" onClick={() => {
+                    setRematchInvited(false);
+                  }}>Cancel</button>
+                  <button className="btn-primary" onClick={() => {
+                    setRematchInvited(false);
+                    socket.emit('accept_rematch', { roomId });
+                  }}>OK</button>
+                </div>
               </div>
             </div>
-          </div>
-        )
-      }
+          )}
 
-      {/* Waiting for Rematch Modal (Optional feedback for requester) */}
-      {
-        rematchRequested && !rematchInvited && (
-          <div style={{
-            position: 'fixed',
-            top: '100px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(0,0,0,0.8)',
-            padding: '10px 20px',
-            borderRadius: '20px',
-            color: 'white',
-            zIndex: 3000
-          }}>
-            Waiting for opponent...
-          </div>
-        )
-      }
+          {rematchRequested && !rematchInvited && (
+            <div style={{
+              position: 'fixed',
+              top: '100px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(0,0,0,0.8)',
+              padding: '10px 20px',
+              borderRadius: '20px',
+              color: 'white',
+              zIndex: 3000
+            }}>
+              Waiting for opponent...
+            </div>
+          )}
 
-      {/* Finish Animation Overlay - only during scoring */}
-      {
-        showFinishAnimation && phase === 'scoring' && (
-          <div className="finish-overlay">
-            <h1 className="finish-text">FINISH!!</h1>
-          </div>
-        )
-      }
-    </div>
-  );
+          {showFinishAnimation && phase === 'scoring' && (
+            <div className="finish-overlay">
+              <h1 className="finish-text">FINISH!!</h1>
+            </div>
+          )}
+        </div>
+      );
 }
 
-export default App;
+      export default App;

@@ -36,6 +36,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({
 
     return (
         <div className="game-info" data-my-index={isOnlineMode ? myIndex : 0}>
+            <div className="status-bar">
                 {/* Room ID display logic removed as props don't support it */}
 
                 {phase === 'playing' && (
