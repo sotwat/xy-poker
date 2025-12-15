@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151505** (2025-12-15): **Config** - Enabled Ad Script on **Mobile** devices.
+1. **v12151515** (2025-12-15): **UI Update** - Added Fullscreen Recommendation to Disclaimer.
+2. **v12151505** (2025-12-15): **Config** - Enabled Ad Script on **Mobile** devices.
 2. **v12151502** (2025-12-15): **Config** - Updated Ad Script to new Vignette format (Zone: 10326935).
 2. **v12151458** (2025-12-15): **UI Update** - Added Beta Disclaimer in Lobby.
 2. **v12151455** (2025-12-15): **Feature** - Added **Contact Form** for bug reports & requests (DB: `contact_messages`).

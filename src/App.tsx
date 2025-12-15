@@ -1255,7 +1255,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151505</span>}
+          {showVersion && <span className="version">12151515</span>}
         </div>
 
         <button
@@ -1495,6 +1495,7 @@ function App() {
                           <strong style={{ color: '#ffcc00', display: 'block', marginBottom: '4px' }}>⚠️ Development Build</strong>
                           This game is currently in active development.<br />
                           Please note that data loss or critical bugs may occur.<br />
+                          We recommend playing in <strong>fullscreen mode</strong> for the best experience.<br />
                           If you encounter any issues, please let us know via the <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => setShowContactModal(true)}>Report form</span>.
                         </div>
                       </>
