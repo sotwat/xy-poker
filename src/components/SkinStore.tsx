@@ -279,16 +279,17 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                 <button className="btn-close-x" onClick={() => { playClickSound(); onClose(); }}>×</button>
                 <div className="store-header">
                     <h2>Skin Shop</h2>
-                    {userId && (
-                        <div className="coin-balance">
-                            <span className="coin-icon">🪙</span>
-                            <div className="ad-box">
-                                <button className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
-                                    {isWatchingAd ? "Watching..." : (isPremium ? "💎 Premium Free Gacha" : "📺 Watch Ad for Free Gacha")}
-                                </button>
-                            </div>
+                    <div className="coin-balance">
+                        <span className="coin-icon">🪙</span> {userCoins}
+                        <div className="ad-box">
+                            <button className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
+                                {isWatchingAd ? "Watching..." : (isPremium ? "💎 Premium Free Gacha" : "📺 Watch Ad for Free Gacha")}
+                            </button>
                         </div>
-                    )}
+                    </div>
+                </div>
+                <div className="expiry-notice">
+                    ⚠️ 獲得したスキンは3時間で消滅します
                 </div>
 
                 {/* Gacha Actions */}
