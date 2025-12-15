@@ -22,7 +22,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({
     onSurrender,
     isPremium = false
 }) => {
-    const { phase, currentPlayerIndex, players, winner, turnCount, deck } = gameState; // Added turnCount/deck if needed or just use what's there
+    const { phase, currentPlayerIndex, players, winner, turnCount } = gameState; // Added turnCount/deck if needed or just use what's there
 
     // Determine display names based on player role in online mode
     const myIndex = isOnlineMode && playerRole === 'guest' ? 1 : 0;
@@ -38,7 +38,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({
         <div className="game-info" data-my-index={isOnlineMode ? myIndex : 0}>
             <div className="status-bar">
                 <div className="turn-info">
-                    Turn: <span className="highlight">{gameState.turnCount}</span>
+                    Turn: <span className="highlight">{turnCount}</span>
                     <span className="phase-badge">{phase.toUpperCase()}</span>
                 </div>
                 {/* Room ID is not passed in props but was in my previous edit? 
