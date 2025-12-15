@@ -149,17 +149,13 @@ function App() {
       return;
     }
 
-    // 3. Desktop Only Injection (Non-Premium)
-    const isMobile = /Android|webOS|iPhone|iPad|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (window.innerWidth > 900 && !isMobile) {
-      // Check if already injected
-      const existing = document.querySelector('script[data-zone="10326935"]');
-      if (!existing) {
-        const s = document.createElement('script');
-        s.dataset.zone = '10326935';
-        s.src = 'https://groleegni.net/vignette.min.js';
-        document.body.appendChild(s);
-      }
+    // 3. Inject Ad Script (Non-Premium)
+    const existing = document.querySelector('script[data-zone="10326935"]');
+    if (!existing) {
+      const s = document.createElement('script');
+      s.dataset.zone = '10326935';
+      s.src = 'https://groleegni.net/vignette.min.js';
+      document.body.appendChild(s);
     }
   }, [isPremium, isProfileLoaded]);
 
@@ -1259,7 +1255,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151502</span>}
+          {showVersion && <span className="version">12151505</span>}
         </div>
 
         <button
