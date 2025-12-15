@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12150120** (2025-12-15): **Feature** - Changed Ad Reward from Coins to a **Free Single Gacha Pull**.
+1. **v12151130** (2025-12-15): **Fix** - Removed deactivated Monetag Vignette Ad Zone (`10310001`) from global script to prevent errors.
+2. **v12150120** (2025-12-15): **Feature** - Changed Ad Reward from Coins to a **Free Single Gacha Pull**.
 2. **v12150115** (2025-12-15): **Feature** - Enabled Gacha & Coin Rewards for Guest Users! Coins are now saved to local storage for non-signed-in players.
 2. **v12150110** (2025-12-15): **Feature/Fix** - Massive Gacha & Shop Polish:
     - **10-Pull:** Unique items guaranteed per batch, grid layout (2x5), adjusted animation speed (0.5s).
