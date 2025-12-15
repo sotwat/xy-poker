@@ -181,7 +181,8 @@ UPDATE players
 SET is_premium = TRUE
 WHERE id = (SELECT id FROM auth.users WHERE email = 'target_user@example.com');
 
--- Option 2: By Username (If unique)
+-- Option 2: By Username (If unique and known)
+-- Note: 'username' is in 'players' table
 UPDATE players
 SET is_premium = TRUE
 WHERE username = 'UserDisplayName';

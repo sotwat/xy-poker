@@ -109,35 +109,6 @@ function App() {
   const [dbPlayerId, setDbPlayerId] = useState<string | null>(null);
   const [isPremium, setIsPremium] = useState(false); // [NEW] Premium Status
   const [isProfileLoaded, setIsProfileLoaded] = useState(false); // [NEW] Loading State
-
-  useEffect(() => {
-    // 0. Wait for session to initialize
-    if (isSessionLoading) return;
-
-    if (session?.user?.id) {
-      console.log(`[DEBUG] Session found: ${session.user.id}. Fetching profile...`);
-      supabase.from('players').select('id, is_premium').eq('id', session.user.id).single()
-        .then(({ data, error }) => {
-          if (error) {
-            console.error('[DEBUG] Error fetching player profile:', error);
-          }
-          if (data) {
-            console.log(`[DEBUG] Player Profile Loaded:`, data);
-            setDbPlayerId(data.id);
-            setIsPremium(!!data.is_premium);
-          } else {
-            console.log('[DEBUG] No player profile found.');
-          }
-          setIsProfileLoaded(true);
-        });
-    } else {
-      // Guest or not signed in
-      console.log('[DEBUG] Guest or no session.');
-      setIsProfileLoaded(true);
-    }
-  }, [session, isSessionLoading]);
-
-  // Global Ad Injection (Premium Check)
   useEffect(() => {
     // 1. Wait until profile is fully loaded
     if (!isProfileLoaded) return;
@@ -1239,7 +1210,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151416</span>}
+          {showVersion && <span className="version">12151420</span>}
         </div>
 
         <button
