@@ -11,7 +11,7 @@ interface ContactFormProps {
 const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCategory = 'request' }) => {
     const [category, setCategory] = useState<'request' | 'bug' | 'other'>(initialCategory);
     const [contactInfo, setContactInfo] = useState('');
-    const [deviceInfo, setDeviceInfo] = useState(navigator.userAgent);
+    const [deviceInfo, setDeviceInfo] = useState(''); // No auto-fill
     const [message, setMessage] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -63,8 +63,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
     }
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="contact-modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-overlay">
+            <div className="contact-modal">
                 <div className="modal-header">
                     <h2>📬 Contact / Report</h2>
                     <button className="close-btn" onClick={onClose}>×</button>

@@ -144,8 +144,8 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
     const winRate = totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(1) : '0.0';
 
     return (
-        <div className="mypage-overlay" onClick={onClose}>
-            <div className="mypage-content" onClick={e => e.stopPropagation()}>
+        <div className="mypage-overlay">
+            <div className="mypage-content">
                 <button className="close-btn" onClick={onClose}>&times;</button>
 
                 <div className="mypage-header">

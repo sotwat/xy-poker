@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151620** (2025-12-15): **Improv** - Added **Device/OS** input field to Contact Form.
+1. **v12151625** (2025-12-15): **UI/UX** - Prevented modals from closing on overlay click; Improved Close button visibility.
+2. **v12151620** (2025-12-15): **Improv** - Added **Device/OS** input field to Contact Form.
 2. **v12151615** (2025-12-15): **Bugfix** - Fixed **iOS Fullscreen Audio** by implementing touch-to-unlock logic.
 2. **v12151605** (2025-12-15): **Security** - Implemented secure Verified Badge (✓) for Developers.
 2. **v12151600** (2025-12-15): **Rebrand** - Changed "Premium" status to **Developer** (⛏️) mode.
