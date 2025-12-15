@@ -106,6 +106,7 @@ function App() {
   const [showMyPage, setShowMyPage] = useState(false);
   const [dbPlayerId, setDbPlayerId] = useState<string | null>(null);
   const [isPremium, setIsPremium] = useState(false); // [NEW] Premium Status
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false); // [NEW] Loading State
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -115,16 +116,30 @@ function App() {
             setDbPlayerId(data.id);
             setIsPremium(!!data.is_premium);
           }
+          setIsProfileLoaded(true);
         });
+    } else {
+      // Guest or not signed in
+      setIsProfileLoaded(true);
     }
   }, [session]);
 
   // Global Ad Injection (Premium Check)
   useEffect(() => {
-    // If premium, do NOT inject
-    if (isPremium) return;
+    // 1. Wait until profile is fully loaded
+    if (!isProfileLoaded) return;
 
-    // Desktop Only
+    // 2. If Premium, REMOVE script if it exists (Cleanup) and don't inject
+    if (isPremium) {
+      const existing = document.querySelector('script[data-zone="10307517"]');
+      if (existing) {
+        existing.remove();
+        console.log('Premium user detected: Removed existing ad script.');
+      }
+      return;
+    }
+
+    // 3. Desktop Only Injection (Non-Premium)
     const isMobile = /Android|webOS|iPhone|iPad|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (window.innerWidth > 900 && !isMobile) {
       // Check if already injected
@@ -136,7 +151,7 @@ function App() {
         document.body.appendChild(s);
       }
     }
-  }, [isPremium]);
+  }, [isPremium, isProfileLoaded]);
 
   // -- GENERIC SKIN LOADER HELPER --
   // We needed to duplicate this logic for Dice, Cards, Board to keep it clean and explicit
@@ -1211,7 +1226,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151320</span>}
+          {showVersion && <span className="version">12151330</span>}
         </div>
 
         <button

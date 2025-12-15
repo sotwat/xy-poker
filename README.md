@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `12151320` (2025-12-15 13:20)
+- **Current Version:** `12151330` (2025-12-15 13:30)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151320** (2025-12-15): **Feature** - Implemented **Premium User Support** for Ad Removal.
+1. **v12151330** (2025-12-15): **Bugfix** - Fixed race condition where Ad Script injected before Premium status was loaded. Added script cleanup logic.
+2. **v12151320** (2025-12-15): **Feature** - Implemented **Premium User Support** for Ad Removal.
     - Global Ads disabled for `is_premium` users.
     - Premium users get "Instant Free Gacha" reward without watching ads.
     - Database schema updated (`players.is_premium`).
@@ -164,3 +165,25 @@ xy-poker/
 - **Styling:** Vanilla CSS (CSS Variables)
 - **Realtime:** Socket.IO
 - **Database:** Supabase
+
+---
+
+## 👑 Admin & Operations
+
+### Managing Premium Users
+To grant "Premium" status (Ad Removal) to a user, run the following SQL in the **Supabase SQL Editor**:
+
+```sql
+-- Option 1: By Email (Recommended)
+UPDATE players
+SET is_premium = TRUE
+WHERE id = (SELECT id FROM auth.users WHERE email = 'target_user@example.com');
+
+-- Option 2: By Username (If unique)
+UPDATE players
+SET is_premium = TRUE
+WHERE username = 'UserDisplayName';
+```
+
+To revoke, set `is_premium = FALSE`.
+
