@@ -1,0 +1,167 @@
+.contact-modal {
+    background: #1a1a1a;
+    width: 90%;
+    max-width: 500px;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: #eee;
+}
+
+.contact-modal h2 {
+    margin: 0 0 20px;
+    font-size: 1.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #fff;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #ccc;
+    font-weight: 500;
+}
+
+.required {
+    color: #ff4444;
+}
+
+.category-options {
+    display: flex;
+    gap: 10px;
+}
+
+.cat-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #252525;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.cat-btn:hover {
+    background: #333;
+}
+
+.cat-btn.active {
+    background: #4a90e2;
+    color: #fff;
+    border-color: #4a90e2;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #252525;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+    background: #2a2a2a;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid #444;
+    color: #ccc;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: #333;
+    color: #fff;
+}
+
+.btn-primary {
+    background: #4a90e2;
+    border: none;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #357abd;
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #ff4444;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 68, 68, 0.1);
+    border-radius: 6px;
+}
+
+.contact-modal.success {
+    text-align: center;
+    padding: 40px;
+}
+
+.success-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}

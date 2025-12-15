@@ -10,6 +10,8 @@ import { GameInfo } from './components/GameInfo';
 import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
 import { SkinStore } from './components/SkinStore';
+import ContactForm from './components/ContactForm';
+
 import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { RulesModal } from './components/RulesModal';
 import { TurnTimer } from './components/TurnTimer';
@@ -103,6 +105,7 @@ function App() {
   // SKIN STATE MANAGEMENT & EXPIRY
   const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 hours
   const [showSkinStore, setShowSkinStore] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
 
   // My Page State
   const [showMyPage, setShowMyPage] = useState(false);
@@ -1256,7 +1259,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151450</span>}
+          {showVersion && <span className="version">12151455</span>}
         </div>
 
         <button
@@ -1473,6 +1476,13 @@ function App() {
                           >
                             📖 Rules
                           </button>
+                          <button
+                            className="btn-secondary"
+                            style={{ marginTop: '1rem', marginLeft: '10px', padding: '8px 16px', fontSize: '0.9rem' }}
+                            onClick={() => { playClickSound(); setShowContactModal(true); }}
+                          >
+                            📬 Report
+                          </button>
                         </div>
                         {/*
                           Previous Ad Banner location was here.
@@ -1643,6 +1653,13 @@ function App() {
       }
       {/* Rules Overlay */}
       {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
+      {/* Contact Form Overlay */}
+      {showContactModal && (
+        <ContactForm
+          onClose={() => { playClickSound(); setShowContactModal(false); }}
+          playerId={session?.user?.id}
+        />
+      )}
       {/* Rematch Modal */}
       {
         rematchInvited && (
