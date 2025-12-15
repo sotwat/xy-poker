@@ -111,19 +111,29 @@ function App() {
   const [isProfileLoaded, setIsProfileLoaded] = useState(false); // [NEW] Loading State
 
   useEffect(() => {
+    // 0. Wait for session to initialize
+    if (isSessionLoading) return;
+
     if (session?.user?.id) {
+      console.log(`[DEBUG] Session found: ${session.user.id}. Fetching profile...`);
       supabase.from('players').select('id, is_premium').eq('user_id', session.user.id).single()
-        .then(({ data }) => {
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('[DEBUG] Error fetching player profile:', error);
+          }
           if (data) {
+            console.log(`[DEBUG] Player Profile Loaded:`, data);
             setDbPlayerId(data.id);
             setIsPremium(!!data.is_premium);
+          } else {
+            console.log('[DEBUG] No player profile found.');
           }
           setIsProfileLoaded(true);
         });
-      // Guest or not signed in, BUT only if session check is done
-      if (!isSessionLoading) {
-        setIsProfileLoaded(true);
-      }
+    } else {
+      // Guest or not signed in
+      console.log('[DEBUG] Guest or no session.');
+      setIsProfileLoaded(true);
     }
   }, [session, isSessionLoading]);
 
@@ -1229,7 +1239,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151405</span>}
+          {showVersion && <span className="version">12151415</span>}
         </div>
 
         <button
