@@ -11,7 +11,7 @@ import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
 import { SkinStore } from './components/SkinStore';
 import ContactForm from './components/ContactForm';
-import { DevBadge } from './components/DevBadge';
+// import { DevBadge } from './components/DevBadge';
 import './App.css';
 
 import { DiceRollOverlay } from './components/DiceRollOverlay';
@@ -1275,7 +1275,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151810</span>}
+          {showVersion && <span className="version">12151811</span>}
         </div>
 
         <button
@@ -1596,7 +1596,6 @@ function App() {
                             setIsAutoPlay(!isAutoPlay);
                           }}
                         >
-                          <DevBadge />
                           <span style={{ marginLeft: '4px' }}>Auto: {isAutoPlay ? 'ON' : 'OFF'}</span>
                         </button>
                       </div>
