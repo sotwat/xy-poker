@@ -67,10 +67,12 @@ function App() {
 
   // Supabase Session
   const [session, setSession] = useState<any>(null);
+  const [isSessionLoading, setIsSessionLoading] = useState(true); // [NEW] Start as loading
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setIsSessionLoading(false); // [NEW] Session check done
     });
 
     const {
@@ -118,11 +120,12 @@ function App() {
           }
           setIsProfileLoaded(true);
         });
-    } else {
-      // Guest or not signed in
-      setIsProfileLoaded(true);
+      // Guest or not signed in, BUT only if session check is done
+      if (!isSessionLoading) {
+        setIsProfileLoaded(true);
+      }
     }
-  }, [session]);
+  }, [session, isSessionLoading]);
 
   // Global Ad Injection (Premium Check)
   useEffect(() => {
@@ -1226,7 +1229,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151330</span>}
+          {showVersion && <span className="version">12151400</span>}
         </div>
 
         <button

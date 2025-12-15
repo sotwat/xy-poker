@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `12151330` (2025-12-15 13:30)
+- **Current Version:** `12151400` (2025-12-15 14:00)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151330** (2025-12-15): **Bugfix** - Fixed race condition where Ad Script injected before Premium status was loaded. Added script cleanup logic.
+1. **v12151400** (2025-12-15): **Bugfix** - Fixed Ad Injection Race Condition V2 (Session Initial Loading state).
+2. **v12151330** (2025-12-15): **Bugfix** - Fixed Ad Injection Race Condition V1 (Profile Load state).
 2. **v12151320** (2025-12-15): **Feature** - Implemented **Premium User Support** for Ad Removal.
     - Global Ads disabled for `is_premium` users.
     - Premium users get "Instant Free Gacha" reward without watching ads.
