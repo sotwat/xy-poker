@@ -141,7 +141,7 @@ function App() {
 
     // 2. If Premium, REMOVE script if it exists (Cleanup) and don't inject
     if (isPremium) {
-      const existing = document.querySelector('script[data-zone="10307517"]');
+      const existing = document.querySelector('script[data-zone="10326935"]');
       if (existing) {
         existing.remove();
         console.log('Premium user detected: Removed existing ad script.');
@@ -153,11 +153,11 @@ function App() {
     const isMobile = /Android|webOS|iPhone|iPad|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (window.innerWidth > 900 && !isMobile) {
       // Check if already injected
-      const existing = document.querySelector('script[data-zone="10307517"]');
+      const existing = document.querySelector('script[data-zone="10326935"]');
       if (!existing) {
         const s = document.createElement('script');
-        s.dataset.zone = '10307517';
-        s.src = 'https://nap5k.com/tag.min.js';
+        s.dataset.zone = '10326935';
+        s.src = 'https://groleegni.net/vignette.min.js';
         document.body.appendChild(s);
       }
     }
@@ -1259,7 +1259,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151458</span>}
+          {showVersion && <span className="version">12151502</span>}
         </div>
 
         <button

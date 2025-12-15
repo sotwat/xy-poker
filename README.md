@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151458** (2025-12-15): **UI Update** - Added Beta Disclaimer in Lobby.
+1. **v12151502** (2025-12-15): **Config** - Updated Ad Script to new Vignette format (Zone: 10326935).
+2. **v12151458** (2025-12-15): **UI Update** - Added Beta Disclaimer in Lobby.
 2. **v12151455** (2025-12-15): **Feature** - Added **Contact Form** for bug reports & requests (DB: `contact_messages`).
 2. **v12151450** (2025-12-15): **UI Update** - Added Premium Badge (💎) to GameInfo panel.
 2. **v12151445** (2025-12-15): **Bugfix** - Server: Fixed invalid `user_id` queries and disabled broken linking logic.
