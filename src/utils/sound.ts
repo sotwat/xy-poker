@@ -13,6 +13,27 @@ const getAudioContext = () => {
     return sharedAudioContext;
 };
 
+// Robust unlocker for iOS/Mobile PWA
+export const unlockAudioContext = () => {
+    const events = ['touchstart', 'touchend', 'click', 'keydown'];
+    const unlock = () => {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') {
+            ctx.resume().then(() => {
+                // Play silent buffer to force unlock
+                const src = ctx.createBufferSource();
+                src.buffer = ctx.createBuffer(1, 1, 22050);
+                src.connect(ctx.destination);
+                src.start(0);
+                console.log('Audio unlocked via interaction');
+            }).catch(e => console.warn('Unlock failed:', e));
+        }
+        // Cleanup listener once triggered
+        events.forEach(e => document.removeEventListener(e, unlock));
+    };
+    events.forEach(e => document.addEventListener(e, unlock, { once: true }));
+};
+
 export const playClickSound = () => {
     try {
         const audioContext = getAudioContext();

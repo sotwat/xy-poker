@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151605** (2025-12-15): **Security** - Implemented secure Verified Badge (✓) for Developers.
+1. **v12151615** (2025-12-15): **Bugfix** - Fixed **iOS Fullscreen Audio** by implementing touch-to-unlock logic.
+2. **v12151605** (2025-12-15): **Security** - Implemented secure Verified Badge (✓) for Developers.
 2. **v12151600** (2025-12-15): **Rebrand** - Changed "Premium" status to **Developer** (⛏️) mode.
 2. **v12151558** (2025-12-15): **Feature** - Hidden **Auto Play** button for non-premium users.
 2. **v12151555** (2025-12-15): **Feature** - Restricted **Auto Play** to Premium users only.

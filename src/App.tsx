@@ -24,7 +24,7 @@ import { socket, connectSocket } from './logic/online';
 import { supabase } from './supabase';
 import { getBestMove } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
-import { playClickSound, playSuccessSound, speakText, warmupAudio, initSpeech } from './utils/sound';
+import { playClickSound, playSuccessSound, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
 
 function App() {
@@ -66,6 +66,11 @@ function App() {
   useEffect(() => {
     gameStateRef.current = gameState;
   }, [gameState]);
+
+  // Audio Unlock for iOS PWA
+  useEffect(() => {
+    unlockAudioContext();
+  }, []);
 
   // Supabase Session
   const [session, setSession] = useState<any>(null);
@@ -1255,7 +1260,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151605</span>}
+          {showVersion && <span className="version">12151615</span>}
         </div>
 
         <button
