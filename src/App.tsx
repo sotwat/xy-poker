@@ -115,11 +115,15 @@ function App() {
     if (isSessionLoading) return;
 
     if (session?.user?.id) {
-      supabase.from('players').select('id, is_premium').eq('id', session.user.id).single()
+      supabase.from('players').select('id, is_premium, username').eq('id', session.user.id).single()
         .then(({ data }) => {
           if (data) {
             setDbPlayerId(data.id);
             setIsPremium(!!data.is_premium);
+            if (data.username) {
+              setPlayerName(data.username);
+              localStorage.setItem('xypoker_playerName_v2', data.username);
+            }
           }
           setIsProfileLoaded(true);
         });
@@ -1229,7 +1233,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151430</span>}
+          {showVersion && <span className="version">12151435</span>}
         </div>
 
         <button
@@ -1354,8 +1358,12 @@ function App() {
               <MyPage
                 isOpen={showMyPage}
                 onClose={() => setShowMyPage(false)}
-                userId={session?.user?.id || ''}
+                userId={dbPlayerId!}
                 isPremium={isPremium}
+                onNameChange={(newName) => {
+                  setPlayerName(newName);
+                  localStorage.setItem('xypoker_playerName_v2', newName);
+                }}
               />
 
               {/* Skin Store Modal */}

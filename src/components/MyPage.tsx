@@ -7,6 +7,7 @@ interface MyPageProps {
     onClose: () => void;
     userId: string;
     isPremium: boolean;
+    onNameChange?: (newName: string) => void;
 }
 
 interface Profile {
@@ -31,7 +32,7 @@ interface LeaderboardEntry {
     id: string;
 }
 
-export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremium }) => {
+export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremium, onNameChange }) => {
     const [activeTab, setActiveTab] = useState<'stats' | 'ranking' | 'achievements'>('stats');
     const [profile, setProfile] = useState<Profile | null>(null);
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -124,6 +125,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
 
             setProfile({ ...profile, username: editNameValue.trim() });
             setIsEditingName(false);
+            if (onNameChange) onNameChange(editNameValue.trim());
         } catch (err) {
             console.error("Error updating name:", err);
             alert("Failed to update name.");
