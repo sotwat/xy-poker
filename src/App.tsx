@@ -105,15 +105,38 @@ function App() {
   // My Page State
   const [showMyPage, setShowMyPage] = useState(false);
   const [dbPlayerId, setDbPlayerId] = useState<string | null>(null);
+  const [isPremium, setIsPremium] = useState(false); // [NEW] Premium Status
 
   useEffect(() => {
     if (session?.user?.id) {
-      supabase.from('players').select('id').eq('user_id', session.user.id).single()
+      supabase.from('players').select('id, is_premium').eq('user_id', session.user.id).single()
         .then(({ data }) => {
-          if (data) setDbPlayerId(data.id);
+          if (data) {
+            setDbPlayerId(data.id);
+            setIsPremium(!!data.is_premium);
+          }
         });
     }
   }, [session]);
+
+  // Global Ad Injection (Premium Check)
+  useEffect(() => {
+    // If premium, do NOT inject
+    if (isPremium) return;
+
+    // Desktop Only
+    const isMobile = /Android|webOS|iPhone|iPad|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (window.innerWidth > 900 && !isMobile) {
+      // Check if already injected
+      const existing = document.querySelector('script[data-zone="10307517"]');
+      if (!existing) {
+        const s = document.createElement('script');
+        s.dataset.zone = '10307517';
+        s.src = 'https://nap5k.com/tag.min.js';
+        document.body.appendChild(s);
+      }
+    }
+  }, [isPremium]);
 
   // -- GENERIC SKIN LOADER HELPER --
   // We needed to duplicate this logic for Dice, Cards, Board to keep it clean and explicit
@@ -1188,7 +1211,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151130</span>}
+          {showVersion && <span className="version">12151320</span>}
         </div>
 
         <button
@@ -1321,6 +1344,7 @@ function App() {
                 isOpen={showSkinStore}
                 onClose={() => setShowSkinStore(false)}
                 userId={session?.user?.id}
+                isPremium={isPremium} // [NEW]
                 // Dice
                 unlockedSkins={unlockedSkins}
                 selectedSkin={selectedSkin}

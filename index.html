@@ -55,10 +55,14 @@
   <script type="module" src="/src/main.tsx"></script>
   <script>
     // Desktop Only Ad Injection (Width > 900px and not mobile)
+    // Desktop Only Ad Injection (Width > 900px and not mobile)
+    // MOVED TO App.tsx for Premium User Check
+    /*
     var isMobile = /Android|webOS|iPhone|iPad|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (window.innerWidth > 900 && !isMobile) {
       (function (s) { s.dataset.zone = '10307517', s.src = 'https://nap5k.com/tag.min.js' })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
     }
+    */
 
   </script>
 </body>

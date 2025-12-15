@@ -13,6 +13,7 @@ interface SkinStoreProps {
     isOpen: boolean;
     onClose: () => void;
     userId?: string; // Added userId
+    isPremium?: boolean; // [NEW]
 
     // Dice
     unlockedSkins: DiceSkin[];
@@ -42,7 +43,7 @@ const GACHA_COST_SINGLE = 100;
 const GACHA_COST_MULTI = 1000;
 
 export const SkinStore: React.FC<SkinStoreProps> = ({
-    isOpen, onClose, userId,
+    isOpen, onClose, userId, isPremium = false,
     unlockedSkins, selectedSkin, onUnlock, onSelect,
     unlockedCardSkins, selectedCardSkin, onUnlockCard, onSelectCard,
     unlockedBoardSkins, selectedBoardSkin, onUnlockBoard, onSelectBoard
@@ -170,8 +171,15 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
     const handleWatchAd = () => {
         // if (!userId) return; <-- Allow guests
-        setIsWatchingAd(true);
         playClickSound();
+
+        // If Premium, skip ad and give reward instantly
+        if (isPremium) {
+            handleGacha(1, true);
+            return;
+        }
+
+        setIsWatchingAd(true);
         window.open('https://otieu.com/4/10307496', '_blank'); // Ad Link
 
         setTimeout(async () => {
@@ -276,7 +284,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                             <span className="coin-icon">🪙</span>
                             <div className="ad-box">
                                 <button className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
-                                    {isWatchingAd ? "Watching..." : "📺 Watch Ad for Free Gacha"}
+                                    {isWatchingAd ? "Watching..." : (isPremium ? "💎 Premium Free Gacha" : "📺 Watch Ad for Free Gacha")}
                                 </button>
                             </div>
                         </div>
