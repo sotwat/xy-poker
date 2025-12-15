@@ -132,7 +132,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
             setUserCoins(newBalance);
 
             if (userId) {
-                await supabase.from('players').update({ coins: newBalance }).eq('user_id', userId);
+                await supabase.from('players').update({ coins: newBalance }).eq('id', userId);
             } else {
                 localStorage.setItem('xypoker_guest_coins', newBalance.toString());
             }

@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12151435** (2025-12-15): **Feature** - Name Sync: Lobby name now syncs with MyPage username.
+1. **v12151440** (2025-12-15): **Bugfix** - Fixed Coin Persistence (coins reappearing after reload).
+2. **v12151435** (2025-12-15): **Feature** - Name Sync: Lobby name now syncs with MyPage username.
 2. **v12151430** (2025-12-15): **UI Polish** - Translated expiry notice to English & styled.
 3. **v12151425** (2025-12-15): **UI Update** - Enabled Gacha/Ads for guests & added 3-hour expiry notice.
 3. **v12151420** (2025-12-15): **Bugfix** - Finalized Premium Logic & SQL Fixes.
