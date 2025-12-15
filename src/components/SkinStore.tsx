@@ -283,7 +283,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                         <span className="coin-icon">🪙</span> {userCoins}
                         <div className="ad-box">
                             <button className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
-                                {isWatchingAd ? "Watching..." : (isPremium ? "💎 Premium Free Gacha" : "📺 Watch Ad for Free Gacha")}
+                                {isWatchingAd ? "Watching..." : (isPremium ? "⛏️ Developer Free Gacha" : "📺 Watch Ad for Free Gacha")}
                             </button>
                         </div>
                     </div>

@@ -166,7 +166,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                                 ) : (
                                     <div className="name-display-row">
                                         <span className="username">
-                                            {isPremium && <span className="premium-badge" title="Premium User">💎</span>}
+                                            {isPremium && <span className="premium-badge" title="Developer">⛏️</span>}
                                             {profile.username || 'No Name'}
                                         </span>
                                         <button onClick={() => setIsEditingName(true)} className="edit-icon-btn">✎</button>

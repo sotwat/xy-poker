@@ -144,12 +144,12 @@ function App() {
       const existing = document.querySelector('script[data-zone="10326935"]');
       if (existing) {
         existing.remove();
-        console.log('Premium user detected: Removed existing ad script.');
+        console.log('Developer (Premium) user detected: Removed existing ad script.');
       }
       return;
     }
 
-    // 3. Inject Ad Script (Non-Premium)
+    // 3. Inject Ad Script (Non-Developer)
     const existing = document.querySelector('script[data-zone="10326935"]');
     if (!existing) {
       const s = document.createElement('script');
@@ -1255,7 +1255,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12151558</span>}
+          {showVersion && <span className="version">12151600</span>}
         </div>
 
         <button
@@ -1572,6 +1572,10 @@ function App() {
                             border: isAutoPlay ? '2px solid white' : 'none'
                           }}
                           onClick={() => {
+                            if (!isPremium) {
+                              alert('Auto Play is a Developer feature! ⛏️\nThis is a special mode for developers.');
+                              return;
+                            }
                             playClickSound();
                             setIsAutoPlay(!isAutoPlay);
                           }}

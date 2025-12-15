@@ -74,13 +74,13 @@ export const GameInfo: React.FC<GameInfoProps> = ({
             <div className="scores">
                 <div className="player-score-row player-1">
                     <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
-                        {p1Name} {((myIndex === 0 && isPremium) || p1.isPremium) && <span title="Premium Member">💎</span>}: {p1.score}
+                        {p1Name} {((myIndex === 0 && isPremium) || p1.isPremium) && <span title="Developer">⛏️</span>}: {p1.score}
                     </span>
                     <span className="bonus-item">Bonuses: {p1.bonusesClaimed}</span>
                 </div>
                 <div className="player-score-row player-2">
                     <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
-                        {p2Name} {((myIndex === 1 && isPremium) || p2.isPremium) && <span title="Premium Member">💎</span>}: {p2.score}
+                        {p2Name} {((myIndex === 1 && isPremium) || p2.isPremium) && <span title="Developer">⛏️</span>}: {p2.score}
                     </span>
                     <span className="bonus-item">Bonuses: {p2.bonusesClaimed}</span>
                 </div>
