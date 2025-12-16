@@ -480,6 +480,7 @@ function App() {
         setIsQuickMatch(() => false);
         setOpponentName(() => 'Player 2');
         setRatingUpdates(null); // Clear rating updates
+        setPhase('setup'); // [FIX] Reset phase to setup
 
         // Reset game state to initial
         dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
@@ -503,6 +504,7 @@ function App() {
       setIsOnlineGame(false);
       setIsQuickMatch(false);
       setRatingUpdates(null);
+      setPhase('setup'); // [FIX] Reset phase to setup
       dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
     });
 
@@ -1287,7 +1289,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12162361</span>}
+          {showVersion && <span className="version">12162365</span>}
         </div>
 
         <button
