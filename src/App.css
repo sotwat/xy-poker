@@ -329,15 +329,23 @@ body:has(.game-result-overlay) .app-header {
 
   .action-bar {
     flex-direction: row;
-    /* Keep row to save vertical space */
     gap: 10px;
-    height: 30px;
-    /* Fixed height to prevent layout shifts */
+    height: auto;
+    /* Allow height to adjust */
+    min-height: 30px;
+    justify-content: center;
+    /* Ensure centered */
+    width: 100%;
+    padding-bottom: 5px;
   }
 
   .toggle-hidden {
     white-space: nowrap;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    background: rgba(0, 0, 0, 0.05);
+    /* Slight background for visibility */
+    padding: 4px 12px;
+    border-radius: 12px;
   }
 
   /* Hide header during battle on mobile */
