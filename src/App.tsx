@@ -1287,7 +1287,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12162344</span>}
+          {showVersion && <span className="version">12162348</span>}
         </div>
 
         <button
@@ -1538,13 +1538,7 @@ function App() {
                         <div className="action-bar">
                           <div className="place-controls">
                             <label className="toggle-hidden">
-                              <input
-                                type="checkbox"
-                                checked={placeHidden}
-                                onChange={(e) => setPlaceHidden(e.target.checked)}
-                                disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
-                              />
-                              Face Down ({3 - currentPlayer.hiddenCardsCount} left)
+                              <input type="checkbox" checked={placeHidden} onChange={(e) => setPlaceHidden(e.target.checked)} disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3} />Face Down ({3 - currentPlayer.hiddenCardsCount} left)
                             </label>
                           </div>
                         </div>
