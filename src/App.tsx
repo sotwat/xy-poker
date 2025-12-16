@@ -1287,7 +1287,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12162356</span>}
+          {showVersion && <span className="version">12162359</span>}
         </div>
 
         <button
@@ -1545,7 +1545,7 @@ function App() {
                                 disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
                                 style={{ margin: 0, padding: 0 }}
                               />
-                              <span style={{ marginLeft: '4px' }}>Face Down ({3 - currentPlayer.hiddenCardsCount} left)</span>
+                              <span style={{}}>Face Down ({3 - currentPlayer.hiddenCardsCount} left)</span>
                             </div>
                           </div>
                         </div>
