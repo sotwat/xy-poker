@@ -432,15 +432,20 @@ body:has(.game-result-overlay) .app-header {
 
 @media (max-width: 900px) {
   .auth-status {
-    top: 5px;
-    right: 5px;
+    top: 2px;
+    right: 2px;
   }
 
   .btn-auth {
-    padding: 2px 6px;
+    padding: 10px 4px;
+    /* More vertical, less horizontal */
     font-size: 0.65rem;
-    /* Even smaller */
     line-height: 1.1;
+    white-space: break-spaces;
+    /* Allow text to wrap if needed */
+    max-width: 60px;
+    /* Constrain width to force stacked look if possible/needed */
+    text-align: center;
   }
 }
 
