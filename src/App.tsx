@@ -1287,7 +1287,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12162351</span>}
+          {showVersion && <span className="version">12162356</span>}
         </div>
 
         <button
@@ -1537,9 +1537,16 @@ function App() {
                       {currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0) && (
                         <div className="action-bar">
                           <div className="place-controls">
-                            <label className="toggle-hidden">
-                              <input type="checkbox" checked={placeHidden} onChange={(e) => setPlaceHidden(e.target.checked)} disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3} />Face Down ({3 - currentPlayer.hiddenCardsCount} left)
-                            </label>
+                            <div className="toggle-hidden">
+                              <input
+                                type="checkbox"
+                                checked={placeHidden}
+                                onChange={(e) => setPlaceHidden(e.target.checked)}
+                                disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
+                                style={{ margin: 0, padding: 0 }}
+                              />
+                              <span style={{ marginLeft: '4px' }}>Face Down ({3 - currentPlayer.hiddenCardsCount} left)</span>
+                            </div>
                           </div>
                         </div>
 
