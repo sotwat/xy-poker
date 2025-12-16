@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12162337** (2025-12-16): **UI Fix** - Fixed alignment and positioning of "Face Down" card toggle on mobile devices.
+1. **v12162344** (2025-12-16): **UI Fix** - Tightly coupled "Face Down" checkbox and text, and centered them to prevent cutoff on mobile.
+2. **v12162337** (2025-12-16): **UI Fix** - Fixed alignment and positioning of "Face Down" card toggle on mobile devices.
 2. **v12162334** (2025-12-16): **UI Fix** - Adjusted mobile Sign In button to be taller and narrower, sticking to the top-right corner.
 2. **v12162332** (2025-12-16): **UI Fix** - Further reduced width of "Sign In / Sign Up" button on mobile.
 2. **v12162330** (2025-12-16): **UI Fix** - Resized and repositioned "Sign In / Sign Up" button on mobile for better visibility and layout.

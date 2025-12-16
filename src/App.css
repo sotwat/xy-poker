@@ -328,24 +328,34 @@ body:has(.game-result-overlay) .app-header {
   }
 
   .action-bar {
-    flex-direction: row;
-    gap: 10px;
-    height: auto;
-    /* Allow height to adjust */
-    min-height: 30px;
+    display: flex;
     justify-content: center;
-    /* Ensure centered */
+    align-items: center;
     width: 100%;
-    padding-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  .place-controls {
+    display: flex;
+    justify-content: center;
+    width: 100%;
   }
 
   .toggle-hidden {
+    display: inline-flex;
+    /* Use inline-flex to hug content */
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    /* Reduced gap as requested */
     white-space: nowrap;
     font-size: 0.8rem;
-    background: rgba(0, 0, 0, 0.05);
-    /* Slight background for visibility */
-    padding: 4px 12px;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    /* Stronger background */
+    padding: 4px 10px;
+    border-radius: 20px;
+    max-width: 90vw;
+    /* Prevent overflow */
   }
 
   /* Hide header during battle on mobile */
