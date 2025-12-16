@@ -345,14 +345,19 @@ body:has(.game-result-overlay) .app-header {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    /* Minimal gap */
+    gap: 4px;
+    /* Slight gap for visual separation */
     white-space: nowrap;
     font-size: 0.8rem;
     background: rgba(255, 255, 255, 0.9);
-    padding: 6px 12px;
+    padding: 6px 8px;
+    /* Reduced horizontal padding */
     border-radius: 20px;
     max-width: 95vw;
+    width: fit-content;
+    /* Ensure it doesn't stretch */
+    flex: 0 0 auto;
+    /* No flex growing */
   }
 
   .toggle-hidden input {
