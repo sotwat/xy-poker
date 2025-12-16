@@ -1287,7 +1287,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12152243</span>}
+          {showVersion && <span className="version">12162325</span>}
         </div>
 
         <button
@@ -1519,112 +1519,114 @@ function App() {
                 )}
               </main>
 
-              <footer className="controls">
+              {phase !== 'setup' && (
+                <footer className="controls">
 
-                {phase === 'playing' && (
-                  <>
-                    <div className="hand-container">
-                      <Hand
-                        hand={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].hand}
-                        selectedCardId={selectedCardId}
-                        onCardSelect={handleCardSelect}
-                        isHidden={false}
-                        isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
-                      />
-                    </div>
-                    {/* Only show action controls during my turn */}
-                    {currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0) && (
-                      <div className="action-bar">
-                        <div className="place-controls">
-                          <label className="toggle-hidden">
-                            <input
-                              type="checkbox"
-                              checked={placeHidden}
-                              onChange={(e) => setPlaceHidden(e.target.checked)}
-                              disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
-                            />
-                            Face Down ({3 - currentPlayer.hiddenCardsCount} left)
-                          </label>
+                  {phase === 'playing' && (
+                    <>
+                      <div className="hand-container">
+                        <Hand
+                          hand={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].hand}
+                          selectedCardId={selectedCardId}
+                          onCardSelect={handleCardSelect}
+                          isHidden={false}
+                          isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                        />
+                      </div>
+                      {/* Only show action controls during my turn */}
+                      {currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0) && (
+                        <div className="action-bar">
+                          <div className="place-controls">
+                            <label className="toggle-hidden">
+                              <input
+                                type="checkbox"
+                                checked={placeHidden}
+                                onChange={(e) => setPlaceHidden(e.target.checked)}
+                                disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
+                              />
+                              Face Down ({3 - currentPlayer.hiddenCardsCount} left)
+                            </label>
+                          </div>
                         </div>
-                      </div>
 
-                    )}
+                      )}
 
-                    {/* Check if it is valid for ME to see controls (My turn or Auto is on?) */}
-                    {/* Actually, show Auto toggle always? Or only during my turn? */}
-                    {/* Better always visible in footer if playing */}
-                    {isPremium && (
-                      <div style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}>
-                        <button
-                          className={`btn-secondary ${isAutoPlay ? 'active-auto' : ''}`}
-                          style={{
-                            padding: '5px 10px',
-                            fontSize: '0.8rem',
-                            background: isAutoPlay ? '#e91e63' : '#666',
-                            color: 'white',
-                            border: isAutoPlay ? '2px solid white' : 'none'
-                          }}
-                          onClick={() => {
-                            playClickSound();
-                            setIsAutoPlay(!isAutoPlay);
-                          }}
-                        >
-                          <span style={{ marginLeft: '4px' }}>Auto: {isAutoPlay ? 'ON' : 'OFF'}</span>
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
+                      {/* Check if it is valid for ME to see controls (My turn or Auto is on?) */}
+                      {/* Actually, show Auto toggle always? Or only during my turn? */}
+                      {/* Better always visible in footer if playing */}
+                      {isPremium && (
+                        <div style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}>
+                          <button
+                            className={`btn-secondary ${isAutoPlay ? 'active-auto' : ''}`}
+                            style={{
+                              padding: '5px 10px',
+                              fontSize: '0.8rem',
+                              background: isAutoPlay ? '#e91e63' : '#666',
+                              color: 'white',
+                              border: isAutoPlay ? '2px solid white' : 'none'
+                            }}
+                            onClick={() => {
+                              playClickSound();
+                              setIsAutoPlay(!isAutoPlay);
+                            }}
+                          >
+                            <span style={{ marginLeft: '4px' }}>Auto: {isAutoPlay ? 'ON' : 'OFF'}</span>
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
 
-                {phase === 'scoring' && (
-                  <div className="status-message">
-                    Calculating Scores...
-                  </div>
-                )}
+                  {phase === 'scoring' && (
+                    <div className="status-message">
+                      Calculating Scores...
+                    </div>
+                  )}
 
-                {phase === 'ended' && !showResultsModal && (
-                  <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
-                    <button className="btn-primary" onClick={() => {
-                      playClickSound();
-                      if (scoringStep === -1) {
-                        setScoringStep(0);
-                      } else {
-                        setShowResultsModal(true);
-                      }
-                    }}>
-                      {scoringStep === -1 ? 'Show Results' : 'Show Details'}
-                    </button>
-                    <button className="btn-secondary" onClick={() => {
-                      returnToLobby();
-                    }}>
-                      Back to Lobby
-                    </button>
-                  </div>
-                )}
+                  {phase === 'ended' && !showResultsModal && (
+                    <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
+                      <button className="btn-primary" onClick={() => {
+                        playClickSound();
+                        if (scoringStep === -1) {
+                          setScoringStep(0);
+                        } else {
+                          setShowResultsModal(true);
+                        }
+                      }}>
+                        {scoringStep === -1 ? 'Show Results' : 'Show Details'}
+                      </button>
+                      <button className="btn-secondary" onClick={() => {
+                        returnToLobby();
+                      }}>
+                        Back to Lobby
+                      </button>
+                    </div>
+                  )}
 
-                {phase === 'ended' && showResultsModal && (
-                  <GameResult
-                    gameState={gameState}
-                    p1Name={p1DisplayName}
-                    p2Name={p2DisplayName}
-                    ratingUpdates={ratingUpdates}
-                    onRestart={handleRestart}
-                    onViewBoard={() => setShowResultsModal(false)}
-                    onClose={() => {
-                      if (isOnlineGame) {
-                        if (phase === 'ended') returnToLobby();
-                        else handleCancelMatchmaking();
-                      } else {
-                        // Local mode reset
-                        setMode('online');
-                        setPhase('setup');
-                      }
-                      setShowResultsModal(false);
-                      setScoringStep(-1);
-                    }}
-                  />
-                )}
-              </footer>
+                  {phase === 'ended' && showResultsModal && (
+                    <GameResult
+                      gameState={gameState}
+                      p1Name={p1DisplayName}
+                      p2Name={p2DisplayName}
+                      ratingUpdates={ratingUpdates}
+                      onRestart={handleRestart}
+                      onViewBoard={() => setShowResultsModal(false)}
+                      onClose={() => {
+                        if (isOnlineGame) {
+                          if (phase === 'ended') returnToLobby();
+                          else handleCancelMatchmaking();
+                        } else {
+                          // Local mode reset
+                          setMode('online');
+                          setPhase('setup');
+                        }
+                        setShowResultsModal(false);
+                        setScoringStep(-1);
+                      }}
+                    />
+                  )}
+                </footer>
+              )}
             </>
           )}
         </>
