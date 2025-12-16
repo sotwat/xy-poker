@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12162325** (2025-12-16): **UI Fix** - Removed phantom white line at screen bottom on mobile devices by hiding empty game controls during setup.
+1. **v12162330** (2025-12-16): **UI Fix** - Resized and repositioned "Sign In / Sign Up" button on mobile for better visibility and layout.
+2. **v12162325** (2025-12-16): **UI Fix** - Removed phantom white line at screen bottom on mobile devices by hiding empty game controls during setup.
 2. **v12152243** (2025-12-15): **Bugfix** - Fixed server-side role assignment to ensure rating updates are processed correctly after a match.
 2. **v12162235** (2025-12-16): **Improv** - Added "My Page" button to Online Lobby for easier access to profile and settings.
 2. **v12152230** (2025-12-15): **Improv** - "Play Again" in Quick Match now returns to matchmaking queue instead of instant restart.

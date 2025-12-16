@@ -1287,7 +1287,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12162325</span>}
+          {showVersion && <span className="version">12162330</span>}
         </div>
 
         <button
@@ -1322,8 +1322,8 @@ function App() {
               </div>
             ) : (
               <button
+                className="btn-auth"
                 onClick={() => setShowAuthModal(true)}
-                style={{ padding: '6px 12px', background: '#4da8da', border: 'none', color: '#000', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
               >
                 Sign In / Sign Up
               </button>
