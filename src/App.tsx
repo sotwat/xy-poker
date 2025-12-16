@@ -1287,7 +1287,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">12162359</span>}
+          {showVersion && <span className="version">12162361</span>}
         </div>
 
         <button
@@ -1312,12 +1312,6 @@ function App() {
                   style={{ padding: '4px 8px', fontSize: '0.7rem', background: '#4da8da', border: 'none', color: '#000', borderRadius: '4px', cursor: 'pointer', marginLeft: '10px', fontWeight: 'bold' }}
                 >
                   My Page
-                </button>
-                <button
-                  onClick={() => supabase.auth.signOut()}
-                  style={{ padding: '4px 8px', fontSize: '0.7rem', background: 'rgba(0,0,0,0.5)', border: '1px solid #555', color: '#ccc', borderRadius: '4px', cursor: 'pointer', marginLeft: '5px' }}
-                >
-                  Sign Out
                 </button>
               </div>
             ) : (

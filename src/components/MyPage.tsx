@@ -259,8 +259,30 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                         </div>
                     )}
                 </div>
+                    )}
+            </div>
+
+            <div className="mypage-footer" style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '15px', display: 'flex', justifyContent: 'center' }}>
+                <button
+                    onClick={() => {
+                        supabase.auth.signOut();
+                        onClose();
+                    }}
+                    style={{
+                        padding: '8px 16px',
+                        background: '#ff4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem'
+                    }}
+                >
+                    Sign Out
+                </button>
             </div>
         </div>
+        </div >
     );
 };
 
