@@ -437,9 +437,10 @@ body:has(.game-result-overlay) .app-header {
   }
 
   .btn-auth {
-    padding: 4px 8px;
-    font-size: 0.75rem;
-    /* Smaller font on mobile */
+    padding: 2px 6px;
+    font-size: 0.65rem;
+    /* Even smaller */
+    line-height: 1.1;
   }
 }
 
