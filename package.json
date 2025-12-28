@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "node server/index.js",
-    "deploy": "./deploy_all.sh"
+    "deploy": "./deploy_all.sh",
+    "dev:all": "concurrently \"npm run start\" \"npm run dev\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",

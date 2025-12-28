@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `12151405` (2025-12-15 14:05)
+- **Current Version:** `12281646` (2025-12-28 16:46)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -83,77 +83,16 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12162365** (2025-12-16): **Bug Fix** - Fixed issue where GameInfo persisted and header disappeared when returning to lobby from online matches (reset phase correctly).
-2. **v12162361** (2025-12-16): **Refactor** - Moved "Sign Out" button from main screen to "My Page" modal for cleaner UI.
-2. **v12162359** (2025-12-16): **UI Fix** - Enforced specific width/height on "Face Down" checkbox to strictly limit clickable area; removed manual text margins.
-2. **v12162356** (2025-12-16): **UI Fix** - Decoupled "Face Down" text from checkbox click area on mobile; text is no longer interactive.
-2. **v12162351** (2025-12-16): **UI Fix** - Constrained click area width for "Face Down" toggle on mobile by reducing padding and enforcing fit-content.
-2. **v12162348** (2025-12-16): **UI Fix** - Removed excess whitespace and margins between "Face Down" checkbox and text on mobile.
-2. **v12162344** (2025-12-16): **UI Fix** - Tightly coupled "Face Down" checkbox and text, and centered them to prevent cutoff on mobile.
-2. **v12162337** (2025-12-16): **UI Fix** - Fixed alignment and positioning of "Face Down" card toggle on mobile devices.
-2. **v12162334** (2025-12-16): **UI Fix** - Adjusted mobile Sign In button to be taller and narrower, sticking to the top-right corner.
-2. **v12162332** (2025-12-16): **UI Fix** - Further reduced width of "Sign In / Sign Up" button on mobile.
-2. **v12162330** (2025-12-16): **UI Fix** - Resized and repositioned "Sign In / Sign Up" button on mobile for better visibility and layout.
-2. **v12162325** (2025-12-16): **UI Fix** - Removed phantom white line at screen bottom on mobile devices by hiding empty game controls during setup.
-2. **v12152243** (2025-12-15): **Bugfix** - Fixed server-side role assignment to ensure rating updates are processed correctly after a match.
-2. **v12162235** (2025-12-16): **Improv** - Added "My Page" button to Online Lobby for easier access to profile and settings.
-2. **v12152230** (2025-12-15): **Improv** - "Play Again" in Quick Match now returns to matchmaking queue instead of instant restart.
-2. **v12151821** (2025-12-15): **Bugfix** - Fixed Rating Persistence issue by ensuring User ID is used for updates instead of mutable Browser ID.
-2. **v12151811** (2025-12-15): **UI Fix** - Removed Developer Badge from Auto Play button per user request.
-2. **v12151810** (2025-12-15): **Bugfix** - Fixed issue where players could not return to Lobby after online match.
-2. **v12151747** (2025-12-15): **UI Fix** - Removed unauthorized turn display not requested by user.
-2. **v12151625** (2025-12-15): **UI/UX** - Prevented modals from closing on overlay click; Improved Close button visibility.
-2. **v12151620** (2025-12-15): **Improv** - Added **Device/OS** input field to Contact Form.
-2. **v12151615** (2025-12-15): **Bugfix** - Fixed **iOS Fullscreen Audio** by implementing touch-to-unlock logic.
-2. **v12151605** (2025-12-15): **Security** - Implemented secure Verified Badge (✓) for Developers.
-2. **v12151600** (2025-12-15): **Rebrand** - Changed "Premium" status to **Developer** (⛏️) mode.
-2. **v12151558** (2025-12-15): **Feature** - Hidden **Auto Play** button for non-premium users.
-2. **v12151555** (2025-12-15): **Feature** - Restricted **Auto Play** to Premium users only.
-2. **v12151550** (2025-12-15): **Bugfix** - Forced `nowrap` on Face Down UI text to prevent line breaks.
-2. **v12151540** (2025-12-15): **Bugfix** - Fixed Face Down UI text wrapping and Local Premium Badge.
-2. **v12151515** (2025-12-15): **UI Update** - Added Fullscreen Recommendation to Disclaimer.
-2. **v12151505** (2025-12-15): **Config** - Enabled Ad Script on **Mobile** devices.
-2. **v12151502** (2025-12-15): **Config** - Updated Ad Script to new Vignette format (Zone: 10326935).
-2. **v12151458** (2025-12-15): **UI Update** - Added Beta Disclaimer in Lobby.
-2. **v12151455** (2025-12-15): **Feature** - Added **Contact Form** for bug reports & requests (DB: `contact_messages`).
-2. **v12151450** (2025-12-15): **UI Update** - Added Premium Badge (💎) to GameInfo panel.
-2. **v12151445** (2025-12-15): **Bugfix** - Server: Fixed invalid `user_id` queries and disabled broken linking logic.
-2. **v12151440** (2025-12-15): **Bugfix** - Fixed Coin Persistence (coins reappearing after reload).
-2. **v12151435** (2025-12-15): **Feature** - Name Sync: Lobby name now syncs with MyPage username.
-2. **v12151430** (2025-12-15): **UI Polish** - Translated expiry notice to English & styled.
-3. **v12151425** (2025-12-15): **UI Update** - Enabled Gacha/Ads for guests & added 3-hour expiry notice.
-3. **v12151420** (2025-12-15): **Bugfix** - Finalized Premium Logic & SQL Fixes.
-4. **v12151400** (2025-12-15): **Bugfix** - Fixed Ad Injection Race Condition V2 (Session Initial Loading state).
-5. **v12151330** (2025-12-15): **Bugfix** - Fixed Ad Injection Race Condition V1 (Profile Load state).
-6. **v12151320** (2025-12-15): **Feature** - Implemented **Premium User Support** for Ad Removal.
-    - Global Ads disabled for `is_premium` users.
-    - Premium users get "Instant Free Gacha" reward without watching ads.
-    - Database schema updated (`players.is_premium`).
-2. **v12150120** (2025-12-15): **Feature** - Changed Ad Reward from Coins to a **Free Single Gacha Pull**.
-2. **v12150115** (2025-12-15): **Feature** - Enabled Gacha & Coin Rewards for Guest Users! Coins are now saved to local storage for non-signed-in players.
-2. **v12150110** (2025-12-15): **Feature/Fix** - Massive Gacha & Shop Polish:
-    - **10-Pull:** Unique items guaranteed per batch, grid layout (2x5), adjusted animation speed (0.5s).
-    - **Visuals:** Fixed invisible card skins in Shop/Gacha (CSS fix) and ensured "Classic" items never drop from Gacha.
-    - **UI:** Force full-screen display for Gacha reveal.
-2. **v12142325** (2025-12-14): **Fix** - Gacha Animation now displays in full-screen mode by hiding the Store UI during the sequence.
-2. **v12142320** (2025-12-14): **Revert** - Restored Cinematic Gacha Animation ("Summon -> Charge -> Explode") by popular demand, while maintaining support for 10x pulls.
-2. **v12142315** (2025-12-14): **Bugfix** - Fixed issue where signed-in users could not use Gacha (missing `userId` prop).
-2. **v12142310** (2025-12-14): **Feature** - Implemented In-Game Currency (Coins) & Gacha System, enabling skin unlocks via "Gacha" tab using earned coins.
-2. **v12142240** (2025-12-14): **Infrastructure** - Created `deploy_all.sh` to enforced synchronized deployment to Cloudflare and Render with a single command (`npm run deploy`).
-2. **v12142235** (2025-12-14): **Feature** - Enhanced My Page: Added "Win Rate" display and "Username" editing functionality.
-2. **v12142230** (2025-12-14): **Feature** - Implemented "My Page" with user stats (XP, Level), World Ranking, and Achievements system.
-3. **v12142218** (2025-12-14): **Polish** - Unified Auth terminology to "Sign In / Sign Out" for consistency, replacing "Login".
-4. **v12142215** (2025-12-14): **Bugfix** - Fixed "localhost" redirection error in email confirmation by explicitly setting the production URL.
-5. **v12142210** (2025-12-14): **Polish** - Reverted Auth UI to English per user request and improved "Email Confirmation" feedback during Sign Up.
-2. **v12131555** (2025-12-13): **Fix** - Prevented AI and Auto-Play from making moves while the Dice Roll Animation is still visible.
-3. **v12131260** (2025-12-13): **Critical Fix** - Fixed "White Screen" crash in Local Battle caused by premature scoring trigger.
-4. **v12131255** (2025-12-13): **Fix** - Fixed Local AI inactivity by ensuring AI turn logic reacts to phase transitions.
-5. **v12131250** (2025-12-13): **Fix** - Restored missing phase synchronization logic that fixed lobby redirect loops.
-6. **v12131240** (2025-12-13): **Fix** - Resolved GameInfo persistence bug and internal syntax errors.
-7. **v12131220** (2025-12-13): **Revert** - **Full Revert** to v12131140 state, cancelling Cinematic Scoring features.
-8. **v12131140** (2025-12-13): **Fix** - Fixed "FINISH" text overflowing on mobile screens (`clamp`).
-9. **v12112356** (2025-12-11): **UI** - Restored "Rules" button in Online Lobby and Local Setup screen.
-10. **v12112354** (2025-12-11): **Fix** - Corrected "Pure Straight" detection logic.
+1. **v12281646** (2025-12-28): **Dev Experience** - Added `npm run dev:all` to start both frontend and backend concurrently.
+2. **v12162365** (2025-12-16): **Bug Fix** - Fixed issue where GameInfo persisted and header disappeared when returning to lobby from online matches (reset phase correctly).
+3. **v12162361** (2025-12-16): **Refactor** - Moved "Sign Out" button from main screen to "My Page" modal for cleaner UI.
+4. **v12162359** (2025-12-16): **UI Fix** - Enforced specific width/height on "Face Down" checkbox to strictly limit clickable area; removed manual text margins.
+5. **v12162356** (2025-12-16): **UI Fix** - Decoupled "Face Down" text from checkbox click area on mobile; text is no longer interactive.
+6. **v12162351** (2025-12-16): **UI Fix** - Constrained click area width for "Face Down" toggle on mobile by reducing padding and enforcing fit-content.
+7. **v12162348** (2025-12-16): **UI Fix** - Removed excess whitespace and margins between "Face Down" checkbox and text on mobile.
+8. **v12162344** (2025-12-16): **UI Fix** - Tightly coupled "Face Down" checkbox and text, and centered them to prevent cutoff on mobile.
+9. **v12162337** (2025-12-16): **UI Fix** - Fixed alignment and positioning of "Face Down" card toggle on mobile devices.
+10. **v12162334** (2025-12-16): **UI Fix** - Adjusted mobile Sign In button to be taller and narrower, sticking to the top-right corner.
 
 ---
 
@@ -177,8 +116,10 @@ npm install
 cd server && npm install && cd ..
 
 # Start Dev Server (Frontend + Backend)
+npm run dev:all   # Starts both servers concurrently (Recommended)
+# OR manually:
 npm run dev   # Frontend: http://localhost:5173
-npm run start # Backend: http://localhost:3000
+npm run start # Backend: http://localhost:3001
 ```
 
 ---
