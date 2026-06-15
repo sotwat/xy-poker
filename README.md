@@ -1,6 +1,6 @@
 # XY Poker
 
-A 2-player poker card game with both local and online multiplayer modes, featuring a high-stakes "XY" hand evaluation system and dynamic dice mechanics.
+A 2-player poker card game with both local and online multiplayer modes, featuring a high-stakes "XY" hand evaluation system, dynamic dice mechanics, AI opponents, a skin gacha store, and a premium subscription tier.
 
 ## 🚨 Critical Development Rules (MUST READ)
 
@@ -43,13 +43,13 @@ graph TD
     User[User / Browser]
     
     subgraph Frontend [Cloudflare Pages]
-        React[React 18 App]
+        React[React 19 App]
         SocketClient[Socket.IO Client]
         SupabaseClient[Supabase Client]
     end
     
     subgraph Backend [Render]
-        NodeServer[Node.js Server]
+        NodeServer[Node.js / Express 5 Server]
         SocketServer[Socket.IO Server]
     end
     
@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `12281646` (2025-12-28 16:46)
+- **Current Version:** `06151539` (2026-06-15 15:39)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -77,22 +77,22 @@ graph TD
     - Code Health: ✅ Linting Improved
 
 ### Known Issues
-- **None.** Codebase cleaned up.
+- **None.** Codebase is stable.
 
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v12281646** (2025-12-28): **Dev Experience** - Added `npm run dev:all` to start both frontend and backend concurrently.
-2. **v12162365** (2025-12-16): **Bug Fix** - Fixed issue where GameInfo persisted and header disappeared when returning to lobby from online matches (reset phase correctly).
-3. **v12162361** (2025-12-16): **Refactor** - Moved "Sign Out" button from main screen to "My Page" modal for cleaner UI.
-4. **v12162359** (2025-12-16): **UI Fix** - Enforced specific width/height on "Face Down" checkbox to strictly limit clickable area; removed manual text margins.
-5. **v12162356** (2025-12-16): **UI Fix** - Decoupled "Face Down" text from checkbox click area on mobile; text is no longer interactive.
-6. **v12162351** (2025-12-16): **UI Fix** - Constrained click area width for "Face Down" toggle on mobile by reducing padding and enforcing fit-content.
-7. **v12162348** (2025-12-16): **UI Fix** - Removed excess whitespace and margins between "Face Down" checkbox and text on mobile.
-8. **v12162344** (2025-12-16): **UI Fix** - Tightly coupled "Face Down" checkbox and text, and centered them to prevent cutoff on mobile.
-9. **v12162337** (2025-12-16): **UI Fix** - Fixed alignment and positioning of "Face Down" card toggle on mobile devices.
-10. **v12162334** (2025-12-16): **UI Fix** - Adjusted mobile Sign In button to be taller and narrower, sticking to the top-right corner.
+1. **v06151539** (2026-06-15): **Docs** - Fully updated README.md to reflect current project state (React 19, full component list, all features).
+2. **v12281646** (2025-12-28): **Dev Experience** - Added `npm run dev:all` to start both frontend and backend concurrently.
+3. **v12162365** (2025-12-16): **Bug Fix** - Fixed issue where GameInfo persisted and header disappeared when returning to lobby from online matches (reset phase correctly).
+4. **v12162361** (2025-12-16): **Refactor** - Moved "Sign Out" button from main screen to "My Page" modal for cleaner UI.
+5. **v12162359** (2025-12-16): **UI Fix** - Enforced specific width/height on "Face Down" checkbox to strictly limit clickable area; removed manual text margins.
+6. **v12162356** (2025-12-16): **UI Fix** - Decoupled "Face Down" text from checkbox click area on mobile; text is no longer interactive.
+7. **v12162351** (2025-12-16): **UI Fix** - Constrained click area width for "Face Down" toggle on mobile by reducing padding and enforcing fit-content.
+8. **v12162348** (2025-12-16): **UI Fix** - Removed excess whitespace and margins between "Face Down" checkbox and text on mobile.
+9. **v12162344** (2025-12-16): **UI Fix** - Tightly coupled "Face Down" checkbox and text, and centered them to prevent cutoff on mobile.
+10. **v12162337** (2025-12-16): **UI Fix** - Fixed alignment and positioning of "Face Down" card toggle on mobile devices.
 
 ---
 
@@ -107,6 +107,12 @@ Create `.env` in root:
 ```env
 VITE_SUPABASE_URL=your_project_url
 VITE_SUPABASE_KEY=your_anon_key
+```
+
+Also create `server/.env`:
+```env
+SUPABASE_URL=your_project_url
+SUPABASE_SERVICE_KEY=your_service_role_key
 ```
 
 ### 3. Quick Start
@@ -129,23 +135,94 @@ npm run start # Backend: http://localhost:3001
 ```
 xy-poker/
 ├── src/
-│   ├── components/      # React components (Board, Dice, UI)
-│   ├── logic/          # Core Game Logic (Pure Functions)
-│   │   ├── game.ts     # Main Reducer
-│   │   ├── evaluation.ts # Hand Evaluation
-│   │   └── scoring.ts  # Score Calculation
-│   └── App.tsx         # Main Controller & View Integration
+│   ├── components/           # React UI Components
+│   │   ├── AuthModal.tsx     # Sign-in / Sign-up modal
+│   │   ├── Board.tsx         # Game board layout
+│   │   ├── Card.tsx          # Individual card display
+│   │   ├── ContactForm.tsx   # Contact / feedback form
+│   │   ├── DevBadge.tsx      # Developer indicator badge
+│   │   ├── Dice.tsx          # Dice face display
+│   │   ├── DiceRollOverlay.tsx # Dice roll animation overlay
+│   │   ├── GachaReveal.tsx   # Gacha skin reveal animation
+│   │   ├── GameInfo.tsx      # In-game score/info panel
+│   │   ├── GameResult.tsx    # Post-game result screen
+│   │   ├── Hand.tsx          # Player hand display
+│   │   ├── Lobby.tsx         # Main lobby screen
+│   │   ├── MonetagBanner.tsx # Ad banner wrapper
+│   │   ├── MyPage.tsx        # User profile & premium management
+│   │   ├── RewardAdButton.tsx# Rewarded ad button (skin tickets)
+│   │   ├── RulesModal.tsx    # Game rules explanation
+│   │   ├── ScoringOverlay.tsx# Step-by-step score reveal overlay
+│   │   ├── SharedBoard.tsx   # Shared board for online play
+│   │   ├── SkinStore.tsx     # Gacha skin store UI
+│   │   └── TurnTimer.tsx     # Per-turn countdown timer
+│   │
+│   ├── logic/                # Core Game Logic (Pure Functions)
+│   │   ├── ai.ts             # AI opponent best-move engine
+│   │   ├── aiLearning.ts     # AI learning & game result recording
+│   │   ├── deck.ts           # Deck creation & shuffling
+│   │   ├── evaluation.ts     # Hand evaluation (X / Y hands)
+│   │   ├── game.ts           # Main game reducer & state machine
+│   │   ├── gamification.ts   # Player stats & achievements system
+│   │   ├── nameGenerator.ts  # Random player name generator
+│   │   ├── online.ts         # Socket.IO client connection manager
+│   │   ├── scoring.ts        # Score calculation
+│   │   └── types.ts          # Shared TypeScript type definitions
+│   │
+│   ├── utils/
+│   │   ├── identity.ts       # Browser fingerprint / guest ID
+│   │   └── sound.ts          # Sound effects & TTS management
+│   │
+│   ├── App.tsx               # Main controller & view integration
+│   ├── App.css               # Global application styles
+│   ├── index.css             # CSS reset / root variables
+│   ├── main.tsx              # React entry point
+│   └── supabase.ts           # Supabase client initializer
+│
 ├── server/
-│   ├── index.js        # Socket.IO Server
-│   └── db.js           # Database Client
-└── README.md           # This file
+│   ├── index.js              # Socket.IO + Express 5 server
+│   ├── db.js                 # Supabase server-side client
+│   └── package.json          # Server-side dependencies
+│
+├── supa_schema.sql           # Initial Supabase schema
+├── supa_schema_v2~v5_*.sql   # Incremental schema migrations
+├── deploy_all.sh             # Unified deployment script
+├── vite.config.ts            # Vite build configuration
+└── README.md                 # This file
 ```
 
+---
+
+## 🎮 Feature Overview
+
+| Feature | Description |
+|---------|-------------|
+| **Local Battle** | 2-player on same device |
+| **AI Battle** | Play against a trained AI opponent |
+| **Online Match** | Real-time 1v1 via Socket.IO (Quick Match / Room Code) |
+| **Ranked Games** | ELO-style rating system for online matches |
+| **Skin Gacha Store** | Earn tickets via rewarded ads; unlock card / dice / board skins |
+| **Premium Tier** | Ad-free experience managed via Supabase (`is_premium` flag) |
+| **Achievements** | In-game achievement & stats tracking |
+| **Turn Timer** | 60-second per-turn countdown |
+| **Audio / TTS** | Sound effects + text-to-speech for game events |
+| **PWA Ready** | iOS audio unlock & browser fingerprint for guest play |
+
+---
+
 ## 🛠 Tech Stack
-- **Frontend:** React 18, TypeScript, Vite
-- **Styling:** Vanilla CSS (CSS Variables)
-- **Realtime:** Socket.IO
-- **Database:** Supabase
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 19, TypeScript, Vite 7 |
+| **Styling** | Vanilla CSS (CSS Variables) |
+| **Realtime** | Socket.IO 4 |
+| **Backend** | Node.js, Express 5 |
+| **Database** | Supabase (PostgreSQL) |
+| **Auth** | Supabase Auth |
+| **Hosting (FE)** | Cloudflare Pages |
+| **Hosting (BE)** | Render |
+| **Ads** | Monetag |
 
 ---
 
@@ -169,3 +246,9 @@ WHERE username = 'UserDisplayName';
 
 To revoke, set `is_premium = FALSE`.
 
+### Database Schema Migrations
+Schema migrations are tracked as incremental SQL files at the root:
+- `supa_schema.sql` — Initial schema
+- `supa_schema_v2.sql` ~ `supa_schema_v5_contact.sql` — Incremental patches
+
+Apply in order when setting up a new Supabase project.
