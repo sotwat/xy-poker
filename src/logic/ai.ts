@@ -165,13 +165,13 @@ function evaluateMoveEV(
             }
             if (isConsecutive && isSuitMatch) {
                 // Massive bonus for Pure Straight Flush potential
-                alignmentBonus += 500 * colDice;
+                alignmentBonus += 800 * colDice;
             } else if (isConsecutive) {
-                // Bonus for Pure Straight potential
-                alignmentBonus += 300 * colDice;
+                // Bonus for Pure Straight potential (Pure Straight is the winning standard)
+                alignmentBonus += 600 * colDice;
             } else if (isSuitMatch) {
-                // Bonus for Flush potential
-                alignmentBonus += 200 * colDice;
+                // Flush is weaker than expected. Minimal bonus, so it strongly prefers Pure Straights.
+                alignmentBonus += 50 * colDice;
             }
         } else {
             // If there's synergy in a low-value column, neutralize negative alignment penalty
