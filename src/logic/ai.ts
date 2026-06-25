@@ -183,6 +183,28 @@ function evaluateMoveEV(
         }
     }
 
+    // Edge Card 1st-Row Penalty & Hand Synergy
+    if (emptySlotIdx === 0) {
+        const matchingInHand = actor.hand.filter(c => c.rank === card.rank).length;
+        if (matchingInHand >= 3) {
+            // Guaranteed Trips in hand! This is the ultimate weapon.
+            // Heavily reward placing it, scaling with dice value so it targets the highest column.
+            mcScore += 1000 * dice[colIndex]; 
+        } else if (matchingInHand >= 2) {
+            // Guaranteed Pair in hand. Good, but not as strong as trips.
+            mcScore += 200 * dice[colIndex];
+        } else {
+            // Isolated edge card. Apply the penalty.
+            if (card.rank === 14 || card.rank === 13 || card.rank === 2) {
+                mcScore -= 400; 
+            } else if (card.rank === 12) {
+                // The Queen (12) is the mathematical best card to start a column.
+                // Maximum straight flexibility (3 patterns) + extremely high base rank value.
+                mcScore += 200;
+            }
+        }
+    }
+
     mcScore += Math.random() * 10;
     return mcScore;
 }
@@ -395,6 +417,15 @@ function shouldHideCard(
     const emptySlotIdx = [board[0][col], board[1][col], board[2][col]].findIndex(c => c === null);
     if (emptySlotIdx === 0) baseProb += 0.4;
     else if (emptySlotIdx === 1) baseProb += 0.2;
+    else if (emptySlotIdx === 2) {
+        // Special case: If we are placing the 3rd card of a guaranteed Trips (Three of a Kind),
+        // hiding it is extremely effective because it baits the opponent into thinking we only have a pair.
+        const c0 = board[0][col];
+        const c1 = board[1][col];
+        if (c0 && c1 && c0.rank === c1.rank && c0.rank === card.rank) {
+            baseProb += 0.8; // Massive chance to hide the deadly 3rd card of Trips
+        }
+    }
     
     if (turnCount <= 6) baseProb += 0.2;
 
