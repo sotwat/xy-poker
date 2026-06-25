@@ -331,6 +331,7 @@ function App() {
   // Timeout ref for Quick Match Bot Fallback
   const quickMatchTimeoutRef = useRef<any>(null);
   const lastActionTimeRef = useRef<number>(0);
+  const isAIActingRef = useRef<boolean>(false); // Guard against double AI moves
 
   useEffect(() => {
     // Clear timeout if quick match ends (game starts or cancelled)
@@ -648,15 +649,16 @@ function App() {
   useEffect(() => {
     if (phase === 'turn_selection' && !isTossingCoin && tossResult !== null && !isOnlineGame && currentPlayerIndex === 1) {
       // AI won the toss! Evaluate hand strength to choose First or Second
-      // We use the AI's internal parameters via getBestTurnOrder which can be trained via continuous learning.
       const shouldGoFirst = getBestTurnOrder(gameState, 1, DEFAULT_AI_PARAMS);
-      
-      setTimeout(() => {
+
+      const timer = setTimeout(() => {
         const chosenStartingPlayer = shouldGoFirst ? 1 : 0;
         handleChooseTurnOrder(chosenStartingPlayer);
       }, 1500); // Small delay for human to see AI is "thinking"
+
+      return () => clearTimeout(timer); // ← クリーンアップ: 二重発火を防ぐ
     }
-  }, [phase, isTossingCoin, tossResult, currentPlayerIndex, isOnlineGame, gameState]);
+  }, [phase, isTossingCoin, tossResult, currentPlayerIndex, isOnlineGame]); // gameState を依存配列から除去
 
   // Turn Selection Timer Logic (Human)
   useEffect(() => {
@@ -725,11 +727,12 @@ function App() {
     prevPhaseRef.current = gameState.phase;
   }, [gameState]);
 
-  // AI Turn Logic (Example)
+  // AI Turn Logic
   useEffect(() => {
     if (mode === 'local' && phase === 'playing' && currentPlayerIndex === 1 && !showDiceAnimation) {
-      // Disguised Bot: 2000ms - 5000ms delay
-      // Standard AI: 1000ms fixed
+      if (isAIActingRef.current) return; // すでにAIが動作中なら何もしない
+      isAIActingRef.current = true;
+
       const delay = isBotDisguise ? (2000 + Math.random() * 3000) : 1000;
 
       const timer = setTimeout(() => {
@@ -743,10 +746,15 @@ function App() {
           }
         });
         playClickSound();
+        isAIActingRef.current = false; // アクション完了後にフラグをリセット
       }, delay);
-      return () => clearTimeout(timer);
+
+      return () => {
+        clearTimeout(timer);
+        isAIActingRef.current = false;
+      };
     }
-  }, [gameState, mode, isBotDisguise, phase, showDiceAnimation]); // Added showDiceAnimation dependency
+  }, [gameState, mode, isBotDisguise, phase, showDiceAnimation]);
 
   // User Auto-Play Logic (Both Local P1 and Online Self)
   useEffect(() => {
@@ -1431,7 +1439,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06252010</span>}
+          {showVersion && <span className="version">v06252013</span>}
         </div>
 
         <button
