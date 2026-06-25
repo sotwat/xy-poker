@@ -117,16 +117,14 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
             // Adjacent
             const pairRank = isPair01 ? ranks[0] : ranks[1];
             const kicker = isPair01 ? ranks[2] : ranks[0];
-            // [FIX] Pure One Pair is weaker than Straight mathematically (11% vs 2.1%)
-            return { type: 'PureOnePair', score: diceValue, rankValue: 3, kickers: [pairRank, kicker] };
+            return { type: 'PureOnePair', score: diceValue, rankValue: 4, kickers: [pairRank, kicker] };
         }
     }
 
     // 7. Straight
     // Straight but unordered and unsuited
     if (isStraight) {
-        // [FIX] Straight is stronger than Pure One Pair
-        return { type: 'Straight', score: diceValue, rankValue: 4, kickers: [straightHigh] };
+        return { type: 'Straight', score: diceValue, rankValue: 3, kickers: [straightHigh] };
     }
 
     // 8. One Pair

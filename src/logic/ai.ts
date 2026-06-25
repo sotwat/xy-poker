@@ -156,10 +156,28 @@ function evaluateMoveEV(
         const isSuitMatch = existingCardsInCol.some(c => c.suit === card.suit);
         const isConsecutive = existingCardsInCol.some(c => Math.abs(c.rank - card.rank) <= 2 && Math.abs(c.rank - card.rank) > 0);
         
-        // If there's synergy, we neutralize any negative alignment penalty!
-        // (e.g. don't penalize placing a 2 in a 6-dice column if it completes a Straight/Flush)
-        if (alignmentBonus < 0 && (isPair || isSuitMatch || isConsecutive)) {
-            alignmentBonus = 0; 
+        // Pure Straight Supremacy (Strategy Section 11)
+        // If this is a high-value column (dice >= 4), Pure One Pair is practically a losing hand.
+        if (colDice >= 4) {
+            if (isPair) {
+                // Penalize settling for a pair in a crucial column! We need Straights/Flushes to win.
+                alignmentBonus -= 300 * colDice; 
+            }
+            if (isConsecutive && isSuitMatch) {
+                // Massive bonus for Pure Straight Flush potential
+                alignmentBonus += 500 * colDice;
+            } else if (isConsecutive) {
+                // Bonus for Pure Straight potential
+                alignmentBonus += 300 * colDice;
+            } else if (isSuitMatch) {
+                // Bonus for Flush potential
+                alignmentBonus += 200 * colDice;
+            }
+        } else {
+            // If there's synergy in a low-value column, neutralize negative alignment penalty
+            if (alignmentBonus < 0 && (isPair || isSuitMatch || isConsecutive)) {
+                alignmentBonus = 0; 
+            }
         }
     }
     mcScore += alignmentBonus;
