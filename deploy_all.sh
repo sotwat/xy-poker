@@ -8,14 +8,17 @@ echo "🚀 Starting Dual Deployment (Cloudflare & Render)..."
 # 1. Check for uncommitted changes
 if [[ -n $(git status -s) ]]; then
     echo "⚠️  Uncommitted changes found."
-    read -p "Enter commit message to proceed (or Ctrl+C to cancel): " commit_msg
-    if [ -z "$commit_msg" ]; then
-        echo "❌ Error: Commit message required."
-        exit 1
+
+    # Use argument $1 as commit message if provided, otherwise auto-generate
+    if [ -n "$1" ]; then
+        commit_msg="$1"
+    else
+        commit_msg="Deploy $(date '+%m%d%H%M')"
     fi
+
     git add .
     git commit -m "$commit_msg"
-    echo "✅ Changes committed."
+    echo "✅ Changes committed: $commit_msg"
 else
     echo "ℹ️  No uncommitted changes. Proceeding with existing state."
 fi
