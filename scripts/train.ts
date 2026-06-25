@@ -58,23 +58,12 @@ function runHeadlessMatch(paramsA: AiParams, paramsB: AiParams): { winner: 0 | 1
     return { winner, scoreA: p1Score, scoreB: p2Score, turns };
 }
 
-async function runTrainingSession(gamesCount: number = 10) {
-    console.log(`Starting AI vs AI Headless Simulator (${gamesCount} games)`);
-    
-    // Default AI (Champion) vs Mutated AI (Challenger)
-    let champParams = { ...DEFAULT_AI_PARAMS };
-    // Lower MC for speed during bulk training (Level 1 essentially)
-    champParams.mcSimulations = 5; 
-    
-    let challengerParams = mutateParams(champParams, 0.5); // 50% chance to mutate each param
-    challengerParams.mcSimulations = 5;
-
+async function runTrainingSession(gamesCount: number, champParams: AiParams, challengerParams: AiParams) {
     let champWins = 0;
     let challengerWins = 0;
     let draws = 0;
 
     for (let i = 0; i < gamesCount; i++) {
-        // Swap starting player to be fair
         const champIsP1 = i % 2 === 0;
         
         const paramsP1 = champIsP1 ? champParams : challengerParams;
@@ -93,18 +82,54 @@ async function runTrainingSession(gamesCount: number = 10) {
         process.stdout.write(`\rMatch ${i + 1}/${gamesCount} | Champ: ${champWins} | Challenger: ${challengerWins} | Draws: ${draws}`);
     }
     
-    console.log('\n\n--- Session Complete ---');
-    console.log(`Win Rate (Champ): ${((champWins / gamesCount) * 100).toFixed(1)}%`);
-    console.log(`Win Rate (Challenger): ${((challengerWins / gamesCount) * 100).toFixed(1)}%`);
-    
-    if (challengerWins > champWins) {
-        console.log('\n🔥 Challenger is better! New optimal weights found:');
-        console.log(challengerParams);
-    } else {
-        console.log('\n🛡️ Champion defended its title. Mutated weights were worse.');
-    }
+    return { champWins, challengerWins, draws };
 }
 
-// Run 10 games by default for quick test
-const gamesToRun = process.argv[2] ? parseInt(process.argv[2], 10) : 10;
-runTrainingSession(gamesToRun).catch(console.error);
+async function continuousTraining() {
+    console.log(`Starting Continuous AI Evolution...`);
+    let champParams = { ...DEFAULT_AI_PARAMS };
+    champParams.mcSimulations = 5; 
+
+    let consecutiveDefenses = 0;
+    let generation = 1;
+    const gamesPerGen = 20;
+    const maxDefenses = 100;
+
+    while (consecutiveDefenses < maxDefenses) {
+        console.log(`\n--- Generation ${generation} (Defenses: ${consecutiveDefenses}) ---`);
+        let challengerParams = mutateParams(champParams, 0.4);
+        challengerParams.mcSimulations = 5;
+
+        const result = await runTrainingSession(gamesPerGen, champParams, challengerParams);
+
+        if (result.challengerWins > result.champWins) {
+            console.log('\n🔥 Challenger is better! New optimal weights found:');
+            console.log(challengerParams);
+            champParams = { ...challengerParams };
+            consecutiveDefenses = 0;
+            
+            // Save to file
+            const fs = await import('fs');
+            fs.writeFileSync('champion.json', JSON.stringify(champParams, null, 2));
+            console.log('Saved new champion.json');
+        } else {
+            consecutiveDefenses++;
+        }
+        generation++;
+    }
+
+    console.log(`\n🏁 Evolution stopped. Champion defended ${maxDefenses} times in a row, likely reaching a local maxima.`);
+}
+
+const arg = process.argv[2];
+if (arg === 'continuous') {
+    continuousTraining().catch(console.error);
+} else {
+    const gamesToRun = arg ? parseInt(arg, 10) : 10;
+    runTrainingSession(gamesToRun, { ...DEFAULT_AI_PARAMS, mcSimulations: 5 }, mutateParams({ ...DEFAULT_AI_PARAMS, mcSimulations: 5 }))
+        .then(res => {
+            console.log('\n\n--- Session Complete ---');
+            console.log(`Win Rate (Champ): ${((res.champWins / gamesToRun) * 100).toFixed(1)}%`);
+            console.log(`Win Rate (Challenger): ${((res.challengerWins / gamesToRun) * 100).toFixed(1)}%`);
+        }).catch(console.error);
+}
