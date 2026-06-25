@@ -120,3 +120,6 @@ dist
 
 # OS
 .DS_Store
+*.backup.gz
+*.storage.zip
+**/.env

@@ -32,7 +32,12 @@ export const joinQuickMatch = () => {
         socket.emit('join_quick_match', { browserId });
     }
 };
-export const connectSocket = () => {
+export const connectSocket = (accessToken?: string) => {
+    if (accessToken) {
+        socket.auth = { token: accessToken };
+    } else {
+        socket.auth = {};
+    }
     if (!socket.connected) {
         console.log('[Socket.IO] Initiating connection...');
         socket.connect();

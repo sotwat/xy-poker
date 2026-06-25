@@ -9,6 +9,8 @@ import './SkinStore.css';
 
 import { supabase } from '../supabase';
 import { DevBadge } from './DevBadge';
+import { socket } from '../logic/online';
+import { getBrowserId } from '../utils/identity';
 
 interface SkinStoreProps {
     isOpen: boolean;
@@ -129,12 +131,24 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
         // Deduct Coins only if not free
         if (!isFree) {
+            if (userId) {
+                const success = await new Promise((resolve) => {
+                    socket.emit('deduct_coins', { amount: cost, browserId: getBrowserId(), userId }, (res: any) => {
+                        resolve(res?.success);
+                    });
+                    // Fallback timeout in case server doesn't respond
+                    setTimeout(() => resolve(false), 5000);
+                });
+                if (!success) {
+                    alert("Failed to deduct coins. Please try again or check connection.");
+                    return; // Abort
+                }
+            }
+            
             const newBalance = userCoins - cost;
             setUserCoins(newBalance);
 
-            if (userId) {
-                await supabase.from('players').update({ coins: newBalance }).eq('id', userId);
-            } else {
+            if (!userId) {
                 localStorage.setItem('xypoker_guest_coins', newBalance.toString());
             }
         }

@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +16,7 @@ app.use(express.static(path.join(__dirname, '../dist')));
 
 const io = new Server(server, {
     cors: {
-        origin: "*", // Allow all for local dev
+        origin: ["https://xy-poker.pages.dev", "http://localhost:5173", "http://localhost:4173"],
         methods: ["GET", "POST"]
     }
 });
@@ -120,12 +121,28 @@ function shuffleDeck(deck) {
 const quickMatchQueue = [];
 const games = {}; // To store game-specific data for quick matches
 
+io.use(async (socket, next) => {
+    const token = socket.handshake.auth?.token;
+    if (token) {
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        if (user && !error) {
+            socket.user = user;
+        }
+    }
+    next();
+});
+
 io.on('connection', (socket) => {
     console.log('New client connected:', socket.id);
 
     socket.on('join_quick_match', async ({ browserId, playerName, userId }) => {
         // If no browserId provided (old client), generate a random temp one or fail
         const bId = browserId || `temp_${socket.id}`;
+
+        if (userId && (!socket.user || socket.user.id !== userId)) {
+            socket.emit('error', 'Unauthorized: User ID mismatch');
+            return;
+        }
 
         // Fetch player data
         const player = await getOrCreatePlayer(bId, userId);
@@ -152,7 +169,7 @@ io.on('connection', (socket) => {
 
             if (!p1 || !p2) return; // safety
 
-            const roomId = `room_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            const roomId = `room_${Date.now()}_${crypto.randomUUID()}`;
             p1.join(roomId);
             p2.join(roomId);
 
@@ -198,6 +215,40 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('deduct_coins', async ({ amount, browserId, userId }, callback) => {
+        if (userId && (!socket.user || socket.user.id !== userId)) {
+            if (callback) callback({ success: false, error: 'Unauthorized' });
+            return;
+        }
+
+        const player = await getOrCreatePlayer(browserId, userId);
+        if (!player || player.coins < amount) {
+            if (callback) callback({ success: false, error: 'Insufficient coins or player not found' });
+            return;
+        }
+
+        const newBalance = player.coins - amount;
+        
+        // Use service_role to update (server has service_role)
+        await supabase.from('players').update({ coins: newBalance }).eq('id', player.id);
+
+        if (callback) callback({ success: true, newBalance });
+    });
+
+    socket.on('update_player_stats', async ({ userId, updates }, callback) => {
+        if (!userId || !updates) return;
+        
+        // Ensure user can only update their own stats, or ensure it's a valid local game report.
+        if (!socket.user || socket.user.id !== userId) {
+            if (callback) callback({ success: false, error: 'Unauthorized' });
+            return;
+        }
+
+        // Use service_role to update the DB securely.
+        await supabase.from('players').update(updates).eq('id', userId);
+        if (callback) callback({ success: true });
+    });
+
     // Listen for game end to update ratings
     // We need a trusted way to know game ended.
     // Currently clients emit 'action'.
@@ -211,7 +262,7 @@ io.on('connection', (socket) => {
         const room = games[roomId];
         if (!room || room.processed) return;
 
-        if (socket.data.role !== 'host') return; // Trust Host only for now
+        if (socket.id !== room.gameState.p1SocketId) return; // Trust Host only for now
 
         room.processed = true; // prevent double update
 
@@ -262,7 +313,12 @@ io.on('connection', (socket) => {
     // ... existing action handlers ...
 
     socket.on('create_room', async ({ playerName, browserId, userId }, callback) => {
-        const roomId = Math.floor(1000 + Math.random() * 9000).toString();
+        const roomId = crypto.randomUUID();
+
+        if (userId && (!socket.user || socket.user.id !== userId)) {
+            if (callback) callback({ success: false, error: 'Unauthorized' });
+            return;
+        }
 
         // Fetch player data for rating
         const player = await getOrCreatePlayer(browserId, userId);
@@ -284,6 +340,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join_room', async ({ roomId, playerName, browserId, userId }, callback) => {
+        if (userId && (!socket.user || socket.user.id !== userId)) {
+            if (callback) callback({ success: false, error: 'Unauthorized' });
+            return;
+        }
+        
         try {
             const room = rooms[roomId];
             if (room && room.players.length < 2) {
@@ -320,7 +381,11 @@ io.on('connection', (socket) => {
                         p1Rating: hostPlayer.rating,
                         p2Rating: guestPlayer.rating,
                         p1BrowserId: hostPlayer.browserId,
-                        p2BrowserId: guestPlayer.browserId
+                        p2BrowserId: guestPlayer.browserId,
+                        p1DbId: hostPlayer.userId,
+                        p2DbId: guestPlayer.userId,
+                        p1SocketId: hostPlayer.id,
+                        p2SocketId: guestPlayer.id
                     }
                 };
 
@@ -336,7 +401,6 @@ io.on('connection', (socket) => {
                     p2Rating: guestPlayer.rating,
                     p1Id: hostPlayer.id,
                     p2Id: guestPlayer.id,
-                    initialDice,
                     initialDice,
                     initialDeck,
                     startingPlayer,
@@ -355,6 +419,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('quick_match', async ({ playerName, browserId, userId }, callback) => {
+        if (userId && (!socket.user || socket.user.id !== userId)) {
+            if (callback) callback({ success: false, error: 'Unauthorized' });
+            return;
+        }
         // Authenticate / Fetch Data
         const bId = browserId || `temp_${socket.id}`;
         const player = await getOrCreatePlayer(bId, userId);
@@ -411,7 +479,9 @@ io.on('connection', (socket) => {
                         p1BrowserId: p1.browserId,
                         p2BrowserId: socket.browserId,
                         p1DbId: p1.dbId,
-                        p2DbId: socket.dbId
+                        p2DbId: socket.dbId,
+                        p1SocketId: p1.id,
+                        p2SocketId: socket.id
                     }
                 };
 
@@ -449,7 +519,7 @@ io.on('connection', (socket) => {
     });
 
     function createMatchmakingRoom(socket, playerName, browserId, rating, callback) {
-        const roomId = Math.floor(1000 + Math.random() * 9000).toString();
+        const roomId = crypto.randomUUID();
         rooms[roomId] = {
             players: [{
                 id: socket.id,

@@ -102,7 +102,7 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
 
     // 5. Flush
     if (isFlush) {
-        return { type: 'Flush', score: diceValue, rankValue: 5, kickers: sortedRanks.reverse() };
+        return { type: 'Flush', score: diceValue, rankValue: 5, kickers: sortedRanks };
     }
 
     // 6. Pure One Pair
@@ -136,7 +136,7 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
     }
 
     // 9. High Card
-    return { type: 'HighCard', score: diceValue, rankValue: 1, kickers: sortedRanks.reverse() };
+    return { type: 'HighCard', score: diceValue, rankValue: 1, kickers: sortedRanks };
 }
 
 // --- X Hand Evaluation (5 Cards) ---
@@ -198,7 +198,7 @@ export function evaluateXHand(originalCards: Card[]): XHandResult {
 
         // Flush
         if (isFlush) {
-            return { type: 'Flush', kickers: ranks.reverse() };
+            return { type: 'Flush', kickers: [...ranks].reverse() };
         }
 
         // Straight
@@ -232,7 +232,7 @@ export function evaluateXHand(originalCards: Card[]): XHandResult {
         }
 
         // High Card
-        return { type: 'HighCard', kickers: ranks.reverse() };
+        return { type: 'HighCard', kickers: [...ranks].reverse() };
     };
 
     const getXHandRankValue = (type: XHandType): number => {

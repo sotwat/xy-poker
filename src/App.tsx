@@ -322,7 +322,7 @@ function App() {
 
   // Initialize Socket
   useEffect(() => {
-    connectSocket();
+    connectSocket(session?.access_token);
 
     const onConnect = () => setIsConnected(true);
     const onDisconnect = () => setIsConnected(false);
@@ -527,6 +527,17 @@ function App() {
     };
   }, []); // Empty dependency array - only run once on mount
 
+  // Re-authenticate socket when session changes
+  useEffect(() => {
+    if (session?.access_token) {
+      if (socket.connected) {
+        socket.auth = { token: session.access_token };
+        socket.disconnect().connect();
+      } else {
+        connectSocket(session.access_token);
+      }
+    }
+  }, [session?.access_token]);
 
   // Fetch rating on connect
   // (Moved to combined effect above to include session dependency)
@@ -1289,7 +1300,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06151539</span>}
+          {showVersion && <span className="version">v06251123</span>}
         </div>
 
         <button

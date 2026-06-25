@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `06151539` (2026-06-15 15:39)
+- **Current Version:** `06251123` (2026-06-25 11:23)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v06151539** (2026-06-15): **Docs** - Fully updated README.md to reflect current project state (React 19, full component list, all features).
+1. **v06251123** (2026-06-25): **Security Update** - Addressed critical vulnerabilities. Fixed RLS policies to prevent cheating, added JWT validation for sockets, restricted CORS, fixed kickers logic bug, and secured game end reporting.
+2. **v06151539** (2026-06-15): **Docs** - Fully updated README.md to reflect current project state (React 19, full component list, all features).
 2. **v12281646** (2025-12-28): **Dev Experience** - Added `npm run dev:all` to start both frontend and backend concurrently.
 3. **v12162365** (2025-12-16): **Bug Fix** - Fixed issue where GameInfo persisted and header disappeared when returning to lobby from online matches (reset phase correctly).
 4. **v12162361** (2025-12-16): **Refactor** - Moved "Sign Out" button from main screen to "My Page" modal for cleaner UI.
