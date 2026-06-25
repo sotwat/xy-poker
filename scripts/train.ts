@@ -1,5 +1,5 @@
 import { INITIAL_GAME_STATE, gameReducer, GameState } from '../src/logic/game';
-import { getBestMove, AiParams, DEFAULT_AI_PARAMS } from '../src/logic/ai';
+import { getBestMove, getBestTurnOrder, AiParams, DEFAULT_AI_PARAMS } from '../src/logic/ai';
 
 // Mutate parameters slightly for genetic algorithm
 function mutateParams(params: AiParams, mutationRate: number = 0.1): AiParams {
@@ -28,9 +28,24 @@ function runHeadlessMatch(paramsA: AiParams, paramsB: AiParams): { winner: 0 | 1
     while (state.phase !== 'ended' && turns < 100) { // Safety limit 100 turns
         turns++;
         const currentPlayerIndex = state.currentPlayerIndex;
-        
-        // Let AI think
         const currentParams = currentPlayerIndex === 0 ? paramsA : paramsB;
+
+        if (state.phase === 'turn_selection') {
+            const goFirst = getBestTurnOrder(state, currentPlayerIndex, currentParams);
+            const startingPlayer = goFirst ? currentPlayerIndex : (1 - currentPlayerIndex);
+            state = gameReducer(state, {
+                type: 'CHOOSE_TURN_ORDER',
+                payload: { startingPlayer }
+            });
+            continue; // Skip the rest of the loop for this turn
+        }
+        
+        if (state.phase === 'scoring') {
+            state = gameReducer(state, { type: 'CALCULATE_SCORE' });
+            continue;
+        }
+        
+        // Let AI think (playing phase)
         const move = getBestMove(state, currentPlayerIndex, currentParams);
         
         // Execute move

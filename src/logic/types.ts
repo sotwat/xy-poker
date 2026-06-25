@@ -56,7 +56,7 @@ export interface PlayerState {
     isDeveloper?: boolean;
 }
 
-export type Phase = 'setup' | 'playing' | 'scoring' | 'ended';
+export type Phase = 'setup' | 'turn_selection' | 'playing' | 'scoring' | 'ended';
 
 export interface GameState {
     players: [PlayerState, PlayerState];

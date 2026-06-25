@@ -24,8 +24,12 @@ export const Hand: React.FC<HandProps> = ({
 }) => {
     return (
         <div className={`hand ${isCurrentPlayer ? 'active' : ''} ${isOpponent ? 'opponent' : ''}`}>
-            {hand.map(card => (
-                <div key={card.id} className="hand-card-wrapper">
+            {hand.map((card, index) => (
+                <div 
+                    key={card.id} 
+                    className="hand-card-wrapper animate-deal"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                >
                     <Card
                         card={card}
                         isSelected={selectedCardId === card.id}

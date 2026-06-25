@@ -23,6 +23,22 @@
     transform: translateY(-5px);
 }
 
+.animate-deal {
+    animation: deal-slide-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    /* "both" ensures the card stays hidden before the delay starts */
+}
+
+@keyframes deal-slide-in {
+    0% {
+        opacity: 0;
+        transform: translate(-50px, -50px) scale(0.5) rotate(-20deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+}
+
 @media (max-width: 600px) {
     .hand {
         padding: 4px;

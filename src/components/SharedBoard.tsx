@@ -17,7 +17,8 @@ interface SharedBoardProps {
     selectedSkin: DiceSkin;
     selectedCardSkin: CardSkin;
     selectedBoardSkin: BoardSkin;
-    scoringStep?: number;
+    revealedCols?: number[];
+    showXHand?: boolean;
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -33,7 +34,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     selectedSkin,
     selectedCardSkin,
     selectedBoardSkin,
-    scoringStep = -1
+    revealedCols = [],
+    showXHand = false
 }) => {
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const [pressTimer, setPressTimer] = useState<number | null>(null);
@@ -94,13 +96,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         const winner = winningColumns ? winningColumns[colIndex] : null;
 
         // ANIMATION LOGIC:
-        // Steps 0-4 correspond to columns 4-0.
-        // Current Step 0 -> Show Col 4.
-        // Current Step 1 -> Show Col 4, 3.
-        // Condition: (4 - colIndex) <= scoringStep
-        // e.g. Col 4: (4-4)=0 <= 0 (Visible at Step 0+)
-        // e.g. Col 0: (4-0)=4 <= 4 (Visible at Step 4+)
-        const isColVisible = scoringStep >= (4 - colIndex);
+        // isColVisible checks if this colIndex has been revealed yet
+        const isColVisible = revealedCols.includes(colIndex);
 
         // Bottom Highlight Logic:
         const isBottomWon = winner === bottomPlayerId && isColVisible;
@@ -111,8 +108,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         const topWinningClass = isTopWon ? `winning-slot-${topPlayerId}` : '';
 
         // X-Hand Highlight Logic
-        // Highlight ONLY if scoringStep >= 5 (Row Step)
-        const isRowVisible = scoringStep >= 5;
+        // Highlight ONLY if showXHand is true
+        const isRowVisible = showXHand;
         const isTopXWinner = xWinner === topPlayerId && isRowVisible;
         const isBottomXWinner = xWinner === bottomPlayerId && isRowVisible;
 

@@ -1,0 +1,21 @@
+{
+  "pureStraightFlushBonus": 392,
+  "pureStraightBonus": 32,
+  "flushBonus": 244,
+  "pairPenalty": -25,
+  "tripsInHandBonus": 1122,
+  "pairInHandBonus": 63,
+  "lowCardPenalty": -14,
+  "queenFirstRowBonus": 206,
+  "xHandBaseMultiplier": 23,
+  "trashBinRushBase": 3,
+  "trashBinRushMultiplier": 2,
+  "drawValueBase": 202,
+  "showdownDelayPenalty": 59,
+  "row3DelayPenalty": 98,
+  "bluffBonus": 5,
+  "mcSimulations": 5,
+  "turnOrderBaseFirstValue": 0,
+  "turnOrderPairBonus": 355,
+  "turnOrderHighCardBonus": 33
+}

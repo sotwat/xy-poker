@@ -1,0 +1,167 @@
+.showdown-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Let clicks pass through */
+    z-index: 10000;
+    overflow: hidden;
+}
+
+/* Background flash effect */
+.showdown-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    opacity: 0;
+    animation: flash-fade 1.2s ease-out forwards;
+}
+
+@keyframes flash-fade {
+    0% { opacity: 0.3; }
+    20% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+.showdown-popup-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 15, 0.9);
+    border: 2px solid #fff;
+    padding: 30px 80px;
+    border-radius: 12px;
+    transform: scale(0.5) skewX(-10deg);
+    opacity: 0;
+    animation: popup-bounce 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+@keyframes popup-bounce {
+    0% {
+        transform: scale(0.1) skewX(-15deg);
+        opacity: 0;
+    }
+    15% {
+        transform: scale(1.1) skewX(-5deg);
+        opacity: 1;
+    }
+    25% {
+        transform: scale(1) skewX(0deg);
+        opacity: 1;
+    }
+    85% {
+        transform: scale(1) skewX(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.3) skewX(10deg);
+        opacity: 0;
+        filter: blur(10px);
+    }
+}
+
+.popup-subtitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.popup-title {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* Winner specific styling */
+.popup-p1 .popup-title {
+    color: #4facfe;
+    text-shadow: 0 0 15px #4facfe, 0 0 30px #00f2fe;
+}
+.popup-p1 {
+    border-color: #4facfe;
+    box-shadow: 0 0 50px rgba(79, 172, 254, 0.4), inset 0 0 20px rgba(79, 172, 254, 0.2);
+}
+
+.popup-p2 .popup-title {
+    color: #ff0844;
+    text-shadow: 0 0 15px #ff0844, 0 0 30px #ffb199;
+}
+.popup-p2 {
+    border-color: #ff0844;
+    box-shadow: 0 0 50px rgba(255, 8, 68, 0.4), inset 0 0 20px rgba(255, 8, 68, 0.2);
+}
+
+.popup-draw .popup-title {
+    color: #a0a0a0;
+    text-shadow: 0 0 10px #a0a0a0;
+}
+.popup-draw {
+    border-color: #a0a0a0;
+    box-shadow: 0 0 30px rgba(160, 160, 160, 0.3);
+}
+
+/* Slashes for flair */
+.popup-slash {
+    position: absolute;
+    width: 200%;
+    height: 4px;
+    background: #fff;
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.popup-slash-1 {
+    transform: rotate(15deg);
+    top: 30%;
+    animation: slash-slide 1.2s linear forwards;
+}
+
+.popup-slash-2 {
+    transform: rotate(-15deg);
+    bottom: 30%;
+    animation: slash-slide-reverse 1.2s linear forwards;
+}
+
+@keyframes slash-slide {
+    0% { left: -100%; opacity: 0; }
+    15% { opacity: 0.5; }
+    85% { opacity: 0.5; }
+    100% { left: 100%; opacity: 0; }
+}
+
+@keyframes slash-slide-reverse {
+    0% { right: -100%; opacity: 0; }
+    15% { opacity: 0.5; }
+    85% { opacity: 0.5; }
+    100% { right: 100%; opacity: 0; }
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+    .showdown-popup-content {
+        padding: 20px 40px;
+    }
+    .popup-title {
+        font-size: 2.5rem;
+    }
+    .popup-subtitle {
+        font-size: 1rem;
+    }
+}

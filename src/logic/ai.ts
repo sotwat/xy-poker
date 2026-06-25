@@ -9,16 +9,20 @@ export interface AiParams {
     pairPenalty: number;
     tripsInHandBonus: number;
     pairInHandBonus: number;
-    edgeCardPenalty: number;
+    lowCardPenalty: number;
     queenFirstRowBonus: number;
     xHandBaseMultiplier: number;
     trashBinRushBase: number;
     trashBinRushMultiplier: number;
     drawValueBase: number;
     showdownDelayPenalty: number;
-    intersectionDelayPenalty: number;
+    row3DelayPenalty: number;
     bluffBonus: number;
     mcSimulations: number;
+    // --- Turn Selection Params ---
+    turnOrderBaseFirstValue: number;
+    turnOrderPairBonus: number;
+    turnOrderHighCardBonus: number;
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
@@ -28,16 +32,19 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     pairPenalty: -300,
     tripsInHandBonus: 1000,
     pairInHandBonus: 200,
-    edgeCardPenalty: -400,
+    lowCardPenalty: -400,
     queenFirstRowBonus: 200,
     xHandBaseMultiplier: 30,
     trashBinRushBase: 50,
     trashBinRushMultiplier: 10,
     drawValueBase: 200,
     showdownDelayPenalty: 500,
-    intersectionDelayPenalty: 200,
+    row3DelayPenalty: 200,
     bluffBonus: 150,
     mcSimulations: 30, // Level 2 default
+    turnOrderBaseFirstValue: 0,
+    turnOrderPairBonus: 200,
+    turnOrderHighCardBonus: 50
 };
 
 // ==========================================
@@ -48,7 +55,33 @@ export const DEFAULT_AI_PARAMS: AiParams = {
 // 3. ExpectiMax (Opponent Lookahead & Blocking)
 // ==========================================
 
-const MONTE_CARLO_ITERATIONS = 30; // Lightweight to avoid blocking UI
+
+export function getBestTurnOrder(
+    gameState: GameState,
+    playerIndex: number,
+    params: AiParams = DEFAULT_AI_PARAMS
+): boolean {
+    const player = gameState.players[playerIndex];
+    const hand = player.hand;
+
+    // Evaluate heuristics
+    let hasPair = false;
+    let highCardsCount = 0;
+
+    for (let i = 0; i < hand.length; i++) {
+        if (hand[i].rank >= 10) highCardsCount++;
+        for (let j = i + 1; j < hand.length; j++) {
+            if (hand[i].rank === hand[j].rank) hasPair = true;
+        }
+    }
+
+    let score = params.turnOrderBaseFirstValue;
+    if (hasPair) score += params.turnOrderPairBonus;
+    if (highCardsCount >= 2) score += params.turnOrderHighCardBonus;
+
+    // Return true if score > 0 (go first), false if score <= 0 (go second)
+    return score > 0;
+}
 
 export function getBestMove(
     gameState: GameState,
@@ -279,7 +312,7 @@ function evaluateMoveEV(
             if (card.rank === 14 || card.rank === 13 || card.rank === 2) {
                 // Only penalize if it's TRULY isolated (no pairs, no straight/flush connectors in hand)
                 if (!hasStraightSynergyInHand && !hasFlushSynergyInHand) {
-                    mcScore += params.edgeCardPenalty; 
+                    mcScore += params.lowCardPenalty; 
                 }
             } else if (card.rank === 12) {
                 // The Queen (12) is the mathematical best card to start a column.
@@ -321,7 +354,7 @@ function evaluateMoveEV(
         // Tactic 3: 3rd Row Intersection Priority (交差点の特異点)
         // Row 2 is the X-Hand component. Locking it early restricts X-hand flexibility.
         if (dice[colIndex] >= 3 && turnCount <= 8) {
-            mcScore -= params.intersectionDelayPenalty; // Flexibility penalty (can be offset if drawValue is massively high)
+            mcScore -= params.row3DelayPenalty; // Flexibility penalty (can be offset if drawValue is massively high)
         }
     }
 

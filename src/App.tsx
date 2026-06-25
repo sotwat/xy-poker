@@ -19,17 +19,19 @@ import { RulesModal } from './components/RulesModal';
 import { TurnTimer } from './components/TurnTimer';
 import { AuthModal } from './components/AuthModal';
 import { MyPage } from './components/MyPage'; // [NEW]
+import { ShowdownPopup } from './components/ShowdownPopup'; // [NEW]
+import type { PopupData } from './components/ShowdownPopup'; // [NEW]
 import { updatePlayerStats, checkAchievements } from './logic/gamification'; // [NEW]
 import { socket, connectSocket } from './logic/online';
 import { supabase } from './supabase';
-import { getBestMove } from './logic/ai';
+import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
 
 function App() {
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
-  const [phase, setPhase] = useState<'setup' | 'playing' | 'scoring' | 'ended'>('setup');
+  const [phase, setPhase] = useState<'setup' | 'turn_selection' | 'playing' | 'scoring' | 'ended'>('setup');
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [placeHidden, setPlaceHidden] = useState(false);
   const [showDiceAnimation, setShowDiceAnimation] = useState(false);
@@ -43,6 +45,9 @@ function App() {
   const [rematchInvited, setRematchInvited] = useState(false);
   const [showFinishAnimation, setShowFinishAnimation] = useState(false);
 
+  // Coin Toss State
+  const [isTossingCoin, setIsTossingCoin] = useState(false);
+  const [tossResult, setTossResult] = useState<0 | 1 | null>(null);
 
   // Online State
   const [mode, setMode] = useState<'local' | 'online'>('local');
@@ -53,7 +58,11 @@ function App() {
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [isQuickMatch, setIsQuickMatch] = useState(false);
   const [isRankedGame, setIsRankedGame] = useState(false); // Track if current game is ranked
-  const [scoringStep, setScoringStep] = useState(-1); // -1: hidden, 0-4: cols, 5: row
+  
+  // Showdown Animation State
+  const [revealedCols, setRevealedCols] = useState<number[]>([]);
+  const [showXHand, setShowXHand] = useState(false);
+  const [currentShowdownPopup, setCurrentShowdownPopup] = useState<PopupData | null>(null);
 
   // Rating State
   const [myRating, setMyRating] = useState<number | null>(null);
@@ -140,6 +149,15 @@ function App() {
       setIsProfileLoaded(true);
     }
   }, [session, isSessionLoading]);
+
+  const handleChooseTurnOrder = (startingPlayer: number) => {
+    const action = { type: 'CHOOSE_TURN_ORDER', payload: { startingPlayer } };
+    dispatch(action as any);
+    if (isOnlineGame && roomId) {
+      socket.emit('game_action', { roomId, action });
+    }
+  };
+
   useEffect(() => {
     // 1. Wait until profile is fully loaded
     if (!isProfileLoaded) return;
@@ -595,6 +613,34 @@ function App() {
     }
   }, [phase]);
 
+  // Turn Selection Logic
+  useEffect(() => {
+    if (phase === 'turn_selection') {
+      setIsTossingCoin(true);
+      setTossResult(currentPlayerIndex as 0 | 1); // 0 (Host/P1) or 1 (Guest/P2/AI)
+
+      const timer = setTimeout(() => {
+        setIsTossingCoin(false);
+      }, 3000); // 3 seconds animation
+
+      return () => clearTimeout(timer);
+    }
+  }, [phase, currentPlayerIndex]);
+
+  // AI Turn Selection Logic (When AI wins the toss)
+  useEffect(() => {
+    if (phase === 'turn_selection' && !isTossingCoin && !isOnlineGame && currentPlayerIndex === 1) {
+      // AI won the toss! Evaluate hand strength to choose First or Second
+      // We use the AI's internal parameters via getBestTurnOrder which can be trained via continuous learning.
+      const shouldGoFirst = getBestTurnOrder(gameState, 1, DEFAULT_AI_PARAMS);
+      
+      setTimeout(() => {
+        const chosenStartingPlayer = shouldGoFirst ? 1 : 0;
+        handleChooseTurnOrder(chosenStartingPlayer);
+      }, 1500); // Small delay for human to see AI is "thinking"
+    }
+  }, [phase, isTossingCoin, currentPlayerIndex, isOnlineGame]);
+
   // Determine if we are in the Lobby view (where version and title inputs are shown)
   // Lobby view is:
   // 1. Local mode AND Setup phase
@@ -612,9 +658,11 @@ function App() {
   useEffect(() => {
     if (gameState.winner) {
       setPhase('ended');
+    } else if (gameState.phase === 'turn_selection') {
+      setPhase('turn_selection');
     } else if (gameState.phase === 'scoring') {
       setPhase('scoring');
-    } else if (gameState.turnCount > 0) {
+    } else if (gameState.turnCount > 0 || gameState.phase === 'playing') {
       setPhase('playing');
     }
   }, [gameState]);
@@ -684,7 +732,9 @@ function App() {
       // Steps: 0-4 (Cols), 5 (Row)
 
       let step = 0;
-      setScoringStep(0);
+      setRevealedCols([]);
+      setShowXHand(false);
+      setCurrentShowdownPopup(null);
 
       // Pre-calculate winners and hand names for valid speech
       const { players } = gameState;
@@ -694,107 +744,97 @@ function App() {
 
       // Helper to map type ID to readable string
       const getReadableHandName = (typeId: string): string => {
-        // Simple mapping from PascalCase to Spaced String
-        // e.g. ThreeOfAKind -> Three of a Kind
         return typeId.replace(/([A-Z])/g, ' $1').trim().replace(/ Of /g, ' of ').replace(/ A /g, ' a ');
       };
 
-      // Col Results (Right-to-Left: 4 -> 0)
-      const colResults = Array.from({ length: 5 }, (_, i) => {
-        const colIndex = 4 - i; // 4, 3, 2, 1, 0
+      // Create ordered indices based on dice values (ascending)
+      const orderedColIndices = [0, 1, 2, 3, 4].sort((a, b) => dice[a] - dice[b]);
+
+      // Pre-evaluate all columns 0-4
+      const colResults = Array.from({ length: 5 }, (_, colIndex) => {
         const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
         const p2Cards = [p2.board[0][colIndex]!, p2.board[1][colIndex]!, p2.board[2][colIndex]!];
 
         const p1Res = evaluateYHand(p1Cards, dice[colIndex]);
         const p2Res = evaluateYHand(p2Cards, dice[colIndex]);
 
-        if (p1Res.rankValue > p2Res.rankValue) return { winner: 'p1', type: p1Res.type };
-        if (p2Res.rankValue > p1Res.rankValue) return { winner: 'p2', type: p2Res.type };
+        if (p1Res.rankValue > p2Res.rankValue) return { winner: 'p1' as const, type: p1Res.type };
+        if (p2Res.rankValue > p1Res.rankValue) return { winner: 'p2' as const, type: p2Res.type };
 
-        // Tie-breaker logic (Kicker)
         for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
           const k1 = p1Res.kickers[k] || 0;
           const k2 = p2Res.kickers[k] || 0;
-          if (k1 > k2) return { winner: 'p1', type: p1Res.type };
-          if (k2 > k1) return { winner: 'p2', type: p2Res.type };
+          if (k1 > k2) return { winner: 'p1' as const, type: p1Res.type };
+          if (k2 > k1) return { winner: 'p2' as const, type: p2Res.type };
         }
-        return { winner: 'draw', type: null };
+        return { winner: 'draw' as const, type: null };
       });
 
       // Row Result (X-Hand)
       const p1XRes = evaluateXHand(p1.board[2] as Card[]);
       const p2XRes = evaluateXHand(p2.board[2] as Card[]);
 
-      // Prevent multiple triggers for the same game end state
-      // Use roomId + winner or just simple phase check with reset
-      const gameSignature = `${roomId}-${gameState.winner}-${gameState.turnCount}`; // unique enough
+      const gameSignature = `${roomId}-${gameState.winner}-${gameState.turnCount}`;
       if (processedGameRef.current === gameSignature) {
-        // Already started animation for this game end, do not restart
-        // But we need to keep the interval logic if it was in component state...
-        // Actually, if we return early, we might break the interval if this effect re-runs.
-        // So if we return early, the animation stops.
-
-        // Better approach: Only GUARD the "Initial Speech" and "Start",
-        // but allow the effect to mount?
-        // No, if the effect re-mounts, we want to CONTINUE or just DO NOTHING if it's already done?
-        // If we want to ensure it runs EXACTLY ONCE, we should just check if we are already scoring.
-        // But `scoringStep` state will be preserved? No, `setScoringStep(-1)` is called in the else block.
-        // Getting complicated. Simple fix:
-        // Just rely on speech cancel?
-        // The issue is likely the effect running twice quickly.
         return;
       }
       processedGameRef.current = gameSignature;
 
-      // Calculate Results locally for display
-      // The original colResults and rowResult calculations are already done above.
-      // This part of the instruction seems to be a re-calculation or a placeholder for a refactor.
-      // Keeping the original calculations and just adding the ref check.
-      // If `calculateColumnResults` and `calculateXHandScores` are new helper functions,
-      // they would need to be defined elsewhere. Assuming the existing `colResults` and `p1XRes`/`p2XRes`
-      // are the intended source for the `rowResult` calculation.
       const { p1Score: p1X, p2Score: p2X } = calculateXHandScores(p1XRes, p2XRes);
-      let rowResult = { winner: 'draw', type: null as string | null };
+      let rowResult: { winner: 'p1' | 'p2' | 'draw'; type: string | null } = { winner: 'draw', type: null };
       if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type };
       else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type };
 
-      // Initial Speech (Step 0)
-      const initialRes = colResults[0];
-      if (initialRes.winner !== 'draw' && initialRes.type) {
-        speakText(getReadableHandName(initialRes.type));
-      }
-      playClickSound();
+      // Helper for playing step
+      const playStep = (currentStep: number) => {
+        playClickSound();
+
+        if (currentStep <= 4) {
+          const currentCol = orderedColIndices[currentStep];
+          setRevealedCols(prev => [...prev, currentCol]);
+          
+          const res = colResults[currentCol];
+          setCurrentShowdownPopup({
+            text: res.type ? getReadableHandName(res.type) : 'DRAW',
+            winner: res.winner,
+            diceValue: dice[currentCol],
+            isXHand: false
+          });
+
+          if (res.winner !== 'draw' && res.type) {
+            speakText(getReadableHandName(res.type));
+          }
+        } else if (currentStep === 5) {
+          setShowXHand(true);
+          
+          setCurrentShowdownPopup({
+            text: rowResult.type ? getReadableHandName(rowResult.type) : 'DRAW',
+            winner: rowResult.winner,
+            isXHand: true
+          });
+
+          if (rowResult.winner !== 'draw' && rowResult.type) {
+            speakText(getReadableHandName(rowResult.type));
+          }
+        }
+      };
+
+      // Initial Step (Step 0)
+      playStep(0);
 
       const interval = setInterval(() => {
         step++;
         if (step <= 5) {
-          setScoringStep(step);
-          playClickSound();
-
-          // Speak logic
-          let res: { winner: string, type: string | null } | null = null;
-          if (step <= 4) {
-            res = colResults[step];
-          } else if (step === 5) {
-            res = rowResult;
-          }
-
-          if (res && res.winner !== 'draw' && res.type) {
-            // Slight delay for speech to not clash perfectly with click sound?
-            // Or just fire it. Browsers handle overlapping/queuing or replace.
-            // speakText cancels previous, so it's fine.
-            speakText(getReadableHandName(res.type));
-          }
-
+          playStep(step);
         } else {
           // Finished
           clearInterval(interval);
           setTimeout(() => {
-            // Auto-show modal for everyone now that finish is automatic
+            setCurrentShowdownPopup(null); // Hide popup before showing modal
             setShowResultsModal(true);
-          }, 1000);
+          }, 1500);
         }
-      }, 1500); // Increased to 1500ms to allow speech time
+      }, 1200); // 1200ms per popup animation
 
       if (mode === 'local') {
         const { winner } = gameState;
@@ -974,7 +1014,9 @@ function App() {
     setShowDiceAnimation(true);
     setShowResultsModal(false);
     processedGameRef.current = null; // Reset animation trigger
-    setScoringStep(-1);
+    setRevealedCols([]);
+    setShowXHand(false);
+    setCurrentShowdownPopup(null);
   };
 
   const startBotMatch = () => {
@@ -1304,7 +1346,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06251620</span>}
+          {showVersion && <span className="version">v06251852</span>}
         </div>
 
         <button
@@ -1507,6 +1549,50 @@ function App() {
                     )}
                   </div>
                 )}
+                {phase === 'turn_selection' && (
+                  <div className="turn-selection-overlay">
+                    <h2 style={{ marginBottom: '20px' }}>Coin Toss</h2>
+                    
+                    <div className="coin-container">
+                      <div className={`coin ${isTossingCoin ? 'flipping' : 'flipped'} ${!isTossingCoin && tossResult !== null ? `winner-${tossResult}` : ''}`}>
+                        <div className="coin-face coin-front">P1</div>
+                        <div className="coin-face coin-back">P2</div>
+                      </div>
+                    </div>
+
+                    {!isTossingCoin && tossResult !== null && (
+                      <div className="toss-result-area">
+                        <div className="toss-winner-text" style={{ color: tossResult === 0 ? '#4facfe' : '#ff0844' }}>
+                          {tossResult === 0 ? (mode === 'online' && playerRole === 'guest' ? opponentName : playerName) : (mode === 'online' && playerRole === 'guest' ? playerName : opponentName)} won the toss!
+                        </div>
+                        
+                        {/* If it's my turn to choose (I won the toss) */}
+                        {((mode === 'local' && tossResult === 0) || (mode === 'online' && ((playerRole === 'host' && tossResult === 0) || (playerRole === 'guest' && tossResult === 1)))) ? (
+                          <div className="turn-choice-buttons">
+                            <button onClick={() => {
+                              playClickSound();
+                              const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
+                              handleChooseTurnOrder(myIndex);
+                            }}>
+                              First (先攻)
+                            </button>
+                            <button onClick={() => {
+                              playClickSound();
+                              const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
+                              handleChooseTurnOrder(opIndex);
+                            }}>
+                              Second (後攻)
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="waiting-turn-text">
+                            Waiting for opponent to choose...
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
                 {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
                   <div className="play-area">
 
@@ -1524,8 +1610,10 @@ function App() {
                       selectedSkin={selectedSkin}
                       selectedCardSkin={selectedCardSkin}
                       selectedBoardSkin={selectedBoardSkin}
-                      scoringStep={scoringStep}
+                      revealedCols={revealedCols}
+                      showXHand={showXHand}
                     />
+                    <ShowdownPopup data={currentShowdownPopup} />
                   </div>
                 )}
               </main>
@@ -1599,13 +1687,9 @@ function App() {
                     <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
                       <button className="btn-primary" onClick={() => {
                         playClickSound();
-                        if (scoringStep === -1) {
-                          setScoringStep(0);
-                        } else {
-                          setShowResultsModal(true);
-                        }
+                        setShowResultsModal(true);
                       }}>
-                        {scoringStep === -1 ? 'Show Results' : 'Show Details'}
+                        Show Details
                       </button>
                       <button className="btn-secondary" onClick={() => {
                         returnToLobby();
@@ -1633,7 +1717,6 @@ function App() {
                           setPhase('setup');
                         }
                         setShowResultsModal(false);
-                        setScoringStep(-1);
                       }}
                     />
                   )}

@@ -37,6 +37,7 @@ export type GameAction =
             }
         }
     }
+    | { type: 'CHOOSE_TURN_ORDER'; payload: { startingPlayer: number } }
     | { type: 'PLACE_CARD'; cardId: string; colIndex: number }
     | { type: 'DRAW_CARD' }
     | { type: 'TOGGLE_HIDDEN'; cardId: string } // Only for cards on board? Or during placement? "Hidden placement". Usually you decide when placing.
@@ -105,7 +106,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
             return {
                 ...INITIAL_GAME_STATE,
-                phase: 'playing',
+                phase: 'turn_selection',
                 deck: deck2,
                 currentPlayerIndex: startingPlayer,
                 players: [
@@ -125,6 +126,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
                     },
                 ],
                 turnCount: 1,
+            };
+        }
+        
+        case 'CHOOSE_TURN_ORDER': {
+            return {
+                ...state,
+                phase: 'playing',
+                currentPlayerIndex: action.payload.startingPlayer,
             };
         }
 
