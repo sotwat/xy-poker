@@ -17,7 +17,6 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     const opponent = gameState.players[playerIndex === 0 ? 1 : 0];
     const hand = player.hand;
     const board = player.board;
-    const dice = player.dice;
 
     // 1. Identify valid columns
     const validColumns: number[] = [];
@@ -42,8 +41,6 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     let oppScore = opponent.score || 0;
     const isLosingBadly = (oppScore - myScore) > 15;
     
-    const avgDice = dice.reduce((a, b) => a + b, 0) / 5;
-    const isHighStakes = avgDice >= 3.5;
 
     let bestMove = { cardId: hand[0].id, colIndex: validColumns[0], isHidden: false };
     let bestScore = -Infinity;
@@ -54,7 +51,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     for (const card of hand) {
         for (const col of validColumns) {
             // Calculate our EV for this move
-            let myScoreEV = evaluateMoveEV(player, opponent, card, col, remainingDeck, isLosingBadly, isHighStakes);
+            let myScoreEV = evaluateMoveEV(player, opponent, card, col, remainingDeck, isLosingBadly);
             if (myScoreEV === -Infinity) continue;
 
             // ==========================================
@@ -85,7 +82,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
                 for (const oppCard of opponent.hand) {
                     for (const oppCol of oppValidColumns) {
                         // The opponent evaluates their move against our hypothetical new board
-                        let oppEV = evaluateMoveEV(opponent, hypotheticalPlayer, oppCard, oppCol, remainingDeck, !isLosingBadly, isHighStakes);
+                        let oppEV = evaluateMoveEV(opponent, hypotheticalPlayer, oppCard, oppCol, remainingDeck, !isLosingBadly);
                         if (oppEV > maxOppEV) maxOppEV = oppEV;
                     }
                 }
@@ -118,8 +115,7 @@ function evaluateMoveEV(
     card: Card,
     colIndex: number,
     remainingDeck: Card[],
-    isLosingBadly: boolean,
-    isHighStakes: boolean
+    isLosingBadly: boolean
 ): number {
     const board = actor.board;
     const dice = actor.dice;
@@ -148,10 +144,17 @@ function evaluateMoveEV(
     mcScore += alignmentBonus;
     
     // X-hand (bottom row) strategy
+    // The value of the X-hand scales INVERSELY with the total dice points.
+    // If total dice is low (e.g. 5), X-hand is worth more than all columns combined.
+    // If total dice is high (e.g. 30), X-hand is just a small bonus.
     if (emptySlotIdx === 2) {
+        const totalDice = dice.reduce((a, b) => a + b, 0);
+        // Inverse scaling: max multiplier at dice=5, min at dice=30
+        const xHandMultiplier = 30 / Math.max(5, totalDice);
+        
         const learning = getLearningData();
         const xScore = evaluateXHandPotential(board, card, colIndex) * learning.xHandFocus;
-        mcScore += xScore * (isHighStakes ? 0.8 : 1.2);
+        mcScore += xScore * xHandMultiplier;
     }
 
     // Opponent blocking logic natively handled by Level 3 ExpectiMax
