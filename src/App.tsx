@@ -616,22 +616,35 @@ function App() {
 
   // Turn Selection Logic
   useEffect(() => {
+    let timer1: ReturnType<typeof setTimeout>;
+    let timer2: ReturnType<typeof setTimeout>;
+
     if (phase === 'turn_selection') {
-      setIsTossingCoin(true);
-      playCoinTossSound();
-      setTossResult(currentPlayerIndex as 0 | 1); // 0 (Host/P1) or 1 (Guest/P2/AI)
-
-      const timer = setTimeout(() => {
+      if (showDiceAnimation) {
         setIsTossingCoin(false);
-      }, 3000); // 3 seconds animation
+        setTossResult(null);
+      } else {
+        timer1 = setTimeout(() => {
+          setIsTossingCoin(true);
+          playCoinTossSound();
+          setTossResult(currentPlayerIndex as 0 | 1); // 0 (Host/P1) or 1 (Guest/P2/AI)
 
-      return () => clearTimeout(timer);
+          timer2 = setTimeout(() => {
+            setIsTossingCoin(false);
+          }, 3000); // 3 seconds animation
+        }, 1500); // 1.5s pause to see hand
+      }
     }
-  }, [phase, currentPlayerIndex]);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, [phase, showDiceAnimation, currentPlayerIndex]);
 
   // AI Turn Selection Logic (When AI wins the toss)
   useEffect(() => {
-    if (phase === 'turn_selection' && !isTossingCoin && !isOnlineGame && currentPlayerIndex === 1) {
+    if (phase === 'turn_selection' && !isTossingCoin && tossResult !== null && !isOnlineGame && currentPlayerIndex === 1) {
       // AI won the toss! Evaluate hand strength to choose First or Second
       // We use the AI's internal parameters via getBestTurnOrder which can be trained via continuous learning.
       const shouldGoFirst = getBestTurnOrder(gameState, 1, DEFAULT_AI_PARAMS);
@@ -641,7 +654,7 @@ function App() {
         handleChooseTurnOrder(chosenStartingPlayer);
       }, 1500); // Small delay for human to see AI is "thinking"
     }
-  }, [phase, isTossingCoin, currentPlayerIndex, isOnlineGame, gameState]);
+  }, [phase, isTossingCoin, tossResult, currentPlayerIndex, isOnlineGame, gameState]);
 
   // Turn Selection Timer Logic (Human)
   useEffect(() => {
@@ -1386,7 +1399,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06251933</span>}
+          {showVersion && <span className="version">v06251940</span>}
         </div>
 
         <button
@@ -1589,7 +1602,7 @@ function App() {
                     )}
                   </div>
                 )}
-                {phase === 'turn_selection' && (
+                {phase === 'turn_selection' && (isTossingCoin || tossResult !== null) && (
                   <div className="turn-selection-overlay">
                     <h2 style={{ marginBottom: '20px' }}>Coin Toss</h2>
                     {isTossingCoin ? (

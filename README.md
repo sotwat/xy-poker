@@ -83,6 +83,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v06251940** (2026-06-25): **UI/UX Enhancement** - Adjusted the timing of the Coin Toss sequence at the start of a match. The sequence now correctly waits for the initial dice animation to complete, then provides a 1.5-second pause to allow players to clearly view their initial hand distribution in the background before the Coin Toss overlay appears and the flip animation begins.
 1. **v06251936** (2026-06-25): **UI/UX Enhancement** - Fixed an issue where the Showdown sequence would speed ahead of the TTS voice. The animation sequence now intelligently waits for the previous TTS voice readout to completely finish before proceeding to the next column, ensuring audio and visual elements are perfectly synchronized.
 1. **v06251933** (2026-06-25): **UI/UX Enhancement** - Fixed an issue where the user's hand was unreadable during the coin toss / turn selection phase. Removed the heavy blur effect (`backdrop-filter: blur`) from the overlay, ensuring the hand is clearly visible so players can make informed decisions.
 1. **v06251930** (2026-06-25): **Bug Fix** - Fixed a critical issue where the Showdown UI animations would skip or fail to display if multiple columns had the same hand type. This was caused by React not re-mounting the component when the CSS animation key remained identical. Also removed the "YOU:"/"OPP.:" text prefixes during showdown as requested.
