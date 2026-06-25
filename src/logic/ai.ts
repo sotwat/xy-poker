@@ -26,25 +26,25 @@ export interface AiParams {
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
-    pureStraightFlushBonus: 800,
-    pureStraightBonus: 600,
-    flushBonus: 50,
-    pairPenalty: -300,
-    tripsInHandBonus: 1000,
-    pairInHandBonus: 200,
-    lowCardPenalty: -400,
-    queenFirstRowBonus: 200,
-    xHandBaseMultiplier: 30,
-    trashBinRushBase: 50,
-    trashBinRushMultiplier: 10,
-    drawValueBase: 200,
-    showdownDelayPenalty: 500,
-    row3DelayPenalty: 200,
-    bluffBonus: 150,
-    mcSimulations: 30, // Level 2 default
+    pureStraightFlushBonus: 57,
+    pureStraightBonus: 2,
+    flushBonus: 14,
+    pairPenalty: -2,
+    tripsInHandBonus: 99,
+    pairInHandBonus: 12,
+    lowCardPenalty: -2,
+    queenFirstRowBonus: 2,
+    xHandBaseMultiplier: 2,
+    trashBinRushBase: 2,
+    trashBinRushMultiplier: 2,
+    drawValueBase: 32,
+    showdownDelayPenalty: 10,
+    row3DelayPenalty: 131,
+    bluffBonus: 2,
+    mcSimulations: 30, // Kept higher for production play strength
     turnOrderBaseFirstValue: 0,
-    turnOrderPairBonus: 200,
-    turnOrderHighCardBonus: 50
+    turnOrderPairBonus: 2,
+    turnOrderHighCardBonus: 2
 };
 
 // ==========================================

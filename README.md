@@ -83,6 +83,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v06251923** (2026-06-25): **AI Engine Update** - Integrated the latest champion AI weights from Generation 3204. The AI has completely abandoned its previous "pair-hoarding" strategy in favor of concealing "Three of a kind" (trips) in hand for sudden surprise attacks. Furthermore, it now shows a much higher tolerance for playing low-rank cards when necessary, resulting in a more flexible and deadly opponent. The official `strategy.md` guide has been updated to reflect this new meta.
 1. **v06251920** (2026-06-25): **UI/UX Enhancement** - Improved the Showdown animation clarity by explicitly indicating whether the winning hand belongs to "YOU" or "OPP." (Opponent) in both the text display and the TTS voice readout. Also changed the TTS voice to a more universally appealing and natural-sounding English voice (e.g., Google US English or Samantha) instead of the default robotic system voice.
 1. **v06251915** (2026-06-25): **Bug Fix** - Fixed an issue where the Showdown animation text was rendering blurry on some browsers. Removed hardware acceleration scaling quirks (`transform: scale(0.5)`) and `filter: blur(10px)` that were causing the browser to rasterize the text at a low resolution.
 1. **v06251910** (2026-06-25): **Bug Fix** - Fixed an issue where the coin toss 3D animation would not play during the "tossing" phase. The coin now visibly flips in the air before landing on the winning player's color.
