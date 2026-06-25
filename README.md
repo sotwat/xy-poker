@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `06251620` (2026-06-25 16:20)
+- **Current Version:** `06252042` (2026-06-25 20:42)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -83,6 +83,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v06252042** (2026-06-25): **UI/UX Enhancement** - Overhauled the coin toss animation. The outer gold ring of the coin remains a perfect circle at all times without deformation, while only the inner disc (`.coin-inner`) flips back and forth horizontally via `scaleX` and background color swapping. This completely resolves the issue where the coin would collapse into a thin flat line or an ugly thin ellipse during rotation, delivering a smooth and clear blue/red (🔵/🔴) alternating coin toss visual.
 1. **v06251948** (2026-06-25): **UI/UX Enhancement** - Completely redesigned the Coin Toss animation to look like a realistic 3D metallic coin with distinct textures for both faces. Fixed an issue where the coin animation would flip unnaturally on the wrong axis. Also addressed a bug reported in earlier versions where the AI would select its turn order before the coin toss animation even started.
 1. **v06251940** (2026-06-25): **UI/UX Enhancement** - Adjusted the timing of the Coin Toss sequence at the start of a match. The sequence now correctly waits for the initial dice animation to complete, then provides a 1.5-second pause to allow players to clearly view their initial hand distribution in the background before the Coin Toss overlay appears and the flip animation begins.
 1. **v06251936** (2026-06-25): **UI/UX Enhancement** - Fixed an issue where the Showdown sequence would speed ahead of the TTS voice. The animation sequence now intelligently waits for the previous TTS voice readout to completely finish before proceeding to the next column, ensuring audio and visual elements are perfectly synchronized.
