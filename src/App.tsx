@@ -1442,7 +1442,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06252022</span>}
+          {showVersion && <span className="version">v06252027</span>}
         </div>
 
         <button
@@ -1650,24 +1650,12 @@ function App() {
                     <h2 style={{ marginBottom: '20px' }}>Coin Toss</h2>
                     {isTossingCoin ? (
                       <div className="coin-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div className={`coin ${isTossingCoin ? 'flipping' : 'flipped'} ${tossResult !== null ? `winner-${tossResult}` : ''}`}>
-                          <div className="coin-edge" style={{ transform: "translateZ(1px)" }}></div>
-                          <div className="coin-edge" style={{ transform: "translateZ(2px)" }}></div>
-                          <div className="coin-edge" style={{ transform: "translateZ(3px)" }}></div>
-                          <div className="coin-face coin-front">先</div>
-                          <div className="coin-face coin-back">後</div>
-                        </div>
+                        <div className={`coin flipping winner-${tossResult ?? 0}`} />
                         <h2 style={{ marginTop: '20px' }}>Tossing Coin...</h2>
                       </div>
                     ) : (
                       <div className="coin-container">
-                        <div className={`coin ${isTossingCoin ? 'flipping' : 'flipped'} ${tossResult !== null ? `winner-${tossResult}` : ''}`}>
-                          <div className="coin-edge" style={{ transform: "translateZ(1px)" }}></div>
-                          <div className="coin-edge" style={{ transform: "translateZ(2px)" }}></div>
-                          <div className="coin-edge" style={{ transform: "translateZ(3px)" }}></div>
-                          <div className="coin-face coin-front">先</div>
-                          <div className="coin-face coin-back">後</div>
-                        </div>
+                        <div className={`coin flipped winner-${tossResult ?? 0}`} />
                       </div>
                     )}
 
