@@ -660,8 +660,9 @@ body:has(.game-result-overlay) .app-header {
 }
 
 .coin-container {
-  width: 140px;
-  height: 140px;
+  perspective: 700px;
+  width: 160px;
+  height: 160px;
   margin-bottom: 30px;
   display: flex;
   align-items: center;
@@ -669,76 +670,72 @@ body:has(.game-result-overlay) .app-header {
 }
 
 .coin {
-  width: 140px;
-  height: 140px;
+  width: 160px;
+  height: 160px;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+/* 青面（表）・赤面（裏） */
+.coin-face {
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
-  background: #2563eb; /* 初期は青 */
-  border: 5px solid rgba(255, 255, 255, 0.35);
+  backface-visibility: hidden;
+  border: 5px solid rgba(255,255,255,0.3);
+}
+
+.coin-blue {
+  background: radial-gradient(circle at 38% 35%, #60a5fa, #1d4ed8 70%);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    inset 0 2px 6px rgba(255, 255, 255, 0.25),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+    0 0 0 3px rgba(255,255,255,0.15),
+    0 8px 30px rgba(29, 78, 216, 0.6);
+}
+
+.coin-red {
+  background: radial-gradient(circle at 38% 35%, #f87171, #b91c1c 70%);
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,0.15),
+    0 8px 30px rgba(185, 28, 28, 0.6);
+  transform: rotateY(180deg); /* 裏面: 180deg回転時に表向き */
 }
 
 /* アニメーション中 */
 .coin.flipping.winner-0 {
-  animation: coin-flip-2d-blue 2.5s ease-out forwards;
+  animation: coin-rotateY-blue 3s ease-out forwards;
 }
 .coin.flipping.winner-1 {
-  animation: coin-flip-2d-red 2.5s ease-out forwards;
+  animation: coin-rotateY-red 3s ease-out forwards;
 }
 
-/* 静止状態（結果表示） */
+/* 静止状態 */
 .coin.flipped.winner-0 {
-  background: #2563eb; /* 青 = プレイヤー1が選択権 */
-  box-shadow:
-    0 12px 40px rgba(37, 99, 235, 0.6),
-    inset 0 2px 6px rgba(255, 255, 255, 0.3);
+  transform: rotateY(1440deg); /* 4回転 → 青面 */
 }
 .coin.flipped.winner-1 {
-  background: #dc2626; /* 赤 = プレイヤー2が選択権 */
-  box-shadow:
-    0 12px 40px rgba(220, 38, 38, 0.6),
-    inset 0 2px 6px rgba(255, 255, 255, 0.3);
+  transform: rotateY(1620deg); /* 4.5回転 → 赤面 */
 }
 
 /*
-  2D flip: scaleX が 0 の瞬間にコインが端になり非表示。
-  そこで色を切り替えることで "表裏" を表現。
-  青始まり → 最後が青（winner-0）
+  Y軸回転: 縦軸を中心にコインが回転
+  backface-visibility: hidden により青面・赤面が交互に見える
+  1440deg (4回転) → 青面 (winner-0)
+  1620deg (4.5回転) → 赤面 (winner-1)
 */
-@keyframes coin-flip-2d-blue {
-  0%   { transform: translateY(0) scaleX(1);      background: #2563eb; }
-  7%   { transform: translateY(-40px) scaleX(0);  }
-  14%  { transform: translateY(-90px) scaleX(1);  background: #dc2626; }
-  21%  { transform: translateY(-110px) scaleX(0); }
-  28%  { transform: translateY(-100px) scaleX(1); background: #2563eb; }
-  35%  { transform: translateY(-80px) scaleX(0);  }
-  42%  { transform: translateY(-55px) scaleX(1);  background: #dc2626; }
-  50%  { transform: translateY(-35px) scaleX(0);  }
-  60%  { transform: translateY(-18px) scaleX(1);  background: #2563eb; }
-  70%  { transform: translateY(-8px) scaleX(0);   }
-  82%  { transform: translateY(-2px) scaleX(1);   background: #dc2626; }
-  90%  { transform: translateY(0) scaleX(0);      }
-  100% { transform: translateY(0) scaleX(1);      background: #2563eb; }
+@keyframes coin-rotateY-blue {
+  0%   { transform: translateY(0) rotateY(0deg) scale(1); }
+  25%  { transform: translateY(-70px) rotateY(540deg) scale(1.1); }
+  60%  { transform: translateY(-20px) rotateY(1200deg) scale(1.05); }
+  85%  { transform: translateY(-5px) rotateY(1380deg) scale(1); }
+  100% { transform: translateY(0) rotateY(1440deg) scale(1); }
 }
 
-/*
-  青始まり → 最後が赤（winner-1）
-*/
-@keyframes coin-flip-2d-red {
-  0%   { transform: translateY(0) scaleX(1);      background: #2563eb; }
-  7%   { transform: translateY(-40px) scaleX(0);  }
-  14%  { transform: translateY(-90px) scaleX(1);  background: #dc2626; }
-  21%  { transform: translateY(-110px) scaleX(0); }
-  28%  { transform: translateY(-100px) scaleX(1); background: #2563eb; }
-  35%  { transform: translateY(-80px) scaleX(0);  }
-  42%  { transform: translateY(-55px) scaleX(1);  background: #dc2626; }
-  50%  { transform: translateY(-35px) scaleX(0);  }
-  60%  { transform: translateY(-18px) scaleX(1);  background: #2563eb; }
-  70%  { transform: translateY(-8px) scaleX(0);   }
-  82%  { transform: translateY(-2px) scaleX(1);   background: #dc2626; }
-  100% { transform: translateY(0) scaleX(1);      background: #dc2626; }
+@keyframes coin-rotateY-red {
+  0%   { transform: translateY(0) rotateY(0deg) scale(1); }
+  25%  { transform: translateY(-70px) rotateY(540deg) scale(1.1); }
+  60%  { transform: translateY(-20px) rotateY(1380deg) scale(1.05); }
+  85%  { transform: translateY(-5px) rotateY(1560deg) scale(1); }
+  100% { transform: translateY(0) rotateY(1620deg) scale(1); }
 }
 
 .turn-choice-buttons {
