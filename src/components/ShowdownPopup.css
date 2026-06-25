@@ -40,7 +40,7 @@
     border: 2px solid #fff;
     padding: 30px 80px;
     border-radius: 12px;
-    transform: scale(0.5) skewX(-10deg);
+    transform: scale(1) skewX(0deg);
     opacity: 0;
     animation: popup-bounce 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
@@ -66,7 +66,6 @@
     100% {
         transform: scale(1.3) skewX(10deg);
         opacity: 0;
-        filter: blur(10px);
     }
 }
 

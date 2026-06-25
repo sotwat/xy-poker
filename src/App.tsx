@@ -1379,7 +1379,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06251900</span>}
+          {showVersion && <span className="version">v06251915</span>}
         </div>
 
         <button
@@ -1585,13 +1585,22 @@ function App() {
                 {phase === 'turn_selection' && (
                   <div className="turn-selection-overlay">
                     <h2 style={{ marginBottom: '20px' }}>Coin Toss</h2>
-                    
-                    <div className="coin-container">
-                      <div className={`coin ${isTossingCoin ? 'flipping' : 'flipped'} ${!isTossingCoin && tossResult !== null ? `winner-${tossResult}` : ''}`}>
-                        <div className="coin-face coin-front">P1</div>
-                        <div className="coin-face coin-back">P2</div>
+                    {isTossingCoin ? (
+                      <div className="coin-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div className={`coin ${isTossingCoin ? 'flipping' : 'flipped'} ${tossResult !== null ? `winner-${tossResult}` : ''}`}>
+                          <div className="coin-face coin-front">P1</div>
+                          <div className="coin-face coin-back">P2</div>
+                        </div>
+                        <h2 style={{ marginTop: '20px' }}>Tossing Coin...</h2>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="coin-container">
+                        <div className={`coin ${isTossingCoin ? 'flipping' : 'flipped'} ${tossResult !== null ? `winner-${tossResult}` : ''}`}>
+                          <div className="coin-face coin-front">P1</div>
+                          <div className="coin-face coin-back">P2</div>
+                        </div>
+                      </div>
+                    )}
 
                     {!isTossingCoin && tossResult !== null && (
                       <div className="toss-result-area">
