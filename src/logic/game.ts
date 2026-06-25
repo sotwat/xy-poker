@@ -250,11 +250,19 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
                 nextPhase = 'scoring';
             }
 
+            // Auto-pass if the next player's board is full
+            let actualNextPlayerIdx = nextPlayerIdx;
+            if (actualNextPlayerIdx === 0 && p1Full && !p2Full) {
+                actualNextPlayerIdx = 1; // pass back to p2
+            } else if (actualNextPlayerIdx === 1 && p2Full && !p1Full) {
+                actualNextPlayerIdx = 0; // pass back to p1
+            }
+
             return {
                 ...state,
                 players: newPlayers,
                 deck: deckAfterDraw,
-                currentPlayerIndex: nextPlayerIdx,
+                currentPlayerIndex: actualNextPlayerIdx,
                 phase: nextPhase,
                 turnCount: state.turnCount + 1,
             };

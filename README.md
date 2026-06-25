@@ -277,3 +277,5 @@ Schema migrations are tracked as incremental SQL files at the root:
 - `supa_schema_v2.sql` ~ `supa_schema_v5_contact.sql` — Incremental patches
 
 Apply in order when setting up a new Supabase project.
+- コイントスの3D表現を強化
+- UIのダブルクリックによる連続配置バグを修正

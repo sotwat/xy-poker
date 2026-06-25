@@ -329,6 +329,7 @@ function App() {
 
   // Timeout ref for Quick Match Bot Fallback
   const quickMatchTimeoutRef = useRef<any>(null);
+  const lastActionTimeRef = useRef<number>(0);
 
   useEffect(() => {
     // Clear timeout if quick match ends (game starts or cancelled)
@@ -1297,6 +1298,8 @@ function App() {
 
   const handleColumnClick = (colIndex: number) => {
     // Determine if it is valid to click
+    const now = Date.now();
+    if (now - lastActionTimeRef.current < 400) return; // Prevent double click multi-placements
 
     // Resume Audio on interaction just in case
     warmupAudio();
@@ -1326,6 +1329,7 @@ function App() {
       socket.emit('game_action', { roomId, action });
     }
 
+    lastActionTimeRef.current = Date.now();
     setSelectedCardId(null);
     setPlaceHidden(false);
   };
@@ -1608,16 +1612,26 @@ function App() {
                     {isTossingCoin ? (
                       <div className="coin-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div className={`coin ${isTossingCoin ? 'flipping' : 'flipped'} ${tossResult !== null ? `winner-${tossResult}` : ''}`}>
-                          <div className="coin-face coin-front">P1</div>
-                          <div className="coin-face coin-back">P2</div>
+                          <div className="coin-edge" style={{ transform: "translateZ(1px)" }}></div>
+                          <div className="coin-edge" style={{ transform: "translateZ(2px)" }}></div>
+                          <div className="coin-edge" style={{ transform: "translateZ(3px)" }}></div>
+                          <div className="coin-edge" style={{ transform: "translateZ(4px)" }}></div>
+                          <div className="coin-edge" style={{ transform: "translateZ(5px)" }}></div>
+                          <div className="coin-face coin-front" style={{ transform: "translateZ(6px)" }}>P1</div>
+                          <div className="coin-face coin-back" style={{ transform: "rotateY(180deg) translateZ(0px)" }}>P2</div>
                         </div>
                         <h2 style={{ marginTop: '20px' }}>Tossing Coin...</h2>
                       </div>
                     ) : (
                       <div className="coin-container">
                         <div className={`coin ${isTossingCoin ? 'flipping' : 'flipped'} ${tossResult !== null ? `winner-${tossResult}` : ''}`}>
-                          <div className="coin-face coin-front">P1</div>
-                          <div className="coin-face coin-back">P2</div>
+                          <div className="coin-edge" style={{ transform: "translateZ(1px)" }}></div>
+                          <div className="coin-edge" style={{ transform: "translateZ(2px)" }}></div>
+                          <div className="coin-edge" style={{ transform: "translateZ(3px)" }}></div>
+                          <div className="coin-edge" style={{ transform: "translateZ(4px)" }}></div>
+                          <div className="coin-edge" style={{ transform: "translateZ(5px)" }}></div>
+                          <div className="coin-face coin-front" style={{ transform: "translateZ(6px)" }}>P1</div>
+                          <div className="coin-face coin-back" style={{ transform: "rotateY(180deg) translateZ(0px)" }}>P2</div>
                         </div>
                       </div>
                     )}

@@ -689,11 +689,17 @@ body:has(.game-result-overlay) .app-header {
   justify-content: center;
   font-size: 3rem;
   font-weight: 900;
-  border: 10px solid #d4af37;
-  box-shadow: 
-    0 10px 20px rgba(0,0,0,0.6), 
-    inset 0 0 0 4px #f9e596,
-    inset 0 0 20px rgba(212, 175, 55, 0.8);
+  border: 4px solid #d4af37; /* Reduced from 10px to not clip inner content */
+  box-shadow: inset 0 0 0 4px #f9e596, inset 0 0 20px rgba(212, 175, 55, 0.8);
+}
+
+.coin-edge {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #b08d25;
+  border: 4px solid #8e6f15;
 }
 
 .coin-front {
