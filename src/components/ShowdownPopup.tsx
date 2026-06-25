@@ -2,6 +2,7 @@ import React from 'react';
 import './ShowdownPopup.css';
 
 export interface PopupData {
+    id: string;
     text: string;
     winner: 'p1' | 'p2' | 'draw';
     diceValue?: number;
@@ -17,7 +18,7 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
 
     // We use a key to force re-mounting and re-triggering animations
     // whenever the text or state changes.
-    const animKey = `${data.text}-${data.diceValue}-${data.isXHand}`;
+    const animKey = data.id;
     
     const winnerClass = data.winner === 'p1' ? 'popup-p1' : data.winner === 'p2' ? 'popup-p2' : 'popup-draw';
 

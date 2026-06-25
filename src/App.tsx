@@ -827,31 +827,29 @@ function App() {
           setRevealedCols(prev => [...prev, currentCol]);
           
           const res = colResults[currentCol];
-          const isMe = (mode === 'online' && playerRole === 'guest') ? res.winner === 'p2' : res.winner === 'p1';
           setCurrentShowdownPopup({
-            text: res.type ? `${isMe ? 'YOU' : 'OPP.'}: ${getReadableHandName(res.type)}` : 'DRAW',
+            id: `col-${currentStep}-${Date.now()}`,
+            text: res.type ? getReadableHandName(res.type) : 'DRAW',
             winner: res.winner,
             diceValue: dice[currentCol],
             isXHand: false
           });
 
           if (res.winner !== 'draw' && res.type) {
-            const prefix = isMe ? "You got " : "Opponent got ";
-            speakText(prefix + getReadableHandName(res.type));
+            speakText(getReadableHandName(res.type));
           }
         } else if (currentStep === 5) {
           setShowXHand(true);
-          const isMeX = (mode === 'online' && playerRole === 'guest') ? rowResult.winner === 'p2' : rowResult.winner === 'p1';
           
           setCurrentShowdownPopup({
-            text: rowResult.type ? `${isMeX ? 'YOU' : 'OPP.'}: ${getReadableHandName(rowResult.type)}` : 'DRAW',
+            id: `row-${currentStep}-${Date.now()}`,
+            text: rowResult.type ? getReadableHandName(rowResult.type) : 'DRAW',
             winner: rowResult.winner,
             isXHand: true
           });
 
           if (rowResult.winner !== 'draw' && rowResult.type) {
-            const prefix = isMeX ? "You got " : "Opponent got ";
-            speakText(prefix + getReadableHandName(rowResult.type));
+            speakText(getReadableHandName(rowResult.type));
           }
         }
       };
@@ -1383,7 +1381,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06251923</span>}
+          {showVersion && <span className="version">v06251930</span>}
         </div>
 
         <button
