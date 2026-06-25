@@ -145,8 +145,23 @@ function evaluateMoveEV(
     // Level 1: Heuristics & Context
     
     // Resource Allocation (Alignment Bonus)
+    // We softly encourage high cards in high-dice columns and low cards in low-dice columns.
     const colDice = dice[colIndex];
-    const alignmentBonus = (card.rank - 8) * (colDice - 3.5) * 100;
+    let alignmentBonus = (card.rank - 8) * (colDice - 3.5) * 50; // Reduced base weight to allow synergy to shine
+    
+    // Check if the card synergizes with existing cards in the column (Pair, Flush, Straight potential)
+    const existingCardsInCol = [board[0][colIndex], board[1][colIndex]].filter(c => c !== null) as Card[];
+    if (existingCardsInCol.length > 0) {
+        const isPair = existingCardsInCol.some(c => c.rank === card.rank);
+        const isSuitMatch = existingCardsInCol.some(c => c.suit === card.suit);
+        const isConsecutive = existingCardsInCol.some(c => Math.abs(c.rank - card.rank) <= 2 && Math.abs(c.rank - card.rank) > 0);
+        
+        // If there's synergy, we neutralize any negative alignment penalty!
+        // (e.g. don't penalize placing a 2 in a 6-dice column if it completes a Straight/Flush)
+        if (alignmentBonus < 0 && (isPair || isSuitMatch || isConsecutive)) {
+            alignmentBonus = 0; 
+        }
+    }
     mcScore += alignmentBonus;
     
     // X-hand (bottom row) strategy
@@ -193,9 +208,16 @@ function evaluateMoveEV(
             // Guaranteed Pair in hand. Good, but not as strong as trips.
             mcScore += 200 * dice[colIndex];
         } else {
-            // Isolated edge card. Apply the penalty.
+            // Isolated card check. Are there other cards in hand that form a straight/flush?
+            const hasStraightSynergyInHand = actor.hand.some(c => c !== card && Math.abs(c.rank - card.rank) <= 2 && Math.abs(c.rank - card.rank) > 0);
+            const hasFlushSynergyInHand = actor.hand.filter(c => c.suit === card.suit).length >= 3; // 3 of same suit in hand is strong flush potential
+
+            // Edge card penalty
             if (card.rank === 14 || card.rank === 13 || card.rank === 2) {
-                mcScore -= 400; 
+                // Only penalize if it's TRULY isolated (no pairs, no straight/flush connectors in hand)
+                if (!hasStraightSynergyInHand && !hasFlushSynergyInHand) {
+                    mcScore -= 400; 
+                }
             } else if (card.rank === 12) {
                 // The Queen (12) is the mathematical best card to start a column.
                 // Maximum straight flexibility (3 patterns) + extremely high base rank value.
