@@ -57,6 +57,50 @@ export const playClickSound = () => {
     }
 };
 
+export const playCoinTossSound = () => {
+    try {
+        const audioContext = getAudioContext();
+        
+        // Ringing sound
+        const osc1 = audioContext.createOscillator();
+        const osc2 = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        osc1.type = 'triangle';
+        osc1.frequency.value = 1500;
+        
+        osc2.type = 'sine';
+        osc2.frequency.value = 2100;
+
+        // Base volume envelope
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2.0);
+
+        // Flipping modulation effect
+        const lfo = audioContext.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 15; // 15 flips per second
+        const lfoGain = audioContext.createGain();
+        lfoGain.gain.value = 0.3; // Depth of modulation
+        lfo.connect(lfoGain);
+        lfoGain.connect(gainNode.gain);
+
+        osc1.start(audioContext.currentTime);
+        osc2.start(audioContext.currentTime);
+        lfo.start(audioContext.currentTime);
+
+        osc1.stop(audioContext.currentTime + 2.0);
+        osc2.stop(audioContext.currentTime + 2.0);
+        lfo.stop(audioContext.currentTime + 2.0);
+    } catch (error) {
+        console.warn('Audio playback not supported:', error);
+    }
+};
+
 export const playSuccessSound = () => {
     try {
         const audioContext = getAudioContext();

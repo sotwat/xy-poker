@@ -83,6 +83,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v06251900** (2026-06-25): **UI/UX Enhancement** - Added a unique metallic flipping sound effect to the coin toss animation. Resolved a UI overlap issue on small screens where the "Cancel" (Surrender) button inside the room would overlap with the opponent's turn timer by moving the Cancel button to the top left of the status bar.
 1. **v06251859** (2026-06-25): **UI/UX Enhancement** - Turn Selection Phase Upgrade. Players can now view their starting hand and the game board before choosing their turn order (First or Second). Added a 10-second timer to the coin toss result screen; if a player fails to choose within the time limit, a random selection is automatically made.
 1. **v06251852** (2026-06-25): **UI/UX Enhancement** - Overhauled the Showdown (Results) animation. Introduced a dynamic sequence that evaluates columns based on lowest dice to highest dice, accompanied by a flashy "Poker Chase" style popup animation for winning hands and integrated TTS voice announcements.
 2. **v06251620** (2026-06-25): **Backend/Infrastructure** - Added `/api/health` endpoint to Node.js backend. This allows external cron services to ping the backend, which in turn pings Supabase, preventing both Render and Supabase Free Tier instances from auto-pausing.

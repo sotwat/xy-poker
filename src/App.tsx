@@ -26,7 +26,7 @@ import { socket, connectSocket } from './logic/online';
 import { supabase } from './supabase';
 import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
-import { playClickSound, playSuccessSound, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
+import { playClickSound, playSuccessSound, playCoinTossSound, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
 
 function App() {
@@ -618,6 +618,7 @@ function App() {
   useEffect(() => {
     if (phase === 'turn_selection') {
       setIsTossingCoin(true);
+      playCoinTossSound();
       setTossResult(currentPlayerIndex as 0 | 1); // 0 (Host/P1) or 1 (Guest/P2/AI)
 
       const timer = setTimeout(() => {
@@ -1378,7 +1379,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06251859</span>}
+          {showVersion && <span className="version">v06251900</span>}
         </div>
 
         <button
