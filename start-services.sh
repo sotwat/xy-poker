@@ -3,7 +3,7 @@
 # XY Poker サーバーとトンネルを起動するスクリプト
 
 # サーバーをtmuxセッションで起動
-tmux new-session -d -s server 'cd /Users/watanabesotaro/.gemini/antigravity/xy-poker && node server/index.js'
+tmux new-session -d -s server 'cd /Users/watanabesotaro/xy-poker && node server/index.js'
 
 # トンネルをtmuxセッションで起動
 tmux new-session -d -s tunnel 'cloudflared tunnel --url http://localhost:3001'
