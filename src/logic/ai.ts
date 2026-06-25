@@ -51,7 +51,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     for (const card of hand) {
         for (const col of validColumns) {
             // Calculate our EV for this move
-            let myScoreEV = evaluateMoveEV(player, opponent, card, col, remainingDeck, isLosingBadly);
+            let myScoreEV = evaluateMoveEV(player, opponent, card, col, remainingDeck, isLosingBadly, gameState.turnCount);
             if (myScoreEV === -Infinity) continue;
 
             // ==========================================
@@ -82,7 +82,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
                 for (const oppCard of opponent.hand) {
                     for (const oppCol of oppValidColumns) {
                         // The opponent evaluates their move against our hypothetical new board
-                        let oppEV = evaluateMoveEV(opponent, hypotheticalPlayer, oppCard, oppCol, remainingDeck, !isLosingBadly);
+                        let oppEV = evaluateMoveEV(opponent, hypotheticalPlayer, oppCard, oppCol, remainingDeck, !isLosingBadly, gameState.turnCount);
                         if (oppEV > maxOppEV) maxOppEV = oppEV;
                     }
                 }
@@ -115,7 +115,8 @@ function evaluateMoveEV(
     card: Card,
     colIndex: number,
     remainingDeck: Card[],
-    isLosingBadly: boolean
+    isLosingBadly: boolean,
+    turnCount: number
 ): number {
     const board = actor.board;
     const dice = actor.dice;
@@ -203,6 +204,22 @@ function evaluateMoveEV(
                 mcScore += 200;
             }
         }
+    }
+
+    // Tactic 2: Showdown Delay (決着の遅延)
+    // If this move completes a high-dice column early, and we are likely winning,
+    // we DELAY completing it. This baits the opponent into wasting resources on a lost column.
+    if (emptySlotIdx === 2 && dice[colIndex] >= 4 && turnCount <= 11) {
+        const oppColFull = oppColCards.every(c => c !== null);
+        if (!oppColFull && mcScore > 300) {
+            mcScore -= 600; // Massive penalty for early completion. Milk their resources!
+        }
+    }
+
+    // Tactic 3: 3rd Row Intersection Priority (交差点の特異点)
+    // Row 2 is the X-Hand component. We should not lock it early unless it's a trash bin (dice <= 2).
+    if (emptySlotIdx === 2 && dice[colIndex] >= 3 && turnCount <= 8) {
+        mcScore -= 300; // Penalty for locking the X-hand shape too early.
     }
 
     mcScore += Math.random() * 10;
