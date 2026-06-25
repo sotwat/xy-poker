@@ -813,8 +813,11 @@ function App() {
         return typeId.replace(/([A-Z])/g, ' $1').trim().replace(/ Of /g, ' of ').replace(/ A /g, ' a ');
       };
 
-      // Create ordered indices based on dice values (ascending)
-      const orderedColIndices = [0, 1, 2, 3, 4].sort((a, b) => dice[a] - dice[b]);
+      // 出目の低い順（画面右→左）で表示。同じ値の場合は右の列（高いインデックス）を優先
+      const orderedColIndices = [0, 1, 2, 3, 4].sort((a, b) => {
+        const diceDiff = dice[a] - dice[b];
+        return diceDiff !== 0 ? diceDiff : b - a; // 同値なら右の列（高インデックス）を先に
+      });
 
       // Pre-evaluate all columns 0-4
       const colResults = Array.from({ length: 5 }, (_, colIndex) => {
@@ -1439,7 +1442,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06252013</span>}
+          {showVersion && <span className="version">v06252022</span>}
         </div>
 
         <button
@@ -1651,10 +1654,8 @@ function App() {
                           <div className="coin-edge" style={{ transform: "translateZ(1px)" }}></div>
                           <div className="coin-edge" style={{ transform: "translateZ(2px)" }}></div>
                           <div className="coin-edge" style={{ transform: "translateZ(3px)" }}></div>
-                          <div className="coin-edge" style={{ transform: "translateZ(4px)" }}></div>
-                          <div className="coin-edge" style={{ transform: "translateZ(5px)" }}></div>
-                          <div className="coin-face coin-front" style={{ transform: "translateZ(6px)" }}>P1</div>
-                          <div className="coin-face coin-back" style={{ transform: "rotateY(180deg) translateZ(0px)" }}>P2</div>
+                          <div className="coin-face coin-front">先</div>
+                          <div className="coin-face coin-back">後</div>
                         </div>
                         <h2 style={{ marginTop: '20px' }}>Tossing Coin...</h2>
                       </div>
@@ -1664,10 +1665,8 @@ function App() {
                           <div className="coin-edge" style={{ transform: "translateZ(1px)" }}></div>
                           <div className="coin-edge" style={{ transform: "translateZ(2px)" }}></div>
                           <div className="coin-edge" style={{ transform: "translateZ(3px)" }}></div>
-                          <div className="coin-edge" style={{ transform: "translateZ(4px)" }}></div>
-                          <div className="coin-edge" style={{ transform: "translateZ(5px)" }}></div>
-                          <div className="coin-face coin-front" style={{ transform: "translateZ(6px)" }}>P1</div>
-                          <div className="coin-face coin-back" style={{ transform: "rotateY(180deg) translateZ(0px)" }}>P2</div>
+                          <div className="coin-face coin-front">先</div>
+                          <div className="coin-face coin-back">後</div>
                         </div>
                       </div>
                     )}
