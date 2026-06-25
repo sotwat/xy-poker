@@ -350,8 +350,8 @@ function shouldHideCard(
 
     let hiddenInCol = 0;
     for (let r = 0; r < 3; r++) {
-        const card = board[r][move.colIndex];
-        if (card && card.isHidden) hiddenInCol++;
+        const c = board[r][move.colIndex];
+        if (c && c.isHidden) hiddenInCol++;
     }
     if (hiddenInCol >= 2) return false;
 
@@ -360,26 +360,52 @@ function shouldHideCard(
 
     const learning = getLearningData();
     const col = move.colIndex;
+    
+    // Rule 2: Ineffective on completed opponent columns
+    const oppColFull = opponent.board[2][col] !== null;
+    if (oppColFull) return false; // Pointless to bluff a column the opponent has finished
+
+    let baseProb = 0.05;
+
+    // Rule 1: Early placement is better (obscures intent longer)
+    const emptySlotIdx = [board[0][col], board[1][col], board[2][col]].findIndex(c => c === null);
+    if (emptySlotIdx === 0) baseProb += 0.4;
+    else if (emptySlotIdx === 1) baseProb += 0.2;
+    
+    if (turnCount <= 6) baseProb += 0.2;
+
+    // Fake strength / Intimidation
     const myDice = player.dice[col];
     const oppDice = opponent.dice[col];
+    if (card.rank <= 6 && myDice >= 4) baseProb += 0.3;
+    if (card.rank >= 11 && oppDice >= 4) baseProb += 0.3;
 
-    let baseProb = 0.0;
+    // Rule 3 & 4: Denying Outs (The psychological trap)
+    // If the opponent is waiting for this exact card, hide it so they don't know it's dead.
+    let isDenyingOut = false;
+    for (let c = 0; c < 5; c++) {
+        const oppCards = [opponent.board[0][c], opponent.board[1][c], opponent.board[2][c]].filter(x => x !== null) as Card[];
+        if (oppCards.length === 2) {
+            const r1 = oppCards[0].rank;
+            const r2 = oppCards[1].rank;
+            const s1 = oppCards[0].suit;
+            const s2 = oppCards[1].suit;
 
-    if (card.rank <= 6 && myDice >= 4) {
-        baseProb = 0.35;
+            // Denying a Flush draw
+            if (s1 === s2 && card.suit === s1) isDenyingOut = true;
+            
+            // Denying a Straight draw
+            const minR = Math.min(r1, r2);
+            const maxR = Math.max(r1, r2);
+            if (maxR - minR <= 3 && card.rank >= minR - 2 && card.rank <= maxR + 2) isDenyingOut = true;
+
+            // Denying Pair/Trips
+            if (card.rank === r1 || card.rank === r2) isDenyingOut = true;
+        }
     }
-    
-    if (card.rank >= 11 && oppDice >= 4) {
-        baseProb = 0.4;
-    }
 
-    const emptySlotIdx = [board[0][col], board[1][col], board[2][col]].findIndex(c => c === null);
-    if (emptySlotIdx === 2) {
-        baseProb += 0.2;
-    }
-
-    if (turnCount <= 8) {
-        baseProb *= 1.5;
+    if (isDenyingOut) {
+        baseProb += 0.6; // Highly likely to hide if it burns an opponent's out
     }
 
     return Math.random() < (baseProb * learning.hidingStrategy / 0.3);
