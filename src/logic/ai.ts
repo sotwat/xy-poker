@@ -161,9 +161,21 @@ function evaluateMoveEV(
     // But we keep a lightweight heuristic bonus for creating strong standalone blocks
     mcScore += evaluateOpponentBlock(adversary, colIndex);
 
-    // Spread Bonus
-    if (emptySlotIdx === 0) {
-        mcScore += 50; 
+    // Draw Rush Bonus (Trash Bin Strategy)
+    // The first player to fill a column draws an extra card.
+    // The AI actively uses low-dice columns as "trash bins" to quickly dump weak cards and get this bonus.
+    const oppColFull = adversary.board[2][colIndex] !== null;
+    if (!oppColFull) {
+        // Inverse scaling: Heavily prioritize rushing low-dice columns for draws
+        const rushMultiplier = (7 - dice[colIndex]); // dice=1 -> 6x, dice=6 -> 1x
+        
+        if (emptySlotIdx === 2) {
+            mcScore += 500 * rushMultiplier; // Up to +3000 EV for securing the draw
+        } else if (emptySlotIdx === 1) {
+            mcScore += 150 * rushMultiplier; // Up to +900 EV for setting up the draw
+        } else if (emptySlotIdx === 0) {
+            mcScore += 50 * rushMultiplier;  // Up to +300 EV for starting a trash bin
+        }
     }
 
     mcScore += Math.random() * 10;
