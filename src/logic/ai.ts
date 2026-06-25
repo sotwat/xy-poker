@@ -71,6 +71,14 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
             // LEVEL 1: Advanced Heuristics & Context
             // ==========================================
             
+            // Strategic Resource Allocation (Alignment Bonus)
+            // Force the AI to "give up" on low-dice columns by heavily penalizing 
+            // the placement of High Cards in Low Dice columns, and vice versa.
+            // Reward: High Card in High Column OR Low Card in Low Column.
+            const colDice = dice[col];
+            const alignmentBonus = (card.rank - 8) * (colDice - 3.5) * 100;
+            mcScore += alignmentBonus;
+            
             // X-hand (bottom row) strategy
             if (emptySlotIdx === 2) {
                 const learning = getLearningData();
