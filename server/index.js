@@ -14,6 +14,19 @@ const server = createServer(app);
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../dist')));
 
+import supabase from './db.js';
+
+// Health check endpoint (Used by cron-job.org or UptimeRobot to keep Render and Supabase alive)
+app.get('/api/health', async (req, res) => {
+    try {
+        // Ping Supabase to prevent the 7-day auto-pause on free tier
+        await supabase.from('players').select('id').limit(1);
+        res.status(200).json({ status: 'ok', message: 'Backend and Supabase are alive' });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: 'Supabase ping failed' });
+    }
+});
+
 const io = new Server(server, {
     cors: {
         origin: ["https://xy-poker.pages.dev", "http://localhost:5173", "http://localhost:4173"],
@@ -26,7 +39,6 @@ const io = new Server(server, {
 const rooms = {};
 
 // Matchmaking queue: stores roomId of rooms waiting for second player
-import supabase from './db.js';
 
 // Elo Rating Constants
 const K_FACTOR = 32;

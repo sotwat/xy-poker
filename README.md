@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `06251606` (2026-06-25 16:06)
+- **Current Version:** `06251620` (2026-06-25 16:20)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v06251606** (2026-06-25): **UI/UX Enhancement (Phase 2)** - Implemented Balatro-style Animated Score (Odometer effect using `react-countup`) and Poker Chase-style Cinematic Showdown (letterbox).
+1. **v06251620** (2026-06-25): **Backend/Infrastructure** - Added `/api/health` endpoint to Node.js backend. This allows external cron services to ping the backend, which in turn pings Supabase, preventing both Render and Supabase Free Tier instances from auto-pausing.
+2. **v06251606** (2026-06-25): **UI/UX Enhancement (Phase 2)** - Implemented Balatro-style Animated Score (Odometer effect using `react-countup`) and Poker Chase-style Cinematic Showdown (letterbox).
 2. **v06251540** (2026-06-25): **AI Enhancement** - "Pure Straight Supremacy". Corrected a logic error where the AI incorrectly assumed Flush > Pure Straight. Adjusted heuristic to heavily penalize settling for Flushes or Pairs in high-dice columns.
 3. **v06251412** (2026-06-25): **AI Enhancement** - Added 'Showdown Delay' and '3rd Row Intersection Priority'. The AI now actively delays completing guaranteed winning columns to bait the opponent into wasting resources, and avoids filling the 3rd row (X-hand intersection) early to preserve maximum X-hand flexibility.
 4. **v06251406** (2026-06-25): **AI Enhancement** - Added 'Hand Synergy & Edge Card Penalty'. The AI now heavily penalizes initiating columns with edge cards (A, K, 2) unless it already holds matching pairs/trips in its hand. The AI also recognizes Q as the mathematically strongest 1st-row card. If the AI holds 3 of a kind in hand, it actively deploys them to high-dice columns and deliberately hides the 3rd card as a bluff.
