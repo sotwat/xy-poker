@@ -153,9 +153,10 @@ export const speakText = (text: string) => {
             cachedVoices = window.speechSynthesis.getVoices();
         }
 
-        // Try to pick a consistent English voice
-        // generic 'en-US' preference
-        const voice = cachedVoices.find(v => v.lang === 'en-US' && !v.name.includes('Google')) ||
+        // Try to pick a universally appealing voice (e.g. Google, Samantha, or natural sounding defaults)
+        const voice = cachedVoices.find(v => v.name === 'Google US English') ||
+            cachedVoices.find(v => v.name === 'Samantha') ||
+            cachedVoices.find(v => v.lang === 'en-US' && v.name.includes('Female')) ||
             cachedVoices.find(v => v.lang === 'en-US') ||
             cachedVoices.find(v => v.lang.startsWith('en'));
 
@@ -164,6 +165,7 @@ export const speakText = (text: string) => {
         }
 
         utterance.lang = 'en-US';
+        // Natural, clear pacing
         utterance.rate = 1.0;
         utterance.pitch = 1.0;
         utterance.volume = 0.8;

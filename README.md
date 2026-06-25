@@ -83,6 +83,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v06251920** (2026-06-25): **UI/UX Enhancement** - Improved the Showdown animation clarity by explicitly indicating whether the winning hand belongs to "YOU" or "OPP." (Opponent) in both the text display and the TTS voice readout. Also changed the TTS voice to a more universally appealing and natural-sounding English voice (e.g., Google US English or Samantha) instead of the default robotic system voice.
 1. **v06251915** (2026-06-25): **Bug Fix** - Fixed an issue where the Showdown animation text was rendering blurry on some browsers. Removed hardware acceleration scaling quirks (`transform: scale(0.5)`) and `filter: blur(10px)` that were causing the browser to rasterize the text at a low resolution.
 1. **v06251910** (2026-06-25): **Bug Fix** - Fixed an issue where the coin toss 3D animation would not play during the "tossing" phase. The coin now visibly flips in the air before landing on the winning player's color.
 1. **v06251900** (2026-06-25): **UI/UX Enhancement** - Added a unique metallic flipping sound effect to the coin toss animation. Resolved a UI overlap issue on small screens where the "Cancel" (Surrender) button inside the room would overlap with the opponent's turn timer by moving the Cancel button to the top left of the status bar.
