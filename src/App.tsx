@@ -764,10 +764,10 @@ function App() {
       // Start scoring animation sequence
       // Steps: 0-4 (Cols), 5 (Row)
 
-      let step = 0;
       setRevealedCols([]);
       setShowXHand(false);
       setCurrentShowdownPopup(null);
+      setShowResultsModal(false);
 
       // Pre-calculate winners and hand names for valid speech
       const { players } = gameState;
@@ -818,58 +818,63 @@ function App() {
       if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type };
       else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type };
 
-      // Helper for playing step
-      const playStep = (currentStep: number) => {
-        playClickSound();
+      const runShowdownSequence = async () => {
+        for (let currentStep = 0; currentStep <= 5; currentStep++) {
+          playClickSound();
 
-        if (currentStep <= 4) {
-          const currentCol = orderedColIndices[currentStep];
-          setRevealedCols(prev => [...prev, currentCol]);
-          
-          const res = colResults[currentCol];
-          setCurrentShowdownPopup({
-            id: `col-${currentStep}-${Date.now()}`,
-            text: res.type ? getReadableHandName(res.type) : 'DRAW',
-            winner: res.winner,
-            diceValue: dice[currentCol],
-            isXHand: false
-          });
+          if (currentStep <= 4) {
+            const currentCol = orderedColIndices[currentStep];
+            setRevealedCols(prev => [...prev, currentCol]);
+            
+            const res = colResults[currentCol];
+            setCurrentShowdownPopup({
+              id: `col-${currentStep}-${Date.now()}`,
+              text: res.type ? getReadableHandName(res.type) : 'DRAW',
+              winner: res.winner,
+              diceValue: dice[currentCol],
+              isXHand: false
+            });
 
-          if (res.winner !== 'draw' && res.type) {
-            speakText(getReadableHandName(res.type));
+            if (res.winner !== 'draw' && res.type) {
+              await Promise.all([
+                speakText(getReadableHandName(res.type)),
+                new Promise(r => setTimeout(r, 1200)) // Wait at least 1200ms for visual animation
+              ]);
+            } else {
+              await new Promise(r => setTimeout(r, 1200));
+            }
+          } else if (currentStep === 5) {
+            setShowXHand(true);
+            
+            setCurrentShowdownPopup({
+              id: `row-${currentStep}-${Date.now()}`,
+              text: rowResult.type ? getReadableHandName(rowResult.type) : 'DRAW',
+              winner: rowResult.winner,
+              isXHand: true
+            });
+
+            if (rowResult.winner !== 'draw' && rowResult.type) {
+              await Promise.all([
+                speakText(getReadableHandName(rowResult.type)),
+                new Promise(r => setTimeout(r, 1200))
+              ]);
+            } else {
+              await new Promise(r => setTimeout(r, 1200));
+            }
           }
-        } else if (currentStep === 5) {
-          setShowXHand(true);
           
-          setCurrentShowdownPopup({
-            id: `row-${currentStep}-${Date.now()}`,
-            text: rowResult.type ? getReadableHandName(rowResult.type) : 'DRAW',
-            winner: rowResult.winner,
-            isXHand: true
-          });
-
-          if (rowResult.winner !== 'draw' && rowResult.type) {
-            speakText(getReadableHandName(rowResult.type));
-          }
+          // Small buffer between steps
+          await new Promise(r => setTimeout(r, 100));
         }
+
+        // Finished
+        setTimeout(() => {
+          setCurrentShowdownPopup(null); // Hide popup before showing modal
+          setShowResultsModal(true);
+        }, 1500);
       };
 
-      // Initial Step (Step 0)
-      playStep(0);
-
-      const interval = setInterval(() => {
-        step++;
-        if (step <= 5) {
-          playStep(step);
-        } else {
-          // Finished
-          clearInterval(interval);
-          setTimeout(() => {
-            setCurrentShowdownPopup(null); // Hide popup before showing modal
-            setShowResultsModal(true);
-          }, 1500);
-        }
-      }, 1200); // 1200ms per popup animation
+      runShowdownSequence();
 
       if (mode === 'local') {
         const { winner } = gameState;

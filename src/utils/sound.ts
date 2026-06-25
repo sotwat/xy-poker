@@ -140,40 +140,53 @@ if ('speechSynthesis' in window) {
     loadVoices(); // Init
 }
 
-export const speakText = (text: string) => {
-    if (!('speechSynthesis' in window)) return;
-    try {
-        // Cancel any pending speech
-        window.speechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(text);
-
-        // Ensure voices are loaded
-        if (cachedVoices.length === 0) {
-            cachedVoices = window.speechSynthesis.getVoices();
+export const speakText = (text: string): Promise<void> => {
+    return new Promise((resolve) => {
+        if (!('speechSynthesis' in window)) {
+            resolve();
+            return;
         }
+        try {
+            // Cancel any pending speech
+            window.speechSynthesis.cancel();
 
-        // Try to pick a universally appealing voice (e.g. Google, Samantha, or natural sounding defaults)
-        const voice = cachedVoices.find(v => v.name === 'Google US English') ||
-            cachedVoices.find(v => v.name === 'Samantha') ||
-            cachedVoices.find(v => v.lang === 'en-US' && v.name.includes('Female')) ||
-            cachedVoices.find(v => v.lang === 'en-US') ||
-            cachedVoices.find(v => v.lang.startsWith('en'));
+            const utterance = new SpeechSynthesisUtterance(text);
 
-        if (voice) {
-            utterance.voice = voice;
+            // Ensure voices are loaded
+            if (cachedVoices.length === 0) {
+                cachedVoices = window.speechSynthesis.getVoices();
+            }
+
+            // Try to pick a universally appealing voice (e.g. Google, Samantha, or natural sounding defaults)
+            const voice = cachedVoices.find(v => v.name === 'Google US English') ||
+                cachedVoices.find(v => v.name === 'Samantha') ||
+                cachedVoices.find(v => v.lang === 'en-US' && v.name.includes('Female')) ||
+                cachedVoices.find(v => v.lang === 'en-US') ||
+                cachedVoices.find(v => v.lang.startsWith('en'));
+
+            if (voice) {
+                utterance.voice = voice;
+            }
+
+            utterance.lang = 'en-US';
+            // Natural, clear pacing
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 0.8;
+
+            // Resolve promise when speech ends or errors out
+            utterance.onend = () => resolve();
+            utterance.onerror = () => resolve();
+
+            // Safety timeout in case onend doesn't fire
+            setTimeout(resolve, 3000);
+
+            window.speechSynthesis.speak(utterance);
+        } catch (e) {
+            console.warn('Speech synthesis failed:', e);
+            resolve();
         }
-
-        utterance.lang = 'en-US';
-        // Natural, clear pacing
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        utterance.volume = 0.8;
-
-        window.speechSynthesis.speak(utterance);
-    } catch (e) {
-        console.warn('Speech synthesis failed:', e);
-    }
+    });
 };
 
 export const warmupAudio = () => {
