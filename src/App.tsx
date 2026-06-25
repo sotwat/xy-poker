@@ -48,6 +48,7 @@ function App() {
   // Coin Toss State
   const [isTossingCoin, setIsTossingCoin] = useState(false);
   const [tossResult, setTossResult] = useState<0 | 1 | null>(null);
+  const [turnSelectionTimeLeft, setTurnSelectionTimeLeft] = useState<number | null>(null);
 
   // Online State
   const [mode, setMode] = useState<'local' | 'online'>('local');
@@ -639,7 +640,38 @@ function App() {
         handleChooseTurnOrder(chosenStartingPlayer);
       }, 1500); // Small delay for human to see AI is "thinking"
     }
-  }, [phase, isTossingCoin, currentPlayerIndex, isOnlineGame]);
+  }, [phase, isTossingCoin, currentPlayerIndex, isOnlineGame, gameState]);
+
+  // Turn Selection Timer Logic (Human)
+  useEffect(() => {
+    if (phase === 'turn_selection' && !isTossingCoin) {
+      const isMyChoice = ((mode === 'local' && tossResult === 0) || (mode === 'online' && ((playerRole === 'host' && tossResult === 0) || (playerRole === 'guest' && tossResult === 1))));
+      
+      if (isMyChoice && turnSelectionTimeLeft === null) {
+        setTurnSelectionTimeLeft(10);
+      }
+    } else {
+      setTurnSelectionTimeLeft(null);
+    }
+  }, [phase, isTossingCoin, tossResult, mode, playerRole, turnSelectionTimeLeft]);
+
+  // Turn Selection Timer Tick
+  useEffect(() => {
+    if (turnSelectionTimeLeft !== null && turnSelectionTimeLeft > 0) {
+      const timer = setTimeout(() => {
+        setTurnSelectionTimeLeft(turnSelectionTimeLeft - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (turnSelectionTimeLeft === 0) {
+      // Auto-choose randomly
+      const randomChoice = Math.random() > 0.5;
+      const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
+      const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
+      const chosenIndex = randomChoice ? myIndex : opIndex;
+      handleChooseTurnOrder(chosenIndex);
+      setTurnSelectionTimeLeft(null);
+    }
+  }, [turnSelectionTimeLeft, mode, playerRole]);
 
   // Determine if we are in the Lobby view (where version and title inputs are shown)
   // Lobby view is:
@@ -1346,7 +1378,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06251852</span>}
+          {showVersion && <span className="version">v06251859</span>}
         </div>
 
         <button
@@ -1568,21 +1600,28 @@ function App() {
                         
                         {/* If it's my turn to choose (I won the toss) */}
                         {((mode === 'local' && tossResult === 0) || (mode === 'online' && ((playerRole === 'host' && tossResult === 0) || (playerRole === 'guest' && tossResult === 1)))) ? (
-                          <div className="turn-choice-buttons">
-                            <button onClick={() => {
-                              playClickSound();
-                              const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
-                              handleChooseTurnOrder(myIndex);
-                            }}>
-                              First (先攻)
-                            </button>
-                            <button onClick={() => {
-                              playClickSound();
-                              const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
-                              handleChooseTurnOrder(opIndex);
-                            }}>
-                              Second (後攻)
-                            </button>
+                          <div className="turn-choice-container" style={{ textAlign: 'center' }}>
+                            {turnSelectionTimeLeft !== null && (
+                              <div style={{ color: '#ffcc00', marginBottom: '10px', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                                残り時間: {turnSelectionTimeLeft}秒
+                              </div>
+                            )}
+                            <div className="turn-choice-buttons">
+                              <button onClick={() => {
+                                playClickSound();
+                                const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
+                                handleChooseTurnOrder(myIndex);
+                              }}>
+                                First (先攻)
+                              </button>
+                              <button onClick={() => {
+                                playClickSound();
+                                const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
+                                handleChooseTurnOrder(opIndex);
+                              }}>
+                                Second (後攻)
+                              </button>
+                            </div>
                           </div>
                         ) : (
                           <div className="waiting-turn-text">
@@ -1593,7 +1632,7 @@ function App() {
                     )}
                   </div>
                 )}
-                {(phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
+                {(phase === 'turn_selection' || phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
                   <div className="play-area">
 
 
@@ -1621,19 +1660,19 @@ function App() {
               {phase !== 'setup' && (
                 <footer className="controls">
 
-                  {phase === 'playing' && (
+                  {(phase === 'playing' || phase === 'turn_selection') && (
                     <>
                       <div className="hand-container">
                         <Hand
                           hand={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].hand}
                           selectedCardId={selectedCardId}
-                          onCardSelect={handleCardSelect}
+                          onCardSelect={phase === 'playing' ? handleCardSelect : () => {}} // Disable selection in turn_selection
                           isHidden={false}
-                          isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                          isCurrentPlayer={phase === 'playing' ? (currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)) : false}
                         />
                       </div>
-                      {/* Only show action controls during my turn */}
-                      {currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0) && (
+                      {/* Only show action controls during my turn in playing phase */}
+                      {phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0) && (
                         <div className="action-bar">
                           <div className="place-controls">
                             <div className="toggle-hidden">

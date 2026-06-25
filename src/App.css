@@ -649,14 +649,14 @@ body:has(.game-result-overlay) .app-header {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   color: white;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(2px);
 }
 
 .coin-container {
