@@ -49,6 +49,7 @@ function App() {
   const [isTossingCoin, setIsTossingCoin] = useState(false);
   const [tossResult, setTossResult] = useState<0 | 1 | null>(null);
   const [turnSelectionTimeLeft, setTurnSelectionTimeLeft] = useState<number | null>(null);
+  const [turnAnnounce, setTurnAnnounce] = useState<{ firstName: string; secondName: string } | null>(null);
 
   // Online State
   const [mode, setMode] = useState<'local' | 'online'>('local');
@@ -702,6 +703,7 @@ function App() {
   const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
 
   // Sync local phase with game winner/turn
+  const prevPhaseRef = useRef<string>('');
   useEffect(() => {
     if (gameState.winner) {
       setPhase('ended');
@@ -710,8 +712,17 @@ function App() {
     } else if (gameState.phase === 'scoring') {
       setPhase('scoring');
     } else if (gameState.turnCount > 0 || gameState.phase === 'playing') {
+      if (prevPhaseRef.current !== 'playing') {
+        // Show turn announce banner when game first starts
+        const firstIdx = gameState.currentPlayerIndex;
+        const first = firstIdx === 0 ? p1DisplayName : p2DisplayName;
+        const second = firstIdx === 0 ? p2DisplayName : p1DisplayName;
+        setTurnAnnounce({ firstName: first, secondName: second });
+        setTimeout(() => setTurnAnnounce(null), 3000);
+      }
       setPhase('playing');
     }
+    prevPhaseRef.current = gameState.phase;
   }, [gameState]);
 
   // AI Turn Logic (Example)
@@ -1400,6 +1411,23 @@ function App() {
 
   return (
     <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase} ${isShaking ? 'shake-intense' : ''} ${phase === 'scoring' ? 'showdown-active' : ''}`}>
+
+      {/* 先攻・後攻 アナウンスオーバーレイ */}
+      {turnAnnounce && (
+        <div className="turn-announce-overlay">
+          <div className="turn-announce-content">
+            <div className="turn-announce-row first">
+              <span className="turn-announce-badge first-badge">先攻</span>
+              <span className="turn-announce-name">{turnAnnounce.firstName}</span>
+            </div>
+            <div className="turn-announce-divider">VS</div>
+            <div className="turn-announce-row second">
+              <span className="turn-announce-badge second-badge">後攻</span>
+              <span className="turn-announce-name">{turnAnnounce.secondName}</span>
+            </div>
+          </div>
+        </div>
+      )}
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>

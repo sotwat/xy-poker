@@ -788,3 +788,91 @@ body:has(.game-result-overlay) .app-header {
   color: #ccc;
   animation: pulse 1.5s infinite;
 }
+/* ======================== */
+/* 先攻・後攻 アナウンスオーバーレイ */
+/* ======================== */
+.turn-announce-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  animation: turn-announce-fade 3s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes turn-announce-fade {
+  0%   { opacity: 0; transform: scale(0.85); }
+  15%  { opacity: 1; transform: scale(1.02); }
+  70%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.05); }
+}
+
+.turn-announce-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.turn-announce-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  animation: slide-in-announce 0.4s ease;
+}
+
+.turn-announce-row.second {
+  animation-delay: 0.15s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+@keyframes slide-in-announce {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.turn-announce-badge {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  padding: 6px 18px;
+  border-radius: 6px;
+  min-width: 72px;
+  text-align: center;
+}
+
+.first-badge {
+  background: linear-gradient(135deg, #f6d365, #fda085);
+  color: #1a1a2e;
+  box-shadow: 0 4px 15px rgba(253, 160, 133, 0.6);
+}
+
+.second-badge {
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+  color: #1a1a2e;
+  box-shadow: 0 4px 15px rgba(161, 140, 209, 0.6);
+}
+
+.turn-announce-name {
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 20px rgba(255,255,255,0.4), 0 0 40px rgba(255,200,100,0.3);
+  letter-spacing: 0.02em;
+  max-width: 60vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.turn-announce-divider {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.3em;
+}

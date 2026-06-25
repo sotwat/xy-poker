@@ -12,7 +12,7 @@
   "trashBinRushMultiplier": 2,
   "drawValueBase": 2,
   "showdownDelayPenalty": 2,
-  "intersectionDelayPenalty": 35,
+  "intersectionDelayPenalty": 34,
   "bluffBonus": 2,
   "mcSimulations": 5,
   "turnOrderBaseFirstValue": 0,
