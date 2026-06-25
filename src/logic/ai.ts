@@ -2,6 +2,44 @@ import type { GameState, Card, Rank } from './types';
 import { getLearningData } from './aiLearning';
 import { evaluateYHand } from './evaluation';
 
+export interface AiParams {
+    pureStraightFlushBonus: number;
+    pureStraightBonus: number;
+    flushBonus: number;
+    pairPenalty: number;
+    tripsInHandBonus: number;
+    pairInHandBonus: number;
+    edgeCardPenalty: number;
+    queenFirstRowBonus: number;
+    xHandBaseMultiplier: number;
+    trashBinRushBase: number;
+    trashBinRushMultiplier: number;
+    drawValueBase: number;
+    showdownDelayPenalty: number;
+    intersectionDelayPenalty: number;
+    bluffBonus: number;
+    mcSimulations: number;
+}
+
+export const DEFAULT_AI_PARAMS: AiParams = {
+    pureStraightFlushBonus: 800,
+    pureStraightBonus: 600,
+    flushBonus: 50,
+    pairPenalty: -300,
+    tripsInHandBonus: 1000,
+    pairInHandBonus: 200,
+    edgeCardPenalty: -400,
+    queenFirstRowBonus: 200,
+    xHandBaseMultiplier: 30,
+    trashBinRushBase: 50,
+    trashBinRushMultiplier: 10,
+    drawValueBase: 200,
+    showdownDelayPenalty: 500,
+    intersectionDelayPenalty: 200,
+    bluffBonus: 150,
+    mcSimulations: 30, // Level 2 default
+};
+
 // ==========================================
 // Level 1, 2, & 3 AI Enhancements
 // Features: 
@@ -12,33 +50,39 @@ import { evaluateYHand } from './evaluation';
 
 const MONTE_CARLO_ITERATIONS = 30; // Lightweight to avoid blocking UI
 
-export function getBestMove(gameState: GameState, playerIndex: number): { cardId: string, colIndex: number, isHidden: boolean } {
+export function getBestMove(
+    gameState: GameState,
+    playerIndex: number,
+    params: AiParams = DEFAULT_AI_PARAMS
+): { cardId: string; colIndex: number; isHidden: boolean } {
     const player = gameState.players[playerIndex];
-    const opponent = gameState.players[playerIndex === 0 ? 1 : 0];
+    const opponent = gameState.players[1 - playerIndex];
     const hand = player.hand;
     const board = player.board;
 
-    // 1. Identify valid columns
-    const validColumns: number[] = [];
+    if (hand.length === 0) return { cardId: '', colIndex: 0, isHidden: false };
+
+    const validColumns = [];
     for (let c = 0; c < 5; c++) {
-        if (board[2][c] === null) {
-            validColumns.push(c);
-        }
+        if (board[2][c] === null) validColumns.push(c);
     }
 
-    if (validColumns.length === 0) {
-        return { cardId: hand[0]?.id || '', colIndex: 0, isHidden: false };
-    }
-    
-    validColumns.sort(() => Math.random() - 0.5);
+    if (validColumns.length === 0) return { cardId: hand[0].id, colIndex: 0, isHidden: false };
 
     // 2. Extract known cards to build the remaining deck for Monte Carlo
     const visibleCards = getVisibleCards(player, opponent);
     const remainingDeck = getRemainingDeck(visibleCards);
 
-    // 3. Dynamic Risk Assessment
-    let myScore = player.score || 0;
-    let oppScore = opponent.score || 0;
+    // Calculate score difference to determine if we are losing badly
+    let myScore = player.score;
+    let oppScore = opponent.score;
+    for (let c = 0; c < 5; c++) {
+        if (board[2][c] !== null && opponent.board[2][c] !== null) {
+             const myEV = runMonteCarloPlayouts([board[0][c], board[1][c], board[2][c]], [opponent.board[0][c], opponent.board[1][c], opponent.board[2][c]], player.dice[c], remainingDeck, 1, false);
+             if (myEV > 0) myScore += player.dice[c];
+             else if (myEV < 0) oppScore += player.dice[c];
+        }
+    }
     const isLosingBadly = (oppScore - myScore) > 15;
     
 
@@ -51,7 +95,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     for (const card of hand) {
         for (const col of validColumns) {
             // Calculate our EV for this move
-            let myScoreEV = evaluateMoveEV(player, opponent, card, col, remainingDeck, isLosingBadly, gameState.turnCount);
+            let myScoreEV = evaluateMoveEV(player, opponent, card, col, remainingDeck, isLosingBadly, gameState.turnCount, params);
             if (myScoreEV === -Infinity) continue;
 
             // ==========================================
@@ -82,7 +126,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
                 for (const oppCard of opponent.hand) {
                     for (const oppCol of oppValidColumns) {
                         // The opponent evaluates their move against our hypothetical new board
-                        let oppEV = evaluateMoveEV(opponent, hypotheticalPlayer, oppCard, oppCol, remainingDeck, !isLosingBadly, gameState.turnCount);
+                        let oppEV = evaluateMoveEV(opponent, hypotheticalPlayer, oppCard, oppCol, remainingDeck, !isLosingBadly, gameState.turnCount, params);
                         if (oppEV > maxOppEV) maxOppEV = oppEV;
                     }
                 }
@@ -101,7 +145,7 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     }
 
     // LEVEL 1: Strategic Bluffing
-    bestMove.isHidden = shouldHideCard(bestMove, hand, player, board, gameState.turnCount, opponent);
+    bestMove.isHidden = shouldHideCard(bestMove, hand, player, board, gameState.turnCount, opponent, params);
 
     return bestMove;
 }
@@ -116,7 +160,8 @@ function evaluateMoveEV(
     colIndex: number,
     remainingDeck: Card[],
     isLosingBadly: boolean,
-    turnCount: number
+    turnCount: number,
+    params: AiParams
 ): number {
     const board = actor.board;
     const dice = actor.dice;
@@ -138,7 +183,7 @@ function evaluateMoveEV(
         oppColCards,
         dice[colIndex], 
         remainingDeck, 
-        MONTE_CARLO_ITERATIONS,
+        params.mcSimulations,
         isLosingBadly
     );
 
@@ -161,17 +206,17 @@ function evaluateMoveEV(
         if (colDice >= 4) {
             if (isPair) {
                 // Penalize settling for a pair in a crucial column! We need Straights/Flushes to win.
-                alignmentBonus -= 300 * colDice; 
+                alignmentBonus += params.pairPenalty * colDice; 
             }
             if (isConsecutive && isSuitMatch) {
                 // Massive bonus for Pure Straight Flush potential
-                alignmentBonus += 800 * colDice;
+                alignmentBonus += params.pureStraightFlushBonus * colDice;
             } else if (isConsecutive) {
                 // Bonus for Pure Straight potential (Pure Straight is the winning standard)
-                alignmentBonus += 600 * colDice;
+                alignmentBonus += params.pureStraightBonus * colDice;
             } else if (isSuitMatch) {
                 // Flush is weaker than expected. Minimal bonus, so it strongly prefers Pure Straights.
-                alignmentBonus += 50 * colDice;
+                alignmentBonus += params.flushBonus * colDice;
             }
         } else {
             // If there's synergy in a low-value column, neutralize negative alignment penalty
@@ -189,7 +234,7 @@ function evaluateMoveEV(
     if (emptySlotIdx === 2) {
         const totalDice = dice.reduce((a, b) => a + b, 0);
         // Inverse scaling: max multiplier at dice=5, min at dice=30
-        const xHandMultiplier = 30 / Math.max(5, totalDice);
+        const xHandMultiplier = params.xHandBaseMultiplier / Math.max(5, totalDice);
         
         const learning = getLearningData();
         const xScore = evaluateXHandPotential(board, card, colIndex) * learning.xHandFocus;
@@ -208,9 +253,9 @@ function evaluateMoveEV(
     if (!oppColFull) {
         if (dice[colIndex] <= 2) {
             // Inverse scaling: Trash bins are more valuable early game
-            rushMultiplier = (15 - turnCount) / 10; 
+            rushMultiplier = (15 - turnCount) / params.trashBinRushMultiplier; 
             if (emptySlotIdx === 0) {
-                mcScore += 50 * rushMultiplier;  // Up to +300 EV for starting a trash bin
+                mcScore += params.trashBinRushBase * rushMultiplier;  // Up to +300 EV for starting a trash bin
             }
         }
     }
@@ -221,10 +266,10 @@ function evaluateMoveEV(
         if (matchingInHand >= 3) {
             // Guaranteed Trips in hand! This is the ultimate weapon.
             // Heavily reward placing it, scaling with dice value so it targets the highest column.
-            mcScore += 1000 * dice[colIndex]; 
+            mcScore += params.tripsInHandBonus * dice[colIndex]; 
         } else if (matchingInHand >= 2) {
             // Guaranteed Pair in hand. Good, but not as strong as trips.
-            mcScore += 200 * dice[colIndex];
+            mcScore += params.pairInHandBonus * dice[colIndex];
         } else {
             // Isolated card check. Are there other cards in hand that form a straight/flush?
             const hasStraightSynergyInHand = actor.hand.some(c => c !== card && Math.abs(c.rank - card.rank) <= 2 && Math.abs(c.rank - card.rank) > 0);
@@ -234,12 +279,12 @@ function evaluateMoveEV(
             if (card.rank === 14 || card.rank === 13 || card.rank === 2) {
                 // Only penalize if it's TRULY isolated (no pairs, no straight/flush connectors in hand)
                 if (!hasStraightSynergyInHand && !hasFlushSynergyInHand) {
-                    mcScore -= 400; 
+                    mcScore += params.edgeCardPenalty; 
                 }
             } else if (card.rank === 12) {
                 // The Queen (12) is the mathematical best card to start a column.
                 // Maximum straight flexibility (3 patterns) + extremely high base rank value.
-                mcScore += 200;
+                mcScore += params.queenFirstRowBonus;
             }
         }
     }
@@ -247,7 +292,7 @@ function evaluateMoveEV(
     // --- Dynamic Draw Bonus & Tactic Integration ---
     if (emptySlotIdx === 2) {
         // Dynamic value of getting a +1 Draw (2-draw turn)
-        let drawValue = 200; // Base value of drawing an extra card
+        let drawValue = params.drawValueBase; // Base value of drawing an extra card
         
         // 1. Hand size: Fewer cards = higher value.
         if (actor.hand.length <= 2) drawValue += 350; // Desperate for options
@@ -269,14 +314,14 @@ function evaluateMoveEV(
         if (dice[colIndex] >= 4 && turnCount <= 11) {
             const oppColFull = oppColCards.every(c => c !== null);
             if (!oppColFull && mcScore > 500) {
-                mcScore -= 500; // Delay penalty (can be offset if drawValue is massively high)
+                mcScore -= params.showdownDelayPenalty; // Delay penalty (can be offset if drawValue is massively high)
             }
         }
 
         // Tactic 3: 3rd Row Intersection Priority (交差点の特異点)
         // Row 2 is the X-Hand component. Locking it early restricts X-hand flexibility.
         if (dice[colIndex] >= 3 && turnCount <= 8) {
-            mcScore -= 300; // Flexibility penalty (can be offset if drawValue is massively high)
+            mcScore -= params.intersectionDelayPenalty; // Flexibility penalty (can be offset if drawValue is massively high)
         }
     }
 
@@ -465,7 +510,8 @@ function shouldHideCard(
     player: GameState['players'][0], 
     board: (Card | null)[][], 
     turnCount: number,
-    opponent: GameState['players'][0]
+    opponent: GameState['players'][0],
+    params: AiParams
 ): boolean {
     if (player.hiddenCardsCount >= 3) return false;
 
@@ -537,6 +583,9 @@ function shouldHideCard(
     if (isDenyingOut) {
         baseProb += 0.6; // Highly likely to hide if it burns an opponent's out
     }
+
+    // Apply bluff multiplier from params
+    baseProb *= (params.bluffBonus / 150);
 
     return Math.random() < (baseProb * learning.hidingStrategy / 0.3);
 }

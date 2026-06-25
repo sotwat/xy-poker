@@ -33,10 +33,12 @@ const STORAGE_KEY = 'xypoker_ai_learning';
 
 export function getLearningData(): LearningData {
     try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            const data = JSON.parse(stored);
-            return { ...DEFAULT_LEARNING_DATA, ...data };
+        if (typeof localStorage !== 'undefined') {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                const data = JSON.parse(stored);
+                return { ...DEFAULT_LEARNING_DATA, ...data };
+            }
         }
     } catch (e) {
         console.error('Failed to load AI learning data:', e);
@@ -46,7 +48,9 @@ export function getLearningData(): LearningData {
 
 function saveLearningData(data: LearningData): void {
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        if (typeof localStorage !== 'undefined') {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
     } catch (e) {
         console.error('Failed to save AI learning data:', e);
     }

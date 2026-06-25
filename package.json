@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "start": "node server/index.js",
     "deploy": "./deploy_all.sh",
-    "dev:all": "concurrently \"npm run start\" \"npm run dev\""
+    "dev:all": "concurrently \"npm run start\" \"npm run dev\"",
+    "train": "tsx scripts/train.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",
@@ -35,6 +36,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "tsx": "^4.22.4",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
