@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `06251351` (2026-06-25 13:51)
+- **Current Version:** `06251355` (2026-06-25 13:55)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v06251351** (2026-06-25): **AI Enhancement** - Overhauled the Strategic Bluffing logic (Face Down cards). The AI now hides cards earlier in the game, stops bluffing on completed opponent columns, and actively uses face-down cards to "hide" cards the opponent desperately needs (Denying Outs).
+1. **v06251355** (2026-06-25): **AI Enhancement** - Implemented 'Dead Column' detection (Adversarial Monte Carlo). The AI now simultaneously simulates both its own and the opponent's future hands. If the AI determines a column is a guaranteed mathematical loss, the Y-EV drops to 0, and the AI immediately switches to using the column strictly as a trash bin or X-Hand component.
+2. **v06251351** (2026-06-25): **AI Enhancement** - Overhauled the Strategic Bluffing logic (Face Down cards). The AI now hides cards earlier in the game, stops bluffing on completed opponent columns, and actively uses face-down cards to "hide" cards the opponent desperately needs (Denying Outs).
 2. **v06251345** (2026-06-25): **AI Enhancement** - Added 'Draw Rush (Trash Bin) Strategy'. The AI now actively dumps weak cards into low-dice columns to rapidly complete them and secure the +1 card draw bonus, saving resources for high-dice columns.
 2. **v06251339** (2026-06-25): **AI Enhancement** - Added 'Inverse Dice Scaling' for X-Hands. The AI now understands that X-Hands are exponentially more valuable when the total dice points are low, and adjusts its focus accordingly.
 2. **v06251331** (2026-06-25): **AI Enhancement (Level 3)** - Implemented ExpectiMax (Opponent Lookahead). The AI now simulates the opponent's best possible counter-move and actively tries to block high-scoring columns.

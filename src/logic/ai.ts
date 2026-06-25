@@ -126,10 +126,15 @@ function evaluateMoveEV(
 
     const potentialCards = [...currentCards];
     potentialCards[emptySlotIdx] = card;
+
+    const oppColCards = [adversary.board[0][colIndex], adversary.board[1][colIndex], adversary.board[2][colIndex]];
     
-    // Level 2: Monte Carlo Expected Value
+    // Level 2 & 3: Adversarial Monte Carlo Expected Value
+    // By simulating both our hand and the opponent's hand, we mathematically detect "dead columns" (guaranteed losses).
+    // If we can't beat the opponent's current/future hand, the Y-EV drops to 0, forcing the AI to treat it as a trash bin.
     let mcScore = runMonteCarloPlayouts(
         potentialCards, 
+        oppColCards,
         dice[colIndex], 
         remainingDeck, 
         MONTE_CARLO_ITERATIONS,
@@ -183,7 +188,8 @@ function evaluateMoveEV(
 }
 
 function runMonteCarloPlayouts(
-    currentCol: (Card | null)[], 
+    myCol: (Card | null)[], 
+    oppCol: (Card | null)[],
     diceValue: number, 
     remainingDeck: Card[], 
     iterations: number,
@@ -192,20 +198,38 @@ function runMonteCarloPlayouts(
     let totalScore = 0;
     const learning = getLearningData();
 
-    const missingCount = currentCol.filter(c => c === null).length;
+    const myMissing = myCol.filter(c => c === null).length;
+    const oppMissing = oppCol.filter(c => c === null).length;
 
-    if (missingCount === 0) {
-        return calculateHandValue(currentCol as Card[], diceValue, learning, isLosingBadly);
-    }
-
-    if (remainingDeck.length < missingCount) return 0;
+    if (remainingDeck.length < myMissing + oppMissing) return 0;
 
     for (let i = 0; i < iterations; i++) {
-        const drawnCards = getRandomSample(remainingDeck, missingCount);
+        const drawnCards = getRandomSample(remainingDeck, myMissing + oppMissing);
         let drawIndex = 0;
-        const simulatedCol = currentCol.map(c => c === null ? drawnCards[drawIndex++] : c);
         
-        totalScore += calculateHandValue(simulatedCol as Card[], diceValue, learning, isLosingBadly);
+        const mySimulatedCol = myCol.map(c => c === null ? drawnCards[drawIndex++] : c) as Card[];
+        const oppSimulatedCol = oppCol.map(c => c === null ? drawnCards[drawIndex++] : c) as Card[];
+        
+        const myRes = evaluateYHand(mySimulatedCol, diceValue);
+        const oppRes = evaluateYHand(oppSimulatedCol, diceValue);
+        
+        let weWin = false;
+        if (myRes.rankValue > oppRes.rankValue) {
+            weWin = true;
+        } else if (myRes.rankValue === oppRes.rankValue) {
+            for (let k = 0; k < Math.max(myRes.kickers.length, oppRes.kickers.length); k++) {
+                const mk = myRes.kickers[k] || 0;
+                const ok = oppRes.kickers[k] || 0;
+                if (mk > ok) { weWin = true; break; }
+                if (ok > mk) { break; }
+            }
+        }
+
+        // If we win the column, add the heuristic EV.
+        // If we lose (or tie and lose kickers), the Y-hand EV is 0! This instantly detects "dead columns".
+        if (weWin) {
+            totalScore += calculateHandValue(mySimulatedCol, diceValue, learning, isLosingBadly);
+        }
     }
 
     return totalScore / iterations;
