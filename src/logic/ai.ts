@@ -170,17 +170,15 @@ function evaluateMoveEV(
     // Draw Rush Bonus (Trash Bin Strategy)
     // The first player to fill a column draws an extra card.
     // The AI actively uses low-dice columns as "trash bins" to quickly dump weak cards and get this bonus.
+    let rushMultiplier = 1;
     const oppColFull = adversary.board[2][colIndex] !== null;
     if (!oppColFull) {
-        // Inverse scaling: Heavily prioritize rushing low-dice columns for draws
-        const rushMultiplier = (7 - dice[colIndex]); // dice=1 -> 6x, dice=6 -> 1x
-        
-        if (emptySlotIdx === 2) {
-            mcScore += 500 * rushMultiplier; // Up to +3000 EV for securing the draw
-        } else if (emptySlotIdx === 1) {
-            mcScore += 150 * rushMultiplier; // Up to +900 EV for setting up the draw
-        } else if (emptySlotIdx === 0) {
-            mcScore += 50 * rushMultiplier;  // Up to +300 EV for starting a trash bin
+        if (dice[colIndex] <= 2) {
+            // Inverse scaling: Trash bins are more valuable early game
+            rushMultiplier = (15 - turnCount) / 10; 
+            if (emptySlotIdx === 0) {
+                mcScore += 50 * rushMultiplier;  // Up to +300 EV for starting a trash bin
+            }
         }
     }
 
@@ -206,20 +204,40 @@ function evaluateMoveEV(
         }
     }
 
-    // Tactic 2: Showdown Delay (決着の遅延)
-    // If this move completes a high-dice column early, and we are likely winning,
-    // we DELAY completing it. This baits the opponent into wasting resources on a lost column.
-    if (emptySlotIdx === 2 && dice[colIndex] >= 4 && turnCount <= 11) {
-        const oppColFull = oppColCards.every(c => c !== null);
-        if (!oppColFull && mcScore > 300) {
-            mcScore -= 600; // Massive penalty for early completion. Milk their resources!
-        }
-    }
+    // --- Dynamic Draw Bonus & Tactic Integration ---
+    if (emptySlotIdx === 2) {
+        // Dynamic value of getting a +1 Draw (2-draw turn)
+        let drawValue = 200; // Base value of drawing an extra card
+        
+        // 1. Hand size: Fewer cards = higher value.
+        if (actor.hand.length <= 2) drawValue += 350; // Desperate for options
+        else if (actor.hand.length >= 5) drawValue -= 150; // Already have plenty
+        
+        // 2. Turn count: Early game = building arsenal.
+        if (turnCount <= 6) drawValue += 200;
+        else if (turnCount >= 12) drawValue -= 200;
 
-    // Tactic 3: 3rd Row Intersection Priority (交差点の特異点)
-    // Row 2 is the X-Hand component. We should not lock it early unless it's a trash bin (dice <= 2).
-    if (emptySlotIdx === 2 && dice[colIndex] >= 3 && turnCount <= 8) {
-        mcScore -= 300; // Penalty for locking the X-hand shape too early.
+        mcScore += drawValue;
+        
+        // Trash Bin Synergy: If it's a low dice column, the primary goal IS the draw.
+        if (dice[colIndex] <= 2) {
+            mcScore += 200 * rushMultiplier;
+        }
+
+        // Tactic 2: Showdown Delay (決着の遅延)
+        // If we are likely winning a high-dice column, delay completion to milk opponent resources.
+        if (dice[colIndex] >= 4 && turnCount <= 11) {
+            const oppColFull = oppColCards.every(c => c !== null);
+            if (!oppColFull && mcScore > 500) {
+                mcScore -= 500; // Delay penalty (can be offset if drawValue is massively high)
+            }
+        }
+
+        // Tactic 3: 3rd Row Intersection Priority (交差点の特異点)
+        // Row 2 is the X-Hand component. Locking it early restricts X-hand flexibility.
+        if (dice[colIndex] >= 3 && turnCount <= 8) {
+            mcScore -= 300; // Flexibility penalty (can be offset if drawValue is massively high)
+        }
     }
 
     mcScore += Math.random() * 10;
