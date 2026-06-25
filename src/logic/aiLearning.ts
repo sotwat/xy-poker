@@ -12,6 +12,7 @@ interface LearningData {
     xHandFocus: number;
     bonusAggression: number;
     hidingStrategy: number;
+    defensiveAwareness: number;
 }
 
 const DEFAULT_LEARNING_DATA: LearningData = {
@@ -25,6 +26,7 @@ const DEFAULT_LEARNING_DATA: LearningData = {
     xHandFocus: 1.0,
     bonusAggression: 1.0,
     hidingStrategy: 0.3,
+    defensiveAwareness: 0.8,
 };
 
 const STORAGE_KEY = 'xypoker_ai_learning';
@@ -33,7 +35,8 @@ export function getLearningData(): LearningData {
     try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
-            return JSON.parse(stored);
+            const data = JSON.parse(stored);
+            return { ...DEFAULT_LEARNING_DATA, ...data };
         }
     } catch (e) {
         console.error('Failed to load AI learning data:', e);

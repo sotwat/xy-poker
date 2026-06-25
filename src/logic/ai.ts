@@ -3,8 +3,11 @@ import { getLearningData } from './aiLearning';
 import { evaluateYHand } from './evaluation';
 
 // ==========================================
-// Level 1 & Level 2 AI Enhancements
-// Features: Monte Carlo Tree Search (MCTS / Playouts), Dynamic Risk Management, Strategic Bluffing.
+// Level 1, 2, & 3 AI Enhancements
+// Features: 
+// 1. Heuristics & Bluffing
+// 2. Monte Carlo Playouts (EV)
+// 3. ExpectiMax (Opponent Lookahead & Blocking)
 // ==========================================
 
 const MONTE_CARLO_ITERATIONS = 30; // Lightweight to avoid blocking UI
@@ -35,86 +38,135 @@ export function getBestMove(gameState: GameState, playerIndex: number): { cardId
     const remainingDeck = getRemainingDeck(visibleCards);
 
     // 3. Dynamic Risk Assessment
-    // Calculate current points to decide if we need to take high risks
     let myScore = player.score || 0;
     let oppScore = opponent.score || 0;
     const isLosingBadly = (oppScore - myScore) > 15;
     
-    // Dice context
     const avgDice = dice.reduce((a, b) => a + b, 0) / 5;
     const isHighStakes = avgDice >= 3.5;
 
     let bestMove = { cardId: hand[0].id, colIndex: validColumns[0], isHidden: false };
     let bestScore = -Infinity;
 
+    const learning = getLearningData();
+
+    // 4. LEVEL 3: ExpectiMax Loop
     for (const card of hand) {
         for (const col of validColumns) {
-            const currentCards = [board[0][col], board[1][col], board[2][col]];
-            const emptySlotIdx = currentCards.findIndex(c => c === null);
-            if (emptySlotIdx === -1) continue;
-
-            const potentialCards = [...currentCards];
-            potentialCards[emptySlotIdx] = card;
-            
-            // ==========================================
-            // LEVEL 2: Monte Carlo Expected Value (EV)
-            // ==========================================
-            let mcScore = runMonteCarloPlayouts(
-                potentialCards, 
-                dice[col], 
-                remainingDeck, 
-                MONTE_CARLO_ITERATIONS,
-                isLosingBadly
-            );
+            // Calculate our EV for this move
+            let myScoreEV = evaluateMoveEV(player, opponent, card, col, remainingDeck, isLosingBadly, isHighStakes);
+            if (myScoreEV === -Infinity) continue;
 
             // ==========================================
-            // LEVEL 1: Advanced Heuristics & Context
+            // LEVEL 3: Opponent Lookahead
             // ==========================================
+            // Hypothetically apply our move
+            const hypotheticalBoard = [
+                [...player.board[0]],
+                [...player.board[1]],
+                [...player.board[2]]
+            ];
+            const emptySlotIdx = hypotheticalBoard.findIndex((_, r) => hypotheticalBoard[r][col] === null);
+            if (emptySlotIdx !== -1) {
+                hypotheticalBoard[emptySlotIdx][col] = card;
+            }
             
-            // Strategic Resource Allocation (Alignment Bonus)
-            // Force the AI to "give up" on low-dice columns by heavily penalizing 
-            // the placement of High Cards in Low Dice columns, and vice versa.
-            // Reward: High Card in High Column OR Low Card in Low Column.
-            const colDice = dice[col];
-            const alignmentBonus = (card.rank - 8) * (colDice - 3.5) * 100;
-            mcScore += alignmentBonus;
+            const hypotheticalPlayer = { ...player, board: hypotheticalBoard };
             
-            // X-hand (bottom row) strategy
-            if (emptySlotIdx === 2) {
-                const learning = getLearningData();
-                const xScore = evaluateXHandPotential(board, card, col) * learning.xHandFocus;
-                mcScore += xScore * (isHighStakes ? 0.8 : 1.2);
+            // Find opponent's best response EV
+            let bestOpponentResponseEV = 0;
+            const oppValidColumns = [];
+            for (let c = 0; c < 5; c++) {
+                if (opponent.board[2][c] === null) oppValidColumns.push(c);
+            }
+            
+            if (oppValidColumns.length > 0 && opponent.hand.length > 0) {
+                let maxOppEV = -Infinity;
+                for (const oppCard of opponent.hand) {
+                    for (const oppCol of oppValidColumns) {
+                        // The opponent evaluates their move against our hypothetical new board
+                        let oppEV = evaluateMoveEV(opponent, hypotheticalPlayer, oppCard, oppCol, remainingDeck, !isLosingBadly, isHighStakes);
+                        if (oppEV > maxOppEV) maxOppEV = oppEV;
+                    }
+                }
+                bestOpponentResponseEV = maxOppEV === -Infinity ? 0 : maxOppEV;
             }
 
-            // Opponent blocking strategy
-            mcScore += evaluateOpponentBlock(opponent, col);
+            // Net Score: Maximize our EV while minimizing opponent's Best EV
+            // The defensiveAwareness weight dictates how much we prioritize blocking
+            const netScore = myScoreEV - (bestOpponentResponseEV * (learning.defensiveAwareness || 0.8));
 
-            // Spread Bonus to avoid stacking everything in one column early on
-            if (emptySlotIdx === 0) {
-                mcScore += 50; 
-            }
-
-            // Small randomness for variety
-            mcScore += Math.random() * 10;
-
-            if (mcScore > bestScore) {
-                bestScore = mcScore;
+            if (netScore > bestScore) {
+                bestScore = netScore;
                 bestMove = { cardId: card.id, colIndex: col, isHidden: false };
             }
         }
     }
 
-    // ==========================================
-    // LEVEL 1: Strategic Bluffing (Face Down)
-    // ==========================================
+    // LEVEL 1: Strategic Bluffing
     bestMove.isHidden = shouldHideCard(bestMove, hand, player, board, gameState.turnCount, opponent);
 
     return bestMove;
 }
 
 /**
- * Runs N random playouts to calculate the Expected Value of a column.
+ * Calculates the Expected Value of placing a specific card in a specific column.
  */
+function evaluateMoveEV(
+    actor: GameState['players'][0],
+    adversary: GameState['players'][0],
+    card: Card,
+    colIndex: number,
+    remainingDeck: Card[],
+    isLosingBadly: boolean,
+    isHighStakes: boolean
+): number {
+    const board = actor.board;
+    const dice = actor.dice;
+    
+    const currentCards = [board[0][colIndex], board[1][colIndex], board[2][colIndex]];
+    const emptySlotIdx = currentCards.findIndex(c => c === null);
+    if (emptySlotIdx === -1) return -Infinity;
+
+    const potentialCards = [...currentCards];
+    potentialCards[emptySlotIdx] = card;
+    
+    // Level 2: Monte Carlo Expected Value
+    let mcScore = runMonteCarloPlayouts(
+        potentialCards, 
+        dice[colIndex], 
+        remainingDeck, 
+        MONTE_CARLO_ITERATIONS,
+        isLosingBadly
+    );
+
+    // Level 1: Heuristics & Context
+    
+    // Resource Allocation (Alignment Bonus)
+    const colDice = dice[colIndex];
+    const alignmentBonus = (card.rank - 8) * (colDice - 3.5) * 100;
+    mcScore += alignmentBonus;
+    
+    // X-hand (bottom row) strategy
+    if (emptySlotIdx === 2) {
+        const learning = getLearningData();
+        const xScore = evaluateXHandPotential(board, card, colIndex) * learning.xHandFocus;
+        mcScore += xScore * (isHighStakes ? 0.8 : 1.2);
+    }
+
+    // Opponent blocking logic natively handled by Level 3 ExpectiMax
+    // But we keep a lightweight heuristic bonus for creating strong standalone blocks
+    mcScore += evaluateOpponentBlock(adversary, colIndex);
+
+    // Spread Bonus
+    if (emptySlotIdx === 0) {
+        mcScore += 50; 
+    }
+
+    mcScore += Math.random() * 10;
+    return mcScore;
+}
+
 function runMonteCarloPlayouts(
     currentCol: (Card | null)[], 
     diceValue: number, 
@@ -125,21 +177,16 @@ function runMonteCarloPlayouts(
     let totalScore = 0;
     const learning = getLearningData();
 
-    // How many cards do we need to draw to finish the column?
     const missingCount = currentCol.filter(c => c === null).length;
 
     if (missingCount === 0) {
-        // Column already full, evaluate exact score
         return calculateHandValue(currentCol as Card[], diceValue, learning, isLosingBadly);
     }
 
-    // If deck is smaller than what we need, adjust (shouldn't happen normally)
     if (remainingDeck.length < missingCount) return 0;
 
     for (let i = 0; i < iterations; i++) {
-        // Fast random sample without full shuffle
         const drawnCards = getRandomSample(remainingDeck, missingCount);
-        
         let drawIndex = 0;
         const simulatedCol = currentCol.map(c => c === null ? drawnCards[drawIndex++] : c);
         
@@ -149,21 +196,15 @@ function runMonteCarloPlayouts(
     return totalScore / iterations;
 }
 
-/**
- * Maps a Y-Hand to a heuristic EV score.
- */
 function calculateHandValue(cards: Card[], diceValue: number, learning: any, isLosingBadly: boolean): number {
     const result = evaluateYHand(cards, diceValue);
     
-    // Map rankValue (1-9) to an exponential scale so High hands are heavily favored
     let baseValue = Math.pow(result.rankValue, 2) * 10 * diceValue;
     
-    // Apply learning weights
     if (result.type.includes('Flush')) baseValue *= learning.flushPreference;
     if (result.type.includes('Straight')) baseValue *= learning.straightPreference;
     if (result.type.includes('Pair') || result.type.includes('Trips')) baseValue *= learning.tripPreference;
 
-    // Dynamic Risk: If losing badly, dramatically reward high variance hands (Flush, Straight)
     if (isLosingBadly && result.rankValue >= 5) {
         baseValue *= 1.5; 
     }
@@ -171,22 +212,19 @@ function calculateHandValue(cards: Card[], diceValue: number, learning: any, isL
     return baseValue;
 }
 
-// --- Utility Functions for Level 1 & 2 ---
+// --- Utility Functions ---
 
 function getVisibleCards(player: GameState['players'][0], opponent: GameState['players'][0]): Card[] {
     const visible: Card[] = [];
     
-    // Player's hand
     visible.push(...player.hand);
     
-    // Player's board
     for (let r = 0; r < 3; r++) {
         for (let c = 0; c < 5; c++) {
             if (player.board[r][c]) visible.push(player.board[r][c]!);
         }
     }
     
-    // Opponent's visible board (skip hidden cards)
     for (let r = 0; r < 3; r++) {
         for (let c = 0; c < 5; c++) {
             const oppCard = opponent.board[r][c];
@@ -234,21 +272,18 @@ function evaluateXHandPotential(board: (Card | null)[][], newCard: Card, colInde
     let score = 0;
     const ranks = validCards.map(c => c.rank);
 
-    // Pairs, trips, quads
     const rankCounts = new Map<number, number>();
     ranks.forEach(r => rankCounts.set(r, (rankCounts.get(r) || 0) + 1));
     const maxCount = Math.max(...rankCounts.values());
 
     if (maxCount >= 2) score += Math.pow(maxCount, 2) * 20;
 
-    // Flush potential
     const suits = validCards.map(c => c.suit);
     const uniqueSuits = new Set(suits);
     if (uniqueSuits.size === 1 && validCards.length >= 3) {
         score += 150;
     }
 
-    // Straight potential
     const sortedRanks = [...new Set(ranks)].sort((a, b) => a - b);
     if (sortedRanks.length >= 3) {
         let maxConsecutive = 1;
@@ -298,7 +333,6 @@ function shouldHideCard(
 ): boolean {
     if (player.hiddenCardsCount >= 3) return false;
 
-    // Cannot hide 3rd card in a column if 2 are already hidden
     let hiddenInCol = 0;
     for (let r = 0; r < 3; r++) {
         const card = board[r][move.colIndex];
@@ -316,23 +350,19 @@ function shouldHideCard(
 
     let baseProb = 0.0;
 
-    // Strategic Bluffing: Hide low cards in high-dice columns to fake strength
     if (card.rank <= 6 && myDice >= 4) {
         baseProb = 0.35;
     }
     
-    // Hide high cards in opponent's high-dice columns to make them hesitate
     if (card.rank >= 11 && oppDice >= 4) {
         baseProb = 0.4;
     }
 
-    // Hide X-Hand potential cards (bottom row)
     const emptySlotIdx = [board[0][col], board[1][col], board[2][col]].findIndex(c => c === null);
     if (emptySlotIdx === 2) {
         baseProb += 0.2;
     }
 
-    // Boost probability in early game
     if (turnCount <= 8) {
         baseProb *= 1.5;
     }

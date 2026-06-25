@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `06251324` (2026-06-25 13:24)
+- **Current Version:** `06251331` (2026-06-25 13:31)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working
@@ -83,7 +83,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v06251324** (2026-06-25): **AI Enhancement** - Added 'Resource Allocation Alignment Bonus' to force the AI to sacrifice low-dice columns and heavily prioritize high cards for high-dice columns.
+1. **v06251331** (2026-06-25): **AI Enhancement (Level 3)** - Implemented ExpectiMax (Opponent Lookahead). The AI now simulates the opponent's best possible counter-move and actively tries to block high-scoring columns.
+2. **v06251324** (2026-06-25): **AI Enhancement** - Added 'Resource Allocation Alignment Bonus' to force the AI to sacrifice low-dice columns and heavily prioritize high cards for high-dice columns.
 2. **v06251316** (2026-06-25): **AI Enhancement** - Overhauled local AI (Level 1 & 2). Introduced probability calculations, dynamic risk assessment, strategic bluffing (Face Down), and Monte Carlo expected value (EV) simulations for smarter placements.
 2. **v06251123** (2026-06-25): **Security Update** - Addressed critical vulnerabilities. Fixed RLS policies to prevent cheating, added JWT validation for sockets, restricted CORS, fixed kickers logic bug, and secured game end reporting.
 2. **v06151539** (2026-06-15): **Docs** - Fully updated README.md to reflect current project state (React 19, full component list, all features).
