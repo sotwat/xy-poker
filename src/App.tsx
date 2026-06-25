@@ -35,7 +35,7 @@ function App() {
   const [showDiceAnimation, setShowDiceAnimation] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
-
+  const [isShaking, setIsShaking] = useState(false); // [Juice] Screen Shake
 
   // Rematch State
   const [rematchRequested, setRematchRequested] = useState(false);
@@ -579,6 +579,10 @@ function App() {
       // 1. Show Finish Animation
       setShowFinishAnimation(true);
       playSuccessSound(); // Use success sound for "Finish!"
+
+      // Juice: Screen Shake on Showdown
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 500);
 
       // 2. Wait 2 seconds, then Calculate
       const timer = setTimeout(() => {
@@ -1296,7 +1300,7 @@ function App() {
   };
 
   return (
-    <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase}`}>
+    <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase} ${isShaking ? 'shake-intense' : ''}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
