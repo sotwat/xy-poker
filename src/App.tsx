@@ -1300,7 +1300,7 @@ function App() {
   };
 
   return (
-    <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase} ${isShaking ? 'shake-intense' : ''}`}>
+    <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase} ${isShaking ? 'shake-intense' : ''} ${phase === 'scoring' ? 'showdown-active' : ''}`}>
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { GameState } from '../logic/types';
 import { DevBadge } from './DevBadge';
+import { AnimatedScore } from './AnimatedScore';
 import './GameInfo.css';
 
 interface GameInfoProps {
@@ -77,13 +78,13 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                 <div className="player-score-row player-1">
                     <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
                         {/* Use isPremium prop for MYSELF (if I am p1), and p1.isDeveloper for others/state */}
-                        {p1Name} {((myIndex === 0 && isPremium) || p1.isDeveloper) && <DevBadge />}: {p1.score}
+                        {p1Name} {((myIndex === 0 && isPremium) || p1.isDeveloper) && <DevBadge />}: <AnimatedScore value={p1.score} className="score-number" />
                     </span>
                     <span className="bonus-item">Bonuses: {p1.bonusesClaimed}</span>
                 </div>
                 <div className="player-score-row player-2">
                     <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
-                        {p2Name} {((myIndex === 1 && isPremium) || p2.isDeveloper) && <DevBadge />}: {p2.score}
+                        {p2Name} {((myIndex === 1 && isPremium) || p2.isDeveloper) && <DevBadge />}: <AnimatedScore value={p2.score} className="score-number" />
                     </span>
                     <span className="bonus-item">Bonuses: {p2.bonusesClaimed}</span>
                 </div>
