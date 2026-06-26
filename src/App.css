@@ -698,6 +698,8 @@ body:has(.game-result-overlay) .app-header {
   height: 160px;
   border-radius: 50%;
   position: absolute;
+  top: 50%;
+  left: 50%;
   background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
   border: 6px solid #1e40af;
   box-shadow:
@@ -705,18 +707,8 @@ body:has(.game-result-overlay) .app-header {
     inset 0 2px 5px rgba(255, 255, 255, 0.5),
     inset 0 -2px 5px rgba(0, 0, 0, 0.3),
     inset -30px -30px 60px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  font-weight: bold;
-  color: rgba(255, 255, 255, 0.3);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  transform: translateZ(8px);
-}
-
-.coin-front::after {
-  content: '●';
+  transform: translate(-50%, -50%) translateZ(8px);
+  backface-visibility: hidden;
 }
 
 /* コイン背面: 赤 */
@@ -725,6 +717,8 @@ body:has(.game-result-overlay) .app-header {
   height: 160px;
   border-radius: 50%;
   position: absolute;
+  top: 50%;
+  left: 50%;
   background: radial-gradient(circle at 30% 30%, #f87171, #dc2626);
   border: 6px solid #991b1b;
   box-shadow:
@@ -732,18 +726,8 @@ body:has(.game-result-overlay) .app-header {
     inset 0 2px 5px rgba(255, 255, 255, 0.5),
     inset 0 -2px 5px rgba(0, 0, 0, 0.3),
     inset -30px -30px 60px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  font-weight: bold;
-  color: rgba(255, 255, 255, 0.3);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  transform: translateZ(-8px) rotateY(180deg);
-}
-
-.coin-back::after {
-  content: '●';
+  transform: translate(-50%, -50%) rotateY(180deg) translateZ(-8px);
+  backface-visibility: hidden;
 }
 
 /* コイン側面 */
@@ -751,11 +735,14 @@ body:has(.game-result-overlay) .app-header {
   width: 160px;
   height: 20px;
   position: absolute;
+  top: 50%;
+  left: 50%;
   background: linear-gradient(90deg, #0f172a 0%, #64748b 50%, #0f172a 100%);
   border-top: 2px solid #1e40af;
   border-bottom: 2px solid #1e3a8a;
-  transform: rotateY(90deg);
+  transform: translate(-50%, -50%) rotateY(90deg);
   border-radius: 8px;
+  backface-visibility: hidden;
 }
 
 /* 3D回転アニメーション: Y軸で720度（2周）回転 */
