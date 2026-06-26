@@ -1442,7 +1442,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06261600</span>}
+          {showVersion && <span className="version">v06261603</span>}
         </div>
 
         <button
@@ -1654,7 +1654,6 @@ function App() {
                           <div className={`coin flipping winner-${tossResult ?? 0}`}>
                             <div className="coin-front" />
                             <div className="coin-back" />
-                            <div className="coin-side" />
                           </div>
                         </div>
                         <h2 style={{ marginTop: '20px' }}>Spinning Coin...</h2>
@@ -1664,7 +1663,6 @@ function App() {
                         <div className={`coin flipped winner-${tossResult ?? 0}`}>
                           <div className="coin-front" />
                           <div className="coin-back" />
-                          <div className="coin-side" />
                         </div>
                       </div>
                     )}

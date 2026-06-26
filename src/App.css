@@ -730,20 +730,7 @@ body:has(.game-result-overlay) .app-header {
   backface-visibility: hidden;
 }
 
-/* コイン側面 */
-.coin-side {
-  width: 160px;
-  height: 20px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background: linear-gradient(90deg, #0f172a 0%, #64748b 50%, #0f172a 100%);
-  border-top: 2px solid #1e40af;
-  border-bottom: 2px solid #1e3a8a;
-  transform: translate(-50%, -50%) rotateY(90deg);
-  border-radius: 8px;
-  backface-visibility: hidden;
-}
+/* コイン側面 - 不要なため削除 */
 
 /* 3D回転アニメーション: Y軸で720度（2周）回転 */
 @keyframes coin-spin-3d {
