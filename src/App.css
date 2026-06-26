@@ -660,111 +660,112 @@ body:has(.game-result-overlay) .app-header {
 }
 
 .coin-container {
-  width: 160px;
-  height: 160px;
+  width: 200px;
+  height: 200px;
   margin-bottom: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1000px;
 }
 
-/* 親: コインの豪華なゴールドのフチ。常に完全な真円 */
+/* 3D親要素: 奥行き表現を有効化 */
 .coin {
   width: 160px;
   height: 160px;
-  border-radius: 50%;
   position: relative;
-  background: radial-gradient(circle, #ffe066 60%, #f5b041 100%); /* ゴールドのベース */
-  border: 6px solid #f5b041;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+/* アニメーション中: Y軸で720度回転（2周） */
+.coin.flipping {
+  animation: coin-spin-3d 2.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* 静止状態: 最終的な回転角度で停止 */
+.coin.flipped.winner-0 {
+  transform: rotateY(0deg);
+}
+
+.coin.flipped.winner-1 {
+  transform: rotateY(180deg);
+}
+
+/* コイン前面: 青 */
+.coin-front {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  position: absolute;
+  background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
+  border: 6px solid #1e40af;
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.4),
     inset 0 2px 5px rgba(255, 255, 255, 0.5),
-    inset 0 -2px 5px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
+    inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+    inset -30px -30px 60px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transform: translateZ(8px);
 }
 
-/* コインの中身。これがパタパタと回転する */
-.coin-inner {
-  width: 100%;
-  height: 100%;
+.coin-front::after {
+  content: '●';
+}
+
+/* コイン背面: 赤 */
+.coin-back {
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
-  transition: background-color 0.1s;
+  position: absolute;
+  background: radial-gradient(circle at 30% 30%, #f87171, #dc2626);
+  border: 6px solid #991b1b;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 2px 5px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+    inset -30px -30px 60px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transform: translateZ(-8px) rotateY(180deg);
 }
 
-/* アニメーション: コイン自体の跳ね上がり（上下移動） */
-.coin.flipping {
-  animation: coin-bounce 2.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+.coin-back::after {
+  content: '●';
 }
 
-/* 中身のパタパタ回転アニメーション */
-.coin.flipping.winner-0 .coin-inner {
-  animation: coin-flip-to-blue 2.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+/* コイン側面 */
+.coin-side {
+  width: 160px;
+  height: 20px;
+  position: absolute;
+  background: linear-gradient(90deg, #0f172a 0%, #64748b 50%, #0f172a 100%);
+  border-top: 2px solid #1e40af;
+  border-bottom: 2px solid #1e3a8a;
+  transform: rotateY(90deg);
+  border-radius: 8px;
 }
 
-.coin.flipping.winner-1 .coin-inner {
-  animation: coin-flip-to-red 2.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-
-/* 静止状態（終了時） */
-.coin.flipped.winner-0 .coin-inner {
-  background-color: #2563eb; /* 青 */
-}
-
-.coin.flipped.winner-1 .coin-inner {
-  background-color: #dc2626; /* 赤 */
-}
-
-/* コイン自体の放物線ジャンプ */
-@keyframes coin-bounce {
-  0%   { transform: translateY(0) scale(1); }
-  15%  { transform: translateY(-90px) scale(1.1); }
-  50%  { transform: translateY(-40px) scale(1.05); }
-  75%  { transform: translateY(-10px) scale(1.02); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-/* 青で終わるパタパタアニメーション
-   scaleX(1) <-> scaleX(-1) で裏返りを表現。
-   0付近で色を切り替えることで、表裏の反転をシミュレートする。
-*/
-@keyframes coin-flip-to-blue {
-  0%   { transform: scaleX(1); background-color: #2563eb; }
-  10%  { transform: scaleX(0); background-color: #2563eb; }
-  10.1% { transform: scaleX(0); background-color: #dc2626; }
-  20%  { transform: scaleX(-1); background-color: #dc2626; }
-  30%  { transform: scaleX(0); background-color: #dc2626; }
-  30.1% { transform: scaleX(0); background-color: #2563eb; }
-  40%  { transform: scaleX(1); background-color: #2563eb; }
-  50%  { transform: scaleX(0); background-color: #2563eb; }
-  50.1% { transform: scaleX(0); background-color: #dc2626; }
-  60%  { transform: scaleX(-1); background-color: #dc2626; }
-  70%  { transform: scaleX(0); background-color: #dc2626; }
-  70.1% { transform: scaleX(0); background-color: #2563eb; }
-  80%  { transform: scaleX(1); background-color: #2563eb; }
-  90%  { transform: scaleX(0.5); background-color: #2563eb; }
-  100% { transform: scaleX(1); background-color: #2563eb; }
-}
-
-/* 赤で終わるパタパタアニメーション */
-@keyframes coin-flip-to-red {
-  0%   { transform: scaleX(1); background-color: #dc2626; }
-  10%  { transform: scaleX(0); background-color: #dc2626; }
-  10.1% { transform: scaleX(0); background-color: #2563eb; }
-  20%  { transform: scaleX(-1); background-color: #2563eb; }
-  30%  { transform: scaleX(0); background-color: #2563eb; }
-  30.1% { transform: scaleX(0); background-color: #dc2626; }
-  40%  { transform: scaleX(1); background-color: #dc2626; }
-  50%  { transform: scaleX(0); background-color: #dc2626; }
-  50.1% { transform: scaleX(0); background-color: #2563eb; }
-  60%  { transform: scaleX(-1); background-color: #2563eb; }
-  70%  { transform: scaleX(0); background-color: #2563eb; }
-  70.1% { transform: scaleX(0); background-color: #dc2626; }
-  80%  { transform: scaleX(1); background-color: #dc2626; }
-  90%  { transform: scaleX(0.5); background-color: #dc2626; }
-  100% { transform: scaleX(1); background-color: #dc2626; }
+/* 3D回転アニメーション: Y軸で720度（2周）回転 */
+@keyframes coin-spin-3d {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(720deg);
+  }
 }
 
 .turn-choice-buttons {
