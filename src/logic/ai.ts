@@ -53,16 +53,24 @@ export const DEFAULT_AI_PARAMS: AiParams = {
 let activeGlobalParams: any = null;
 
 export function setGlobalAiParams(params: any): void {
-    console.log('[AI Engine] Hydrating decision engine with Global Collaborative AI weights:', params);
+    console.log('[AI Engine] Hydrating decision engine with 12-parameter Global Collaborative AI weights:', params);
     activeGlobalParams = params;
 }
 
 function getActiveLearningData(): any {
     const localLearning = getLearningData();
     if (!activeGlobalParams) {
-        return localLearning;
+        return {
+            ...localLearning,
+            purePreference: 1.0,
+            tripsInHandFocus: 1.0,
+            row3DelayFocus: 1.0,
+            showdownDelayFocus: 1.0,
+            lowCardAvoidance: 1.0,
+            turnOrderFlexibility: 1.0,
+        };
     }
-    // Map database snake_case parameters to game's camelCase variables
+    // Map database snake_case parameters to game's camelCase variables (12 parameters)
     return {
         ...localLearning,
         tripPreference: activeGlobalParams.trip_preference ?? localLearning.tripPreference,
@@ -70,7 +78,14 @@ function getActiveLearningData(): any {
         straightPreference: activeGlobalParams.straight_preference ?? localLearning.straightPreference,
         xHandFocus: activeGlobalParams.x_hand_focus ?? localLearning.xHandFocus,
         bonusAggression: activeGlobalParams.bonus_aggression ?? localLearning.bonusAggression,
-        defensiveAwareness: activeGlobalParams.defensive_awareness ?? localLearning.defensiveAwareness
+        defensiveAwareness: activeGlobalParams.defensive_awareness ?? localLearning.defensiveAwareness,
+        // strategy.md Compliant features
+        purePreference: activeGlobalParams.pure_preference ?? 1.0,
+        tripsInHandFocus: activeGlobalParams.trips_in_hand_focus ?? 1.0,
+        row3DelayFocus: activeGlobalParams.row3_delay_focus ?? 1.0,
+        showdownDelayFocus: activeGlobalParams.showdown_delay_focus ?? 1.0,
+        lowCardAvoidance: activeGlobalParams.low_card_avoidance ?? 1.0,
+        turnOrderFlexibility: activeGlobalParams.turn_order_flexibility ?? 1.0,
     };
 }
 
@@ -111,9 +126,12 @@ export function getBestTurnOrder(
         }
     }
 
+    const learning = getActiveLearningData();
+
     let score = params.turnOrderBaseFirstValue;
-    if (hasPair) score += params.turnOrderPairBonus;
-    if (highCardsCount >= 2) score += params.turnOrderHighCardBonus;
+    // Apply turnOrderFlexibility from collaborative learning pool
+    if (hasPair) score += params.turnOrderPairBonus * learning.turnOrderFlexibility;
+    if (highCardsCount >= 2) score += params.turnOrderHighCardBonus * learning.turnOrderFlexibility;
 
     return score > 0;
 }
@@ -150,11 +168,11 @@ export function getBestMove(
     let bestMove = { cardId: hand[0].id, colIndex: validColumns[0], isHidden: false };
     let currentBestMove = { ...bestMove };
     let depth = 2;
-    const maxAllowedDepth = 5; // Maximum depth cap for safety
+    const maxAllowedDepth = 5;
 
     // 2. Iterative Deepening ExpectiMax Loop
     while (depth <= maxAllowedDepth) {
-        evCache.clear(); // Clear Transposition table for each new depth search
+        evCache.clear();
         let depthBestMove = { ...bestMove };
         let depthBestScore = -Infinity;
         let isTimedOut = false;
@@ -184,15 +202,14 @@ export function getBestMove(
                 let averageScore = 0;
                 for (const oppHand of opponentHandSamples) {
                     const sampleGameState = cloneGameState(nextGameState);
-                    // Override with sampled hand (strictly hiding player's actual hand from AI)
                     sampleGameState.players[1 - playerIndex].hand = oppHand;
 
                     const score = expectimax(
                         sampleGameState,
                         playerIndex,
-                        1, // Current Depth
+                        1,
                         depth,
-                        false, // Opponent's turn
+                        false,
                         remainingDeck,
                         params,
                         learning,
@@ -203,8 +220,8 @@ export function getBestMove(
                 }
                 averageScore /= opponentHandSamples.length;
 
-                // Root heuristic adjustment
-                const rootBonus = calculateRootMoveBonus(player, opponent, card, col, emptySlotIdx, gameState.turnCount, params);
+                // Root heuristic adjustment with strategy.md parameters
+                const rootBonus = calculateRootMoveBonus(player, opponent, card, col, emptySlotIdx, gameState.turnCount, params, learning);
                 const finalScore = averageScore + rootBonus;
 
                 if (finalScore > depthBestScore) {
@@ -215,7 +232,6 @@ export function getBestMove(
         }
 
         if (isTimedOut) {
-            // Discard incomplete depth search results and fallback to previous depth's best move
             break;
         }
 
@@ -224,7 +240,7 @@ export function getBestMove(
     }
 
     bestMove = currentBestMove;
-    bestMove.isHidden = shouldHideCard(bestMove, hand, player, player.board, gameState.turnCount, opponent, params);
+    bestMove.isHidden = shouldHideCard(bestMove, hand, player, player.board, gameState.turnCount, opponent, params, learning);
 
     return bestMove;
 }
@@ -244,9 +260,8 @@ function expectimax(
     startTime: number,
     timeoutMs: number
 ): number {
-    // Interruption check
     if (Date.now() - startTime > timeoutMs) {
-        return 0; // Incomplete branch evaluation
+        return 0;
     }
 
     const player = gameState.players[playerIndex];
@@ -295,7 +310,6 @@ function expectimax(
         evCache.set(cacheKey, maxVal);
         return maxVal;
     } else {
-        // MIN Node (Opponent plays best response)
         let minVal = Infinity;
         const validColumns = [];
         for (let c = 0; c < 5; c++) {
@@ -542,6 +556,11 @@ function calculateHandValue(cards: Card[], diceValue: number, learning: any, isL
     if (result.type.includes('Straight')) baseValue *= learning.straightPreference;
     if (result.type.includes('Pair') || result.type.includes('Trips')) baseValue *= learning.tripPreference;
 
+    // Apply pure_preference multiplier from global learning pool
+    if (result.type.startsWith('Pure')) {
+        baseValue *= (learning.purePreference ?? 1.0);
+    }
+
     if (isLosingBadly && result.rankValue >= 5) {
         baseValue *= 1.5;
     }
@@ -556,26 +575,58 @@ function calculateRootMoveBonus(
     colIndex: number,
     emptySlotIdx: number,
     turnCount: number,
-    params: AiParams
+    params: AiParams,
+    learning: any
 ): number {
     let bonus = 0;
     const colDice = player.dice[colIndex];
 
     bonus += (card.rank - 8) * (colDice - 3.5) * 40;
 
+    // Apply low_card_avoidance to low card penalties
     if (emptySlotIdx === 0) {
         if (card.rank === 14 || card.rank === 13 || card.rank === 2) {
             const hasStraightSynergy = player.hand.some(c => c !== card && Math.abs(c.rank - card.rank) <= 2);
             if (!hasStraightSynergy) {
-                bonus += params.lowCardPenalty;
+                bonus += params.lowCardPenalty * (learning.lowCardAvoidance ?? 1.0);
             }
         } else if (card.rank === 12) {
             bonus += params.queenFirstRowBonus;
         }
     }
 
+    // Apply row3_delay_focus to row 3 delay penalty
     if (emptySlotIdx === 2 && colDice >= 3 && turnCount <= 8) {
-        bonus -= params.row3DelayPenalty;
+        bonus -= params.row3DelayPenalty * (learning.row3DelayFocus ?? 1.0);
+    }
+
+    // Apply showdown_delay_focus to showdown delay decisions
+    const oppCol = [opponent.board[0][colIndex], opponent.board[1][colIndex], opponent.board[2][colIndex]];
+    const oppCards = oppCol.filter(c => c !== null) as Card[];
+    const myCol = [player.board[0][colIndex], player.board[1][colIndex], player.board[2][colIndex]];
+    const myCards = myCol.filter(c => c !== null) as Card[];
+    
+    if (emptySlotIdx === 2 && oppCards.length >= 2 && myCards.length === 2) {
+        // AI is about to fill the column and finalize it. If AI is already winning by far, slow play!
+        const tempCol = [...myCol];
+        tempCol[2] = card;
+        const myRes = evaluateYHand(tempCol as Card[], colDice);
+        const oppRes = evaluateYHand(oppCards, colDice);
+        const weWin = myRes.rankValue > oppRes.rankValue;
+        if (weWin && turnCount <= 9) {
+            bonus -= params.showdownDelayPenalty * (learning.showdownDelayFocus ?? 1.0);
+        }
+    }
+
+    // Apply trips_in_hand_focus to Trips and Pairs hand values
+    const handRanks = player.hand.map(c => c.rank);
+    const tripsRanks = handRanks.filter((r, _, self) => self.filter(x => x === r).length === 3);
+    const pairRanks = handRanks.filter((r, _, self) => self.filter(x => x === r).length === 2);
+    
+    if (tripsRanks.includes(card.rank)) {
+        bonus += params.tripsInHandBonus * (learning.tripsInHandFocus ?? 1.0);
+    } else if (pairRanks.includes(card.rank)) {
+        bonus += params.pairInHandBonus;
     }
 
     bonus += evaluateOpponentBlock(opponent, colIndex);
@@ -689,7 +740,8 @@ function shouldHideCard(
     board: (Card | null)[][], 
     turnCount: number,
     opponent: GameState['players'][0],
-    params: AiParams
+    params: AiParams,
+    learning: any
 ): boolean {
     if (player.hiddenCardsCount >= 3) return false;
 
@@ -703,7 +755,6 @@ function shouldHideCard(
     const card = hand.find(c => c.id === move.cardId);
     if (!card) return false;
 
-    const learning = getActiveLearningData();
     const col = move.colIndex;
     const oppColFull = opponent.board[2][col] !== null;
     if (oppColFull) return false;

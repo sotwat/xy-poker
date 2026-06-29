@@ -18,7 +18,7 @@
 
 ### [必須] 1. データベース・マイグレーションの実行
 協調学習AI機能を利用するため、新しいMacから、またはSupabaseダッシュボードから、以下のSQLファイルの内容を「SQL Editor」で実行してください。
-- **適用スクリプト**: [supa_schema_v6_ai.sql](file:///Users/watanabesotaro/xy-poker/supa_schema_v6_ai.sql)
+- **適用スクリプト**: [supa_schema_v7_ai.sql](file:///Users/watanabesotaro/xy-poker/supa_schema_v7_ai.sql)
 - **実行内容**: `ai_global_parameters` テーブルの作成、初期レコード挿入、RLSポリシーの有効化。
 
 ### [必須] 2. 環境変数ファイル (.env) の確認
