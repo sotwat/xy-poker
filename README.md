@@ -68,10 +68,10 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `06252042` (2026-06-25 20:42)
+- **Current Version:** `06291605` (2026-06-29 16:05)
 - **Status:** **Stable**
 - **Last Critical Verification:**
-    - Local vs AI: ✅ Working
+    - Local vs AI: ✅ Working (Upgraded AI Engine)
     - Online Match: ✅ Working
     - Deployment: ✅ Automated via scripts
     - Code Health: ✅ Linting Improved
@@ -83,6 +83,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v06291605** (2026-06-29): **AI Engine Upgrade** - Overhauled the対戦AI. Implemented **Dynamic Depth ExpectiMax search**, allowing the AI to dynamically adjust its lookahead from Depth 2 (mid-game) up to Depth 4 (end-game, empty slots <= 4) for optimal endgame solving. Replaced Monte Carlo random playouts with a **deterministic exact EV calculation** (Outs-based hypergeometric probability) when the missing cards count is small, eliminating random noise in critical choices. Also implemented board state transposition caching and branch pruning to ensure 100% smooth browser performance (<100ms processing per turn).
 1. **v06252042** (2026-06-25): **UI/UX Enhancement** - Overhauled the coin toss animation. The outer gold ring of the coin remains a perfect circle at all times without deformation, while only the inner disc (`.coin-inner`) flips back and forth horizontally via `scaleX` and background color swapping. This completely resolves the issue where the coin would collapse into a thin flat line or an ugly thin ellipse during rotation, delivering a smooth and clear blue/red (🔵/🔴) alternating coin toss visual.
 1. **v06251948** (2026-06-25): **UI/UX Enhancement** - Completely redesigned the Coin Toss animation to look like a realistic 3D metallic coin with distinct textures for both faces. Fixed an issue where the coin animation would flip unnaturally on the wrong axis. Also addressed a bug reported in earlier versions where the AI would select its turn order before the coin toss animation even started.
 1. **v06251940** (2026-06-25): **UI/UX Enhancement** - Adjusted the timing of the Coin Toss sequence at the start of a match. The sequence now correctly waits for the initial dice animation to complete, then provides a 1.5-second pause to allow players to clearly view their initial hand distribution in the background before the Coin Toss overlay appears and the flip animation begins.
