@@ -20,13 +20,13 @@ const DEFAULT_LEARNING_DATA: LearningData = {
     wins: 0,
     losses: 0,
     draws: 0,
-    tripPreference: 1.0,
-    flushPreference: 1.0,
-    straightPreference: 1.0,
-    xHandFocus: 1.0,
-    bonusAggression: 1.0,
+    tripPreference: 1.200,
+    flushPreference: 1.150,
+    straightPreference: 1.050,
+    xHandFocus: 1.250,
+    bonusAggression: 1.400,
     hidingStrategy: 0.3,
-    defensiveAwareness: 0.8,
+    defensiveAwareness: 1.300,
 };
 
 const STORAGE_KEY = 'xypoker_ai_learning';

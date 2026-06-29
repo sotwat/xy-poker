@@ -62,12 +62,12 @@ function getActiveLearningData(): any {
     if (!activeGlobalParams) {
         return {
             ...localLearning,
-            purePreference: 1.0,
-            tripsInHandFocus: 1.0,
-            row3DelayFocus: 1.0,
-            showdownDelayFocus: 1.0,
-            lowCardAvoidance: 1.0,
-            turnOrderFlexibility: 1.0,
+            purePreference: 0.700,
+            tripsInHandFocus: 1.350,
+            row3DelayFocus: 1.400,
+            showdownDelayFocus: 1.200,
+            lowCardAvoidance: 1.500,
+            turnOrderFlexibility: 1.100,
         };
     }
     // Map database snake_case parameters to game's camelCase variables (12 parameters)
