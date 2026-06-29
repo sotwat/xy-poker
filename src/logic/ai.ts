@@ -1,6 +1,6 @@
 import type { GameState, Card, Rank, YHandResult } from './types';
 import { getLearningData } from './aiLearning';
-import { evaluateYHand } from './evaluation';
+import { evaluateYHand, evaluateXHand } from './evaluation';
 
 export interface AiParams {
     pureStraightFlushBonus: number;
@@ -41,14 +41,14 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     showdownDelayPenalty: 10,
     row3DelayPenalty: 131,
     bluffBonus: 2,
-    mcSimulations: 30, // Default simulations for large-missing playouts
+    mcSimulations: 20, // Reduced default simulations to compensate for 3x opponent hand samples
     turnOrderBaseFirstValue: 0,
     turnOrderPairBonus: 2,
     turnOrderHighCardBonus: 2
 };
 
 // ==========================================
-// Cache & Pruning System for Deep Search
+// Cache & Transposition System for Deep Search
 // ==========================================
 const evCache = new Map<string, number>();
 
@@ -96,7 +96,8 @@ export function getBestMove(
     playerIndex: number,
     params: AiParams = DEFAULT_AI_PARAMS
 ): { cardId: string; colIndex: number; isHidden: boolean } {
-    evCache.clear(); // Clear cache at the beginning of each turn
+    const startTime = Date.now();
+    const TIMEOUT_MS = 150; // Strict 150ms budget for thinking to prevent browser lag
 
     const player = gameState.players[playerIndex];
     const opponent = gameState.players[1 - playerIndex];
@@ -111,74 +112,99 @@ export function getBestMove(
 
     if (validColumns.length === 0) return { cardId: hand[0].id, colIndex: 0, isHidden: false };
 
-    // 1. Calculate Dynamic Depth based on remaining empty slots
-    let myEmptyCount = 0;
-    let oppEmptyCount = 0;
-    for (let c = 0; c < 5; c++) {
-        for (let r = 0; r < 3; r++) {
-            if (player.board[r][c] === null) myEmptyCount++;
-            if (opponent.board[r][c] === null) oppEmptyCount++;
-        }
-    }
-    const totalEmpty = myEmptyCount + oppEmptyCount;
-
-    let maxDepth = 2; // Default lookahead
-    if (totalEmpty <= 4) {
-        maxDepth = 4; // Endgame depth 4 (Solve completely)
-    } else if (totalEmpty <= 6) {
-        maxDepth = 3; // Mid-endgame depth 3
-    }
-
     const visibleCards = getVisibleCards(player, opponent);
     const remainingDeck = getRemainingDeck(visibleCards);
     const learning = getLearningData();
 
+    // 1. Belief Hand Sampler for Opponent (Cheating/覗き見 Prevention)
+    // Sample 3 representative hands that opponent could hold based on visible information
+    const oppHandSize = opponent.hand.length;
+    const opponentHandSamples = sampleOpponentHands(remainingDeck, oppHandSize, 3);
+
     let bestMove = { cardId: hand[0].id, colIndex: validColumns[0], isHidden: false };
-    let bestScore = -Infinity;
+    let currentBestMove = { ...bestMove };
+    let depth = 2;
+    const maxAllowedDepth = 5; // Maximum depth cap for safety
 
-    // Evaluate root moves using ExpectiMax search
-    for (const card of hand) {
-        for (const col of validColumns) {
-            // Apply hypothetical move
-            const nextGameState = cloneGameState(gameState);
-            const nextPlayer = nextGameState.players[playerIndex];
-            const emptySlotIdx = [nextPlayer.board[0][col], nextPlayer.board[1][col], nextPlayer.board[2][col]].indexOf(null);
-            if (emptySlotIdx !== -1) {
-                nextPlayer.board[emptySlotIdx][col] = card;
+    // 2. Iterative Deepening ExpectiMax Loop
+    while (depth <= maxAllowedDepth) {
+        evCache.clear(); // Clear Transposition table for each new depth search
+        let depthBestMove = { ...bestMove };
+        let depthBestScore = -Infinity;
+        let isTimedOut = false;
+
+        for (const card of hand) {
+            if (Date.now() - startTime > TIMEOUT_MS) {
+                isTimedOut = true;
+                break;
             }
-            nextPlayer.hand = nextPlayer.hand.filter(c => c.id !== card.id);
 
-            // Execute recursive lookahead (Next state is opponent's turn, so isMaxNode = false)
-            const score = expectimax(
-                nextGameState,
-                playerIndex,
-                1, // Current Depth
-                maxDepth,
-                false, // opponent's turn (MIN node)
-                remainingDeck,
-                params,
-                learning
-            );
+            for (const col of validColumns) {
+                if (Date.now() - startTime > TIMEOUT_MS) {
+                    isTimedOut = true;
+                    break;
+                }
 
-            // Add root-level alignment heuristics & bonuses
-            const rootBonus = calculateRootMoveBonus(player, opponent, card, col, emptySlotIdx, gameState.turnCount, params);
-            const finalScore = score + rootBonus;
+                // Apply hypothetical move
+                const nextGameState = cloneGameState(gameState);
+                const nextPlayer = nextGameState.players[playerIndex];
+                const emptySlotIdx = [nextPlayer.board[0][col], nextPlayer.board[1][col], nextPlayer.board[2][col]].indexOf(null);
+                if (emptySlotIdx !== -1) {
+                    nextPlayer.board[emptySlotIdx][col] = card;
+                }
+                nextPlayer.hand = nextPlayer.hand.filter(c => c.id !== card.id);
 
-            if (finalScore > bestScore) {
-                bestScore = finalScore;
-                bestMove = { cardId: card.id, colIndex: col, isHidden: false };
+                // Calculate average ExpectiMax score across sampled opponent hands
+                let averageScore = 0;
+                for (const oppHand of opponentHandSamples) {
+                    const sampleGameState = cloneGameState(nextGameState);
+                    // Override with sampled hand (strictly hiding player's actual hand from AI)
+                    sampleGameState.players[1 - playerIndex].hand = oppHand;
+
+                    const score = expectimax(
+                        sampleGameState,
+                        playerIndex,
+                        1, // Current Depth
+                        depth,
+                        false, // Opponent's turn
+                        remainingDeck,
+                        params,
+                        learning,
+                        startTime,
+                        TIMEOUT_MS
+                    );
+                    averageScore += score;
+                }
+                averageScore /= opponentHandSamples.length;
+
+                // Root heuristic adjustment
+                const rootBonus = calculateRootMoveBonus(player, opponent, card, col, emptySlotIdx, gameState.turnCount, params);
+                const finalScore = averageScore + rootBonus;
+
+                if (finalScore > depthBestScore) {
+                    depthBestScore = finalScore;
+                    depthBestMove = { cardId: card.id, colIndex: col, isHidden: false };
+                }
             }
         }
+
+        if (isTimedOut) {
+            // Discard incomplete depth search results and fallback to previous depth's best move
+            break;
+        }
+
+        currentBestMove = { ...depthBestMove };
+        depth++;
     }
 
-    // Strategic Bluffing decision
+    bestMove = currentBestMove;
     bestMove.isHidden = shouldHideCard(bestMove, hand, player, player.board, gameState.turnCount, opponent, params);
 
     return bestMove;
 }
 
 // ==========================================
-// ExpectiMax Recursive Search
+// ExpectiMax Search with Timeout Interruption
 // ==========================================
 function expectimax(
     gameState: GameState,
@@ -188,12 +214,18 @@ function expectimax(
     isMaxNode: boolean,
     remainingDeck: Card[],
     params: AiParams,
-    learning: any
+    learning: any,
+    startTime: number,
+    timeoutMs: number
 ): number {
+    // Interruption check
+    if (Date.now() - startTime > timeoutMs) {
+        return 0; // Incomplete branch evaluation
+    }
+
     const player = gameState.players[playerIndex];
     const opponent = gameState.players[1 - playerIndex];
 
-    // Generate Cache Key
     const boardHash = getBoardHash(player, opponent);
     const handHash = getHandHash(player.hand);
     const cacheKey = `${boardHash}_${handHash}_${depth}_${isMaxNode}`;
@@ -201,7 +233,6 @@ function expectimax(
         return evCache.get(cacheKey)!;
     }
 
-    // Terminal Node or Max Depth reached
     if (depth === maxDepth || isTerminalState(gameState)) {
         const val = evaluateStaticBoard(player, opponent, remainingDeck, params, learning);
         evCache.set(cacheKey, val);
@@ -219,7 +250,6 @@ function expectimax(
             return evaluateStaticBoard(player, opponent, remainingDeck, params, learning);
         }
 
-        // Branching for all cards and columns (Pruning weak moves)
         for (const card of player.hand) {
             for (const col of validColumns) {
                 const nextGameState = cloneGameState(gameState);
@@ -230,7 +260,7 @@ function expectimax(
                 }
                 nextPlayer.hand = nextPlayer.hand.filter(c => c.id !== card.id);
 
-                const val = expectimax(nextGameState, playerIndex, depth + 1, maxDepth, false, remainingDeck, params, learning);
+                const val = expectimax(nextGameState, playerIndex, depth + 1, maxDepth, false, remainingDeck, params, learning, startTime, timeoutMs);
                 if (val > maxVal) {
                     maxVal = val;
                 }
@@ -239,7 +269,7 @@ function expectimax(
         evCache.set(cacheKey, maxVal);
         return maxVal;
     } else {
-        // MIN Node (Opponent plays best response to minimize our score)
+        // MIN Node (Opponent plays best response)
         let minVal = Infinity;
         const validColumns = [];
         for (let c = 0; c < 5; c++) {
@@ -260,7 +290,7 @@ function expectimax(
                 }
                 nextOpponent.hand = nextOpponent.hand.filter(c => c.id !== card.id);
 
-                const val = expectimax(nextGameState, playerIndex, depth + 1, maxDepth, true, remainingDeck, params, learning);
+                const val = expectimax(nextGameState, playerIndex, depth + 1, maxDepth, true, remainingDeck, params, learning, startTime, timeoutMs);
                 if (val < minVal) {
                     minVal = val;
                 }
@@ -274,7 +304,7 @@ function expectimax(
 }
 
 // ==========================================
-// Evaluation & Outs-Based EV Calculations
+// 2D Cross-Synergy Heuristics & EV Calculations
 // ==========================================
 function evaluateStaticBoard(
     player: GameState['players'][0],
@@ -286,7 +316,7 @@ function evaluateStaticBoard(
     let score = player.score - opponent.score;
     const isLosingBadly = (opponent.score - player.score) > 15;
 
-    // 1. Column Wise Y-Hand Exact/Playout EV
+    // 1. Column-wise Y-Hand (vertical) EV
     for (let c = 0; c < 5; c++) {
         const myCol = [player.board[0][c], player.board[1][c], player.board[2][c]];
         const oppCol = [opponent.board[0][c], opponent.board[1][c], opponent.board[2][c]];
@@ -296,23 +326,62 @@ function evaluateStaticBoard(
         score += colEV;
     }
 
-    // 2. Bottom Row X-Hand potential
-    let myXScore = 0;
-    let oppXScore = 0;
-    const myXRow = [...player.board[2]];
-    const oppXRow = [...opponent.board[2]];
-    const myXCards = myXRow.filter(c => c !== null) as Card[];
-    const oppXCards = oppXRow.filter(c => c !== null) as Card[];
-
-    if (myXCards.length >= 2) {
-        myXScore = evaluateXRowHeuristic(myXCards) * learning.xHandFocus;
-    }
-    if (oppXCards.length >= 2) {
-        oppXScore = evaluateXRowHeuristic(oppXCards) * (learning.xHandFocus || 1.0);
-    }
+    // 2. 2D Cross-Synergy: X-Hand (horizontal) expectation evaluation
+    const myXScore = evaluateXHandSynergy(player.board, remainingDeck) * learning.xHandFocus;
+    const oppXScore = evaluateXHandSynergy(opponent.board, remainingDeck) * (learning.xHandFocus || 1.0);
+    
+    // Total board state evaluations
     score += (myXScore - oppXScore) * 0.5;
 
     return score;
+}
+
+function evaluateXHandSynergy(
+    board: (Card | null)[][],
+    remainingDeck: Card[]
+): number {
+    const bottomRow = [...board[2]];
+    const emptyIndices = getNullIndices(bottomRow);
+
+    if (emptyIndices.length === 0) {
+        // Complete bottom row evaluation
+        const res = evaluateXHand(bottomRow as Card[]);
+        return calculateXHandScoreValue(res.type);
+    }
+
+    const N = remainingDeck.length;
+    if (N < emptyIndices.length) return 0;
+
+    // Mathematically estimate horizontal hand expectation value using representative sampling
+    let totalScore = 0;
+    const sampleSize = 10; // Light sampling for fast calculation
+    
+    for (let s = 0; s < sampleSize; s++) {
+        const drawn = getRandomSample(remainingDeck, emptyIndices.length);
+        const simulatedRow = [...bottomRow];
+        emptyIndices.forEach((emptyIdx, i) => {
+            simulatedRow[emptyIdx] = drawn[i];
+        });
+        const res = evaluateXHand(simulatedRow as Card[]);
+        totalScore += calculateXHandScoreValue(res.type);
+    }
+
+    return totalScore / sampleSize;
+}
+
+function calculateXHandScoreValue(type: string): number {
+    switch (type) {
+        case 'RoyalFlush': return 800;
+        case 'StraightFlush': return 600;
+        case 'FourOfAKind': return 400;
+        case 'FullHouse': return 300;
+        case 'Flush': return 200;
+        case 'Straight': return 150;
+        case 'ThreeOfAKind': return 100;
+        case 'TwoPair': return 50;
+        case 'OnePair': return 20;
+        default: return 0;
+    }
 }
 
 function calculateColEV(
@@ -341,7 +410,7 @@ function calculateColEV(
     let totalCombinations = 0;
     const totalMissing = myMissing + oppMissing;
 
-    // Switch between EXACT Hypergeometric evaluation (low empty counts) & Monte Carlo playouts (large empty counts)
+    // Switch between EXACT Hypergeometric evaluation & Monte Carlo playouts
     if (totalMissing <= 2) {
         if (myMissing === 1 && oppMissing === 0) {
             const emptyIdx = myCol.indexOf(null);
@@ -498,20 +567,6 @@ function calculateRootMoveBonus(
     return bonus;
 }
 
-function evaluateXRowHeuristic(cards: Card[]): number {
-    let score = 0;
-    const ranks = cards.map(c => c.rank);
-    const rankCounts = new Map<number, number>();
-    ranks.forEach(r => rankCounts.set(r, (rankCounts.get(r) || 0) + 1));
-    const maxCount = Math.max(...rankCounts.values());
-    if (maxCount >= 2) score += Math.pow(maxCount, 2) * 20;
-
-    const uniqueSuits = new Set(cards.map(c => c.suit));
-    if (uniqueSuits.size === 1 && cards.length >= 3) score += 150;
-
-    return score;
-}
-
 function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: number): number {
     const oppCol = [opponent.board[0][colIndex], opponent.board[1][colIndex], opponent.board[2][colIndex]];
     const oppCards = oppCol.filter(c => c !== null) as Card[];
@@ -532,7 +587,7 @@ function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: numb
 }
 
 // ==========================================
-// Game State Utilities
+// Game State Utilities & Belief Samplers
 // ==========================================
 function cloneGameState(state: GameState): GameState {
     return JSON.parse(JSON.stringify(state));
@@ -597,6 +652,18 @@ function getRandomSample<T>(arr: T[], n: number): T[] {
         taken[x] = --len in taken ? taken[len] : len;
     }
     return result;
+}
+
+function sampleOpponentHands(remainingDeck: Card[], handSize: number, count: number): Card[][] {
+    const samples: Card[][] = [];
+    for (let i = 0; i < count; i++) {
+        if (remainingDeck.length >= handSize) {
+            samples.push(getRandomSample(remainingDeck, handSize));
+        } else {
+            samples.push([...remainingDeck]);
+        }
+    }
+    return samples;
 }
 
 function shouldHideCard(
