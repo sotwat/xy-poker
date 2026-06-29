@@ -23,8 +23,8 @@ import { ShowdownPopup } from './components/ShowdownPopup'; // [NEW]
 import type { PopupData } from './components/ShowdownPopup'; // [NEW]
 import { updatePlayerStats, checkAchievements } from './logic/gamification'; // [NEW]
 import { socket, connectSocket } from './logic/online';
-import { supabase } from './supabase';
-import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS } from './logic/ai';
+import { supabase, fetchGlobalAiParameters, updateGlobalAiParameters } from './supabase';
+import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS, setGlobalAiParams } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, playCoinTossSound, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
@@ -100,6 +100,15 @@ function App() {
     });
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  // Load Global Collaborative AI parameters on App Startup
+  useEffect(() => {
+    fetchGlobalAiParameters().then(params => {
+      if (params) {
+        setGlobalAiParams(params);
+      }
+    });
   }, []);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -918,6 +927,11 @@ function App() {
         const isDraw = winner === null;
         recordGameResult(aiWon, isDraw);
 
+        // Contribute game outcome to the global collaborative AI parameters
+        if (opponentName === 'AI') {
+          updateGlobalAiParameters(aiWon, isDraw);
+        }
+
         // Update Gamification Stats (Only if logged in and I am Player 1 against AI)
         if (dbPlayerId) {
           // Calculate Score locally
@@ -1084,6 +1098,13 @@ function App() {
     if (mode === 'local') {
       setIsBotDisguise(false);
       setOpponentName('AI');
+
+      // Fetch latest global AI parameters for collaborative learning
+      fetchGlobalAiParameters().then(params => {
+        if (params) {
+          setGlobalAiParams(params);
+        }
+      });
     }
 
     dispatch({ type: 'START_GAME' });
@@ -1442,7 +1463,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06291606</span>}
+          {showVersion && <span className="version">v06291612</span>}
         </div>
 
         <button

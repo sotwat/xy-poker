@@ -41,11 +41,38 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     showdownDelayPenalty: 10,
     row3DelayPenalty: 131,
     bluffBonus: 2,
-    mcSimulations: 20, // Reduced default simulations to compensate for 3x opponent hand samples
+    mcSimulations: 20,
     turnOrderBaseFirstValue: 0,
     turnOrderPairBonus: 2,
     turnOrderHighCardBonus: 2
 };
+
+// ==========================================
+// Collaborative Learning Overrides
+// ==========================================
+let activeGlobalParams: any = null;
+
+export function setGlobalAiParams(params: any): void {
+    console.log('[AI Engine] Hydrating decision engine with Global Collaborative AI weights:', params);
+    activeGlobalParams = params;
+}
+
+function getActiveLearningData(): any {
+    const localLearning = getLearningData();
+    if (!activeGlobalParams) {
+        return localLearning;
+    }
+    // Map database snake_case parameters to game's camelCase variables
+    return {
+        ...localLearning,
+        tripPreference: activeGlobalParams.trip_preference ?? localLearning.tripPreference,
+        flushPreference: activeGlobalParams.flush_preference ?? localLearning.flushPreference,
+        straightPreference: activeGlobalParams.straight_preference ?? localLearning.straightPreference,
+        xHandFocus: activeGlobalParams.x_hand_focus ?? localLearning.xHandFocus,
+        bonusAggression: activeGlobalParams.bonus_aggression ?? localLearning.bonusAggression,
+        defensiveAwareness: activeGlobalParams.defensive_awareness ?? localLearning.defensiveAwareness
+    };
+}
 
 // ==========================================
 // Cache & Transposition System for Deep Search
@@ -114,10 +141,9 @@ export function getBestMove(
 
     const visibleCards = getVisibleCards(player, opponent);
     const remainingDeck = getRemainingDeck(visibleCards);
-    const learning = getLearningData();
+    const learning = getActiveLearningData();
 
     // 1. Belief Hand Sampler for Opponent (Cheating/覗き見 Prevention)
-    // Sample 3 representative hands that opponent could hold based on visible information
     const oppHandSize = opponent.hand.length;
     const opponentHandSamples = sampleOpponentHands(remainingDeck, oppHandSize, 3);
 
@@ -330,7 +356,6 @@ function evaluateStaticBoard(
     const myXScore = evaluateXHandSynergy(player.board, remainingDeck) * learning.xHandFocus;
     const oppXScore = evaluateXHandSynergy(opponent.board, remainingDeck) * (learning.xHandFocus || 1.0);
     
-    // Total board state evaluations
     score += (myXScore - oppXScore) * 0.5;
 
     return score;
@@ -344,7 +369,6 @@ function evaluateXHandSynergy(
     const emptyIndices = getNullIndices(bottomRow);
 
     if (emptyIndices.length === 0) {
-        // Complete bottom row evaluation
         const res = evaluateXHand(bottomRow as Card[]);
         return calculateXHandScoreValue(res.type);
     }
@@ -352,9 +376,8 @@ function evaluateXHandSynergy(
     const N = remainingDeck.length;
     if (N < emptyIndices.length) return 0;
 
-    // Mathematically estimate horizontal hand expectation value using representative sampling
     let totalScore = 0;
-    const sampleSize = 10; // Light sampling for fast calculation
+    const sampleSize = 10;
     
     for (let s = 0; s < sampleSize; s++) {
         const drawn = getRandomSample(remainingDeck, emptyIndices.length);
@@ -399,7 +422,6 @@ function calculateColEV(
 
     if (N < myMissing + oppMissing) return 0;
 
-    // Fully completed column showdown evaluation
     if (myMissing === 0 && oppMissing === 0) {
         const myRes = evaluateYHand(myCol as Card[], diceValue);
         const oppRes = evaluateYHand(oppCol as Card[], diceValue);
@@ -410,7 +432,6 @@ function calculateColEV(
     let totalCombinations = 0;
     const totalMissing = myMissing + oppMissing;
 
-    // Switch between EXACT Hypergeometric evaluation & Monte Carlo playouts
     if (totalMissing <= 2) {
         if (myMissing === 1 && oppMissing === 0) {
             const emptyIdx = myCol.indexOf(null);
@@ -470,7 +491,6 @@ function calculateColEV(
         }
     }
 
-    // Hybrid Monte Carlo Playouts fallback (if total missing >= 3)
     const iterations = params.mcSimulations;
     for (let i = 0; i < iterations; i++) {
         const drawnCards = getRandomSample(remainingDeck, totalMissing);
@@ -541,10 +561,8 @@ function calculateRootMoveBonus(
     let bonus = 0;
     const colDice = player.dice[colIndex];
 
-    // Dynamic resource allocation: guide high cards to high dice, low to low
     bonus += (card.rank - 8) * (colDice - 3.5) * 40;
 
-    // Edge card penalty in 1st-row placement
     if (emptySlotIdx === 0) {
         if (card.rank === 14 || card.rank === 13 || card.rank === 2) {
             const hasStraightSynergy = player.hand.some(c => c !== card && Math.abs(c.rank - card.rank) <= 2);
@@ -556,12 +574,10 @@ function calculateRootMoveBonus(
         }
     }
 
-    // 3rd Row flexibility delay penalty
     if (emptySlotIdx === 2 && colDice >= 3 && turnCount <= 8) {
         bonus -= params.row3DelayPenalty;
     }
 
-    // Light block heuristics
     bonus += evaluateOpponentBlock(opponent, colIndex);
 
     return bonus;
@@ -687,7 +703,7 @@ function shouldHideCard(
     const card = hand.find(c => c.id === move.cardId);
     if (!card) return false;
 
-    const learning = getLearningData();
+    const learning = getActiveLearningData();
     const col = move.colIndex;
     const oppColFull = opponent.board[2][col] !== null;
     if (oppColFull) return false;
