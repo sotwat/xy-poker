@@ -65,7 +65,8 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
             updated.trip_preference *= 1.015;
             updated.flush_preference *= 1.015;
             updated.straight_preference *= 1.015;
-            updated.x_hand_focus *= 1.015;
+            // x_hand_focus intentionally excluded: its effective value is dynamically
+            // computed per-game via inverse dice scaling (strategy.md §2), not win/loss
             updated.bonus_aggression *= 1.015;
             updated.pure_preference *= 1.012;
             updated.trips_in_hand_focus *= 1.012;
@@ -85,7 +86,7 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
                 { name: 'trip_preference', value: current.trip_preference },
                 { name: 'flush_preference', value: current.flush_preference },
                 { name: 'straight_preference', value: current.straight_preference },
-                { name: 'x_hand_focus', value: current.x_hand_focus },
+                // x_hand_focus excluded: governed by inverse dice scaling per game
                 { name: 'bonus_aggression', value: current.bonus_aggression },
                 { name: 'pure_preference', value: current.pure_preference },
                 { name: 'trips_in_hand_focus', value: current.trips_in_hand_focus },

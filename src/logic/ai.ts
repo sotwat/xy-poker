@@ -359,8 +359,15 @@ function evaluateStaticBoard(
     }
 
     // 2. 2D Cross-Synergy: X-Hand (horizontal) expectation evaluation
-    const myXScore = evaluateXHandSynergy(player.board, remainingDeck) * learning.xHandFocus;
-    const oppXScore = evaluateXHandSynergy(opponent.board, remainingDeck) * (learning.xHandFocus || 1.0);
+    // Inverse Dice Scaling (strategy.md §2): X-hand value is inversely proportional to total dice sum.
+    // Low dice total → Y-hands score little → X fixed points become dominant → boost X focus
+    // High dice total → Y-hands can score big → X-hands are secondary → reduce X focus
+    const diceSum = player.dice.reduce((a, b) => a + b, 0); // Range: 5 (min) ~ 30 (max)
+    const inverseDiceScale = Math.max(0.3, Math.min(2.0, (35 - diceSum) / 17.5));
+    const effectiveXFocus = inverseDiceScale * (learning.xHandFocus ?? 1.0);
+
+    const myXScore = evaluateXHandSynergy(player.board, remainingDeck) * effectiveXFocus;
+    const oppXScore = evaluateXHandSynergy(opponent.board, remainingDeck) * effectiveXFocus;
     
     score += (myXScore - oppXScore) * 0.5;
 
