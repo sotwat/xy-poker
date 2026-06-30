@@ -627,7 +627,19 @@ function calculateRootMoveBonus(
         const oppRes = evaluateYHand(oppCards, colDice);
         const weWin = myRes.rankValue > oppRes.rankValue;
         if (weWin && turnCount <= 9) {
-            bonus -= params.showdownDelayPenalty * (learning.showdownDelayFocus ?? 1.0);
+            // Check for Trips completion: Skip Showdown Delay, prioritize heavily
+            if (myRes.rankValue === 8) {
+                bonus += 1500 * (colDice / 6); // Strategic Trips completion bonus (dominant weight)
+            } else {
+                bonus -= params.showdownDelayPenalty * (learning.showdownDelayFocus ?? 1.0);
+            }
+        }
+        
+        // Defensive/Offensive Strong Hand Finalization:
+        // If completing the column results in a very strong hand (Flush/Trips/PureStraight/StraightFlush)
+        // on a high-dice column (dice >= 4), apply a massive bonus to lock it in.
+        if (weWin && colDice >= 4 && myRes.rankValue >= 5) {
+            bonus += 1200 * (colDice / 6); // Ensure we secure wins on valuable columns
         }
     }
 
@@ -780,6 +792,12 @@ function shouldHideCard(
 ): boolean {
     if (player.hiddenCardsCount >= 3) return false;
 
+    // If opponent column is already full, hiding has absolutely zero strategic value.
+    // This check must take precedence over forced quota logic.
+    const col = move.colIndex;
+    const oppColFull = opponent.board[2][col] !== null;
+    if (oppColFull) return false;
+
     // Calculate remaining empty spaces and hidden cards quota
     const emptySpaces = board.flat().filter(cell => cell === null).length;
     const remainingNorma = 3 - player.hiddenCardsCount;
@@ -801,10 +819,6 @@ function shouldHideCard(
 
     const card = hand.find(c => c.id === move.cardId);
     if (!card) return false;
-
-    const col = move.colIndex;
-    const oppColFull = opponent.board[2][col] !== null;
-    if (oppColFull) return false;
 
     let baseProb = 0.05;
     const emptySlotIdx = [board[0][col], board[1][col], board[2][col]].findIndex(c => c === null);
