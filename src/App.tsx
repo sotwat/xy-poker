@@ -738,6 +738,8 @@ function App() {
 
   // AI Turn Logic
   useEffect(() => {
+    if (turnAnnounce !== null) return; // Wait until lead/follow banner announcement completes
+
     if (mode === 'local' && phase === 'playing' && currentPlayerIndex === 1 && !showDiceAnimation) {
       if (isAIActingRef.current) return; // すでにAIが動作中なら何もしない
       isAIActingRef.current = true;
@@ -763,10 +765,12 @@ function App() {
         isAIActingRef.current = false;
       };
     }
-  }, [gameState, mode, isBotDisguise, phase, showDiceAnimation]);
+  }, [gameState, mode, isBotDisguise, phase, showDiceAnimation, turnAnnounce]);
 
   // User Auto-Play Logic (Both Local P1 and Online Self)
   useEffect(() => {
+    if (turnAnnounce !== null) return; // Wait until lead/follow banner announcement completes
+
     // Check if Auto is ON, game is playing, and it's MY turn
     const isMyTurn = (mode === 'local' && currentPlayerIndex === 0) ||
       (isOnlineGame && playerRole === 'host' && currentPlayerIndex === 0) ||
@@ -799,7 +803,7 @@ function App() {
 
       return () => clearTimeout(timer);
     }
-  }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState, showDiceAnimation]);
+  }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState, showDiceAnimation, turnAnnounce]);
 
   // Showdown sequence runner (Re-usable for Replay Showdown)
   const triggerShowdownSequence = async () => {
@@ -1461,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06301156</span>}
+          {showVersion && <span className="version">v06301159</span>}
         </div>
 
         <button
