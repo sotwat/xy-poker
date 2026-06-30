@@ -24,7 +24,7 @@ function drawLightning(
     color: string,
     width = 3
 ) {
-    if (displace < 3) {
+    if (displace < 16) {
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -163,9 +163,9 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
                 }
             });
 
-            // Initialize lightning rays pointing outward
-            for (let i = 0; i < 8; i++) {
-                const angle = (i * Math.PI / 4) + (Math.random() - 0.5) * 0.3;
+            // Initialize lightning rays pointing outward (4 rays instead of 8 for optimal performance)
+            for (let i = 0; i < 4; i++) {
+                const angle = (i * Math.PI / 2) + (Math.random() - 0.5) * 0.3;
                 const length = Math.max(width, height) * (0.35 + Math.random() * 0.3);
                 lightningRays.push({
                     angle: angle,
