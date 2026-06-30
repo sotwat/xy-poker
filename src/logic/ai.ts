@@ -56,6 +56,8 @@ function getActiveLearningData(): any {
             pairInHandScale: 1.0,
             queenFirstScale: 1.0,
             bluffBonusScale: 1.0,
+            hidingStrategy: 0.3,
+            trashBinRushScale: 1.0,
         };
     }
     // Map database snake_case parameters to game's camelCase variables
@@ -78,6 +80,8 @@ function getActiveLearningData(): any {
         pairInHandScale: activeGlobalParams.pair_in_hand_scale ?? 1.0,
         queenFirstScale: activeGlobalParams.queen_first_scale ?? 1.0,
         bluffBonusScale: activeGlobalParams.bluff_bonus_scale ?? 1.0,
+        hidingStrategy: activeGlobalParams.hiding_strategy ?? 0.3,
+        trashBinRushScale: activeGlobalParams.trash_bin_rush_scale ?? 1.0,
     };
 }
 
@@ -580,7 +584,17 @@ function calculateRootMoveBonus(
     let bonus = 0;
     const colDice = player.dice[colIndex];
 
-    bonus += (card.rank - 8) * (colDice - 3.5) * 40;
+    // Alignment Bonus: rewards placing strong cards on high-dice columns and weak cards on low-dice
+    // Scaled by bonusAggression (strategy.md §12): higher aggression = bolder card-dice alignment
+    bonus += (card.rank - 8) * (colDice - 3.5) * 40 * (learning.bonusAggression ?? 1.0);
+
+    // Trash Bin Rush (strategy.md §3): reward filling low-dice columns quickly to gain draw bonus
+    // The urgency grows as the column gets closer to completion and as dice value gets lower
+    if (colDice <= 3) {
+        const rushPriority = (4 - colDice);           // dice=1→3, dice=2→2, dice=3→1
+        const slotProgress = (emptySlotIdx + 1);      // 1st card→1, 2nd→2, 3rd(completing)→3
+        bonus += rushPriority * slotProgress * 12 * (learning.trashBinRushScale ?? 1.0);
+    }
 
     // Apply low_card_avoidance to low card penalties
     if (emptySlotIdx === 0) {

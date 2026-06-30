@@ -29,6 +29,9 @@ export interface GlobalAiParams {
     pair_in_hand_scale: number;
     queen_first_scale: number;
     bluff_bonus_scale: number;
+    // Bluffing and rush tactics
+    hiding_strategy: number;
+    trash_bin_rush_scale: number;
 }
 
 export async function fetchGlobalAiParameters(): Promise<GlobalAiParams | null> {
@@ -67,7 +70,7 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
             updated.straight_preference *= 1.015;
             // x_hand_focus intentionally excluded: its effective value is dynamically
             // computed per-game via inverse dice scaling (strategy.md §2), not win/loss
-            updated.bonus_aggression *= 1.015;
+            updated.bonus_aggression *= 1.015; // Now implemented: scales alignment boldness
             updated.pure_preference *= 1.012;
             updated.trips_in_hand_focus *= 1.012;
             updated.row3_delay_focus *= 1.012;
@@ -80,6 +83,9 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
             updated.pair_in_hand_scale *= 1.012;
             updated.queen_first_scale *= 1.012;
             updated.bluff_bonus_scale *= 1.012;
+            // Reinforce rushing and hiding tactics
+            updated.hiding_strategy = Math.min(updated.hiding_strategy * 1.01, 0.6);
+            updated.trash_bin_rush_scale *= 1.015;
         } else {
             // AI Lost: Adjust heuristics. Shift away from weakest/strongest extremes
             const strategies = [
@@ -111,6 +117,9 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
             updated.pair_in_hand_scale *= 0.99;
             updated.queen_first_scale *= 0.99;
             updated.bluff_bonus_scale *= 1.015;
+            // Pull back hiding aggressiveness slightly; ease up on rush
+            updated.hiding_strategy = Math.max(updated.hiding_strategy * 0.99, 0.1);
+            updated.trash_bin_rush_scale *= 0.99;
         }
 
         // Clip parameters to safe ranges
@@ -131,6 +140,8 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
         updated.pair_in_hand_scale = Math.min(Math.max(updated.pair_in_hand_scale, 0.3), 2.5);
         updated.queen_first_scale = Math.min(Math.max(updated.queen_first_scale, 0.3), 2.5);
         updated.bluff_bonus_scale = Math.min(Math.max(updated.bluff_bonus_scale, 0.5), 3.0);
+        updated.hiding_strategy = Math.min(Math.max(updated.hiding_strategy, 0.1), 0.6);
+        updated.trash_bin_rush_scale = Math.min(Math.max(updated.trash_bin_rush_scale, 0.3), 3.0);
 
         updated.updated_at = new Date().toISOString();
 
@@ -155,6 +166,8 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
                 pair_in_hand_scale: updated.pair_in_hand_scale,
                 queen_first_scale: updated.queen_first_scale,
                 bluff_bonus_scale: updated.bluff_bonus_scale,
+                hiding_strategy: updated.hiding_strategy,
+                trash_bin_rush_scale: updated.trash_bin_rush_scale,
                 updated_at: updated.updated_at
             })
             .eq('id', 1);

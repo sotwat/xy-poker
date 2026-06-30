@@ -71,6 +71,8 @@ export function recordGameResult(aiWon: boolean, isDraw: boolean = false): void 
         data.straightPreference *= 1.05;
         data.xHandFocus *= 1.05;
         data.bonusAggression *= 1.05;
+        // Slightly increase hiding aggressiveness on win (global pool fallback)
+        data.hidingStrategy = Math.min(data.hidingStrategy * 1.02, 0.6);
     } else {
         data.losses += 1;
         // AI lost - try different strategy
@@ -80,20 +82,20 @@ export function recordGameResult(aiWon: boolean, isDraw: boolean = false): void 
             { name: 'flushPreference', value: data.flushPreference },
             { name: 'straightPreference', value: data.straightPreference },
             { name: 'xHandFocus', value: data.xHandFocus },
-            { name: 'bonusAggression', value: data.bonusAggression },
+            // bonusAggression excluded from exploration: it's a global param with real implementation
         ];
 
-        // Find weakest strategy (lowest preference)
         strategies.sort((a, b) => a.value - b.value);
         const weakest = strategies[0].name as keyof LearningData;
         const strongest = strategies[strategies.length - 1].name as keyof LearningData;
 
-        // Boost weakest, maintain strongest
         (data[weakest] as number) *= 1.1;
         (data[strongest] as number) *= 0.95;
 
         // Increase aggression when losing
         data.bonusAggression *= 1.08;
+        // Ease off hiding slightly on loss
+        data.hidingStrategy = Math.max(data.hidingStrategy * 0.98, 0.1);
     }
 
     // Cap preferences to reasonable ranges
