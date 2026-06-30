@@ -159,14 +159,14 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
             );
         }
 
-        // Step D: Idle sustain and Outro fadeout (Extended to 2.3s to allow comfortable reading)
+        // Step D: Idle sustain and Outro fadeout (Extended to 2.8s to allow comfortable reading)
         tl.to('.showdown-popup-content', {
             scale: 1.35,
             skewX: 12,
             opacity: 0,
             duration: 0.26,
             ease: 'power2.in'
-        }, '+=2.3') // 2.3 seconds sustain
+        }, '+=2.8') // 2.8 seconds sustain
         .to('.showdown-cutin-left', { xPercent: -120, duration: 0.2, ease: 'power2.in' }, '-=0.26')
         .to('.showdown-cutin-right', { xPercent: 120, duration: 0.2, ease: 'power2.in' }, '-=0.26');
 

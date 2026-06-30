@@ -876,10 +876,10 @@ function App() {
         if (res.winner !== 'draw' && res.type) {
           await Promise.all([
             speakText(getReadableHandName(res.type)),
-            new Promise(r => setTimeout(r, 1700)) // Wait at least 1700ms for visual animation
+            new Promise(r => setTimeout(r, 2200)) // Wait at least 2200ms for visual animation
           ]);
         } else {
-          await new Promise(r => setTimeout(r, 1700));
+          await new Promise(r => setTimeout(r, 2200));
         }
       } else if (currentStep === 5) {
         setShowXHand(true);
@@ -895,10 +895,10 @@ function App() {
         if (rowResult.winner !== 'draw' && rowResult.type) {
           await Promise.all([
             speakText(getReadableHandName(rowResult.type)),
-            new Promise(r => setTimeout(r, 1700))
+            new Promise(r => setTimeout(r, 2200))
           ]);
         } else {
-          await new Promise(r => setTimeout(r, 1700));
+          await new Promise(r => setTimeout(r, 2200));
         }
       }
       
@@ -910,7 +910,7 @@ function App() {
     setTimeout(() => {
       setCurrentShowdownPopup(null); // Hide popup before showing modal
       setShowResultsModal(true);
-    }, 2000); // Extended to match 2.3s sustain
+    }, 2500); // Extended to match 2.8s sustain
   };
 
   useEffect(() => {
@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06301159</span>}
+          {showVersion && <span className="version">v06301200</span>}
         </div>
 
         <button
