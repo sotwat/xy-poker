@@ -68,6 +68,7 @@ function getActiveLearningData(): any {
             showdownDelayFocus: 1.200,
             lowCardAvoidance: 1.500,
             turnOrderFlexibility: 1.100,
+            weakHandAvoidance: 1.0,
         };
     }
     // Map database snake_case parameters to game's camelCase variables (12 parameters)
@@ -86,6 +87,7 @@ function getActiveLearningData(): any {
         showdownDelayFocus: activeGlobalParams.showdown_delay_focus ?? 1.0,
         lowCardAvoidance: activeGlobalParams.low_card_avoidance ?? 1.0,
         turnOrderFlexibility: activeGlobalParams.turn_order_flexibility ?? 1.0,
+        weakHandAvoidance: activeGlobalParams.weak_hand_avoidance ?? 1.0,
     };
 }
 
@@ -630,24 +632,24 @@ function calculateRootMoveBonus(
     }
 
     // Penalize completing columns with weak hands (HighCard, OnePair, plain Straight)
-    // Scale penalty by (diceValue / 6): low-dice columns are acceptable trash bins for weak hands
-    // e.g. dice=1 → ~17% penalty, dice=3 → 50%, dice=6 → 100%
+    // Scale by (diceVal/6): low-dice = acceptable trash bin. Scale by weakHandAvoidance from global learning.
     if (emptySlotIdx === 2) {
         const myCol = [player.board[0][colIndex], player.board[1][colIndex], player.board[2][colIndex]];
         const tempCol = [...myCol];
         tempCol[2] = card;
         const colDiceVal = player.dice[colIndex];
-        const diceScale = colDiceVal / 6; // 0.167 (dice=1) → 1.0 (dice=6)
+        const diceScale = colDiceVal / 6;
+        const avoidScale = learning.weakHandAvoidance ?? 1.0;
         const projectedResult = evaluateYHand(tempCol as Card[], colDiceVal);
         if (projectedResult.rankValue === 1) {
             // HighCard: heavily penalized on high-dice columns, tolerated on low-dice
-            bonus -= 800 * diceScale;
+            bonus -= 800 * diceScale * avoidScale;
         } else if (projectedResult.rankValue === 2) {
             // Plain OnePair (non-pure)
-            bonus -= 400 * diceScale;
+            bonus -= 400 * diceScale * avoidScale;
         } else if (projectedResult.rankValue === 3) {
             // Plain Straight (non-pure)
-            bonus -= 200 * diceScale;
+            bonus -= 200 * diceScale * avoidScale;
         }
     }
 

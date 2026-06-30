@@ -23,6 +23,8 @@ export interface GlobalAiParams {
     showdown_delay_focus: number;
     low_card_avoidance: number;
     turn_order_flexibility: number;
+    // Weak hand avoidance scaler (auto-learned from global match outcomes)
+    weak_hand_avoidance: number;
 }
 
 export async function fetchGlobalAiParameters(): Promise<GlobalAiParams | null> {
@@ -67,6 +69,8 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
             updated.showdown_delay_focus *= 1.012;
             updated.low_card_avoidance *= 1.012;
             updated.turn_order_flexibility *= 1.012;
+            // AI won: slightly relax weak-hand avoidance (maybe being flexible helped)
+            updated.weak_hand_avoidance *= 0.988;
         } else {
             // AI Lost: Adjust heuristics. Shift away from weakest/strongest extremes
             const strategies = [
@@ -92,6 +96,8 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
             
             updated.defensive_awareness *= 1.02; // Boost defensive learning slightly on loss
             updated.low_card_avoidance *= 1.02;   // Increase carefulness in placing cards
+            // AI lost: increase weak-hand avoidance (avoid bad hands more aggressively)
+            updated.weak_hand_avoidance *= 1.025;
         }
 
         // Clip parameters to safe ranges
@@ -108,6 +114,7 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
         updated.showdown_delay_focus = Math.min(Math.max(updated.showdown_delay_focus, 0.4), 2.0);
         updated.low_card_avoidance = Math.min(Math.max(updated.low_card_avoidance, 0.4), 2.0);
         updated.turn_order_flexibility = Math.min(Math.max(updated.turn_order_flexibility, 0.4), 2.0);
+        updated.weak_hand_avoidance = Math.min(Math.max(updated.weak_hand_avoidance, 0.5), 3.0);
 
         updated.updated_at = new Date().toISOString();
 
@@ -128,6 +135,7 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
                 showdown_delay_focus: updated.showdown_delay_focus,
                 low_card_avoidance: updated.low_card_avoidance,
                 turn_order_flexibility: updated.turn_order_flexibility,
+                weak_hand_avoidance: updated.weak_hand_avoidance,
                 updated_at: updated.updated_at
             })
             .eq('id', 1);
