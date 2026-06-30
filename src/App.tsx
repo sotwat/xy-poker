@@ -832,25 +832,25 @@ function App() {
       const p1Res = evaluateYHand(p1Cards, dice[colIndex]);
       const p2Res = evaluateYHand(p2Cards, dice[colIndex]);
 
-      if (p1Res.rankValue > p2Res.rankValue) return { winner: 'p1' as const, type: p1Res.type };
-      if (p2Res.rankValue > p1Res.rankValue) return { winner: 'p2' as const, type: p2Res.type };
+      if (p1Res.rankValue > p2Res.rankValue) return { winner: 'p1' as const, type: p1Res.type, cards: p1Cards };
+      if (p2Res.rankValue > p1Res.rankValue) return { winner: 'p2' as const, type: p2Res.type, cards: p2Cards };
 
       for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
         const k1 = p1Res.kickers[k] || 0;
         const k2 = p2Res.kickers[k] || 0;
-        if (k1 > k2) return { winner: 'p1' as const, type: p1Res.type };
-        if (k2 > k1) return { winner: 'p2' as const, type: p2Res.type };
+        if (k1 > k2) return { winner: 'p1' as const, type: p1Res.type, cards: p1Cards };
+        if (k2 > k1) return { winner: 'p2' as const, type: p2Res.type, cards: p2Cards };
       }
-      return { winner: 'draw' as const, type: null };
+      return { winner: 'draw' as const, type: null, cards: [] };
     });
 
     // Row Result (X-Hand)
     const p1XRes = evaluateXHand(p1.board[2] as Card[]);
     const p2XRes = evaluateXHand(p2.board[2] as Card[]);
     const { p1Score: p1X, p2Score: p2X } = calculateXHandScores(p1XRes, p2XRes);
-    let rowResult: { winner: 'p1' | 'p2' | 'draw'; type: string | null } = { winner: 'draw', type: null };
-    if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type };
-    else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type };
+    let rowResult: { winner: 'p1' | 'p2' | 'draw'; type: string | null; cards: Card[] } = { winner: 'draw', type: null, cards: [] };
+    if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type, cards: p1.board[2] as Card[] };
+    else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type, cards: p2.board[2] as Card[] };
 
     for (let currentStep = 0; currentStep <= 5; currentStep++) {
       playClickSound();
@@ -865,7 +865,8 @@ function App() {
           text: res.type ? getReadableHandName(res.type) : 'DRAW',
           winner: res.winner,
           diceValue: dice[currentCol],
-          isXHand: false
+          isXHand: false,
+          cards: res.cards
         });
 
         if (res.winner !== 'draw' && res.type) {
@@ -883,7 +884,8 @@ function App() {
           id: `row-${currentStep}-${Date.now()}`,
           text: rowResult.type ? getReadableHandName(rowResult.type) : 'DRAW',
           winner: rowResult.winner,
-          isXHand: true
+          isXHand: true,
+          cards: rowResult.cards
         });
 
         if (rowResult.winner !== 'draw' && rowResult.type) {
@@ -1459,7 +1461,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06301130</span>}
+          {showVersion && <span className="version">v06301138</span>}
         </div>
 
         <button

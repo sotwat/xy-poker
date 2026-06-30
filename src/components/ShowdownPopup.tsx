@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { Card } from './Card';
+import type { Card as CardType } from '../logic/types';
 import './ShowdownPopup.css';
 
 export interface PopupData {
@@ -8,6 +10,7 @@ export interface PopupData {
     winner: 'p1' | 'p2' | 'draw';
     diceValue?: number;
     isXHand: boolean;
+    cards?: CardType[];
 }
 
 interface ShowdownPopupProps {
@@ -59,15 +62,24 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
         setAssetFailed(false);
         setIsLoaded(false);
 
-        // GSAP timeline for Pachinko Cut-in & Shaking sequence
+        // GSAP timeline for Pachinko Cut-in, Shaking, and Card entry sequence
         const tl = gsap.timeline();
 
-        // 1. Initial State Setup (Zero opacity/scale, slide bands out)
+        // 1. Initial State Setup
         gsap.set('.showdown-popup-content', { scale: 0.1, opacity: 0 });
         gsap.set('.showdown-cutin-left', { xPercent: -120, skewX: -20 });
         gsap.set('.showdown-cutin-right', { xPercent: 120, skewX: -20 });
         gsap.set('.showdown-flash', { opacity: 0 });
         gsap.set('.aura-active', { x: 0, y: 0 });
+        
+        // Reset card wrapper animation states
+        gsap.set('.showdown-card-wrapper', {
+            x: -150,
+            y: 120,
+            rotation: -30,
+            scale: 0.4,
+            opacity: 0
+        });
 
         // Step A: Diagonal metal bands slide in at high speed and collide
         tl.to('.showdown-cutin-left', { xPercent: 0, duration: 0.22, ease: 'power2.in' })
@@ -119,14 +131,39 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
               ease: 'power2.out'
           });
 
-        // Step C: Idle sustain and Outro fadeout
+        // Step C: Card Staggered Slide-in Animation (Pachinko Card Lift-up)
+        if (data.cards && data.cards.length > 0) {
+            const count = data.cards.length;
+            tl.fromTo('.showdown-card-wrapper', 
+                {
+                    x: -150,
+                    y: 120,
+                    rotation: -30,
+                    scale: 0.4,
+                    opacity: 0
+                },
+                {
+                    x: 0,
+                    y: 0,
+                    rotation: (i) => (i - (count - 1) / 2) * 6, // Fan-out angles (-6, 0, 6 etc)
+                    scale: 1.0,
+                    opacity: 1,
+                    duration: 0.35,
+                    stagger: 0.08,
+                    ease: 'back.out(1.8)'
+                },
+                '-=0.2' // Start slightly before the main popup content completes its bounce
+            );
+        }
+
+        // Step D: Idle sustain and Outro fadeout
         tl.to('.showdown-popup-content', {
             scale: 1.35,
             skewX: 12,
             opacity: 0,
             duration: 0.26,
             ease: 'power2.in'
-        }, '+=1.3')
+        }, '+=1.6') // Marginally increased sustain to fully appreciate cards
         .to('.showdown-cutin-left', { xPercent: -120, duration: 0.2, ease: 'power2.in' }, '-=0.26')
         .to('.showdown-cutin-right', { xPercent: 120, duration: 0.2, ease: 'power2.in' }, '-=0.26');
 
@@ -189,6 +226,21 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
                         <div className="popup-title">
                             {data.text}
                         </div>
+                    </div>
+                )}
+
+                {/* Active Winning Hand Cards (Sliding-in dynamically) */}
+                {data.cards && data.cards.length > 0 && (
+                    <div className="showdown-cards-container">
+                        {data.cards.map((card, idx) => (
+                            <div 
+                                key={card.id || idx} 
+                                className="showdown-card-wrapper"
+                                style={{ zIndex: idx + 5 }} // Ensure nice layering left-to-right
+                            >
+                                <Card card={card} size="normal" isHidden={false} />
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
