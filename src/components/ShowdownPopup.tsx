@@ -75,11 +75,11 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
         gsap.set('.showdown-flash', { opacity: 0 });
         gsap.set('.aura-active', { x: 0, y: 0 });
         
-        // Reset card wrapper animation states
+        // Reset card wrapper animation states (Positioned to slide in from right-to-left)
         gsap.set('.showdown-card-wrapper', {
-            x: -150,
+            x: 180, // Right-side start
             y: 120,
-            rotation: -30,
+            rotation: 30, // Angles in direction of travel
             scale: 0.4,
             opacity: 0
         });
@@ -134,14 +134,14 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
               ease: 'power2.out'
           });
 
-        // Step C: Card Staggered Slide-in Animation (Pachinko Card Lift-up)
+        // Step C: Card Staggered Slide-in Animation (Pachinko Card Lift-up from right-to-left)
         if (revealedCards.length > 0) {
             const count = revealedCards.length;
             tl.fromTo('.showdown-card-wrapper', 
                 {
-                    x: -150,
+                    x: 180,
                     y: 120,
-                    rotation: -30,
+                    rotation: 30,
                     scale: 0.4,
                     opacity: 0
                 },
@@ -159,14 +159,14 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
             );
         }
 
-        // Step D: Idle sustain and Outro fadeout
+        // Step D: Idle sustain and Outro fadeout (Extended to 2.3s to allow comfortable reading)
         tl.to('.showdown-popup-content', {
             scale: 1.35,
             skewX: 12,
             opacity: 0,
             duration: 0.26,
             ease: 'power2.in'
-        }, '+=1.8') // Sustained window to read cards
+        }, '+=2.3') // 2.3 seconds sustain
         .to('.showdown-cutin-left', { xPercent: -120, duration: 0.2, ease: 'power2.in' }, '-=0.26')
         .to('.showdown-cutin-right', { xPercent: 120, duration: 0.2, ease: 'power2.in' }, '-=0.26');
 
