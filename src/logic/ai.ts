@@ -773,25 +773,35 @@ function shouldHideCard(
 
     let baseProb = 0.05;
     const emptySlotIdx = [board[0][col], board[1][col], board[2][col]].findIndex(c => c === null);
-    if (emptySlotIdx === 0) baseProb += 0.4;
-    else if (emptySlotIdx === 1) baseProb += 0.2;
+
+    // First card in column: LOW value to hide — opponent can't read a 1-card column anyway
+    if (emptySlotIdx === 0) baseProb += 0.10;
+    // Second card: MEDIUM — now opponent might start reading the pattern
+    else if (emptySlotIdx === 1) baseProb += 0.20;
+    // Third card completing trips: HIGH — hide the finishing blow for maximum surprise
     else if (emptySlotIdx === 2) {
         const c0 = board[0][col];
         const c1 = board[1][col];
         if (c0 && c1 && c0.rank === c1.rank && c0.rank === card.rank) {
-            baseProb += 0.8;
+            baseProb += 0.8; // Completing 3-of-a-kind = maximum hiding value
+        } else {
+            baseProb += 0.10; // Other 3rd card: mild benefit
         }
     }
-    
-    // Dynamically prioritize early-stage hidden placements to maximize information denial
-    if (turnCount <= 4) baseProb += 0.6;      // Highly aggressive hiding in first 2 turns
-    else if (turnCount <= 8) baseProb += 0.3; // Moderate hiding in mid-entry turns
 
+    // Early game: mild bonus — spread hidden cards through the game, not dump all at once
+    // The forced quota system already guarantees completion; this just nudges timing slightly earlier
+    if (turnCount <= 4) baseProb += 0.15;      // Slight early preference
+    else if (turnCount <= 8) baseProb += 0.08; // Very mild mid-game nudge
+
+    // Weak card on a winning column dice: hide the weakness
     const myDice = player.dice[col];
     const oppDice = opponent.dice[col];
     if (card.rank <= 6 && myDice >= 4) baseProb += 0.3;
+    // Strong card on opponent-favoured column: hide key blocker
     if (card.rank >= 11 && oppDice >= 4) baseProb += 0.3;
 
+    // Denying opponent's hand: HIGHEST strategic value — hide the disruption card
     let isDenyingOut = false;
     for (let c = 0; c < 5; c++) {
         const oppCards = [opponent.board[0][c], opponent.board[1][c], opponent.board[2][c]].filter(x => x !== null) as Card[];
@@ -812,10 +822,9 @@ function shouldHideCard(
     }
 
     if (isDenyingOut) {
-        baseProb += 0.6;
+        baseProb += 0.6; // Disruption hiding is highly valuable
     }
 
-    // Correctly scale bluffBonus (default 2) instead of suppressing it by division of 150
     baseProb *= (params.bluffBonus / 2);
 
     const finalProb = Math.min(baseProb * learning.hidingStrategy / 0.3, 1);
