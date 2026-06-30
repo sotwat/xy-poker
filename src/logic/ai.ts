@@ -643,6 +643,9 @@ function calculateRootMoveBonus(
         } else if (projectedResult.rankValue === 2) {
             // Plain OnePair (non-pure): significantly penalized
             bonus -= 400;
+        } else if (projectedResult.rankValue === 3) {
+            // Plain Straight (non-pure): moderately penalized — weaker than PureOnePair or Flush
+            bonus -= 200;
         }
     }
 
