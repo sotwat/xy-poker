@@ -1461,7 +1461,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06301149</span>}
+          {showVersion && <span className="version">v06301152</span>}
         </div>
 
         <button
@@ -1746,7 +1746,6 @@ function App() {
                       revealedCols={revealedCols}
                       showXHand={showXHand}
                     />
-                    <ShowdownPopup data={currentShowdownPopup} />
                   </div>
                 )}
               </main>
@@ -1958,6 +1957,9 @@ function App() {
           <h1 className="finish-text">FINISH!!</h1>
         </div>
       )}
+
+      {/* Showdown popup overlay mounted at root to prevent transform misalignment */}
+      <ShowdownPopup data={currentShowdownPopup} />
     </div>
   );
 }
