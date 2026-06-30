@@ -799,127 +799,123 @@ function App() {
 
       return () => clearTimeout(timer);
     }
-  }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState, showDiceAnimation]); // Added showDiceAnimation dependency
+  }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState, showDiceAnimation]);
+
+  // Showdown sequence runner (Re-usable for Replay Showdown)
+  const triggerShowdownSequence = async () => {
+    setRevealedCols([]);
+    setShowXHand(false);
+    setCurrentShowdownPopup(null);
+    setShowResultsModal(false);
+
+    const { players } = gameState;
+    const p1 = players[0];
+    const p2 = players[1];
+    const dice = p1.dice; // Shared dice values
+
+    // Helper to map type ID to readable string
+    const getReadableHandName = (typeId: string): string => {
+      return typeId.replace(/([A-Z])/g, ' $1').trim().replace(/ Of /g, ' of ').replace(/ A /g, ' a ');
+    };
+
+    // 出目の低い順（画面右→左）で表示。同じ値の場合は右の列（高いインデックス）を優先
+    const orderedColIndices = [0, 1, 2, 3, 4].sort((a, b) => {
+      const diceDiff = dice[a] - dice[b];
+      return diceDiff !== 0 ? diceDiff : b - a; // 同値なら右の列（高インデックス）を先に
+    });
+
+    // Pre-evaluate all columns 0-4
+    const colResults = Array.from({ length: 5 }, (_, colIndex) => {
+      const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
+      const p2Cards = [p2.board[0][colIndex]!, p2.board[1][colIndex]!, p2.board[2][colIndex]!];
+
+      const p1Res = evaluateYHand(p1Cards, dice[colIndex]);
+      const p2Res = evaluateYHand(p2Cards, dice[colIndex]);
+
+      if (p1Res.rankValue > p2Res.rankValue) return { winner: 'p1' as const, type: p1Res.type };
+      if (p2Res.rankValue > p1Res.rankValue) return { winner: 'p2' as const, type: p2Res.type };
+
+      for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
+        const k1 = p1Res.kickers[k] || 0;
+        const k2 = p2Res.kickers[k] || 0;
+        if (k1 > k2) return { winner: 'p1' as const, type: p1Res.type };
+        if (k2 > k1) return { winner: 'p2' as const, type: p2Res.type };
+      }
+      return { winner: 'draw' as const, type: null };
+    });
+
+    // Row Result (X-Hand)
+    const p1XRes = evaluateXHand(p1.board[2] as Card[]);
+    const p2XRes = evaluateXHand(p2.board[2] as Card[]);
+    const { p1Score: p1X, p2Score: p2X } = calculateXHandScores(p1XRes, p2XRes);
+    let rowResult: { winner: 'p1' | 'p2' | 'draw'; type: string | null } = { winner: 'draw', type: null };
+    if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type };
+    else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type };
+
+    for (let currentStep = 0; currentStep <= 5; currentStep++) {
+      playClickSound();
+
+      if (currentStep <= 4) {
+        const currentCol = orderedColIndices[currentStep];
+        setRevealedCols(prev => [...prev, currentCol]);
+        
+        const res = colResults[currentCol];
+        setCurrentShowdownPopup({
+          id: `col-${currentStep}-${Date.now()}`,
+          text: res.type ? getReadableHandName(res.type) : 'DRAW',
+          winner: res.winner,
+          diceValue: dice[currentCol],
+          isXHand: false
+        });
+
+        if (res.winner !== 'draw' && res.type) {
+          await Promise.all([
+            speakText(getReadableHandName(res.type)),
+            new Promise(r => setTimeout(r, 1200)) // Wait at least 1200ms for visual animation
+          ]);
+        } else {
+          await new Promise(r => setTimeout(r, 1200));
+        }
+      } else if (currentStep === 5) {
+        setShowXHand(true);
+        
+        setCurrentShowdownPopup({
+          id: `row-${currentStep}-${Date.now()}`,
+          text: rowResult.type ? getReadableHandName(rowResult.type) : 'DRAW',
+          winner: rowResult.winner,
+          isXHand: true
+        });
+
+        if (rowResult.winner !== 'draw' && rowResult.type) {
+          await Promise.all([
+            speakText(getReadableHandName(rowResult.type)),
+            new Promise(r => setTimeout(r, 1200))
+          ]);
+        } else {
+          await new Promise(r => setTimeout(r, 1200));
+        }
+      }
+      
+      // Small buffer between steps
+      await new Promise(r => setTimeout(r, 100));
+    }
+
+    // Finished
+    setTimeout(() => {
+      setCurrentShowdownPopup(null); // Hide popup before showing modal
+      setShowResultsModal(true);
+    }, 1500);
+  };
 
   useEffect(() => {
     if (phase === 'ended') {
-      // Start scoring animation sequence
-      // Steps: 0-4 (Cols), 5 (Row)
-
-      setRevealedCols([]);
-      setShowXHand(false);
-      setCurrentShowdownPopup(null);
-      setShowResultsModal(false);
-
-      // Pre-calculate winners and hand names for valid speech
-      const { players } = gameState;
-      const p1 = players[0];
-      const p2 = players[1];
-      const dice = p1.dice; // Shared dice values
-
-      // Helper to map type ID to readable string
-      const getReadableHandName = (typeId: string): string => {
-        return typeId.replace(/([A-Z])/g, ' $1').trim().replace(/ Of /g, ' of ').replace(/ A /g, ' a ');
-      };
-
-      // 出目の低い順（画面右→左）で表示。同じ値の場合は右の列（高いインデックス）を優先
-      const orderedColIndices = [0, 1, 2, 3, 4].sort((a, b) => {
-        const diceDiff = dice[a] - dice[b];
-        return diceDiff !== 0 ? diceDiff : b - a; // 同値なら右の列（高インデックス）を先に
-      });
-
-      // Pre-evaluate all columns 0-4
-      const colResults = Array.from({ length: 5 }, (_, colIndex) => {
-        const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
-        const p2Cards = [p2.board[0][colIndex]!, p2.board[1][colIndex]!, p2.board[2][colIndex]!];
-
-        const p1Res = evaluateYHand(p1Cards, dice[colIndex]);
-        const p2Res = evaluateYHand(p2Cards, dice[colIndex]);
-
-        if (p1Res.rankValue > p2Res.rankValue) return { winner: 'p1' as const, type: p1Res.type };
-        if (p2Res.rankValue > p1Res.rankValue) return { winner: 'p2' as const, type: p2Res.type };
-
-        for (let k = 0; k < Math.max(p1Res.kickers.length, p2Res.kickers.length); k++) {
-          const k1 = p1Res.kickers[k] || 0;
-          const k2 = p2Res.kickers[k] || 0;
-          if (k1 > k2) return { winner: 'p1' as const, type: p1Res.type };
-          if (k2 > k1) return { winner: 'p2' as const, type: p2Res.type };
-        }
-        return { winner: 'draw' as const, type: null };
-      });
-
-      // Row Result (X-Hand)
-      const p1XRes = evaluateXHand(p1.board[2] as Card[]);
-      const p2XRes = evaluateXHand(p2.board[2] as Card[]);
-
       const gameSignature = `${roomId}-${gameState.winner}-${gameState.turnCount}`;
       if (processedGameRef.current === gameSignature) {
         return;
       }
       processedGameRef.current = gameSignature;
 
-      const { p1Score: p1X, p2Score: p2X } = calculateXHandScores(p1XRes, p2XRes);
-      let rowResult: { winner: 'p1' | 'p2' | 'draw'; type: string | null } = { winner: 'draw', type: null };
-      if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type };
-      else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type };
-
-      const runShowdownSequence = async () => {
-        for (let currentStep = 0; currentStep <= 5; currentStep++) {
-          playClickSound();
-
-          if (currentStep <= 4) {
-            const currentCol = orderedColIndices[currentStep];
-            setRevealedCols(prev => [...prev, currentCol]);
-            
-            const res = colResults[currentCol];
-            setCurrentShowdownPopup({
-              id: `col-${currentStep}-${Date.now()}`,
-              text: res.type ? getReadableHandName(res.type) : 'DRAW',
-              winner: res.winner,
-              diceValue: dice[currentCol],
-              isXHand: false
-            });
-
-            if (res.winner !== 'draw' && res.type) {
-              await Promise.all([
-                speakText(getReadableHandName(res.type)),
-                new Promise(r => setTimeout(r, 1200)) // Wait at least 1200ms for visual animation
-              ]);
-            } else {
-              await new Promise(r => setTimeout(r, 1200));
-            }
-          } else if (currentStep === 5) {
-            setShowXHand(true);
-            
-            setCurrentShowdownPopup({
-              id: `row-${currentStep}-${Date.now()}`,
-              text: rowResult.type ? getReadableHandName(rowResult.type) : 'DRAW',
-              winner: rowResult.winner,
-              isXHand: true
-            });
-
-            if (rowResult.winner !== 'draw' && rowResult.type) {
-              await Promise.all([
-                speakText(getReadableHandName(rowResult.type)),
-                new Promise(r => setTimeout(r, 1200))
-              ]);
-            } else {
-              await new Promise(r => setTimeout(r, 1200));
-            }
-          }
-          
-          // Small buffer between steps
-          await new Promise(r => setTimeout(r, 100));
-        }
-
-        // Finished
-        setTimeout(() => {
-          setCurrentShowdownPopup(null); // Hide popup before showing modal
-          setShowResultsModal(true);
-        }, 1500);
-      };
-
-      runShowdownSequence();
+      triggerShowdownSequence();
 
       if (mode === 'local') {
         const { winner } = gameState;
@@ -1463,7 +1459,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06301121</span>}
+          {showVersion && <span className="version">v06301130</span>}
         </div>
 
         <button
@@ -1820,6 +1816,12 @@ function App() {
 
                   {phase === 'ended' && !showResultsModal && (
                     <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
+                      <button className="btn-secondary" onClick={() => {
+                        playClickSound();
+                        triggerShowdownSequence();
+                      }}>
+                        Replay Showdown
+                      </button>
                       <button className="btn-primary" onClick={() => {
                         playClickSound();
                         setShowResultsModal(true);
