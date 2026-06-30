@@ -56,6 +56,9 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
     const [assetFailed, setAssetFailed] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
+    // Force reveal hidden cards during showdown evaluation
+    const revealedCards = data?.cards?.map(card => ({ ...card, isHidden: false })) || [];
+
     useEffect(() => {
         if (!data) return;
 
@@ -132,8 +135,8 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
           });
 
         // Step C: Card Staggered Slide-in Animation (Pachinko Card Lift-up)
-        if (data.cards && data.cards.length > 0) {
-            const count = data.cards.length;
+        if (revealedCards.length > 0) {
+            const count = revealedCards.length;
             tl.fromTo('.showdown-card-wrapper', 
                 {
                     x: -150,
@@ -163,7 +166,7 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
             opacity: 0,
             duration: 0.26,
             ease: 'power2.in'
-        }, '+=1.6') // Marginally increased sustain to fully appreciate cards
+        }, '+=1.8') // Sustained window to read cards
         .to('.showdown-cutin-left', { xPercent: -120, duration: 0.2, ease: 'power2.in' }, '-=0.26')
         .to('.showdown-cutin-right', { xPercent: 120, duration: 0.2, ease: 'power2.in' }, '-=0.26');
 
@@ -177,7 +180,7 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
                 gsap.set(appEl, { x: 0, y: 0 });
             }
         };
-    }, [data]);
+    }, [data, revealedCards.length]);
 
     if (!data) return null;
 
@@ -230,9 +233,9 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
                 )}
 
                 {/* Active Winning Hand Cards (Sliding-in dynamically) */}
-                {data.cards && data.cards.length > 0 && (
+                {revealedCards.length > 0 && (
                     <div className="showdown-cards-container">
-                        {data.cards.map((card, idx) => (
+                        {revealedCards.map((card, idx) => (
                             <div 
                                 key={card.id || idx} 
                                 className="showdown-card-wrapper"

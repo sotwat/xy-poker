@@ -17,26 +17,26 @@
 .showdown-cutin-right {
     position: absolute;
     width: 140vw;
-    height: 11vh;
+    height: 12vh;
     z-index: 4;
     pointer-events: none;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8);
 }
 
 .showdown-cutin-left {
-    top: 36vh;
+    top: 34vh;
     left: -20vw;
     transform: translateY(-50%) skewX(-25deg);
-    border-bottom: 4px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 -3px 10px rgba(255, 255, 255, 0.2);
+    border-bottom: 5px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 -3px 12px rgba(255, 255, 255, 0.25);
 }
 
 .showdown-cutin-right {
-    top: 48vh;
+    top: 50vh;
     right: -20vw;
     transform: translateY(-50%) skewX(-25deg);
-    border-top: 4px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.6), inset 0 3px 10px rgba(255, 255, 255, 0.2);
+    border-top: 5px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.7), inset 0 3px 12px rgba(255, 255, 255, 0.25);
 }
 
 /* Metal Gradient Themes */
@@ -75,7 +75,7 @@
 
 /* Gold + Player Color Themes for X-Hand */
 .cutin-xhand-p1 {
-    height: 13vh !important;
+    height: 14vh !important;
     background: linear-gradient(
         90deg,
         #051c30 0%,
@@ -84,12 +84,12 @@
         #00f2fe 75%,
         #051c30 100%
     ) !important;
-    border-top: 2px solid #ffd700;
-    border-bottom: 5px solid #ffd700 !important;
+    border-top: 3px solid #ffd700;
+    border-bottom: 6px solid #ffd700 !important;
 }
 
 .cutin-xhand-p2 {
-    height: 13vh !important;
+    height: 14vh !important;
     background: linear-gradient(
         90deg,
         #2a080c 0%,
@@ -98,8 +98,8 @@
         #ff0844 75%,
         #2a080c 100%
     ) !important;
-    border-top: 5px solid #ffd700 !important;
-    border-bottom: 2px solid #ffd700;
+    border-top: 6px solid #ffd700 !important;
+    border-bottom: 3px solid #ffd700;
 }
 
 /* Background Impact Flash */
@@ -115,30 +115,31 @@
     mix-blend-mode: overlay;
 }
 
-/* Core Dialog Styling (Glassmorphism & Low GPU overhead) */
+/* Core Dialog Styling (Scaled up & Centered) */
 .showdown-popup-content {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(6, 6, 10, 0.90);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 3px solid #fff;
-    padding: 30px 60px;
-    border-radius: 20px;
+    background: rgba(4, 4, 8, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 4px solid #fff;
+    padding: 40px 90px;
+    border-radius: 24px;
     z-index: 10;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95);
     transform-origin: center center;
+    min-width: 520px; /* Strong screen center presence */
 }
 
-/* Neon Text Glows */
+/* Neon Text Glows (Enlarged) */
 .popup-subtitle {
-    font-size: 1.5rem;
+    font-size: 2.2rem;
     font-weight: 900;
     letter-spacing: 0.35em;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
     text-transform: uppercase;
 }
 
@@ -148,50 +149,50 @@
 }
 
 .popup-title {
-    font-size: 4.5rem;
+    font-size: 6.2rem; /* Massive hand text */
     font-weight: 1000;
     color: #fff;
     text-transform: uppercase;
     text-align: center;
     white-space: nowrap;
     letter-spacing: 0.05em;
-    padding: 5px 0;
+    padding: 10px 0;
 }
 
 /* Normal Winner Styles */
 .popup-p1 {
     border-color: #00f2fe;
-    box-shadow: 0 0 40px rgba(0, 242, 254, 0.35);
+    box-shadow: 0 0 50px rgba(0, 242, 254, 0.45);
 }
 .popup-p1 .popup-title {
     color: #ffffff;
-    text-shadow: 0 0 10px #00f2fe, 0 0 25px #0052d4, 0 0 45px #00f2fe;
+    text-shadow: 0 0 15px #00f2fe, 0 0 35px #0052d4, 0 0 60px #00f2fe;
 }
 .popup-p1 .popup-subtitle {
     color: #00f2fe;
-    text-shadow: 0 0 10px rgba(0, 242, 254, 0.7);
+    text-shadow: 0 0 12px rgba(0, 242, 254, 0.85);
 }
 
 .popup-p2 {
     border-color: #ff0844;
-    box-shadow: 0 0 40px rgba(255, 8, 68, 0.35);
+    box-shadow: 0 0 50px rgba(255, 8, 68, 0.45);
 }
 .popup-p2 .popup-title {
     color: #ffffff;
-    text-shadow: 0 0 10px #ff0844, 0 0 25px #b20a2c, 0 0 45px #ff0844;
+    text-shadow: 0 0 15px #ff0844, 0 0 35px #b20a2c, 0 0 60px #ff0844;
 }
 .popup-p2 .popup-subtitle {
     color: #ff0844;
-    text-shadow: 0 0 10px rgba(255, 8, 68, 0.7);
+    text-shadow: 0 0 12px rgba(255, 8, 68, 0.85);
 }
 
 .popup-draw {
     border-color: #cccccc;
-    box-shadow: 0 0 25px rgba(204, 204, 204, 0.2);
+    box-shadow: 0 0 35px rgba(204, 204, 204, 0.25);
 }
 .popup-draw .popup-title {
     color: #ffffff;
-    text-shadow: 0 0 8px #ffffff, 0 0 20px #888888;
+    text-shadow: 0 0 10px #ffffff, 0 0 25px #888888;
 }
 .popup-draw .popup-subtitle {
     color: #cccccc;
@@ -200,44 +201,44 @@
 /* Gold + Player Color X-Hand Winner Styles */
 .popup-xhand-p1 {
     border-color: #ffd700 !important;
-    box-shadow: 0 0 50px rgba(255, 215, 0, 0.5), inset 0 0 25px rgba(0, 242, 254, 0.25) !important;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.65), inset 0 0 30px rgba(0, 242, 254, 0.3) !important;
 }
 .popup-xhand-p1 .popup-title {
     color: #ffffff;
-    text-shadow: 0 0 12px #ffd700, 0 0 25px #00f2fe, 0 0 50px #ffd700 !important;
+    text-shadow: 0 0 15px #ffd700, 0 0 35px #00f2fe, 0 0 65px #ffd700 !important;
 }
 .popup-xhand-p1 .popup-subtitle {
     color: #ffd700 !important;
-    text-shadow: 0 0 12px rgba(255, 215, 0, 0.9) !important;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.95) !important;
 }
 
 .popup-xhand-p2 {
     border-color: #ffd700 !important;
-    box-shadow: 0 0 50px rgba(255, 215, 0, 0.5), inset 0 0 25px rgba(255, 8, 68, 0.25) !important;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.65), inset 0 0 30px rgba(255, 8, 68, 0.3) !important;
 }
 .popup-xhand-p2 .popup-title {
     color: #ffffff;
-    text-shadow: 0 0 12px #ffd700, 0 0 25px #ff0844, 0 0 50px #ffd700 !important;
+    text-shadow: 0 0 15px #ffd700, 0 0 35px #ff0844, 0 0 65px #ffd700 !important;
 }
 .popup-xhand-p2 .popup-subtitle {
     color: #ffd700 !important;
-    text-shadow: 0 0 12px rgba(255, 215, 0, 0.9) !important;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.95) !important;
 }
 
-/* Pre-rendered Animation Asset Container */
+/* Pre-rendered Animation Asset Container (Enlarged) */
 .showdown-asset-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px 0;
-    max-height: 25vh;
+    margin: 15px 0;
+    max-height: 32vh;
 }
 
 .showdown-asset-effect {
-    max-height: 25vh;
-    max-width: 80vw;
+    max-height: 32vh;
+    max-width: 85vw;
     object-fit: contain;
-    mix-blend-mode: screen; /* Additive blending for glows */
+    mix-blend-mode: screen;
     opacity: 0;
     transform: scale(0.9);
     transition: opacity 0.2s ease-out, transform 0.2s ease-out;
@@ -248,73 +249,96 @@
     transform: scale(1.0);
 }
 
-/* Winning Cards Slide-in Container */
+/* Winning Cards Slide-in Container (Enlarged) */
 .showdown-cards-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 25px;
-    padding: 10px 0;
-    perspective: 1200px; /* Gives cards depth when rotating */
+    margin-top: 35px;
+    padding: 15px 0;
+    perspective: 1500px; /* Deeper 3D depth */
     width: 100%;
 }
 
 .showdown-card-wrapper {
     position: relative;
-    margin: 0 -15px; /* Slight overlapping to represent hand compilation */
+    margin: 0 -22px; /* Deeper overlap to accommodate larger card sizes */
     transform-origin: bottom center; /* Base of fan rotation */
-    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.6));
     will-change: transform, opacity;
 }
 
-/* Slightly scale down standard card component size inside popup */
+/* Significantly enlarged standard card component size inside popup */
 .showdown-card-wrapper .card {
-    width: 78px !important;
-    height: 114px !important;
-    font-size: 0.9rem;
-    pointer-events: none; /* Prevent clicks during showdown */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    width: 120px !important;
+    height: 175px !important;
+    font-size: 1.25rem !important;
+    pointer-events: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
-/* Mobile Responsive Overrides */
+/* Scale up card suit / rank label values to match enlarged bounds */
+.showdown-card-wrapper .card .rank {
+    font-size: 1.45rem !important;
+    font-weight: 900 !important;
+}
+.showdown-card-wrapper .card .suit {
+    font-size: 1.45rem !important;
+}
+.showdown-card-wrapper .card .card-center {
+    font-size: 3.2rem !important;
+}
+
+/* Mobile Responsive Overrides (Maximized size) */
 @media (max-width: 768px) {
     .showdown-popup-content {
-        padding: 20px 40px;
-        border-radius: 12px;
-        width: 90%;
+        padding: 30px 25px;
+        border-radius: 18px;
+        width: 92%;
+        min-width: unset;
     }
     .popup-title {
-        font-size: 2.6rem;
+        font-size: 3.4rem;
     }
     .popup-subtitle {
-        font-size: 1.1rem;
+        font-size: 1.5rem;
         letter-spacing: 0.2em;
     }
     .showdown-cutin-left,
     .showdown-cutin-right {
-        height: 8vh;
+        height: 9vh;
     }
     .showdown-cutin-left {
-        top: 38vh;
+        top: 36vh;
     }
     .showdown-cutin-right {
-        top: 46vh;
+        top: 48vh;
     }
     .showdown-asset-effect {
-        max-height: 18vh;
+        max-height: 22vh;
     }
     
     /* Mobilify Cards overlap */
     .showdown-cards-container {
-        margin-top: 15px;
+        margin-top: 20px;
     }
     .showdown-card-wrapper {
-        margin: 0 -22px; /* Tighter overlap for small screens */
+        margin: 0 -18px; /* Fit 3-5 cards on small viewport */
     }
     .showdown-card-wrapper .card {
-        width: 60px !important;
-        height: 88px !important;
-        font-size: 0.75rem;
+        width: 82px !important;
+        height: 120px !important;
+        font-size: 0.85rem !important;
+        border-radius: 8px;
+    }
+    .showdown-card-wrapper .card .rank {
+        font-size: 1.0rem !important;
+    }
+    .showdown-card-wrapper .card .suit {
+        font-size: 1.0rem !important;
+    }
+    .showdown-card-wrapper .card .card-center {
+        font-size: 2.1rem !important;
     }
 }
