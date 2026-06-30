@@ -12,33 +12,12 @@
     overflow: hidden;
 }
 
-/* Layer 3 & 4 Canvases */
-.showdown-canvas-2d {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 3;
-    pointer-events: none;
-}
-
-.showdown-canvas-webgl {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    pointer-events: none;
-}
-
-/* Layer 5: Pachinko Diagonal Metal Cut-in Bands */
+/* Pachinko Diagonal Metal Cut-in Bands */
 .showdown-cutin-left,
 .showdown-cutin-right {
     position: absolute;
     width: 140vw;
-    height: 12vh;
+    height: 11vh;
     z-index: 4;
     pointer-events: none;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
@@ -48,7 +27,7 @@
     top: 36vh;
     left: -20vw;
     transform: translateY(-50%) skewX(-25deg);
-    border-bottom: 4px solid rgba(255, 255, 255, 0.75);
+    border-bottom: 4px solid rgba(255, 255, 255, 0.8);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 -3px 10px rgba(255, 255, 255, 0.2);
 }
 
@@ -56,7 +35,7 @@
     top: 48vh;
     right: -20vw;
     transform: translateY(-50%) skewX(-25deg);
-    border-top: 4px solid rgba(255, 255, 255, 0.75);
+    border-top: 4px solid rgba(255, 255, 255, 0.8);
     box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.6), inset 0 3px 10px rgba(255, 255, 255, 0.2);
 }
 
@@ -66,8 +45,8 @@
         90deg,
         #051c30 0%,
         #0052d4 25%,
-        #ffd700 50%,
-        #4facfe 75%,
+        #00f2fe 50%,
+        #0052d4 75%,
         #051c30 100%
     );
 }
@@ -77,8 +56,8 @@
         90deg,
         #2a080c 0%,
         #b20a2c 25%,
-        #ffd700 50%,
-        #ff0844 75%,
+        #ff0844 50%,
+        #b20a2c 75%,
         #2a080c 100%
     );
 }
@@ -94,26 +73,33 @@
     );
 }
 
-.cutin-xhand {
-    height: 14vh !important;
+/* Gold + Player Color Themes for X-Hand */
+.cutin-xhand-p1 {
+    height: 13vh !important;
     background: linear-gradient(
         90deg,
-        #2e0854 0%,
-        #ec008c 20%,
-        #fc6767 40%,
+        #051c30 0%,
+        #00f2fe 25%,
         #ffd700 50%,
-        #00f2fe 60%,
-        #4facfe 80%,
-        #2e0854 100%
+        #00f2fe 75%,
+        #051c30 100%
     ) !important;
-    animation: metal-flow 3s linear infinite;
-    background-size: 200% auto;
+    border-top: 2px solid #ffd700;
+    border-bottom: 5px solid #ffd700 !important;
 }
 
-@keyframes metal-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+.cutin-xhand-p2 {
+    height: 13vh !important;
+    background: linear-gradient(
+        90deg,
+        #2a080c 0%,
+        #ff0844 25%,
+        #ffd700 50%,
+        #ff0844 75%,
+        #2a080c 100%
+    ) !important;
+    border-top: 5px solid #ffd700 !important;
+    border-bottom: 2px solid #ffd700;
 }
 
 /* Background Impact Flash */
@@ -129,7 +115,7 @@
     mix-blend-mode: overlay;
 }
 
-/* Core Dialog Styling (Layer 1 + Glassmorphism) */
+/* Core Dialog Styling (Glassmorphism & Low GPU overhead) */
 .showdown-popup-content {
     position: relative;
     display: flex;
@@ -137,24 +123,23 @@
     align-items: center;
     justify-content: center;
     background: rgba(6, 6, 10, 0.88);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 3px solid #fff;
-    padding: 35px 90px;
+    padding: 30px 80px;
     border-radius: 16px;
     z-index: 10;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
     transform-origin: center center;
 }
 
 /* Neon Text Glows */
 .popup-subtitle {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 900;
     letter-spacing: 0.35em;
     margin-bottom: 12px;
     text-transform: uppercase;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
 .popup-title-glow-wrapper {
@@ -163,84 +148,115 @@
 }
 
 .popup-title {
-    font-size: 4.8rem;
+    font-size: 4.5rem;
     font-weight: 1000;
     color: #fff;
     text-transform: uppercase;
     text-align: center;
     white-space: nowrap;
     letter-spacing: 0.05em;
-    padding: 10px 0;
-    transform-origin: center center;
+    padding: 5px 0;
 }
 
-/* Winner Specific Customization */
+/* Normal Winner Styles */
 .popup-p1 {
     border-color: #00f2fe;
-    box-shadow: 0 0 50px rgba(0, 242, 254, 0.4), inset 0 0 25px rgba(0, 242, 254, 0.15);
+    box-shadow: 0 0 40px rgba(0, 242, 254, 0.35);
 }
 .popup-p1 .popup-title {
     color: #ffffff;
-    text-shadow: 0 0 10px #00f2fe, 0 0 25px #0052d4, 0 0 50px #00f2fe;
+    text-shadow: 0 0 10px #00f2fe, 0 0 25px #0052d4, 0 0 45px #00f2fe;
 }
 .popup-p1 .popup-subtitle {
     color: #00f2fe;
-    text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
+    text-shadow: 0 0 10px rgba(0, 242, 254, 0.7);
 }
 
 .popup-p2 {
     border-color: #ff0844;
-    box-shadow: 0 0 50px rgba(255, 8, 68, 0.4), inset 0 0 25px rgba(255, 8, 68, 0.15);
+    box-shadow: 0 0 40px rgba(255, 8, 68, 0.35);
 }
 .popup-p2 .popup-title {
     color: #ffffff;
-    text-shadow: 0 0 10px #ff0844, 0 0 25px #b20a2c, 0 0 50px #ff0844;
+    text-shadow: 0 0 10px #ff0844, 0 0 25px #b20a2c, 0 0 45px #ff0844;
 }
 .popup-p2 .popup-subtitle {
     color: #ff0844;
-    text-shadow: 0 0 12px rgba(255, 8, 68, 0.8);
+    text-shadow: 0 0 10px rgba(255, 8, 68, 0.7);
 }
 
 .popup-draw {
-    border-color: #e0e0e0;
-    box-shadow: 0 0 35px rgba(224, 224, 224, 0.3), inset 0 0 15px rgba(224, 224, 224, 0.1);
+    border-color: #cccccc;
+    box-shadow: 0 0 25px rgba(204, 204, 204, 0.2);
 }
 .popup-draw .popup-title {
     color: #ffffff;
-    text-shadow: 0 0 10px #ffffff, 0 0 25px #888888;
+    text-shadow: 0 0 8px #ffffff, 0 0 20px #888888;
 }
 .popup-draw .popup-subtitle {
     color: #cccccc;
 }
 
-/* Custom screen shaking animations (fallback/secondary) */
-.shake-intense {
-    animation: shake-heavy 0.1s linear infinite;
+/* Gold + Player Color X-Hand Winner Styles */
+.popup-xhand-p1 {
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.5), inset 0 0 25px rgba(0, 242, 254, 0.25) !important;
+}
+.popup-xhand-p1 .popup-title {
+    color: #ffffff;
+    text-shadow: 0 0 12px #ffd700, 0 0 25px #00f2fe, 0 0 50px #ffd700 !important;
+}
+.popup-xhand-p1 .popup-subtitle {
+    color: #ffd700 !important;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.9) !important;
 }
 
-@keyframes shake-heavy {
-    0% { transform: translate(3px, 2px) rotate(0deg); }
-    10% { transform: translate(-2px, -3px) rotate(-1.5deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(0px, 3px) rotate(0deg); }
-    40% { transform: translate(2px, -1px) rotate(1.5deg); }
-    50% { transform: translate(-1px, 3px) rotate(-1deg); }
-    60% { transform: translate(-3px, 2px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1.5deg); }
-    80% { transform: translate(-2px, -2px) rotate(1deg); }
-    90% { transform: translate(2px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
+.popup-xhand-p2 {
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.5), inset 0 0 25px rgba(255, 8, 68, 0.25) !important;
+}
+.popup-xhand-p2 .popup-title {
+    color: #ffffff;
+    text-shadow: 0 0 12px #ffd700, 0 0 25px #ff0844, 0 0 50px #ffd700 !important;
+}
+.popup-xhand-p2 .popup-subtitle {
+    color: #ffd700 !important;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.9) !important;
+}
+
+/* Pre-rendered Animation Asset Container */
+.showdown-asset-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    max-height: 25vh;
+}
+
+.showdown-asset-effect {
+    max-height: 25vh;
+    max-width: 80vw;
+    object-fit: contain;
+    mix-blend-mode: screen; /* Additive blending for glows */
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.showdown-asset-effect.loaded {
+    opacity: 1;
+    transform: scale(1.0);
 }
 
 /* Mobile Responsive Overrides */
 @media (max-width: 768px) {
     .showdown-popup-content {
-        padding: 20px 45px;
+        padding: 20px 40px;
         border-radius: 12px;
         width: 85%;
     }
     .popup-title {
-        font-size: 2.8rem;
+        font-size: 2.6rem;
     }
     .popup-subtitle {
         font-size: 1.1rem;
@@ -255,5 +271,8 @@
     }
     .showdown-cutin-right {
         top: 46vh;
+    }
+    .showdown-asset-effect {
+        max-height: 18vh;
     }
 }
