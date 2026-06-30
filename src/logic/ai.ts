@@ -629,23 +629,25 @@ function calculateRootMoveBonus(
         bonus += params.pairInHandBonus;
     }
 
-    // Penalize completing columns with weak hands (HighCard or plain OnePair)
-    // This is the primary mechanism to steer the AI away from weak finishes
+    // Penalize completing columns with weak hands (HighCard, OnePair, plain Straight)
+    // Scale penalty by (diceValue / 6): low-dice columns are acceptable trash bins for weak hands
+    // e.g. dice=1 → ~17% penalty, dice=3 → 50%, dice=6 → 100%
     if (emptySlotIdx === 2) {
         const myCol = [player.board[0][colIndex], player.board[1][colIndex], player.board[2][colIndex]];
         const tempCol = [...myCol];
-        tempCol[2] = card; // Simulate placing this card
+        tempCol[2] = card;
         const colDiceVal = player.dice[colIndex];
+        const diceScale = colDiceVal / 6; // 0.167 (dice=1) → 1.0 (dice=6)
         const projectedResult = evaluateYHand(tempCol as Card[], colDiceVal);
         if (projectedResult.rankValue === 1) {
-            // HighCard: very heavily penalized — this outcome should almost never be chosen
-            bonus -= 800;
+            // HighCard: heavily penalized on high-dice columns, tolerated on low-dice
+            bonus -= 800 * diceScale;
         } else if (projectedResult.rankValue === 2) {
-            // Plain OnePair (non-pure): significantly penalized
-            bonus -= 400;
+            // Plain OnePair (non-pure)
+            bonus -= 400 * diceScale;
         } else if (projectedResult.rankValue === 3) {
-            // Plain Straight (non-pure): moderately penalized — weaker than PureOnePair or Flush
-            bonus -= 200;
+            // Plain Straight (non-pure)
+            bonus -= 200 * diceScale;
         }
     }
 
