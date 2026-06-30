@@ -783,7 +783,9 @@ function shouldHideCard(
         }
     }
     
-    if (turnCount <= 6) baseProb += 0.2;
+    // Dynamically prioritize early-stage hidden placements to maximize information denial
+    if (turnCount <= 4) baseProb += 0.6;      // Highly aggressive hiding in first 2 turns
+    else if (turnCount <= 8) baseProb += 0.3; // Moderate hiding in mid-entry turns
 
     const myDice = player.dice[col];
     const oppDice = opponent.dice[col];
@@ -813,7 +815,9 @@ function shouldHideCard(
         baseProb += 0.6;
     }
 
-    baseProb *= (params.bluffBonus / 150);
+    // Correctly scale bluffBonus (default 2) instead of suppressing it by division of 150
+    baseProb *= (params.bluffBonus / 2);
 
-    return Math.random() < (baseProb * learning.hidingStrategy / 0.3);
+    const finalProb = Math.min(baseProb * learning.hidingStrategy / 0.3, 1);
+    return Math.random() < finalProb;
 }
