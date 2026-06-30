@@ -745,6 +745,18 @@ function shouldHideCard(
 ): boolean {
     if (player.hiddenCardsCount >= 3) return false;
 
+    // Calculate remaining empty spaces and hidden cards quota
+    const emptySpaces = board.flat().filter(cell => cell === null).length;
+    const remainingNorma = 3 - player.hiddenCardsCount;
+
+    // Forced hidden placement: ensure all 3 hidden cards are used up before board is full
+    if (emptySpaces <= remainingNorma || 
+        (emptySpaces <= 12 && remainingNorma === 3) ||
+        (emptySpaces <= 8 && remainingNorma === 2) || 
+        (emptySpaces <= 4 && remainingNorma === 1)) {
+        return true;
+    }
+
     let hiddenInCol = 0;
     for (let r = 0; r < 3; r++) {
         const c = board[r][move.colIndex];
