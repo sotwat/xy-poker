@@ -29,7 +29,7 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     pureStraightFlushBonus: 57,
     pureStraightBonus: 2,
     flushBonus: 14,
-    pairPenalty: -2,
+    pairPenalty: -30,
     tripsInHandBonus: 99,
     pairInHandBonus: 12,
     lowCardPenalty: -2,
@@ -627,6 +627,23 @@ function calculateRootMoveBonus(
         bonus += params.tripsInHandBonus * (learning.tripsInHandFocus ?? 1.0);
     } else if (pairRanks.includes(card.rank)) {
         bonus += params.pairInHandBonus;
+    }
+
+    // Penalize completing columns with weak hands (HighCard or plain OnePair)
+    // This is the primary mechanism to steer the AI away from weak finishes
+    if (emptySlotIdx === 2) {
+        const myCol = [player.board[0][colIndex], player.board[1][colIndex], player.board[2][colIndex]];
+        const tempCol = [...myCol];
+        tempCol[2] = card; // Simulate placing this card
+        const colDiceVal = player.dice[colIndex];
+        const projectedResult = evaluateYHand(tempCol as Card[], colDiceVal);
+        if (projectedResult.rankValue === 1) {
+            // HighCard: very heavily penalized — this outcome should almost never be chosen
+            bonus -= 800;
+        } else if (projectedResult.rankValue === 2) {
+            // Plain OnePair (non-pure): significantly penalized
+            bonus -= 400;
+        }
     }
 
     bonus += evaluateOpponentBlock(opponent, colIndex);
