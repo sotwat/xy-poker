@@ -25,6 +25,10 @@ export interface GlobalAiParams {
     turn_order_flexibility: number;
     // Weak hand avoidance scaler (auto-learned from global match outcomes)
     weak_hand_avoidance: number;
+    // Placement bonus scalers (auto-learned)
+    pair_in_hand_scale: number;
+    queen_first_scale: number;
+    bluff_bonus_scale: number;
 }
 
 export async function fetchGlobalAiParameters(): Promise<GlobalAiParams | null> {
@@ -71,6 +75,10 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
             updated.turn_order_flexibility *= 1.012;
             // AI won: slightly relax weak-hand avoidance (maybe being flexible helped)
             updated.weak_hand_avoidance *= 0.988;
+            // Reinforce placement bonuses that helped win
+            updated.pair_in_hand_scale *= 1.012;
+            updated.queen_first_scale *= 1.012;
+            updated.bluff_bonus_scale *= 1.012;
         } else {
             // AI Lost: Adjust heuristics. Shift away from weakest/strongest extremes
             const strategies = [
@@ -98,6 +106,10 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
             updated.low_card_avoidance *= 1.02;   // Increase carefulness in placing cards
             // AI lost: increase weak-hand avoidance (avoid bad hands more aggressively)
             updated.weak_hand_avoidance *= 1.025;
+            // Adjust placement bonus scalers toward exploration
+            updated.pair_in_hand_scale *= 0.99;
+            updated.queen_first_scale *= 0.99;
+            updated.bluff_bonus_scale *= 1.015;
         }
 
         // Clip parameters to safe ranges
@@ -115,6 +127,9 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
         updated.low_card_avoidance = Math.min(Math.max(updated.low_card_avoidance, 0.4), 2.0);
         updated.turn_order_flexibility = Math.min(Math.max(updated.turn_order_flexibility, 0.4), 2.0);
         updated.weak_hand_avoidance = Math.min(Math.max(updated.weak_hand_avoidance, 0.5), 3.0);
+        updated.pair_in_hand_scale = Math.min(Math.max(updated.pair_in_hand_scale, 0.3), 2.5);
+        updated.queen_first_scale = Math.min(Math.max(updated.queen_first_scale, 0.3), 2.5);
+        updated.bluff_bonus_scale = Math.min(Math.max(updated.bluff_bonus_scale, 0.5), 3.0);
 
         updated.updated_at = new Date().toISOString();
 
@@ -136,6 +151,9 @@ export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean =
                 low_card_avoidance: updated.low_card_avoidance,
                 turn_order_flexibility: updated.turn_order_flexibility,
                 weak_hand_avoidance: updated.weak_hand_avoidance,
+                pair_in_hand_scale: updated.pair_in_hand_scale,
+                queen_first_scale: updated.queen_first_scale,
+                bluff_bonus_scale: updated.bluff_bonus_scale,
                 updated_at: updated.updated_at
             })
             .eq('id', 1);

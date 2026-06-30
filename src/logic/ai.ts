@@ -3,18 +3,10 @@ import { getLearningData } from './aiLearning';
 import { evaluateYHand, evaluateXHand } from './evaluation';
 
 export interface AiParams {
-    pureStraightFlushBonus: number;
-    pureStraightBonus: number;
-    flushBonus: number;
-    pairPenalty: number;
     tripsInHandBonus: number;
     pairInHandBonus: number;
     lowCardPenalty: number;
     queenFirstRowBonus: number;
-    xHandBaseMultiplier: number;
-    trashBinRushBase: number;
-    trashBinRushMultiplier: number;
-    drawValueBase: number;
     showdownDelayPenalty: number;
     row3DelayPenalty: number;
     bluffBonus: number;
@@ -26,18 +18,10 @@ export interface AiParams {
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
-    pureStraightFlushBonus: 57,
-    pureStraightBonus: 2,
-    flushBonus: 14,
-    pairPenalty: -30,
     tripsInHandBonus: 99,
     pairInHandBonus: 12,
     lowCardPenalty: -2,
     queenFirstRowBonus: 2,
-    xHandBaseMultiplier: 2,
-    trashBinRushBase: 2,
-    trashBinRushMultiplier: 2,
-    drawValueBase: 32,
     showdownDelayPenalty: 10,
     row3DelayPenalty: 131,
     bluffBonus: 2,
@@ -69,9 +53,12 @@ function getActiveLearningData(): any {
             lowCardAvoidance: 1.500,
             turnOrderFlexibility: 1.100,
             weakHandAvoidance: 1.0,
+            pairInHandScale: 1.0,
+            queenFirstScale: 1.0,
+            bluffBonusScale: 1.0,
         };
     }
-    // Map database snake_case parameters to game's camelCase variables (12 parameters)
+    // Map database snake_case parameters to game's camelCase variables
     return {
         ...localLearning,
         tripPreference: activeGlobalParams.trip_preference ?? localLearning.tripPreference,
@@ -88,6 +75,9 @@ function getActiveLearningData(): any {
         lowCardAvoidance: activeGlobalParams.low_card_avoidance ?? 1.0,
         turnOrderFlexibility: activeGlobalParams.turn_order_flexibility ?? 1.0,
         weakHandAvoidance: activeGlobalParams.weak_hand_avoidance ?? 1.0,
+        pairInHandScale: activeGlobalParams.pair_in_hand_scale ?? 1.0,
+        queenFirstScale: activeGlobalParams.queen_first_scale ?? 1.0,
+        bluffBonusScale: activeGlobalParams.bluff_bonus_scale ?? 1.0,
     };
 }
 
@@ -593,7 +583,7 @@ function calculateRootMoveBonus(
                 bonus += params.lowCardPenalty * (learning.lowCardAvoidance ?? 1.0);
             }
         } else if (card.rank === 12) {
-            bonus += params.queenFirstRowBonus;
+            bonus += params.queenFirstRowBonus * (learning.queenFirstScale ?? 1.0);
         }
     }
 
@@ -628,7 +618,7 @@ function calculateRootMoveBonus(
     if (tripsRanks.includes(card.rank)) {
         bonus += params.tripsInHandBonus * (learning.tripsInHandFocus ?? 1.0);
     } else if (pairRanks.includes(card.rank)) {
-        bonus += params.pairInHandBonus;
+        bonus += params.pairInHandBonus * (learning.pairInHandScale ?? 1.0);
     }
 
     // Penalize completing columns with weak hands (HighCard, OnePair, plain Straight)
@@ -849,7 +839,7 @@ function shouldHideCard(
         baseProb += 0.6; // Disruption hiding is highly valuable
     }
 
-    baseProb *= (params.bluffBonus / 2);
+    baseProb *= (params.bluffBonus / 2) * (learning.bluffBonusScale ?? 1.0);
 
     const finalProb = Math.min(baseProb * learning.hidingStrategy / 0.3, 1);
     return Math.random() < finalProb;
