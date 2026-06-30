@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v06301200</span>}
+          {showVersion && <span className="version">v06301334</span>}
         </div>
 
         <button
@@ -1854,8 +1854,7 @@ function App() {
                           if (phase === 'ended') returnToLobby();
                           else handleCancelMatchmaking();
                         } else {
-                          // Local mode reset
-                          setMode('online');
+                          // Local mode reset - Keep local mode, just reset phase to setup
                           setPhase('setup');
                         }
                         setShowResultsModal(false);
