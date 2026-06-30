@@ -68,7 +68,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `06291657` (2026-06-29 16:57)
+- **Current Version:** `06301048` (2026-06-30 10:48)
 - **Status:** **Stable**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Working (Preset Ultimate Evolutionary AI)
@@ -83,6 +83,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v06301048** (2026-06-30): **Migration Verification** - Deployed a minor version bump from the new development environment to verify that deployment scripting, credentials, and repository syncing are functioning correctly on the new Mac.
 1. **v06291657** (2026-06-29): **Preset Ultimate Evolutionary AI** - Synchronized the default fallback weights in `ai.ts` and `aiLearning.ts` to match the optimized release state parameters (Pure ratio, Trips concealed, Showdown delays, low card penalties, and defensive focus), ensuring the AI behaves at its absolute maximum evolutionary strength right from launch without waiting for player updates.
 1. **v06291649** (2026-06-29): **12-Parameter Collaborative Strategy AI Upgrade** - Fully integrated all strategic requirements from `strategy.md` and "Pure" vs "Unordered" hand differences into the collective learning loop. (1) Created `supa_schema_v7_ai.sql` mapping 12 distinct parameters. (2) Extended the database schema to track Pure hand preferences, trips in hand concealing, row-3 delay penalties, showdown delay (slow playing), low card avoidance, and turn order selection flexibility. (3) Updated `ai.ts` to scale structural heuristic penalties/bonuses based on dynamic global parameters, achieving true strategy-level evolutionary learning.
 1. **v06291613** (2026-06-29): **Collaborative AI Learning Upgrade** - Built a **Distributed Collaborative Evolutionary AI system** that aggregates training metrics from all players. (1) Created `ai_global_parameters` table in Supabase. (2) Configured the client to fetch latest global AI weights (preferences for Flush/Straight/Trips/Defensiveness) on startup and game start. (3) Programmed the database client to automatically report AI game end outcomes, continuously fine-tuning global AI weights based on collective games played worldwide.
