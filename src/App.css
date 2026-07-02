@@ -909,3 +909,51 @@ body:has(.game-result-overlay) .app-header {
   color: rgba(255,255,255,0.4);
   letter-spacing: 0.3em;
 }
+
+
+/* ======================================================= */
+/* Header Layout Fix for Unified UI (Lobby Overlap Bug)    */
+/* ======================================================= */
+.app-header {
+  position: relative !important;
+  min-height: 52px !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+.header-title-row h1 {
+  font-size: 1.2rem !important;
+  padding: 0 45px !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.btn-fullscreen {
+  position: absolute !important;
+  left: 8px !important;
+  top: 8px !important;
+  width: 32px !important;
+  height: 32px !important;
+  margin: 0 !important;
+}
+
+.auth-status {
+  position: absolute !important;
+  right: 8px !important;
+  top: 8px !important;
+  margin: 0 !important;
+  z-index: 100 !important;
+}
+
+.auth-status button {
+  padding: 4px 8px !important;
+  font-size: 0.65rem !important;
+}
+
+/* User logged-in info text styling to fit mobile container size */
+.auth-status span {
+  font-size: 0.65rem !important;
+}

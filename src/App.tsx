@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07030011</span>}
+          {showVersion && <span className="version">v07030014</span>}
         </div>
 
         <button
@@ -1478,7 +1478,7 @@ function App() {
 
         {/* Auth Button (Top Right) */}
         {!isOnlineGame && phase !== 'playing' && (
-          <div className="auth-status" style={{ position: 'absolute', top: 10, right: 10, zIndex: 50 }}>
+          <div className="auth-status">
             {session ? (
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: '1.2' }}>
