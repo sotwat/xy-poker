@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07030103</span>}
+          {showVersion && <span className="version">v07030107</span>}
         </div>
 
         <button
@@ -1629,14 +1629,8 @@ function App() {
                             </div>
                           </div>
 
-                          {/* Central Character & Interactive Dialog Area */}
+                          {/* Central Character Standee (No speech bubble, fully visible) */}
                           <div className="lobby-character-area">
-                            <div className="speech-bubble">
-                              <div className="speaker-name">Queen of Hearts</div>
-                              <p className="speech-text">
-                                XY Pokerへようこそ。カードとダイスの配置が勝負の鍵よ。まずはAI対戦で腕を磨きなさい。
-                              </p>
-                            </div>
                             <img 
                               src="/assets/images/lobby_character.png" 
                               alt="Queen of Hearts" 
@@ -1644,7 +1638,7 @@ function App() {
                             />
                           </div>
 
-                          {/* Action Panel: Main Quest and Support Battles */}
+                          {/* Action Panel: Main Quest and Support Battles (Clean English, No wrap) */}
                           <div className="lobby-actions-panel">
                             <button 
                               className="quest-btn-primary" 
@@ -1654,14 +1648,14 @@ function App() {
                                 handleStartGame();
                               }}
                             >
-                              <span className="quest-tag">Local Quest</span>
+                              <span className="quest-tag">SINGLE PLAY</span>
                               <span className="quest-title">Local Match (vs AI)</span>
                             </button>
 
                             <div className="sub-battle-actions">
                               <button 
                                 className="quest-btn-secondary" 
-                                style={{ width: '100%' }}
+                                style={{ width: '100%', whiteSpace: 'nowrap' }}
                                 onClick={() => {
                                   playClickSound();
                                   setMode('online');
@@ -1669,16 +1663,16 @@ function App() {
                                   setIsQuickMatch(false);
                                 }}
                               >
-                                ⚔️ Online Multiplayer Room
+                                ⚔️ Online Match
                               </button>
                             </div>
                           </div>
 
-                          {/* Footer Tab Navigation Bar */}
+                          {/* Footer Tab Navigation Bar (All English) */}
                           <div className="lobby-footer-tabs">
                             <button className="tab-item active" onClick={() => playClickSound()}>
                               <span className="tab-icon">🏠</span>
-                              <span className="tab-label">ホーム</span>
+                              <span className="tab-label">Home</span>
                             </button>
                             <button 
                               className="tab-item" 
@@ -1688,7 +1682,7 @@ function App() {
                               }}
                             >
                               <span className="tab-icon">🎨</span>
-                              <span className="tab-label">ショップ</span>
+                              <span className="tab-label">Skins</span>
                             </button>
                             <button 
                               className="tab-item" 
@@ -1698,7 +1692,7 @@ function App() {
                               }}
                             >
                               <span className="tab-icon">📖</span>
-                              <span className="tab-label">ルール</span>
+                              <span className="tab-label">Rules</span>
                             </button>
                             <button 
                               className="tab-item" 
@@ -1708,7 +1702,7 @@ function App() {
                               }}
                             >
                               <span className="tab-icon">📬</span>
-                              <span className="tab-label">報告</span>
+                              <span className="tab-label">Report</span>
                             </button>
                           </div>
                         </div>

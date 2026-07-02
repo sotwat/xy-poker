@@ -971,7 +971,7 @@ body:has(.game-result-overlay) .app-header {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   padding: 8px 16px;
-  margin-top: 50px; /* Leave space for fullscreen/my page absolute header elements */
+  margin-top: 25px; /* Pull header closer to top */
   z-index: 10;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
@@ -1053,12 +1053,13 @@ body:has(.game-result-overlay) .app-header {
 }
 
 .lobby-character-image {
-  height: 380px;
+  height: 440px; /* Scaled up character since bubble is gone */
   object-fit: contain;
   z-index: 2;
   pointer-events: none;
   animation: float-character 6s ease-in-out infinite;
   filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6));
+  margin-top: -10px; /* Reduce extra top spacing */
 }
 
 @keyframes float-character {
