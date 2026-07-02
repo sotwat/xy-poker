@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07030144</span>}
+          {showVersion && <span className="version">v07030148</span>}
         </div>
 
         <button
@@ -1673,7 +1673,7 @@ function App() {
                             </div>
                           </div>
 
-                          {/* Footer Tab Navigation Bar (All English) */}
+                          {/* Footer Tab Navigation Bar (All English - 5 Tabs) */}
                           <div className="lobby-footer-tabs">
                             <button className="tab-item active" onClick={() => playClickSound()}>
                               <span className="tab-icon">🏠</span>
@@ -1698,6 +1698,16 @@ function App() {
                             >
                               <span className="tab-icon">📖</span>
                               <span className="tab-label">Rules</span>
+                            </button>
+                            <button 
+                              className="tab-item" 
+                              onClick={() => {
+                                playClickSound();
+                                setShowMyPage(true);
+                              }}
+                            >
+                              <span className="tab-icon">👤</span>
+                              <span className="tab-label">Profile</span>
                             </button>
                             <button 
                               className="tab-item" 

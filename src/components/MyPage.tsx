@@ -260,24 +260,28 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                     )}
                 </div>
 
-                <div className="mypage-footer" style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '15px', display: 'flex', justifyContent: 'center' }}>
+                <div className="mypage-footer" style={{ marginTop: 'auto', display: 'flex', gap: '10px', width: '100%' }}>
                     <button
+                        className="btn-sign-out"
                         onClick={() => {
                             supabase.auth.signOut();
                             onClose();
                         }}
                         style={{
-                            padding: '8px 16px',
-                            background: '#ff4444',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
+                            flex: 1,
+                            padding: '10px',
+                            background: 'linear-gradient(135deg, #555 0%, #222 100%)',
+                            border: '1px solid rgba(255,255,255,0.15)',
+                            borderRadius: '12px',
+                            color: '#ccc',
+                            fontWeight: 'bold',
                             cursor: 'pointer',
-                            fontSize: '0.9rem'
+                            fontSize: '0.85rem'
                         }}
                     >
                         Sign Out
                     </button>
+                    <button className="btn-close" onClick={onClose} style={{ flex: 1, margin: 0 }}>Close</button>
                 </div>
             </div>
         </div>
