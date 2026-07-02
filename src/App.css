@@ -1239,7 +1239,8 @@ body:has(.game-result-overlay) .app-header {
 
 
 /* Hide the old global app header when displaying the new mobile lobby home */
-.app:has(.lobby-home) .app-header {
+.app:has(.lobby-home) .app-header,
+.app:has(.online-lobby) .app-header {
   display: none !important;
 }
 

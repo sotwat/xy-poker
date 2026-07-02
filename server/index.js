@@ -324,8 +324,27 @@ io.on('connection', (socket) => {
 
     // ... existing action handlers ...
 
+
+// Helper to generate a 4-character random uppercase alphanumeric room ID (avoiding O, 0, I, 1)
+function generateRoomId() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let result = '';
+    for (let i = 0; i < 4; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+function generateUniqueRoomId() {
+    let id;
+    do {
+        id = generateRoomId();
+    } while (rooms[id]);
+    return id;
+}
+
     socket.on('create_room', async ({ playerName, browserId, userId }, callback) => {
-        const roomId = crypto.randomUUID();
+        const roomId = generateUniqueRoomId();
 
         if (userId && (!socket.user || socket.user.id !== userId)) {
             if (callback) callback({ success: false, error: 'Unauthorized' });
@@ -531,7 +550,7 @@ io.on('connection', (socket) => {
     });
 
     function createMatchmakingRoom(socket, playerName, browserId, rating, callback) {
-        const roomId = crypto.randomUUID();
+        const roomId = generateUniqueRoomId();
         rooms[roomId] = {
             players: [{
                 id: socket.id,

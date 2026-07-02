@@ -66,10 +66,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 </div>
             </div>
 
-            {/* Card dealer watermark overlay in background */}
-            <div className="online-lobby-bg-character">
-                <img src="/assets/images/lobby_character.png" alt="Queen of Hearts" />
-            </div>
+
 
             {/* Lobby UI Main content panel */}
             <div className="online-lobby-content glass-panel">
