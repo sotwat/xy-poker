@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07030033</span>}
+          {showVersion && <span className="version">v07030059</span>}
         </div>
 
         <button
@@ -1612,59 +1612,114 @@ function App() {
                         </button>
                       </div>
                     ) : (
-                      <>
-                        <div className="logo-area">
-                          <h1>XY Poker</h1>
-                          <p>Strategic Card & Dice Battle</p>
+                        <div className="lobby-home">
+                          {/* Top Status Panel (Glassmorphic Resource Panel) */}
+                          <div className="lobby-top-bar">
+                            <div className="player-rank-badge">
+                              <span className="rank-label">RANK</span>
+                              <span className="rank-value">{myRating ? Math.floor(myRating / 100) : 15}</span>
+                            </div>
+                            <div className="player-meta-info">
+                              <span className="player-display-name">{playerName || 'Guest'}</span>
+                              <span className="player-display-id">ID: {session?.user?.id?.slice(0, 8) || 'GuestID'}</span>
+                            </div>
+                            <div className="rating-resource-box">
+                              <span className="resource-icon">🏆</span>
+                              <span className="resource-value">{myRating || 1500}</span>
+                            </div>
+                          </div>
+
+                          {/* Central Character & Interactive Dialog Area */}
+                          <div className="lobby-character-area">
+                            <div className="speech-bubble">
+                              <div className="speaker-name">Queen of Hearts</div>
+                              <p className="speech-text">
+                                XY Pokerへようこそ。カードとダイスの配置が勝負の鍵よ。まずはAI対戦で腕を磨きなさい。
+                              </p>
+                            </div>
+                            <img 
+                              src="/assets/images/lobby_character.png" 
+                              alt="Queen of Hearts" 
+                              className="lobby-character-image"
+                            />
+                          </div>
+
+                          {/* Action Panel: Main Quest and Support Battles */}
+                          <div className="lobby-actions-panel">
+                            <button 
+                              className="quest-btn-primary" 
+                              onClick={() => {
+                                setIsAutoPlay(false);
+                                playClickSound();
+                                handleStartGame();
+                              }}
+                            >
+                              <span className="quest-tag">Local Quest</span>
+                              <span className="quest-title">Local Match (vs AI)</span>
+                            </button>
+
+                            <div className="sub-battle-actions">
+                              <button 
+                                className="quest-btn-secondary" 
+                                onClick={() => {
+                                  playClickSound();
+                                  setMode('online');
+                                  setIsOnlineGame(false);
+                                  setIsQuickMatch(false);
+                                }}
+                              >
+                                ⚔️ Online Room
+                              </button>
+                              <button 
+                                className="quest-btn-secondary" 
+                                onClick={() => {
+                                  playClickSound();
+                                  setShowSkinStore(true);
+                                }}
+                              >
+                                🎨 Skin Shop
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Footer Tab Navigation Bar */}
+                          <div className="lobby-footer-tabs">
+                            <button className="tab-item active" onClick={() => playClickSound()}>
+                              <span className="tab-icon">🏠</span>
+                              <span className="tab-label">ホーム</span>
+                            </button>
+                            <button 
+                              className="tab-item" 
+                              onClick={() => {
+                                playClickSound();
+                                setShowSkinStore(true);
+                              }}
+                            >
+                              <span className="tab-icon">🎨</span>
+                              <span className="tab-label">ショップ</span>
+                            </button>
+                            <button 
+                              className="tab-item" 
+                              onClick={() => {
+                                playClickSound();
+                                setShowRules(true);
+                              }}
+                            >
+                              <span className="tab-icon">📖</span>
+                              <span className="tab-label">ルール</span>
+                            </button>
+                            <button 
+                              className="tab-item" 
+                              onClick={() => {
+                                playClickSound();
+                                setShowContactModal(true);
+                              }}
+                            >
+                              <span className="tab-icon">📬</span>
+                              <span className="tab-label">報告</span>
+                            </button>
+                          </div>
                         </div>
-                        <div className="setup-actions">
-                          <button className="btn-primary" onClick={() => {
-                            setIsAutoPlay(false); // Ensure Auto is OFF when manually starting
-                            handleStartGame();
-                          }}>
-                            Start Game
-                          </button>
-                          <button
-                            className="btn-secondary"
-                            style={{ marginTop: '1rem', padding: '8px 16px', fontSize: '0.9rem' }}
-                            onClick={() => { playClickSound(); setShowSkinStore(true); }}
-                          >
-                            🎨 Skin Shop
-                          </button>
-                          <button
-                            className="btn-secondary"
-                            style={{ marginTop: '1rem', marginLeft: '10px', padding: '8px 16px', fontSize: '0.9rem' }}
-                            onClick={() => { playClickSound(); setShowRules(true); }}
-                          >
-                            📖 Rules
-                          </button>
-                          <button
-                            className="btn-secondary"
-                            style={{ marginTop: '1rem', marginLeft: '10px', padding: '8px 16px', fontSize: '0.9rem' }}
-                            onClick={() => { playClickSound(); setShowContactModal(true); }}
-                          >
-                            📬 Report
-                          </button>
-                        </div>
-                        <div className="beta-disclaimer" style={{
-                          marginTop: '2rem',
-                          padding: '12px',
-                          border: '1px solid rgba(255, 204, 0, 0.3)',
-                          borderRadius: '8px',
-                          backgroundColor: 'rgba(255, 204, 0, 0.05)',
-                          color: '#ccc',
-                          fontSize: '0.85rem',
-                          maxWidth: '400px',
-                          textAlign: 'center',
-                          lineHeight: '1.4'
-                        }}>
-                          <strong style={{ color: '#ffcc00', display: 'block', marginBottom: '4px' }}>⚠️ Development Build</strong>
-                          This game is currently in active development.<br />
-                          Please note that data loss or critical bugs may occur.<br />
-                          We recommend playing in <strong>fullscreen mode</strong> for the best experience.<br />
-                          If you encounter any issues, please let us know via the <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => setShowContactModal(true)}>Report form</span>.
-                        </div>
-                      </>
                     )}
                   </div>
                 )}
