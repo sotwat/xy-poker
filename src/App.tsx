@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07030110</span>}
+          {showVersion && <span className="version">v07030115</span>}
         </div>
 
         <button
@@ -1569,8 +1569,11 @@ function App() {
               playerName={playerName}
               onPlayerNameChange={setPlayerName}
               rating={myRating}
-              onShowRules={() => { playClickSound(); setShowRules(true); }}
-              onShowMyPage={() => { playClickSound(); setShowMyPage(true); }}
+              onBack={() => {
+                setMode('local');
+                setIsOnlineGame(false);
+                setIsQuickMatch(false);
+              }}
             />
           ) : (
             <>

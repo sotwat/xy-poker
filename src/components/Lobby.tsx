@@ -13,8 +13,7 @@ interface LobbyProps {
     playerName: string;
     onPlayerNameChange: (name: string) => void;
     rating?: number | null;
-    onShowRules: () => void;
-    onShowMyPage: () => void;
+    onBack?: () => void;
 }
 
 export const Lobby: React.FC<LobbyProps> = ({
@@ -28,19 +27,26 @@ export const Lobby: React.FC<LobbyProps> = ({
     playerName,
     onPlayerNameChange,
     rating,
-    onShowRules,
-    onShowMyPage
+    onBack
 }) => {
     const [joinId, setJoinId] = useState('');
 
     if (!isConnected) {
         return (
-            <div className="lobby-container">
-                <h2>Online Multiplayer</h2>
-                <div className="waiting-room">
-                    <div className="loading-spinner">Connecting to server...</div>
-                    <p style={{ marginTop: '1rem', color: '#888' }}>
-                        Ensure the server is running on port 3001.
+            <div className="lobby-container online-lobby">
+                <div className="lobby-top-bar">
+                    <div className="player-rank-badge">
+                        <span className="rank-label">RANK</span>
+                        <span className="rank-value">??</span>
+                    </div>
+                    <div className="player-meta-info-online">
+                        <span className="player-display-name">Connecting...</span>
+                    </div>
+                </div>
+                <div className="waiting-room glass-panel">
+                    <div className="loading-spinner"></div>
+                    <p style={{ marginTop: '1.5rem', color: '#ff3366', fontWeight: 'bold' }}>
+                        Connecting to game server...
                     </p>
                 </div>
             </div>
@@ -48,80 +54,82 @@ export const Lobby: React.FC<LobbyProps> = ({
     }
 
     return (
-        <div className="lobby-container">
-            <h2>Online Multiplayer</h2>
-
-            {/* Player Name Input */}
-            <div className="name-input-section">
-                <label htmlFor="playerName">Your Name:</label>
-                <input
-                    id="playerName"
-                    type="text"
-                    value={playerName}
-                    onChange={(e) => onPlayerNameChange(e.target.value)}
-                    maxLength={10}
-                    placeholder="Enter your name"
-                />
-                {rating !== null && rating !== undefined && (
-                    <div className="player-rating-display" style={{
-                        marginTop: '8px',
-                        fontSize: '0.9rem',
-                        color: '#ffffff',
-                        fontWeight: 'bold',
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: '4px 12px',
-                        borderRadius: '12px',
-                        display: 'inline-block',
-                        textShadow: 'none'
-                    }}>
-                        Your Rating: <span style={{ fontSize: '1.1rem' }}>{rating}</span>
-                    </div>
-                )}
-            </div>
-
-            <div className="quick-match-section">
-                <button className="btn-primary btn-large" onClick={() => { playClickSound(); onQuickMatch(); }}>
-                    🎲 Quick Match
+        <div className="lobby-container online-lobby">
+            {/* Top Status Bar with back navigation */}
+            <div className="lobby-top-bar-online">
+                <button className="back-btn" onClick={() => { playClickSound(); if (onBack) onBack(); }}>
+                    ← Back
                 </button>
-                <p className="quick-match-hint">Play against a random opponent</p>
+                <div className="player-meta-info-online">
+                    <span className="player-display-name">{playerName || 'Guest'}</span>
+                    <span className="player-rating-badge">🏆 {rating || 1500}</span>
+                </div>
             </div>
 
-            <div className="lobby-helper-actions" style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '1rem' }}>
-                <button className="btn-secondary" onClick={() => { playClickSound(); onShowMyPage(); }}>
-                    👤 My Page
-                </button>
-                <button className="btn-secondary" onClick={() => { playClickSound(); onShowRules(); }}>
-                    📖 Rules
-                </button>
+            {/* Card dealer watermark overlay in background */}
+            <div className="online-lobby-bg-character">
+                <img src="/assets/images/lobby_character.png" alt="Queen of Hearts" />
             </div>
 
-            <div className="divider">
-                <span>OR</span>
-            </div>
+            {/* Lobby UI Main content panel */}
+            <div className="online-lobby-content glass-panel">
+                <h3 className="section-title">Online Multiplayer</h3>
 
-            {
-                !roomId ? (
-                    <div className="lobby-actions">
-                        <div className="action-box">
-                            <h3>Create Room</h3>
-                            <p>Start a new game and invite a friend.</p>
-                            <button className="btn-primary" onClick={() => { playClickSound(); onCreateRoom(); }}>Create Room</button>
+                {/* Edit player name row */}
+                <div className="lobby-field-row">
+                    <label htmlFor="playerName">Name: </label>
+                    <input
+                        id="playerName"
+                        type="text"
+                        value={playerName}
+                        onChange={(e) => onPlayerNameChange(e.target.value)}
+                        maxLength={10}
+                        placeholder="Player Name"
+                    />
+                </div>
+
+                {/* Ranked Match Action Button */}
+                <div className="action-card-primary">
+                    <button 
+                        className="quest-btn-primary" 
+                        onClick={() => { playClickSound(); onQuickMatch(); }}
+                    >
+                        <span className="quest-tag">RANKED BATTLE</span>
+                        <span className="quest-title">Quick Ranked Match</span>
+                    </button>
+                    <p className="hint-text">Find an opponent instantly based on rating.</p>
+                </div>
+
+                <div className="divider-text">
+                    <span>OR CREATE/JOIN PRIVATE ROOM</span>
+                </div>
+
+                {!roomId ? (
+                    <div className="room-actions-grid">
+                        <div className="action-card-secondary">
+                            <h4>Host Room</h4>
+                            <p className="card-desc">Create private room and invite a friend.</p>
+                            <button 
+                                className="quest-btn-secondary" 
+                                onClick={() => { playClickSound(); onCreateRoom(); }}
+                            >
+                                Host Room
+                            </button>
                         </div>
 
-                        <div className="divider">OR</div>
-
-                        <div className="action-box">
-                            <h3>Join Room</h3>
-                            <p>Enter the Room ID to join.</p>
+                        <div className="action-card-secondary">
+                            <h4>Join Room</h4>
+                            <p className="card-desc">Enter 4-character ID</p>
                             <input
                                 type="text"
                                 placeholder="Room ID"
                                 value={joinId}
                                 onChange={(e) => setJoinId(e.target.value)}
                                 maxLength={4}
+                                className="room-id-input"
                             />
                             <button
-                                className="btn-secondary"
+                                className="quest-btn-secondary"
                                 onClick={() => { playClickSound(); onJoinRoom(joinId); }}
                                 disabled={joinId.length !== 4}
                             >
@@ -130,32 +138,32 @@ export const Lobby: React.FC<LobbyProps> = ({
                         </div>
                     </div>
                 ) : (
-                    <div className="waiting-room">
-                        <h3>{playerRole === 'host' ? 'Room Created!' : 'Joined Room!'}</h3>
-                        <div className="room-id-display">
-                            Room ID: <span>{roomId}</span>
+                    <div className="waiting-room-overlay">
+                        <h3>{playerRole === 'host' ? 'Host Room Created!' : 'Room Joined!'}</h3>
+                        <div className="room-id-box">
+                            Room ID: <span className="id-num">{roomId}</span>
                             {playerRole === 'host' && (
                                 <button
-                                    className="btn-icon copy-btn"
+                                    className="copy-id-btn"
                                     onClick={() => {
                                         navigator.clipboard.writeText(roomId);
                                         alert('Room ID copied!');
                                     }}
-                                    title="Copy to Clipboard"
                                 >
-                                    📋
+                                    📋 Copy
                                 </button>
                             )}
                         </div>
-                        <p>{playerRole === 'host' ? 'Share this ID with your friend.' : 'Waiting for game to start...'}</p>
-                        {playerRole === 'host' && <div className="loading-spinner">Waiting for opponent... Game starts automatically.</div>}
-                        {playerRole === 'guest' && <div className="loading-spinner">Connected to Room</div>}
-                        <button className="btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
+                        <p className="room-status-text">
+                            {playerRole === 'host' ? 'Share this ID with a friend' : 'Connected! Waiting for host...'}
+                        </p>
+                        <div className="loading-spinner"></div>
+                        <button className="quest-btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
                             Cancel
                         </button>
                     </div>
-                )
-            }
-        </div >
+                )}
+            </div>
+        </div>
     );
 };

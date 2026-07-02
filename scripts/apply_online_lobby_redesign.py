@@ -1,0 +1,552 @@
+import os
+
+lobby_tsx_path = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/Lobby.tsx'
+lobby_css_path = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/Lobby.css'
+app_tsx_path = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/App.tsx'
+
+# 1. Replace Lobby.tsx content with the premium design matching lobby-home style
+new_lobby_tsx = """import React, { useState } from 'react';
+import { playClickSound } from '../utils/sound';
+import './Lobby.css';
+
+interface LobbyProps {
+    onCreateRoom: () => void;
+    onJoinRoom: (roomId: string) => void;
+    onQuickMatch: () => void;
+    onCancelMatchmaking: () => void;
+    roomId: string | null;
+    isConnected: boolean;
+    playerRole: 'host' | 'guest' | null;
+    playerName: string;
+    onPlayerNameChange: (name: string) => void;
+    rating?: number | null;
+    onShowRules: () => void;
+    onShowMyPage: () => void;
+    onBack?: () => void;
+}
+
+export const Lobby: React.FC<LobbyProps> = ({
+    onCreateRoom,
+    onJoinRoom,
+    onQuickMatch,
+    onCancelMatchmaking,
+    roomId,
+    isConnected,
+    playerRole,
+    playerName,
+    onPlayerNameChange,
+    rating,
+    onShowRules,
+    onShowMyPage,
+    onBack
+}) => {
+    const [joinId, setJoinId] = useState('');
+
+    if (!isConnected) {
+        return (
+            <div className="lobby-container online-lobby">
+                <div className="lobby-top-bar">
+                    <div className="player-rank-badge">
+                        <span className="rank-label">RANK</span>
+                        <span className="rank-value">??</span>
+                    </div>
+                    <div className="player-meta-info-online">
+                        <span className="player-display-name">Connecting...</span>
+                    </div>
+                </div>
+                <div className="waiting-room glass-panel">
+                    <div className="loading-spinner"></div>
+                    <p style={{ marginTop: '1.5rem', color: '#ff3366', fontWeight: 'bold' }}>
+                        Connecting to game server...
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="lobby-container online-lobby">
+            {/* Top Status Bar with back navigation */}
+            <div className="lobby-top-bar-online">
+                <button className="back-btn" onClick={() => { playClickSound(); if (onBack) onBack(); }}>
+                    ← Back
+                </button>
+                <div className="player-meta-info-online">
+                    <span className="player-display-name">{playerName || 'Guest'}</span>
+                    <span className="player-rating-badge">🏆 {rating || 1500}</span>
+                </div>
+            </div>
+
+            {/* Card dealer watermark overlay in background */}
+            <div className="online-lobby-bg-character">
+                <img src="/assets/images/lobby_character.png" alt="Queen of Hearts" />
+            </div>
+
+            {/* Lobby UI Main content panel */}
+            <div className="online-lobby-content glass-panel">
+                <h3 className="section-title">Online Multiplayer</h3>
+
+                {/* Edit player name row */}
+                <div className="lobby-field-row">
+                    <label htmlFor="playerName">Name: </label>
+                    <input
+                        id="playerName"
+                        type="text"
+                        value={playerName}
+                        onChange={(e) => onPlayerNameChange(e.target.value)}
+                        maxLength={10}
+                        placeholder="Player Name"
+                    />
+                </div>
+
+                {/* Ranked Match Action Button */}
+                <div className="action-card-primary">
+                    <button 
+                        className="quest-btn-primary" 
+                        onClick={() => { playClickSound(); onQuickMatch(); }}
+                    >
+                        <span className="quest-tag">RANKED BATTLE</span>
+                        <span className="quest-title">Quick Ranked Match</span>
+                    </button>
+                    <p className="hint-text">Find an opponent instantly based on rating.</p>
+                </div>
+
+                <div className="divider-text">
+                    <span>OR CREATE/JOIN PRIVATE ROOM</span>
+                </div>
+
+                {!roomId ? (
+                    <div className="room-actions-grid">
+                        <div className="action-card-secondary">
+                            <h4>Host Room</h4>
+                            <p className="card-desc">Create private room and invite a friend.</p>
+                            <button 
+                                className="quest-btn-secondary" 
+                                onClick={() => { playClickSound(); onCreateRoom(); }}
+                            >
+                                Host Room
+                            </button>
+                        </div>
+
+                        <div className="action-card-secondary">
+                            <h4>Join Room</h4>
+                            <p className="card-desc">Enter 4-character ID</p>
+                            <input
+                                type="text"
+                                placeholder="Room ID"
+                                value={joinId}
+                                onChange={(e) => setJoinId(e.target.value)}
+                                maxLength={4}
+                                className="room-id-input"
+                            />
+                            <button
+                                className="quest-btn-secondary"
+                                onClick={() => { playClickSound(); onJoinRoom(joinId); }}
+                                disabled={joinId.length !== 4}
+                            >
+                                Join Room
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="waiting-room-overlay">
+                        <h3>{playerRole === 'host' ? 'Host Room Created!' : 'Room Joined!'}</h3>
+                        <div className="room-id-box">
+                            Room ID: <span className="id-num">{roomId}</span>
+                            {playerRole === 'host' && (
+                                <button
+                                    className="copy-id-btn"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(roomId);
+                                        alert('Room ID copied!');
+                                    }}
+                                >
+                                    📋 Copy
+                                </button>
+                            )}
+                        </div>
+                        <p className="room-status-text">
+                            {playerRole === 'host' ? 'Share this ID with a friend' : 'Connected! Waiting for host...'}
+                        </p>
+                        <div className="loading-spinner"></div>
+                        <button className="quest-btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
+                            Cancel
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+"""
+
+with open(lobby_tsx_path, 'w', encoding='utf-8') as file:
+    file.write(new_lobby_tsx)
+print("Success: Lobby.tsx rewritten with premium layout.")
+
+# 2. Overwrite Lobby.css with consistent styles
+new_lobby_css = """/* Premium Lobby Overhaul matching lobby-home theme */
+.lobby-container.online-lobby {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    background: radial-gradient(circle at center, #1b1b2f 0%, #0d0d1a 100%);
+    padding: 8px;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+}
+
+/* Status Top Bar for Online Mode */
+.lobby-top-bar-online {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 8px 16px;
+    margin-top: 25px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #ff3366, #ff0055);
+    border: 1px solid #fff;
+    border-radius: 12px;
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255, 51, 102, 0.4);
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+}
+
+.player-meta-info-online {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.player-meta-info-online .player-display-name {
+    font-size: 0.95rem;
+    color: #fff;
+    font-weight: bold;
+}
+
+.player-rating-badge {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* Watermark Background Character */
+.online-lobby-bg-character {
+    position: absolute;
+    bottom: -40px;
+    right: -60px;
+    width: 280px;
+    height: auto;
+    opacity: 0.12;
+    z-index: 1;
+    pointer-events: none;
+    animation: float-character-subtle 8s ease-in-out infinite;
+}
+
+.online-lobby-bg-character img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+@keyframes float-character-subtle {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(0.3deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Glass panel container for lobby content */
+.online-lobby-content {
+    flex: 1;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 16px;
+    z-index: 2;
+    overflow-y: auto;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05), 0 10px 25px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #ff3366;
+    letter-spacing: 0.05em;
+    margin: 0;
+    text-transform: uppercase;
+    border-bottom: 2px solid rgba(255, 51, 102, 0.2);
+    padding-bottom: 6px;
+    text-align: left;
+}
+
+/* Edit name row styling */
+.lobby-field-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lobby-field-row label {
+    font-size: 0.8rem;
+    color: #aaa;
+    font-weight: bold;
+}
+
+.lobby-field-row input {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.lobby-field-row input:focus {
+    outline: none;
+    border-color: #ff3366;
+}
+
+/* Cards & Buttons styling matching the tilted style */
+.action-card-primary {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hint-text {
+    font-size: 0.7rem;
+    color: #888;
+    margin: 0;
+    padding-left: 4px;
+    text-align: left;
+}
+
+.divider-text {
+    display: flex;
+    align-items: center;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 800;
+    margin: 4px 0;
+}
+
+.divider-text::before,
+.divider-text::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.divider-text span {
+    padding: 0 8px;
+}
+
+/* Room actions grid layout */
+.room-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.action-card-secondary {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.action-card-secondary h4 {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #fff;
+    font-weight: bold;
+    text-align: left;
+}
+
+.card-desc {
+    font-size: 0.65rem;
+    color: #888;
+    margin: 0;
+    text-align: left;
+    min-height: 28px;
+}
+
+.room-id-input {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.8rem;
+    padding: 6px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.room-id-input:focus {
+    outline: none;
+    border-color: #ff3366;
+}
+
+/* Waiting Room Overlay styling */
+.waiting-room-overlay {
+    background: rgba(0,0,0,0.5);
+    border: 2px solid #ff3366;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.room-id-box {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffd700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.id-num {
+    font-size: 1.8rem;
+    color: #ff3366;
+    letter-spacing: 0.05em;
+    background: rgba(0,0,0,0.5);
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.copy-id-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: #fff;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.room-status-text {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin: 0;
+}
+
+.quest-btn-cancel {
+    background: linear-gradient(135deg, #333 0%, #111 100%);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    color: #ff4d4d;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 8px;
+    width: 100%;
+    cursor: pointer;
+}
+"""
+
+with open(lobby_css_path, 'w', encoding='utf-8') as file:
+    file.write(new_lobby_css)
+print("Success: Lobby.css rewritten with premium style sheet.")
+
+# 3. Modify App.tsx where <Lobby /> is instantiated, adding the back button (onBack) handler
+with open(app_tsx_path, 'r', encoding='utf-8') as file:
+    content_app = file.read()
+
+old_lobby_instantiation = """            <Lobby
+              onCreateRoom={handleCreateRoom}
+              onJoinRoom={handleJoinRoom}
+              onQuickMatch={handleQuickMatch}
+              onCancelMatchmaking={handleCancelMatchmaking}
+              roomId={roomId}
+              isConnected={isConnected}
+              playerRole={playerRole}
+              playerName={playerName}
+              onPlayerNameChange={setPlayerName}
+              rating={myRating}
+              onShowRules={() => { playClickSound(); setShowRules(true); }}
+              onShowMyPage={() => { playClickSound(); setShowMyPage(true); }}
+            />"""
+
+new_lobby_instantiation = """            <Lobby
+              onCreateRoom={handleCreateRoom}
+              onJoinRoom={handleJoinRoom}
+              onQuickMatch={handleQuickMatch}
+              onCancelMatchmaking={handleCancelMatchmaking}
+              roomId={roomId}
+              isConnected={isConnected}
+              playerRole={playerRole}
+              playerName={playerName}
+              onPlayerNameChange={setPlayerName}
+              rating={myRating}
+              onShowRules={() => { playClickSound(); setShowRules(true); }}
+              onShowMyPage={() => { playClickSound(); setShowMyPage(true); }}
+              onBack={() => {
+                setMode('local');
+                setIsOnlineGame(false);
+                setIsQuickMatch(false);
+              }}
+            />"""
+
+if old_lobby_instantiation in content_app:
+    content_app = content_app.replace(old_lobby_instantiation, new_lobby_instantiation)
+    with open(app_tsx_path, 'w', encoding='utf-8') as file:
+        file.write(content_app)
+    print("Success: Added onBack prop handler in App.tsx.")
+else:
+    # Try normalized spacing
+    content_app_norm = content_app.replace('\r\n', '\n')
+    old_lobby_instantiation_norm = old_lobby_instantiation.replace('\r\n', '\n')
+    new_lobby_instantiation_norm = new_lobby_instantiation.replace('\r\n', '\n')
+    if old_lobby_instantiation_norm in content_app_norm:
+        content_app_norm = content_app_norm.replace(old_lobby_instantiation_norm, new_lobby_instantiation_norm)
+        with open(app_tsx_path, 'w', encoding='utf-8') as file:
+            file.write(content_app_norm)
+        print("Success: Added onBack prop handler in App.tsx (normalized).")
+    else:
+        print("Warning: Could not find Lobby component instantiation in App.tsx.")
