@@ -172,6 +172,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                         </div>
                     </section>
                 </div>
+                <button className="rules-close-btn" onClick={onClose}>Close</button>
             </div>
         </div >
     );
