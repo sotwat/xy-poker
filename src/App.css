@@ -1,10 +1,23 @@
+body {
+    background: linear-gradient(135deg, #1f4068, #162447, #1b1b2f);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    margin: 0;
+}
+
 .app {
-  text-align: center;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    height: 100dvh;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background: #121212;
 }
 
 /* Juice: Screen Shake */
@@ -272,12 +285,12 @@ body:has(.game-result-overlay) .app-header {
   display: block;
 }
 
-@media (max-width: 900px) {
+/* removed media query border */
   .instruction {
     width: 100%;
     text-align: center;
   }
-}
+/* removed media query border */
 
 .setup-screen {
   display: flex;
@@ -290,7 +303,7 @@ body:has(.game-result-overlay) .app-header {
 /* Mobile Optimization: Fit to Screen */
 /* Mobile Optimization: Fit to Screen */
 /* Mobile Optimization: Fit to Screen */
-@media (max-width: 900px) {
+/* removed media query border */
   .app {
     height: 100dvh;
     /* Force full viewport height */
@@ -411,7 +424,7 @@ body:has(.game-result-overlay) .app-header {
   .app-header.battle-mode {
     display: none !important;
   }
-}
+/* removed media query border */
 
 .waiting-message {
   display: flex;
@@ -497,7 +510,7 @@ body:has(.game-result-overlay) .app-header {
   font-size: 1rem;
 }
 
-@media (max-width: 900px) {
+/* removed media query border */
   .auth-status {
     top: 2px;
     right: 2px;
@@ -514,7 +527,7 @@ body:has(.game-result-overlay) .app-header {
     /* Constrain width to force stacked look if possible/needed */
     text-align: center;
   }
-}
+/* removed media query border */
 
 
 /* Ad Banner Container */
