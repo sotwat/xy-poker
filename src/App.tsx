@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07030059</span>}
+          {showVersion && <span className="version">v07030103</span>}
         </div>
 
         <button
@@ -1661,6 +1661,7 @@ function App() {
                             <div className="sub-battle-actions">
                               <button 
                                 className="quest-btn-secondary" 
+                                style={{ width: '100%' }}
                                 onClick={() => {
                                   playClickSound();
                                   setMode('online');
@@ -1668,16 +1669,7 @@ function App() {
                                   setIsQuickMatch(false);
                                 }}
                               >
-                                ⚔️ Online Room
-                              </button>
-                              <button 
-                                className="quest-btn-secondary" 
-                                onClick={() => {
-                                  playClickSound();
-                                  setShowSkinStore(true);
-                                }}
-                              >
-                                🎨 Skin Shop
+                                ⚔️ Online Multiplayer Room
                               </button>
                             </div>
                           </div>

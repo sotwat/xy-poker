@@ -1235,3 +1235,16 @@ body:has(.game-result-overlay) .app-header {
   transform: scale(1.1);
   text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
 }
+
+
+/* Hide the old global app header when displaying the new mobile lobby home */
+.app:has(.lobby-home) .app-header {
+  display: none !important;
+}
+
+/* Adjust layout when only 1 sub-action button is present */
+.lobby-home .sub-battle-actions {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
