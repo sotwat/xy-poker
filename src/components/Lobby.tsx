@@ -104,13 +104,13 @@ export const Lobby: React.FC<LobbyProps> = ({
                 {!roomId ? (
                     <div className="room-actions-grid">
                         <div className="action-card-secondary">
-                            <h4>Host Room</h4>
-                            <p className="card-desc">Create private room and invite a friend.</p>
+                            <h4>Create Room</h4>
+                            <p className="card-desc">Create a private room and invite a friend.</p>
                             <button 
                                 className="quest-btn-secondary" 
                                 onClick={() => { playClickSound(); onCreateRoom(); }}
                             >
-                                Host Room
+                                Create Room
                             </button>
                         </div>
 
