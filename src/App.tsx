@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07030139</span>}
+          {showVersion && <span className="version">v07030144</span>}
         </div>
 
         <button
@@ -1539,6 +1539,8 @@ function App() {
           opponentName={opponentName}
           onSurrender={handleSurrender}
           isPremium={isPremium}
+          isAutoPlay={isAutoPlay}
+          onToggleAuto={() => setIsAutoPlay(!isAutoPlay)}
         />
       )}
 
@@ -1834,26 +1836,7 @@ function App() {
                       {/* Check if it is valid for ME to see controls (My turn or Auto is on?) */}
                       {/* Actually, show Auto toggle always? Or only during my turn? */}
                       {/* Better always visible in footer if playing */}
-                      {isPremium && (
-                        <div style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}>
-                          <button
-                            className={`btn-secondary ${isAutoPlay ? 'active-auto' : ''}`}
-                            style={{
-                              padding: '5px 10px',
-                              fontSize: '0.8rem',
-                              background: isAutoPlay ? '#e91e63' : '#666',
-                              color: 'white',
-                              border: isAutoPlay ? '2px solid white' : 'none'
-                            }}
-                            onClick={() => {
-                              playClickSound();
-                              setIsAutoPlay(!isAutoPlay);
-                            }}
-                          >
-                            <span style={{ marginLeft: '4px' }}>Auto: {isAutoPlay ? 'ON' : 'OFF'}</span>
-                          </button>
-                        </div>
-                      )}
+
                     </>
                   )}
 

@@ -44,7 +44,7 @@
         padding: 4px;
         gap: 4px;
         /* Slightly increased gap for better touch targets */
-        height: 50px;
+        min-height: 23cqw !important;
         /* Reduced height to make hand smaller */
         min-height: 0;
         /* Override min-height */

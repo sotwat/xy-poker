@@ -12,6 +12,8 @@ interface GameInfoProps {
     opponentName?: string;
     onSurrender?: () => void;
     isPremium?: boolean; // Prop named isPremium to match App.tsx usage
+    isAutoPlay?: boolean;
+    onToggleAuto?: () => void;
 }
 
 export const GameInfo: React.FC<GameInfoProps> = ({
@@ -21,7 +23,9 @@ export const GameInfo: React.FC<GameInfoProps> = ({
     playerName = 'Player 1',
     opponentName = 'Player 2',
     onSurrender,
-    isPremium = false
+    isPremium = false,
+    isAutoPlay = false,
+    onToggleAuto
 }) => {
     const { phase, currentPlayerIndex, players, winner } = gameState; // Added turnCount/deck if needed or just use what's there
 
@@ -46,6 +50,27 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                             <div className="turn-indicator your-turn">
                                 YOUR TURN
                             </div>
+                            {isPremium && onToggleAuto && (
+                                <button
+                                    className={`auto-toggle-btn ${isAutoPlay ? 'active' : ''}`}
+                                    onClick={onToggleAuto}
+                                    style={{
+                                        marginRight: '8px',
+                                        padding: '4px 10px',
+                                        fontSize: '0.75rem',
+                                        borderRadius: '8px',
+                                        background: isAutoPlay ? '#ff3366' : '#555',
+                                        color: '#fff',
+                                        border: isAutoPlay ? '1px solid #fff' : 'none',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        boxShadow: isAutoPlay ? '0 0 8px rgba(255, 51, 102, 0.4)' : 'none',
+                                        transition: 'all 0.2s'
+                                    }}
+                                >
+                                    AUTO: {isAutoPlay ? 'ON' : 'OFF'}
+                                </button>
+                            )}
                             {onSurrender && (
                                 <button className="surrender-btn" onClick={onSurrender}>
                                     Cancel

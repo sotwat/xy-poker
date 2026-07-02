@@ -1,7 +1,7 @@
 .board {
     display: flex;
-  gap: 2.5cqw;
-  padding: 3cqw;
+  gap: 2cqw !important;
+  padding: 2cqw !important;
     background: #f0f2f5;
     border-radius: 12px;
     justify-content: center;
@@ -27,12 +27,12 @@
 .card-slots {
     display: flex;
     flex-direction: column;
-  gap: 1.5cqw;
+  gap: 1cqw !important;
 }
 
 .card-slot {
-  width: 12.5cqw;
-  height: 18.75cqw;
+  width: 11cqw !important;
+  height: 16.5cqw !important;
     border: 2px dashed #ccc;
     border-radius: 8px;
     display: flex;
