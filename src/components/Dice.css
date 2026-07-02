@@ -1,5 +1,5 @@
 .dice {
-    font-size: 10px;
+    font-size: 2.1cqw;
     /* Base size for scale factor 1 */
     width: 4em;
     height: 4em;
@@ -13,17 +13,17 @@
 }
 
 .dice.small {
-    font-size: 7px;
+    font-size: 1.45cqw;
     /* ~28px */
 }
 
 .dice.medium {
-    font-size: 10px;
+    font-size: 2.1cqw;
     /* 40px */
 }
 
 .dice.large {
-    font-size: 20px;
+    font-size: 4.2cqw;
     /* 80px */
 }
 
