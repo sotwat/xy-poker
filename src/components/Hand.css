@@ -44,10 +44,8 @@
         padding: 4px;
         gap: 4px;
         /* Slightly increased gap for better touch targets */
-        min-height: 23cqw !important;
+        min-height: 125px !important;
         /* Reduced height to make hand smaller */
-        min-height: 0;
-        /* Override min-height */
         overflow-x: auto;
         /* Allow scrolling if too many cards */
         justify-content: center;
@@ -77,17 +75,6 @@
         /* Standard poker ratio */
         min-width: 0;
         /* Allow shrinking if needed */
-    }
-
-    /* Further reduce font size for cards in hand */
-    .hand .card .card-top,
-    .hand .card .card-bottom {
-        font-size: 7px;
-        line-height: 0.9;
-    }
-
-    .hand .card .card-center {
-        font-size: 12px;
     }
 
     /* Disable hover and selection animations to prevent layout shifts */

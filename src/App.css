@@ -10,7 +10,7 @@ body {
 }
 
 .app {
-  container-type: inline-size;
+  container-type: size;
   flex-shrink: 0; /* Prevent flex container from collapsing width to 0 */
   text-align: center;
   min-height: 100vh;
@@ -317,7 +317,7 @@ body:has(.game-result-overlay) .app-header {
 /* Mobile Optimization: Fit to Screen */
 @media (max-width: 9999px) {
 .app {
-  container-type: inline-size;
+  container-type: size;
   flex-shrink: 0;
   width: 100vw;
   max-width: 480px;
