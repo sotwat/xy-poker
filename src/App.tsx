@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07081737</span>}
+          {showVersion && <span className="version">v07081740</span>}
         </div>
 
         <button
@@ -1625,7 +1625,12 @@ function App() {
                               <span className="rating-value">{myRating || 1500}</span>
                             </div>
                             <div className="player-meta-info" style={{ marginLeft: '12px', flex: 1, textAlign: 'left' }}>
-                              <span className="player-display-name">{playerName || 'Guest'}</span>
+                              <span className="player-display-name">
+                                {playerName || 'Guest'}
+                                <span className="lobby-version-badge" style={{ marginLeft: '6px', fontSize: '0.62rem', background: 'rgba(255,255,255,0.15)', padding: '2px 5px', borderRadius: '4px', color: '#ccc', fontWeight: 'normal', verticalAlign: 'middle', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                  v07081740
+                                </span>
+                              </span>
                               <span className="player-display-id">ID: {session?.user?.id?.slice(0, 8) || 'GuestID'}</span>
                             </div>
                           </div>
