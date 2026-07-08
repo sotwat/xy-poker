@@ -78,10 +78,10 @@
 
 /* Card Slot sizes (Max-height locked dynamically to viewport height) */
 .card-slot {
-    width: clamp(48px, 10.2cqw, 64px) !important;
+    width: clamp(52px, 11cqw, 68px) !important;
     aspect-ratio: 5 / 7 !important;
     height: auto !important;
-    max-height: 64px !important;
+    max-height: 68px !important;
     border: 2px dashed rgba(255, 255, 255, 0.3) !important;
     border-radius: 6px !important;
     display: flex !important;
@@ -110,7 +110,7 @@
 }
 
 .dice-row .dice {
-    font-size: 2.55cqw !important;
+    font-size: 2.7cqw !important;
 }
 
 .opponent-slot .card {
