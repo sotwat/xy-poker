@@ -1,4 +1,12 @@
+import os
 
+shared_board_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/SharedBoard.css'
+board_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/Board.css'
+app_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/App.css'
+
+# 1. Update SharedBoard.css to optimal stretch scale: slots to 12.2cqw, column gap 10px, scale 0.94, translateY -8px
+# This maximizes the board width and height to fit perfectly, stopping right at the edge of the controls panel.
+optimal_stretch_shared_board_css = """
 /* ========================================================================= */
 /* Contained Unified SharedBoard Styling (Restored Skins & Optimal Fit)       */
 /* ========================================================================= */
@@ -135,3 +143,29 @@
     background: #210a04 !important;
     border: 3px solid #3d1308 !important;
 }
+"""
+
+with open(shared_board_css, 'w', encoding='utf-8') as file:
+    file.write(optimal_stretch_shared_board_css)
+print("Success: Updated SharedBoard.css with optimal stretch scale.")
+
+# 2. Update Board.css slots to strictly be 12.2cqw width
+with open(board_css, 'r', encoding='utf-8') as file:
+    content_board = file.read()
+
+content_board = content_board.replace("width: 10cqw !important;", "width: 12.2cqw !important;")
+content_board = content_board.replace("height: 15cqw !important;", "height: 18.3cqw !important;")
+
+with open(board_css, 'w', encoding='utf-8') as file:
+    file.write(content_board)
+print("Success: Updated Board.css slot sizes to 12.2cqw.")
+
+# 3. Update App.css: Set play-area padding-bottom to 14px to maximize stretch space while maintaining strict clearance
+with open(app_css, 'r', encoding='utf-8') as file:
+    content_app = file.read()
+
+content_app = content_app.replace("padding-bottom: 25px !important; /* Inject 25px safe buffer zone at bottom of board */", "padding-bottom: 12px !important; /* 12px tight safe buffer zone */")
+
+with open(app_css, 'w', encoding='utf-8') as file:
+    file.write(content_app)
+print("Success: Adjusted padding buffer in App.css.")

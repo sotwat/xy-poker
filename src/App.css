@@ -1566,7 +1566,7 @@ body:has(.game-result-overlay) .app-header {
 
 /* Board and Hand overlap prevention */
 .play-area {
-  padding-bottom: 25px !important; /* Inject 25px safe buffer zone at bottom of board */
+  padding-bottom: 12px !important; /* 12px tight safe buffer zone */
   box-sizing: border-box !important;
 }
 .controls {
