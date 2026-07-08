@@ -5,13 +5,14 @@
 
 .shared-board {
     display: flex !important;
-    gap: 8px !important;
-    padding: 10px !important;
+    gap: clamp(10px, 2cqw, 18px) !important;
+    padding: clamp(12px, 2.2cqw, 20px) !important;
+    width: min(100%, 1000px) !important;
     border-radius: 12px !important;
     justify-content: center !important;
     align-items: center !important;
     /* Strictly lock the board height to 45% of the screen height to prevent any overlap */
-    max-height: 52cqh !important;
+    max-height: none !important;
     transform: none !important; /* Keep large scale but let flex containment scale height */
     transform-origin: center center !important;
     position: relative !important;
@@ -22,10 +23,12 @@
 .shared-column {
     display: flex !important;
     flex-direction: column !important;
-    gap: 3px !important; /* Compresses vertical spacing between elements */
+    gap: 6px !important;
     align-items: center !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
     height: 100% !important;
-    justify-content: space-between !important;
+    justify-content: center !important;
 }
 
 .shared-column.interactive:hover .player-slots {
@@ -75,9 +78,10 @@
 
 /* Card Slot sizes (Max-height locked dynamically to viewport height) */
 .card-slot {
-    width: 12.2cqw !important;
-    height: 18.3cqw !important;
-    max-height: 6.8cqh !important; /* Strict height lock based on screen height percentage */
+    width: 17.5cqw !important;
+    aspect-ratio: 5 / 7 !important;
+    height: auto !important;
+    max-height: none !important;
     border: 2px dashed rgba(255, 255, 255, 0.3) !important;
     border-radius: 6px !important;
     display: flex !important;
@@ -98,11 +102,15 @@
 }
 
 .dice-row {
-    padding: 2px !important;
+    padding: 4px !important;
     margin: 2px 0 !important;
     background: rgba(255, 255, 255, 0.15) !important;
     border-radius: 50% !important;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dice-row .dice {
+    font-size: 2.8cqw !important;
 }
 
 .opponent-slot .card {
