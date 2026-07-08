@@ -242,15 +242,15 @@
         /* Remove gap */
         padding: 0;
         /* Remove padding */
-        transform: scale(0.76) translateY(-22px) !important; /* Strictly scale down to 76% and lift up by 22px to clear controls */
+        transform: scale(0.70) translateY(-32px) !important; /* Scale board down to 70% and lift up by 32px to guarantee no overlap */
         transform-origin: center center;
         position: relative;
         z-index: 100;
     }
 
     .card-slot {
-        width: 8.4cqw !important;
-        height: 12.6cqw !important;
+        width: 7.8cqw !important;
+        height: 11.7cqw !important;
         border-width: 1px !important;
         border-radius: 6px !important;
     }

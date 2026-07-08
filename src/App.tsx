@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07081740</span>}
+          {showVersion && <span className="version">v07081744</span>}
         </div>
 
         <button
@@ -1628,7 +1628,7 @@ function App() {
                               <span className="player-display-name">
                                 {playerName || 'Guest'}
                                 <span className="lobby-version-badge" style={{ marginLeft: '6px', fontSize: '0.62rem', background: 'rgba(255,255,255,0.15)', padding: '2px 5px', borderRadius: '4px', color: '#ccc', fontWeight: 'normal', verticalAlign: 'middle', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                  v07081740
+                                  v07081744
                                 </span>
                               </span>
                               <span className="player-display-id">ID: {session?.user?.id?.slice(0, 8) || 'GuestID'}</span>
@@ -1825,23 +1825,25 @@ function App() {
                           isCurrentPlayer={phase === 'playing' ? (currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)) : false}
                         />
                       </div>
-                      {/* Only show action controls during my turn in playing phase */}
-                      {phase === 'playing' && currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0) && (
-                        <div className="action-bar">
+                      {/* Always render the action controls during playing phase to prevent layout height shifting */}
+                      {phase === 'playing' && (
+                        <div className="action-bar" style={{ minHeight: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                           <div className="place-controls">
-                            <div className="toggle-hidden">
+                            <div className="toggle-hidden" style={{ opacity: (currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)) ? 1 : 0.5, pointerEvents: (currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)) ? 'auto' : 'none', transition: 'opacity 0.2s' }}>
                               <input
                                 type="checkbox"
                                 checked={placeHidden}
                                 onChange={(e) => setPlaceHidden(e.target.checked)}
-                                disabled={!selectedCardId || currentPlayer.hiddenCardsCount >= 3}
-                                style={{ margin: 0, padding: 0 }}
+                                disabled={
+                                  currentPlayerIndex !== (isOnlineGame && playerRole === 'guest' ? 1 : 0) ||
+                                  !selectedCardId || 
+                                  currentPlayer.hiddenCardsCount >= 3
+                                }
                               />
-                              <span style={{}}>Face Down ({3 - currentPlayer.hiddenCardsCount} left)</span>
+                              <span style={{ marginLeft: '4px' }}>Face Down ({3 - currentPlayer.hiddenCardsCount} left)</span>
                             </div>
                           </div>
                         </div>
-
                       )}
 
                       {/* Check if it is valid for ME to see controls (My turn or Auto is on?) */}
