@@ -9,6 +9,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 4px;
+  overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s;
@@ -228,8 +229,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 12px;
+  font-size: clamp(8px, 1.1cqw, 11px);
   line-height: 1;
+  min-width: 0;
 }
 
 .card-bottom {
@@ -237,12 +239,28 @@
 }
 
 .card-center {
-  font-size: 24px;
+  font-size: clamp(14px, 2.3cqw, 22px);
   text-align: center;
   flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 0;
+  line-height: 1;
+}
+
+.card .rank,
+.card .suit {
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.card .rank {
+  font-size: inherit;
+}
+
+.card .suit {
+  font-size: inherit;
 }
 
 @media (max-width: 600px) {
