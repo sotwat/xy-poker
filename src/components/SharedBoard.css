@@ -10,7 +10,7 @@
     border-radius: 12px !important;
     justify-content: center !important;
     align-items: center !important;
-    transform: scale(0.94) translateY(-8px) !important; /* Maximized scale, shifted slightly up to clear controls */
+    transform: scale(0.88) translateY(-12px) !important; /* Mathematically calculated optimal limit to clear hand controls exactly */
     transform-origin: center center !important;
     position: relative !important;
     z-index: 100 !important;
