@@ -1,7 +1,7 @@
 .shared-board {
     display: flex;
-    gap: 16px;
-    padding: 20px;
+    gap: 8px !important;
+    padding: 8px !important;
     background: #f0f2f5;
     border-radius: 12px;
     justify-content: center;
@@ -242,18 +242,17 @@
         /* Remove gap */
         padding: 0;
         /* Remove padding */
-        transform: scale(0.95) translateY(0px) !important; /* Prevent board pushing down into hand */
+        transform: scale(0.9) translateY(0px) !important; /* Scale board down to 90% */ /* Prevent board pushing down into hand */
         transform-origin: center center;
         position: relative;
         z-index: 100;
     }
 
     .card-slot {
-        width: 45px;
-        height: 63px;
-        /* Fixed height (5/7 ratio) */
-        border-width: 1px;
-        border-radius: 4px;
+        width: 9.2cqw !important;
+        height: 13.8cqw !important;
+        border-width: 1px !important;
+        border-radius: 6px !important;
     }
 
     /* Force card to fill the slot */

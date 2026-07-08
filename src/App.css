@@ -1575,3 +1575,45 @@ body:has(.game-result-overlay) .app-header {
   z-index: 100 !important;
   box-shadow: 0 -5px 15px rgba(0,0,0,0.3) !important;
 }
+
+/* --- Strict Battle Layout Containment and Theme Integration --- */
+.controls {
+  background: rgba(15, 15, 27, 0.98) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  flex-shrink: 0 !important;
+  z-index: 150 !important;
+}
+
+.hand {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 12px !important;
+  min-height: 20cqw !important;
+  padding: 4px !important;
+}
+
+.toggle-hidden {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  padding: 5px 10px !important;
+}
+
+.game-board {
+  overflow: hidden !important; /* Strictly lock board area inside its flex cell */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.play-area {
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+}
