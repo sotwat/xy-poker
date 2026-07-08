@@ -1532,3 +1532,34 @@ body:has(.game-result-overlay) .app-header {
 .hand-card-wrapper {
   margin: 0 1px !important;
 }
+
+/* Rating Badge (Replaces Rank Badge) */
+.player-rating-badge {
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  border: 2px solid #fff;
+  border-radius: 12px;
+  min-width: 60px;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
+.rating-label {
+  font-size: 0.55rem;
+  color: #111;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.rating-value {
+  font-size: 0.95rem;
+  color: #111;
+  font-weight: 900;
+  line-height: 1.1;
+}

@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07030148</span>}
+          {showVersion && <span className="version">v07081713</span>}
         </div>
 
         <button
@@ -1618,19 +1618,15 @@ function App() {
                       </div>
                     ) : (
                         <div className="lobby-home">
-                          {/* Top Status Panel (Glassmorphic Resource Panel) */}
+                          {/* Top Status Panel (Glassmorphic Resource Panel - Rating Focus) */}
                           <div className="lobby-top-bar">
-                            <div className="player-rank-badge">
-                              <span className="rank-label">RANK</span>
-                              <span className="rank-value">{myRating ? Math.floor(myRating / 100) : 15}</span>
+                            <div className="player-rating-badge">
+                              <span className="rating-label">RATE</span>
+                              <span className="rating-value">{myRating || 1500}</span>
                             </div>
-                            <div className="player-meta-info">
+                            <div className="player-meta-info" style={{ marginLeft: '12px', flex: 1, textAlign: 'left' }}>
                               <span className="player-display-name">{playerName || 'Guest'}</span>
                               <span className="player-display-id">ID: {session?.user?.id?.slice(0, 8) || 'GuestID'}</span>
-                            </div>
-                            <div className="rating-resource-box">
-                              <span className="resource-icon">🏆</span>
-                              <span className="resource-value">{myRating || 1500}</span>
                             </div>
                           </div>
 
