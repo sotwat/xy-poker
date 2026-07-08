@@ -6,12 +6,12 @@
 .shared-board {
     display: flex !important;
     gap: clamp(10px, 2cqw, 18px) !important;
-    padding: clamp(12px, 2.2cqw, 20px) !important;
+    padding: clamp(13px, 2.4cqw, 22px) !important;
     width: min(100%, 1000px) !important;
     border-radius: 12px !important;
     justify-content: center !important;
     align-items: center !important;
-    max-height: 52cqh !important;
+    max-height: 54cqh !important;
     overflow: hidden !important;
     transform: none !important; /* Keep large scale but let flex containment scale height */
     transform-origin: center center !important;
@@ -23,7 +23,7 @@
 .shared-column {
     display: flex !important;
     flex-direction: column !important;
-    gap: 5px !important;
+    gap: 6px !important;
     align-items: center !important;
     flex: 1 1 0 !important;
     min-width: 0 !important;
@@ -78,10 +78,10 @@
 
 /* Card Slot sizes (Max-height locked dynamically to viewport height) */
 .card-slot {
-    width: clamp(52px, 11cqw, 68px) !important;
+    width: clamp(56px, 11.8cqw, 74px) !important;
     aspect-ratio: 5 / 7 !important;
     height: auto !important;
-    max-height: 68px !important;
+    max-height: 74px !important;
     border: 2px dashed rgba(255, 255, 255, 0.3) !important;
     border-radius: 6px !important;
     display: flex !important;
@@ -94,6 +94,9 @@
 .card-slot .card {
     width: 100% !important;
     height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .empty-slot {
@@ -102,7 +105,7 @@
 }
 
 .dice-row {
-    padding: 3px !important;
+    padding: 4px !important;
     margin: 2px 0 !important;
     background: rgba(255, 255, 255, 0.15) !important;
     border-radius: 50% !important;
@@ -110,7 +113,7 @@
 }
 
 .dice-row .dice {
-    font-size: 2.7cqw !important;
+    font-size: 3cqw !important;
 }
 
 .opponent-slot .card {
