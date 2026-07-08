@@ -1563,3 +1563,15 @@ body:has(.game-result-overlay) .app-header {
   font-weight: 900;
   line-height: 1.1;
 }
+
+/* Board and Hand overlap prevention */
+.play-area {
+  padding-bottom: 5px !important;
+  box-sizing: border-box !important;
+}
+.controls {
+  margin-top: auto !important; /* Push it strictly down */
+  position: relative !important;
+  z-index: 100 !important;
+  box-shadow: 0 -5px 15px rgba(0,0,0,0.3) !important;
+}

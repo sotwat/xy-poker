@@ -1,4 +1,11 @@
+import os
 
+popup_css_path = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/ShowdownPopup.css'
+shared_board_css_path = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/SharedBoard.css'
+app_css_path = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/App.css'
+
+# 1. Rebuild ShowdownPopup.css: Restore all color/neon glow styling while locking dimensions inside 480px app container.
+rich_contained_popup_css = """
 /* ========================================================================= */
 /* Contained Premium Showdown Popup (Restored Rich Neons & Metalglow)         */
 /* ========================================================================= */
@@ -236,3 +243,53 @@
     max-width: 90% !important;
     object-fit: contain !important;
 }
+"""
+
+with open(popup_css_path, 'w', encoding='utf-8') as file:
+    file.write(rich_contained_popup_css)
+print("Success: Restored rich color/neon glows to ShowdownPopup.css and kept container locking.")
+
+# 2. Modify SharedBoard.css: Prevent scale(1.25) on mobile which pushes the board into the hand/controls
+with open(shared_board_css_path, 'r', encoding='utf-8') as file:
+    content_board = file.read()
+
+# Replace the scale(1.25) translateY(10px) with scale(0.95) to prevent overlapping
+old_scale_block = "transform: scale(1.25) translateY(10px);"
+new_scale_block = "transform: scale(0.95) translateY(0px) !important; /* Prevent board pushing down into hand */"
+
+if old_scale_block in content_board:
+    content_board = content_board.replace(old_scale_block, new_scale_block)
+    with open(shared_board_css_path, 'w', encoding='utf-8') as file:
+        file.write(content_board)
+    print("Success: Prevented scale expansion on SharedBoard.css.")
+else:
+    print("Warning: Scale target not found in SharedBoard.css.")
+
+# 3. Modify App.css: Add safe separation margin to controls and compress play-area gap
+with open(app_css_path, 'r', encoding='utf-8') as file:
+    content_app_css = file.read()
+
+# Make play-area gap smaller to keep elements inside screen bounds
+content_app_css = content_app_css.replace("gap: 1.5vh;", "gap: 0.5vh !important;")
+
+# Append additional safe separation CSS rules
+overlap_prevention_styles = """
+/* Board and Hand overlap prevention */
+.play-area {
+  padding-bottom: 5px !important;
+  box-sizing: border-box !important;
+}
+.controls {
+  margin-top: auto !important; /* Push it strictly down */
+  position: relative !important;
+  z-index: 100 !important;
+  box-shadow: 0 -5px 15px rgba(0,0,0,0.3) !important;
+}
+"""
+
+if "overlap prevention" not in content_app_css:
+    with open(app_css_path, 'a', encoding='utf-8') as file:
+        file.write(overlap_prevention_styles)
+    print("Success: Appended overlap prevention styling to App.css.")
+else:
+    print("Warning: Overlap styles already in App.css.")

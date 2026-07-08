@@ -242,7 +242,7 @@
         /* Remove gap */
         padding: 0;
         /* Remove padding */
-        transform: scale(1.25) translateY(10px);
+        transform: scale(0.95) translateY(0px) !important; /* Prevent board pushing down into hand */
         transform-origin: center center;
         position: relative;
         z-index: 100;
