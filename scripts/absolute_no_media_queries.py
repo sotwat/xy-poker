@@ -1,4 +1,12 @@
+import os
 
+shared_board_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/SharedBoard.css'
+board_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/Board.css'
+
+# The ultimate complete overhaul of SharedBoard.css
+# This completely obliterates window-width media queries (which bypass the 480px app container check)
+# and enforces a flat, strict, scaled down mobile-first canvas design everywhere.
+ultimate_shared_board_css = """
 /* ========================================================================= */
 /* Contained Unified SharedBoard Styling (No Window Media Queries)           */
 /* ========================================================================= */
@@ -131,3 +139,19 @@
 .board-theme-crimson {
     background: #210a04 !important;
 }
+"""
+
+with open(shared_board_css, 'w', encoding='utf-8') as file:
+    file.write(ultimate_shared_board_css)
+print("Success: Rewrote SharedBoard.css entirely without media queries.")
+
+# 2. Overwrite Board.css slots to strictly be 7.6cqw
+with open(board_css, 'r', encoding='utf-8') as file:
+    content_board = file.read()
+
+content_board = content_board.replace("width: 8.4cqw !important;", "width: 7.6cqw !important;")
+content_board = content_board.replace("height: 12.6cqw !important;", "height: 11.4cqw !important;")
+
+with open(board_css, 'w', encoding='utf-8') as file:
+    file.write(content_board)
+print("Success: Updated Board.css slot sizes.")
