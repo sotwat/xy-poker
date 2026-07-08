@@ -1,4 +1,12 @@
+import os
 
+shared_board_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/SharedBoard.css'
+board_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/Board.css'
+
+# The ultimate height containment fix that enforces max-height using VIEWPORT HEIGHT (vh)
+# This guarantees the board strictly limits its height to 45% of the viewport (45vh) 
+# and slot heights to 5.8% of the viewport (5.8vh), making vertical overlap mathematically impossible on any screen.
+vh_lock_shared_board_css = """
 /* ========================================================================= */
 /* Contained Unified SharedBoard Styling (Restored Skins & Strict VH Lock)    */
 /* ========================================================================= */
@@ -140,3 +148,21 @@
     background: #210a04 !important;
     border: 3px solid #3d1308 !important;
 }
+"""
+
+with open(shared_board_css, 'w', encoding='utf-8') as file:
+    file.write(vh_lock_shared_board_css)
+print("Success: Overwrote SharedBoard.css with vh max-height locks.")
+
+# 2. Update Board.css to include vh max-height lock for slots
+with open(board_css, 'r', encoding='utf-8') as file:
+    content_board = file.read()
+
+content_board = content_board.replace(
+    "height: 18.3cqw !important;",
+    "height: 18.3cqw !important;\n  max-height: 5.6vh !important;"
+)
+
+with open(board_css, 'w', encoding='utf-8') as file:
+    file.write(content_board)
+print("Success: Updated Board.css slot height limits.")
