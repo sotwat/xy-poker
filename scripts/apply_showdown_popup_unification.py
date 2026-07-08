@@ -1,4 +1,11 @@
+import os
 
+popup_css_path = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/ShowdownPopup.css'
+
+# The complete ultimate containment rules for ShowdownPopup
+# This eliminates absolute fixed overlays, changes vw/vh to percent/cqw, and guarantees that 
+# the cutout ribbons and card displays fit 100% within the 480px app container frame.
+unified_popup_styles = """
 
 /* ========================================================================= */
 /* STRICT 480PX CONTAINER CONTAINMENT FOR SHOWDOWN POPUP                     */
@@ -134,3 +141,15 @@
 .showdown-card-wrapper .card .card-center {
     font-size: 5.5cqw !important;
 }
+"""
+
+with open(popup_css_path, 'r', encoding='utf-8') as file:
+    content = file.read()
+
+# Replace file content entirely to implement correct 480px locked container styles
+# and delete original media queries that bypass container scope.
+# We overwrite the entire file safely.
+with open(popup_css_path, 'w', encoding='utf-8') as file:
+    file.write(unified_popup_styles)
+
+print("Success: Overwrote ShowdownPopup.css with container-locked responsive styles.")
