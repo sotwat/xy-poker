@@ -1,4 +1,11 @@
+import os
 
+shared_board_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/SharedBoard.css'
+board_css = '/Users/watanabesotaro/Documents/antigravity/xy-poker/src/components/Board.css'
+
+# The final ultimate correction of SharedBoard.css
+# This restores the original green felt and skins backgrounds, and sets the optimal scale of 0.92, translateY(-14px) and card slots of 10cqw
+optimal_shared_board_css = """
 /* ========================================================================= */
 /* Contained Unified SharedBoard Styling (Restored Skins & Optimal Fit)       */
 /* ========================================================================= */
@@ -135,3 +142,19 @@
     background: #210a04 !important;
     border: 3px solid #3d1308 !important;
 }
+"""
+
+with open(shared_board_css, 'w', encoding='utf-8') as file:
+    file.write(optimal_shared_board_css)
+print("Success: Rewrote SharedBoard.css with optimal scaling and restored skins.")
+
+# 2. Overwrite Board.css slots to strictly be 10cqw width
+with open(board_css, 'r', encoding='utf-8') as file:
+    content_board = file.read()
+
+content_board = content_board.replace("width: 7.8cqw !important;", "width: 10cqw !important;")
+content_board = content_board.replace("height: 11.7cqw !important;", "height: 15cqw !important;")
+
+with open(board_css, 'w', encoding='utf-8') as file:
+    file.write(content_board)
+print("Success: Updated Board.css slot sizes to 10cqw.")
