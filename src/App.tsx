@@ -1465,7 +1465,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07081713</span>}
+          {showVersion && <span className="version">v07081721</span>}
         </div>
 
         <button
@@ -1874,26 +1874,7 @@ function App() {
                     </div>
                   )}
 
-                  {phase === 'ended' && showResultsModal && (
-                    <GameResult
-                      gameState={gameState}
-                      p1Name={p1DisplayName}
-                      p2Name={p2DisplayName}
-                      ratingUpdates={ratingUpdates}
-                      onRestart={handleRestart}
-                      onViewBoard={() => setShowResultsModal(false)}
-                      onClose={() => {
-                        if (isOnlineGame) {
-                          if (phase === 'ended') returnToLobby();
-                          else handleCancelMatchmaking();
-                        } else {
-                          // Local mode reset - Keep local mode, just reset phase to setup
-                          setPhase('setup');
-                        }
-                        setShowResultsModal(false);
-                      }}
-                    />
-                  )}
+
                 </footer>
               )}
             </>
@@ -1968,6 +1949,26 @@ function App() {
           localStorage.setItem('xypoker_playerName_v2', newName);
         }}
       />
+      {phase === 'ended' && showResultsModal && (
+        <GameResult
+          gameState={gameState}
+          p1Name={p1DisplayName}
+          p2Name={p2DisplayName}
+          ratingUpdates={ratingUpdates}
+          onRestart={handleRestart}
+          onViewBoard={() => setShowResultsModal(false)}
+          onClose={() => {
+            if (isOnlineGame) {
+              if (phase === 'ended') returnToLobby();
+              else handleCancelMatchmaking();
+            } else {
+              setPhase('setup');
+            }
+            setShowResultsModal(false);
+          }}
+        />
+      )}
+
       <SkinStore
         isOpen={showSkinStore}
         onClose={() => setShowSkinStore(false)}
