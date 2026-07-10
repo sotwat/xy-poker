@@ -20,10 +20,10 @@ export interface AiParams {
 export const DEFAULT_AI_PARAMS: AiParams = {
     tripsInHandBonus: 99,
     pairInHandBonus: 12,
-    lowCardPenalty: -2,
-    queenFirstRowBonus: 2,
-    showdownDelayPenalty: 10,
-    row3DelayPenalty: 131,
+    lowCardPenalty: -650,
+    queenFirstRowBonus: 220,
+    showdownDelayPenalty: 450,
+    row3DelayPenalty: 600,
     bluffBonus: 2,
     mcSimulations: 20,
     turnOrderBaseFirstValue: 0,
@@ -138,7 +138,7 @@ export function getBestMove(
     params: AiParams = DEFAULT_AI_PARAMS
 ): { cardId: string; colIndex: number; isHidden: boolean } {
     const startTime = Date.now();
-    const TIMEOUT_MS = 150; // Strict 150ms budget for thinking to prevent browser lag
+    const TIMEOUT_MS = 400; // Expanded to 400ms to allow deeper ExpectiMax search (depth 3-4)
 
     const player = gameState.players[playerIndex];
     const opponent = gameState.players[1 - playerIndex];
@@ -593,7 +593,7 @@ function calculateRootMoveBonus(
     if (colDice <= 3) {
         const rushPriority = (4 - colDice);           // dice=1→3, dice=2→2, dice=3→1
         const slotProgress = (emptySlotIdx + 1);      // 1st card→1, 2nd→2, 3rd(completing)→3
-        bonus += rushPriority * slotProgress * 12 * (learning.trashBinRushScale ?? 1.0);
+        bonus += rushPriority * slotProgress * 120 * (learning.trashBinRushScale ?? 1.0);
     }
 
     // Apply low_card_avoidance to low card penalties
@@ -673,6 +673,31 @@ function calculateRootMoveBonus(
         } else if (projectedResult.rankValue === 3) {
             // Plain Straight (non-pure)
             bonus -= 200 * diceScale * avoidScale;
+        }
+    }
+
+    // Dead Column Cut-loss logic (strategy.md §7)
+    // If opponent has already secured a strong hand in this column that we cannot beat,
+    // immediately discourage placing high-value cards, and encourage dumping low-value cards.
+    if (oppCards.length === 3) {
+        const oppRes = evaluateYHand(oppCol.filter(c => c !== null) as Card[], colDice);
+        const myPotentialCol = [...myCol];
+        const emptySlot = myPotentialCol.indexOf(null);
+        if (emptySlot !== -1) {
+            myPotentialCol[emptySlot] = card;
+        }
+        const filledCol = myPotentialCol.map(c => c === null ? card : c) as Card[];
+        const maxProjectedRes = evaluateYHand(filledCol, colDice);
+
+        if (maxProjectedRes.rankValue < oppRes.rankValue) {
+            // We are mathematically dead in this Y-column!
+            if (card.rank >= 11) {
+                // Penalize placing J, Q, K, A on a dead column
+                bonus -= 500 * (colDice / 6);
+            } else if (card.rank <= 6) {
+                // Reward dumping 2, 3, 4, 5, 6 as trash/fillers
+                bonus += 150;
+            }
         }
     }
 
