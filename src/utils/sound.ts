@@ -333,3 +333,26 @@ export const initSpeech = () => {
         console.warn('Speech init failed:', e);
     }
 };
+
+export const playTickSound = () => {
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(900, now);
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+    osc.connect(gain).connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.04);
+  } catch (error) {
+    console.warn('Audio playback not supported:', error);
+  }
+};
+

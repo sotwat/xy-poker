@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { GameState, Card } from '../logic/types';
 import { evaluateYHand, evaluateXHand } from '../logic/evaluation';
 import { calculateXHandScores } from '../logic/scoring';
-import { playClickSound } from '../utils/sound';
+import { playClickSound, playTickSound } from '../utils/sound';
 import './GameResult.css';
 
 interface GameResultProps {
@@ -27,11 +27,64 @@ export const GameResult: React.FC<GameResultProps> = ({
     p2Name = 'Player 2',
     ratingUpdates
 }) => {
-    // ... (existing helper logic same as before) ...
     const { players, winner } = gameState;
     const p1 = players[0];
     const p2 = players[1];
     const dice = players[0].dice;
+
+    const [p1DisplayScore, setP1DisplayScore] = useState(0);
+    const [p2DisplayScore, setP2DisplayScore] = useState(0);
+
+    useEffect(() => {
+        const duration = 800; // ms
+        const startTime = performance.now();
+        let lastPlayedTime = 0;
+        let animationFrameId: number;
+
+        const animate = (currentTime: number) => {
+            const elapsedTime = currentTime - startTime;
+            const progress = Math.min(elapsedTime / duration, 1);
+
+            const nextP1 = Math.floor(progress * p1.score);
+            const nextP2 = Math.floor(progress * p2.score);
+
+            let didScoreChange = false;
+
+            setP1DisplayScore(prevP1 => {
+                if (nextP1 !== prevP1) {
+                    didScoreChange = true;
+                }
+                return nextP1;
+            });
+
+            setP2DisplayScore(prevP2 => {
+                if (nextP2 !== prevP2) {
+                    didScoreChange = true;
+                }
+                return nextP2;
+            });
+
+            // Prevent audio clutter by playing sound only once per ~30ms if score changes
+            if (didScoreChange && currentTime - lastPlayedTime > 30) {
+                playTickSound();
+                lastPlayedTime = currentTime;
+            }
+
+            if (progress < 1) {
+                animationFrameId = requestAnimationFrame(animate);
+            } else {
+                setP1DisplayScore(p1.score);
+                setP2DisplayScore(p2.score);
+            }
+        };
+
+        animationFrameId = requestAnimationFrame(animate);
+
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, [p1.score, p2.score]);
+
 
     // Helper to get readable hand name
     const getHandName = (type: string) => {
@@ -126,7 +179,7 @@ export const GameResult: React.FC<GameResultProps> = ({
                 <div className="final-scores">
                     <div className={`score-box p1 ${winner === 'p1' ? 'winner-box' : ''}`}>
                         <h3>{p1Name}</h3>
-                        <div className="score-val">{p1.score}</div>
+                        <div className="score-val">{p1DisplayScore}</div>
                         <div className="bonus-val">Bonuses: {p1.bonusesClaimed}</div>
                         {ratingUpdates && ratingUpdates.p1 && (
                             <div className="rating-update">
@@ -142,7 +195,7 @@ export const GameResult: React.FC<GameResultProps> = ({
                     </div>
                     <div className={`score-box p2 ${winner === 'p2' ? 'winner-box' : ''}`}>
                         <h3>{p2Name}</h3>
-                        <div className="score-val">{p2.score}</div>
+                        <div className="score-val">{p2DisplayScore}</div>
                         <div className="bonus-val">Bonuses: {p2.bonusesClaimed}</div>
                         {ratingUpdates && ratingUpdates.p2 && (
                             <div className="rating-update">
