@@ -11,7 +11,7 @@
     border-radius: 12px !important;
     justify-content: center !important;
     align-items: center !important;
-    max-height: 65cqh !important;
+    max-height: 70cqh !important;
     overflow: hidden !important;
     transform: none !important; /* Keep large scale but let flex containment scale height */
     transform-origin: center center !important;
@@ -76,12 +76,12 @@
     }
 }
 
-/* Card Slot sizes (Max-height locked dynamically to container height) */
+/* Card Slot sizes (Height-driven to strictly enforce aspect-ratio 5/7 matching hand cards) */
 .card-slot {
-    width: clamp(60px, 12.6cqw, 80px) !important;
-    aspect-ratio: 5 / 7 !important;
-    height: auto !important;
-    max-height: 7.7cqh !important; /* Viewport height safe lock */
+    height: 8.4cqh !important; /* Base height on container query height */
+    aspect-ratio: 5 / 7 !important; /* Force exact standard poker card ratio */
+    width: auto !important; /* Width calculated automatically from height */
+    max-width: 100% !important; /* Prevent accidental horizontal clipping */
     border: 2px dashed rgba(255, 255, 255, 0.3) !important;
     border-radius: 6px !important;
     display: flex !important;

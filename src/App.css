@@ -683,6 +683,7 @@ body:has(.game-result-overlay) .app-header {
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.3s ease;
+  border-radius: 50% !important;
 }
 
 /* During animation: spin coin on Y axis */
