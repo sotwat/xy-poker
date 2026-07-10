@@ -753,21 +753,21 @@ body:has(.game-result-overlay) .app-header {
 
 /* 3D spin keyframes: blue 1080deg, red 900deg */
 @keyframes coin-spin-blue {
-  0% { transform: rotateY(0deg) translateY(0) scale(1); }
-  25% { transform: rotateY(360deg) translateY(-40px) scale(1.15); }
-  50% { transform: rotateY(720deg) translateY(-55px) scale(1.2); }
-  75% { transform: rotateY(900deg) translateY(0) scale(1); }
-  88% { transform: rotateY(1000deg) translateY(-10px) scale(1.03); }
-  100% { transform: rotateY(1080deg) translateY(0) scale(1); }
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(1080deg);
+  }
 }
 
 @keyframes coin-spin-red {
-  0% { transform: rotateY(0deg) translateY(0) scale(1); }
-  25% { transform: rotateY(270deg) translateY(-40px) scale(1.15); }
-  50% { transform: rotateY(540deg) translateY(-55px) scale(1.2); }
-  75% { transform: rotateY(720deg) translateY(0) scale(1); }
-  88% { transform: rotateY(810deg) translateY(-10px) scale(1.03); }
-  100% { transform: rotateY(900deg) translateY(0) scale(1); }
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(900deg);
+  }
 }
 
 @keyframes coin-glow-spin {

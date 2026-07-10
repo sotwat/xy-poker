@@ -366,3 +366,18 @@
 .card.xs .card-center {
   font-size: 12px;
 }
+
+/* Extra accessibility sizes for hand cards to make ranks and suits extremely readable */
+.hand .card {
+  padding: clamp(6px, 1.2cqh, 10px) !important;
+}
+
+.hand .card .card-top,
+.hand .card .card-bottom {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+
+.hand .card .card-center {
+  font-size: 32px !important;
+}

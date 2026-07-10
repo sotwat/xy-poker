@@ -11,7 +11,7 @@
     border-radius: 12px !important;
     justify-content: center !important;
     align-items: center !important;
-    max-height: 56cqh !important;
+    max-height: 60cqh !important;
     overflow: hidden !important;
     transform: none !important; /* Keep large scale but let flex containment scale height */
     transform-origin: center center !important;
@@ -81,7 +81,7 @@
     width: clamp(60px, 12.6cqw, 80px) !important;
     aspect-ratio: 5 / 7 !important;
     height: auto !important;
-    max-height: 6.2cqh !important; /* Viewport height safe lock */
+    max-height: 6.9cqh !important; /* Viewport height safe lock */
     border: 2px dashed rgba(255, 255, 255, 0.3) !important;
     border-radius: 6px !important;
     display: flex !important;
