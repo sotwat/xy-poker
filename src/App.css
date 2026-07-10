@@ -722,12 +722,12 @@ body:has(.game-result-overlay) .app-header {
   top: 50%;
   left: 50%;
   background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
-  border: 6px solid #1e40af;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow:
-     0 10px 30px rgba(0, 0, 0, 0.4),
-    inset 0 2px 5px rgba(255, 255, 255, 0.5),
-    inset 0 -2px 5px rgba(0, 0, 0, 0.3),
-    inset -30px -30px 60px rgba(0, 0, 0, 0.2);
+     0 8px 24px rgba(0, 0, 0, 0.35),
+    inset 0 2px 5px rgba(255, 255, 255, 0.4),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.2),
+    inset 0 0 10px rgba(30, 64, 175, 0.5); /* Outer edge simulation */
   transform: translate(-50%, -50%) translateZ(8px);
   backface-visibility: hidden;
 }
@@ -741,12 +741,12 @@ body:has(.game-result-overlay) .app-header {
   top: 50%;
   left: 50%;
   background: radial-gradient(circle at 30% 30%, #f87171, #dc2626);
-  border: 6px solid #991b1b;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow:
-     0 10px 30px rgba(0, 0, 0, 0.4),
-    inset 0 2px 5px rgba(255, 255, 255, 0.5),
-    inset 0 -2px 5px rgba(0, 0, 0, 0.3),
-    inset -30px -30px 60px rgba(0, 0, 0, 0.2);
+     0 8px 24px rgba(0, 0, 0, 0.35),
+    inset 0 2px 5px rgba(255, 255, 255, 0.4),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.2),
+    inset 0 0 10px rgba(153, 27, 27, 0.5);
   transform: translate(-50%, -50%) rotateY(180deg) translateZ(-8px);
   backface-visibility: hidden;
 }
