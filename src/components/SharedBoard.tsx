@@ -113,10 +113,14 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         const isTopXWinner = xWinner === topPlayerId && isRowVisible;
         const isBottomXWinner = xWinner === bottomPlayerId && isRowVisible;
 
+        const isColWonP1 = winner === 'p1' && isColVisible;
+        const isColWonP2 = winner === 'p2' && isColVisible;
+        const colWinningClass = isColWonP1 ? 'winning-column-p1' : (isColWonP2 ? 'winning-column-p2' : '');
+
         return (
             <div
                 key={colIndex}
-                className={`shared-column ${isCurrentPlayer ? 'interactive' : ''}`}
+                className={`shared-column ${isCurrentPlayer ? 'interactive' : ''} ${colWinningClass}`}
             >
                 {/* Opponent Side (Top) */}
                 <div className="opponent-slots">
