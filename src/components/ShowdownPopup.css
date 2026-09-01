@@ -2,6 +2,9 @@
     --showdown-accent: #f4f6f8;
     --showdown-accent-soft: rgb(244 246 248 / 24%);
     --showdown-accent-faint: rgb(244 246 248 / 8%);
+    --showdown-winner: #f4f6f8;
+    --showdown-winner-soft: rgb(244 246 248 / 24%);
+    --showdown-winner-faint: rgb(244 246 248 / 8%);
 
     position: absolute;
     inset: 0;
@@ -23,24 +26,37 @@
     --showdown-accent: #63a2ff;
     --showdown-accent-soft: rgb(79 140 255 / 34%);
     --showdown-accent-faint: rgb(79 140 255 / 11%);
+    --showdown-winner: #63a2ff;
+    --showdown-winner-soft: rgb(79 140 255 / 34%);
+    --showdown-winner-faint: rgb(79 140 255 / 11%);
 }
 
 .showdown-popup-overlay.showdown-p2 {
     --showdown-accent: #ff6673;
     --showdown-accent-soft: rgb(240 97 109 / 34%);
     --showdown-accent-faint: rgb(240 97 109 / 11%);
+    --showdown-winner: #ff6673;
+    --showdown-winner-soft: rgb(240 97 109 / 34%);
+    --showdown-winner-faint: rgb(240 97 109 / 11%);
 }
 
 .showdown-popup-overlay.showdown-draw {
     --showdown-accent: #b5bfcc;
     --showdown-accent-soft: rgb(181 191 204 / 25%);
     --showdown-accent-faint: rgb(181 191 204 / 9%);
+    --showdown-winner: #b5bfcc;
+    --showdown-winner-soft: rgb(181 191 204 / 25%);
+    --showdown-winner-faint: rgb(181 191 204 / 9%);
 }
 
 .showdown-popup-overlay.showdown-x-hand {
     --showdown-accent: #ffd76a;
     --showdown-accent-soft: rgb(255 199 74 / 38%);
     --showdown-accent-faint: rgb(255 199 74 / 12%);
+    background:
+        radial-gradient(circle at 18% 48%, var(--showdown-winner-soft), transparent 38%),
+        radial-gradient(circle at 82% 48%, var(--showdown-accent-soft), transparent 38%),
+        linear-gradient(115deg, rgb(3 5 9 / 98%), rgb(10 14 22 / 96%) 55%, rgb(2 4 8 / 98%));
 }
 
 .showdown-flash,
@@ -315,6 +331,67 @@
     opacity: 0;
     transform: translateY(10px) scale(0.9);
     animation: showdown-winner-in 380ms ease-out 1080ms both;
+}
+
+/* The final X-hand keeps its gold identity while the winner color remains unmistakable. */
+.showdown-x-hand .showdown-flash {
+    background:
+        radial-gradient(circle at 43% 50%, rgb(255 255 255 / 90%) 0 2%, var(--showdown-winner-soft) 9%, transparent 38%),
+        radial-gradient(circle at 57% 50%, var(--showdown-accent-soft), transparent 42%);
+}
+
+.showdown-x-hand .panel-back {
+    border-top-color: var(--showdown-winner);
+    border-bottom-color: var(--showdown-accent);
+    background: linear-gradient(100deg, var(--showdown-winner-faint), rgb(8 12 19 / 78%) 50%, var(--showdown-accent-faint));
+}
+
+.showdown-x-hand .panel-front {
+    background:
+        linear-gradient(100deg, transparent 3%, var(--showdown-winner-faint) 22%, rgb(8 12 19 / 92%) 50%, var(--showdown-accent-faint) 82%, transparent 97%);
+}
+
+.showdown-x-hand .showdown-impact-label {
+    text-shadow:
+        -12px 0 22px var(--showdown-winner-soft),
+        12px 0 22px var(--showdown-accent-soft);
+}
+
+.showdown-x-hand .showdown-streak:nth-child(odd) {
+    background: linear-gradient(90deg, transparent, var(--showdown-winner), transparent);
+}
+
+.showdown-x-hand .showdown-shard:nth-child(odd) {
+    background: var(--showdown-winner);
+    box-shadow: 0 0 8px var(--showdown-winner);
+}
+
+.showdown-x-hand .showdown-context-rule:first-child {
+    background: linear-gradient(90deg, transparent, var(--showdown-winner));
+}
+
+.showdown-x-hand .showdown-card-wrapper::after {
+    border-color: var(--showdown-winner);
+    box-shadow:
+        0 0 12px var(--showdown-winner-soft),
+        0 0 20px var(--showdown-accent-faint);
+}
+
+.showdown-x-hand .showdown-title-cut {
+    border-top-color: var(--showdown-winner);
+    border-bottom-color: var(--showdown-accent);
+    background:
+        linear-gradient(100deg, var(--showdown-winner-faint), transparent 38% 62%, var(--showdown-accent-faint)),
+        rgb(5 8 13 / 90%);
+    box-shadow:
+        inset 8px 0 0 var(--showdown-winner-soft),
+        inset -8px 0 0 var(--showdown-accent-soft);
+}
+
+.showdown-x-hand .popup-winner {
+    border-color: var(--showdown-winner);
+    background: linear-gradient(90deg, var(--showdown-winner-soft), rgb(4 7 12 / 90%));
+    box-shadow: 0 0 14px var(--showdown-winner-soft);
 }
 
 @keyframes showdown-overlay-in {
