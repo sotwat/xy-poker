@@ -12,6 +12,8 @@ export interface GtoPolicyWeights {
     firstBias: number;
     /** 0 preserves A1; 1 enables full-board dice-regime adaptation. */
     boardAdaptation?: number;
+    /** Values an ordered straight by strength per scarce rank, not rank alone. */
+    pureStraightEfficiency?: number;
 }
 
 /** The original policy-space equilibrium retained as a reproducible baseline. */
@@ -25,12 +27,27 @@ export const XY_GTO_A1: Readonly<GtoPolicyWeights> = Object.freeze({
     concealment: 0.25,
     firstBias: -0.55,
     boardAdaptation: 0,
+    pureStraightEfficiency: 0,
 });
 
 /** Regime-aware policy. Re-solved and validated by scripts/solve_gto.ts. */
 export const XY_GTO_A2: Readonly<GtoPolicyWeights> = Object.freeze({
     ...XY_GTO_A1,
     boardAdaptation: 1,
+});
+
+/** Hand-efficiency policy. A2 remains frozen as the pre-efficiency baseline. */
+export const XY_GTO_A3: Readonly<GtoPolicyWeights> = Object.freeze({
+    yWeight: 0.979517,
+    xWeight: 0.897687,
+    tempoWeight: 0.259471,
+    diceWeight: 0.499791,
+    flexibilityWeight: 2.5,
+    row3Delay: 3,
+    concealment: 0.364231,
+    firstBias: -0.344567,
+    boardAdaptation: 0.751132,
+    pureStraightEfficiency: 5,
 });
 
 export interface DiceBoardMetrics {
@@ -48,6 +65,18 @@ const Y_STRAIGHT_WINDOWS: Rank[][] = [
     [14, 2, 3],
     ...Array.from({ length: 11 }, (_, index) => [index + 2, index + 3, index + 4] as Rank[]),
 ];
+const PURE_STRAIGHT_SEQUENCES: Rank[][] = [
+    [14, 2, 3],
+    [3, 2, 14],
+    ...Array.from({ length: 11 }, (_, index) => {
+        const low = index + 2;
+        return [low, low + 1, low + 2] as Rank[];
+    }),
+    ...Array.from({ length: 11 }, (_, index) => {
+        const high = index + 4;
+        return [high, high - 1, high - 2] as Rank[];
+    }),
+];
 const X_STRAIGHT_WINDOWS: Rank[][] = [
     [14, 2, 3, 4, 5],
     ...Array.from({ length: 9 }, (_, index) => (
@@ -57,6 +86,104 @@ const X_STRAIGHT_WINDOWS: Rank[][] = [
 
 function clamp(value: number, minimum: number, maximum: number): number {
     return Math.max(minimum, Math.min(maximum, value));
+}
+
+function effectiveBoardAdaptation(weights: Readonly<GtoPolicyWeights>): number {
+    const configured = clamp(weights.boardAdaptation ?? 0, 0, 1.5);
+    const handEfficiencyFloor = clamp(weights.pureStraightEfficiency ?? 0, 0, 1);
+    return Math.max(configured, handEfficiencyFloor);
+}
+
+export interface PureStraightPlan {
+    viableSequences: number;
+    bestHeldSuffix: number;
+    completionOuts: number;
+    completionHeld: boolean;
+    secured: boolean;
+    completed: boolean;
+    value: number;
+}
+
+function handCanSupplyRanks(hand: Card[], ranks: Rank[]): boolean {
+    const counts = new Map<Rank, number>();
+    for (const card of hand) counts.set(card.rank, (counts.get(card.rank) ?? 0) + 1);
+    for (const rank of ranks) {
+        const remaining = counts.get(rank) ?? 0;
+        if (remaining === 0) return false;
+        counts.set(rank, remaining - 1);
+    }
+    return true;
+}
+
+/**
+ * Measures the actionable value of a positional three-card straight. A pure
+ * straight needs one rank out of four suits after an ordered two-card prefix;
+ * a three of a kind needs one of only two remaining cards. Cards already held
+ * are treated as secured resources rather than probabilistic outs.
+ */
+export function analyzePureStraightPlan(columnCards: Card[], hand: Card[]): PureStraightPlan {
+    if (columnCards.length >= 3) {
+        const type = evaluateYHand(columnCards.slice(0, 3), 1).type;
+        const completed = type === 'PureStraight' || type === 'PureStraightFlush';
+        return {
+            viableSequences: completed ? 1 : 0,
+            bestHeldSuffix: 0,
+            completionOuts: 0,
+            completionHeld: false,
+            secured: completed,
+            completed,
+            value: completed ? 1 : 0,
+        };
+    }
+
+    const prefix = columnCards.map(card => card.rank);
+    const viable = PURE_STRAIGHT_SEQUENCES.filter(sequence => (
+        prefix.every((rank, index) => sequence[index] === rank)
+    ));
+    if (viable.length === 0) {
+        return {
+            viableSequences: 0,
+            bestHeldSuffix: 0,
+            completionOuts: 0,
+            completionHeld: false,
+            secured: false,
+            completed: false,
+            value: 0,
+        };
+    }
+
+    let bestHeldSuffix = 0;
+    let secured = false;
+    for (const sequence of viable) {
+        const suffix = sequence.slice(prefix.length);
+        let heldPrefix = 0;
+        for (let length = 1; length <= suffix.length; length++) {
+            if (handCanSupplyRanks(hand, suffix.slice(0, length))) heldPrefix = length;
+            else break;
+        }
+        bestHeldSuffix = Math.max(bestHeldSuffix, heldPrefix);
+        if (handCanSupplyRanks(hand, suffix)) secured = true;
+    }
+
+    const completionHeld = columnCards.length === 2 && bestHeldSuffix === 1;
+    const completionOuts = columnCards.length === 2 ? 4 : 0;
+    const value = columnCards.length === 2
+        ? (completionHeld ? 1.35 : 0.42)
+        : secured
+            ? 1
+            : bestHeldSuffix >= 1
+                ? 0.5
+                : 0.02 + Math.min(2, viable.length) * 0.01;
+
+    return {
+        viableSequences: viable.length,
+        bestHeldSuffix,
+        completionOuts,
+        completionHeld,
+        secured,
+        completed: false,
+        value,
+    };
 }
 
 /**
@@ -175,13 +302,13 @@ function compareCompletedY(ownCards: Card[], opponentCards: Card[]): number {
     return 0;
 }
 
-export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A2): number {
+export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A3): number {
     const ranks = player.hand.map(card => card.rank);
     const duplicateCards = ranks.length - new Set(ranks).size;
     const highCards = ranks.filter(rank => rank >= 11).length;
     const disposableCards = ranks.filter(rank => rank <= 7).length / Math.max(1, ranks.length);
     const metrics = analyzeDiceBoard(player.dice);
-    const adaptation = clamp(weights.boardAdaptation ?? 0, 0, 1.5);
+    const adaptation = effectiveBoardAdaptation(weights);
     const polarizedFirstMoverValue = adaptation
         * metrics.bonusRaceIndex
         * (0.95 + disposableCards * 0.35);
@@ -194,7 +321,7 @@ export function scoreGtoMove(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A2,
+    weights = XY_GTO_A3,
 ): number {
     const player = state.players[playerIndex];
     const opponent = state.players[1 - playerIndex];
@@ -205,15 +332,21 @@ export function scoreGtoMove(
         .map(boardRow => boardRow[column])
         .filter((value): value is Card => value !== null);
     const projectedColumn = [...ownColumn, card];
+    const remainingHand = player.hand.filter(candidate => candidate.id !== card.id);
     const dice = player.dice[column];
     const metrics = analyzeDiceBoard(player.dice);
-    const adaptation = clamp(weights.boardAdaptation ?? 0, 0, 1.5);
+    const adaptation = effectiveBoardAdaptation(weights);
     const rangeScale = Math.max(1, metrics.range);
     const relativeCheapness = clamp((metrics.mean - dice) / rangeScale, 0, 1);
     const relativeStake = clamp((dice - metrics.mean) / rangeScale, -1, 1);
     const rushPotential = adaptation * metrics.bonusRaceIndex * relativeCheapness;
     const diceScale = 0.45 + (dice / 6) * weights.diceWeight;
     const yValue = partialYValue(projectedColumn) * diceScale * weights.yWeight * 8;
+    const pureStraightPlan = analyzePureStraightPlan(projectedColumn, remainingHand);
+    const pureStraightValue = pureStraightPlan.value
+        * (weights.pureStraightEfficiency ?? 0)
+        * weights.yWeight
+        * (1.4 + dice / 6 * 3);
 
     const bottomCards = player.board[2].filter((value): value is Card => value !== null);
     const xValue = row === 2
@@ -225,8 +358,10 @@ export function scoreGtoMove(
         (count, boardRow) => count + (boardRow[column] !== null ? 1 : 0),
         0,
     );
+    const rushTempoFloor = Math.max(0, XY_GTO_A2.tempoWeight - weights.tempoWeight);
     const tempoValue = row === 2 && !opponentComplete
-        ? 4.5 * weights.tempoWeight + rushPotential * (5.5 + opponentProgress * 0.45)
+        ? 4.5 * weights.tempoWeight
+            + rushPotential * (5.5 + opponentProgress * 0.45 + rushTempoFloor * 4.5)
         : 0;
     const progressValue = (row + 1) * 0.25 * weights.tempoWeight;
     const rushPlanValue = opponentComplete ? 0 : rushPotential * projectedColumn.length * 1.35;
@@ -246,7 +381,7 @@ export function scoreGtoMove(
         ? opponentVisible.length * partialYValue(opponentVisible) * dice * 0.22 * weights.flexibilityWeight
         : 0;
 
-    return yValue + xValue + tempoValue + progressValue + rushPlanValue + flexibilityValue
+    return yValue + pureStraightValue + xValue + tempoValue + progressValue + rushPlanValue + flexibilityValue
         + showdownValue + responseValue + resourceAlignmentValue
         - row3Penalty - lowDiceHighCardCost;
 }
@@ -256,7 +391,7 @@ export function getGtoHideProbability(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A2,
+    weights = XY_GTO_A3,
 ): number {
     const player = state.players[playerIndex];
     if (player.hiddenCardsCount >= 3) return 0;

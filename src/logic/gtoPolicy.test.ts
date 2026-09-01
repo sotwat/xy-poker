@@ -10,11 +10,13 @@ import {
 import { createDeck } from './deck';
 import { gameReducer, INITIAL_GAME_STATE } from './game';
 import {
+    analyzePureStraightPlan,
     analyzeDiceBoard,
     getGtoHideProbability,
     getGtoTurnOrderScore,
     scoreGtoMove,
     XY_GTO_A1,
+    XY_GTO_A2,
 } from './gtoPolicy';
 import type { Card, GameState } from './types';
 
@@ -25,8 +27,8 @@ function startedState(dice = [6, 5, 4, 2, 1]): GameState {
     });
 }
 
-test('GTO turn selection prefers second except with a sufficiently structured hand', () => {
-    const state = startedState();
+test('GTO turn selection prefers second on a flat board except with a structured hand', () => {
+    const state = startedState([4, 4, 4, 4, 4]);
     assert.ok(getGtoTurnOrderScore(state.players[0]) < 0);
 
     const paired = {
@@ -88,7 +90,16 @@ test('66611 rewards completing a cheap bonus column early while A1 still delays 
         phase: 'playing',
         turnCount: 4,
         players: [
-            { ...base.players[0], board, hand: [trash, ...base.players[0].hand] },
+            {
+                ...base.players[0],
+                board,
+                hand: [
+                    trash,
+                    { id: 'eight', rank: 8, suit: 'hearts' },
+                    { id: 'ten', rank: 10, suit: 'clubs' },
+                    { id: 'king', rank: 13, suit: 'diamonds' },
+                ],
+            },
             base.players[1],
         ],
     } as GameState;
@@ -96,6 +107,50 @@ test('66611 rewards completing a cheap bonus column early while A1 still delays 
     assert.ok(scoreGtoMove(state, 0, trash, 3) > scoreGtoMove(state, 0, trash, 4));
     assert.ok(scoreGtoMove(state, 0, trash, 3, XY_GTO_A1)
         < scoreGtoMove(state, 0, trash, 4, XY_GTO_A1));
+});
+
+test('pure-straight planning recognizes ordered prefixes and held completion cards', () => {
+    const plan = analyzePureStraightPlan([
+        { id: 'five', rank: 5, suit: 'hearts' },
+        { id: 'six', rank: 6, suit: 'clubs' },
+    ], [
+        { id: 'seven', rank: 7, suit: 'spades' },
+        { id: 'king', rank: 13, suit: 'diamonds' },
+    ]);
+    const unordered = analyzePureStraightPlan([
+        { id: 'five', rank: 5, suit: 'hearts' },
+        { id: 'seven', rank: 7, suit: 'clubs' },
+    ], [{ id: 'six', rank: 6, suit: 'spades' }]);
+
+    assert.equal(plan.viableSequences, 1);
+    assert.equal(plan.completionOuts, 4);
+    assert.equal(plan.completionHeld, true);
+    assert.equal(plan.secured, true);
+    assert.equal(unordered.viableSequences, 0);
+});
+
+test('A3 invests in a secured pure straight where A2 overvalues a lower pure pair', () => {
+    const base = startedState([6, 5, 4, 2, 1]);
+    const board = base.players[0].board.map(row => [...row]);
+    board[0][0] = { id: 'straight-five', rank: 5, suit: 'hearts' };
+    board[0][1] = { id: 'pair-five-a', rank: 5, suit: 'diamonds' };
+    const straightSix = { id: 'straight-six', rank: 6, suit: 'clubs' } as Card;
+    const pairFive = { id: 'pair-five-b', rank: 5, suit: 'clubs' } as Card;
+    const hand = [
+        straightSix,
+        pairFive,
+        { id: 'straight-seven', rank: 7, suit: 'spades' },
+        { id: 'ace', rank: 14, suit: 'hearts' },
+    ] as Card[];
+    const state = {
+        ...base,
+        players: [{ ...base.players[0], board, hand }, base.players[1]],
+    } as GameState;
+
+    assert.ok(scoreGtoMove(state, 0, pairFive, 1, XY_GTO_A2)
+        > scoreGtoMove(state, 0, straightSix, 0, XY_GTO_A2));
+    assert.ok(scoreGtoMove(state, 0, straightSix, 0)
+        > scoreGtoMove(state, 0, pairFive, 1));
 });
 
 test('GTO move score reacts to dice and delays an early third row commitment', () => {

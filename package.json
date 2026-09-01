@@ -19,6 +19,7 @@
     "train": "tsx scripts/train.ts",
     "solve:gto": "tsx scripts/solve_gto.ts",
     "analyze:gto-dice": "tsx scripts/analyze_dice_regimes.ts",
+    "analyze:gto-hands": "tsx scripts/analyze_hand_efficiency.ts",
     "benchmark:ai": "tsx scripts/benchmark_ai.ts"
   },
   "dependencies": {

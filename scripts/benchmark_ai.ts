@@ -11,7 +11,7 @@ import {
     getGtoHideProbability,
     getGtoTurnOrderScore,
     scoreGtoMove,
-    XY_GTO_A1,
+    XY_GTO_A2,
 } from '../src/logic/gtoPolicy';
 import type { Card, GameState } from '../src/logic/types';
 
@@ -80,13 +80,13 @@ function policyMove(state: GameState, playerIndex: 0 | 1, random: () => number) 
     for (const card of player.hand) {
         for (let column = 0; column < 5; column++) {
             if (player.board[2][column] !== null) continue;
-            const score = scoreGtoMove(state, playerIndex, card, column, XY_GTO_A1);
+            const score = scoreGtoMove(state, playerIndex, card, column, XY_GTO_A2);
             if (score > bestScore) {
                 bestScore = score;
                 best = {
                     cardId: card.id,
                     colIndex: column,
-                    isHidden: random() < getGtoHideProbability(state, playerIndex, card, column, XY_GTO_A1),
+                    isHidden: random() < getGtoHideProbability(state, playerIndex, card, column, XY_GTO_A2),
                 };
             }
         }
@@ -113,7 +113,7 @@ function playMatch(
         });
         const chooserGoesFirst = selector === rolloutSeat
             ? getBestTurnOrder(state, selector)
-            : getGtoTurnOrderScore(state.players[selector], XY_GTO_A1) > 0;
+            : getGtoTurnOrderScore(state.players[selector], XY_GTO_A2) > 0;
         state = gameReducer(state, {
             type: 'CHOOSE_TURN_ORDER',
             payload: { startingPlayer: chooserGoesFirst ? selector : 1 - selector },
@@ -193,7 +193,7 @@ const wins = results.filter(result => result.utility === 1).length;
 const losses = results.filter(result => result.utility === -1).length;
 const draws = results.length - wins - losses;
 console.log(JSON.stringify({
-    opponent: 'XY-GTO-A1 one-step policy (non-adaptive baseline)',
+    opponent: 'XY-GTO-A2 one-step policy (dice-regime baseline)',
     dice: fixedDice ?? 'random',
     pairedDeals: deals,
     games: results.length,

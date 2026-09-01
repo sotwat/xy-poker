@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09020623` (2026-09-02 06:23)
+- **Current Version:** `09020645` (2026-09-02 06:45)
 - **Status:** **Full local quality gate and production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ 320×568, 390×844, 768×1024, and landscape layouts checked
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 31 passing
+    - Automated tests: ✅ 33 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~278 kB
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09020623` live on Cloudflare Pages; Render health endpoint responding normally
+    - Deployment: ✅ `v09020645` live on Cloudflare Pages; Render health endpoint responding normally
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09020645** (2026-09-02): **Hand-Efficiency GTO A3** - Corrected a structural role-value error where the completed evaluator knew Pure Straight was Rank 6 but the construction prior valued a two-card pair far above an ordered straight prefix, causing its own rollouts to reinforce the mistake. Added exact enumeration of all 132,600 ordered Y hands, actionable Pure Straight prefix/held-card analysis, 4,000-game paired policy studies, role-frequency reporting, half/double strength sensitivity tests, and a ten-policy re-solve. A3 increased Pure Straights from 0.581 to 2.396 per game and beat A2 by +0.3680 utility on random dice; the hand-efficiency policy received 100% equilibrium support and no independently confirmed mutation improved it.
 1. **v09020623** (2026-09-02): **Dice-Regime GTO A2** - Re-audited the strategy after finding that A1 turn-order selection ignored dice entirely and its placement prior could not distinguish equal-mean `66611` from `44444`. Added public-board mean, variance, standard deviation, range, cheap-column opportunity cost, dynamic Y/X allocation, card-to-stake alignment, and conditional completion-race value to both turn selection and every rollout. Re-solved the nine-policy meta-game over 43,200 paired-seat games, where the regime-adaptive policy received 100% population support. A separate fixed-dice study over 2,000 games per regime found A2 beat A1 on `66611` by +0.105 utility with a 95% interval of [+0.062, +0.148], while proving that unconditional low-column rushing is exploitable outside polarized boards. Production belief rollout beat A1 28-11-1 on a 40-game `66611` audit at 95 ms average decision time.
 1. **v09020039** (2026-09-02): **PRO AI Auto Play** - Added a persistent PRO-only AUTO control for local and online matches. When enabled, the same information-set-safe strategic AI now chooses lead/follow after a coin-toss win and performs every card, column, and face-down decision for the signed-in PRO player while manual match controls are locked. Opponent turns remain client-isolated, AUTO can be stopped at any time, and the 60-second safety action now uses the strategic AI instead of a random, partially invalid column picker.
 1. **v09020022** (2026-09-02): **Full-Rule Belief Rollout AI** - Replaced the timeout-prone pseudo-Expectimax path with information-set-safe, full-match rollouts driven by the real game reducer. Every completed rollout now includes standard draws, column-completion bonus draws, turn passing, Y/X scoring, and terminal wins; true opponent hands, hidden identities, and deck order remain inaccessible. Fixed production policy weights are no longer overwritten by crowd telemetry. A reproducible paired benchmark over 60 games beat the former one-step runtime fallback 43-16-1 while completing all 20 belief samples in an average 91 ms per decision.

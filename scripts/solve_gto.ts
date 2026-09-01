@@ -9,6 +9,7 @@ import {
     scoreGtoMove,
     XY_GTO_A1,
     XY_GTO_A2,
+    XY_GTO_A3,
     type GtoPolicyWeights,
 } from '../src/logic/gtoPolicy';
 import type { Card, GameState } from '../src/logic/types';
@@ -145,6 +146,13 @@ const STRATEGIES: StrategyProfile[] = [
         temperature: 0.025,
     },
     {
+        id: 'hand_efficiency',
+        name: '役効率適応型',
+        description: '純正ストレートの順序、完成札、完成アウツ、出目利得を統合する。',
+        ...XY_GTO_A3,
+        temperature: 0.042839,
+    },
+    {
         id: 'reactive',
         name: '後攻対応型',
         description: '後攻を選びやすくし、相手の公開済み列に応じて資源配分を変える。',
@@ -196,6 +204,13 @@ const PROBE_STRATEGIES: StrategyProfile[] = [
         boardAdaptation: 1.5,
         tempoWeight: 0.8,
         row3Delay: 1.45,
+    },
+    {
+        ...STRATEGIES.find(strategy => strategy.id === 'hand_efficiency')!,
+        id: 'probe_pure_extreme',
+        name: '検証用・純正ストレート過剰型',
+        description: '他の役やX役を犠牲にしてでも純正ストレートを追う母集団外方策。',
+        pureStraightEfficiency: 20,
     },
 ];
 
@@ -436,6 +451,9 @@ function mutateProfile(anchor: StrategyProfile, round: number, candidate: number
         boardAdaptation: randomRestart
             ? rng() * 1.5
             : clamp((anchor.boardAdaptation ?? 0) + (rng() - 0.5) * 0.8, 0, 1.5),
+        pureStraightEfficiency: randomRestart
+            ? rng() * 20
+            : clamp((anchor.pureStraightEfficiency ?? 0) * Math.exp((rng() - 0.5) * 1.5), 0, 20),
         temperature: 0.01 + rng() * 0.04,
     };
 }
@@ -652,7 +670,7 @@ function main(): void {
     const equilibriumPlay = estimateEquilibriumPlay(equilibrium.averageStrategy, probeDeals, seed);
 
     const result = {
-        schemaVersion: 2,
+        schemaVersion: 3,
         generatedAt: new Date().toISOString(),
         solver: {
             method: 'PSRO-style response expansion + paired self-play payoff matrix + regret-matching+',
@@ -680,6 +698,7 @@ function main(): void {
                 concealment: round(profile.concealment),
                 firstBias: round(profile.firstBias),
                 boardAdaptation: round(profile.boardAdaptation ?? 0),
+                pureStraightEfficiency: round(profile.pureStraightEfficiency ?? 0),
                 temperature: round(profile.temperature),
             },
             equilibriumProbability: round(equilibrium.averageStrategy[index]),

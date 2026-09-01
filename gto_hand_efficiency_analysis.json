@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-01T22:06:32.996Z",
+  "method": "exact ordered three-card enumeration plus paired seat/initial-hand policy matches",
+  "orderedThreeCardDeals": 132600,
+  "roleEconomics": [
+    {
+      "type": "HighCard",
+      "count": 98640,
+      "probability": 0.743891,
+      "categoryEquityVsRandom": 0.371946
+    },
+    {
+      "type": "OnePair",
+      "count": 7488,
+      "probability": 0.056471,
+      "categoryEquityVsRandom": 0.772127
+    },
+    {
+      "type": "Straight",
+      "count": 2880,
+      "probability": 0.021719,
+      "categoryEquityVsRandom": 0.811222
+    },
+    {
+      "type": "PureOnePair",
+      "count": 14976,
+      "probability": 0.112941,
+      "categoryEquityVsRandom": 0.878552
+    },
+    {
+      "type": "Flush",
+      "count": 6576,
+      "probability": 0.049593,
+      "categoryEquityVsRandom": 0.959819
+    },
+    {
+      "type": "PureStraight",
+      "count": 1440,
+      "probability": 0.01086,
+      "categoryEquityVsRandom": 0.990045
+    },
+    {
+      "type": "StraightFlush",
+      "count": 192,
+      "probability": 0.001448,
+      "categoryEquityVsRandom": 0.996199
+    },
+    {
+      "type": "ThreeOfAKind",
+      "count": 312,
+      "probability": 0.002353,
+      "categoryEquityVsRandom": 0.9981
+    },
+    {
+      "type": "PureStraightFlush",
+      "count": 96,
+      "probability": 0.000724,
+      "categoryEquityVsRandom": 0.999638
+    }
+  ],
+  "oneCardCompletionExamples": [
+    {
+      "target": "PureStraight",
+      "prefix": [
+        "5-hearts",
+        "6-clubs"
+      ],
+      "outs": 4
+    },
+    {
+      "target": "ThreeOfAKind",
+      "prefix": [
+        "5-hearts",
+        "5-clubs"
+      ],
+      "outs": 2
+    },
+    {
+      "target": "PureStraightFlush",
+      "prefix": [
+        "5-hearts",
+        "6-hearts"
+      ],
+      "outs": 1
+    },
+    {
+      "target": "Flush",
+      "prefix": [
+        "5-hearts",
+        "9-hearts"
+      ],
+      "outs": 11
+    }
+  ],
+  "a3VsA2": {
+    "randomDice": {
+      "pairedDeals": 2000,
+      "games": 4000,
+      "meanUtility": 0.368,
+      "standardError": 0.017206,
+      "lower95": 0.334275,
+      "upper95": 0.401725,
+      "winRate": 0.6655,
+      "drawRate": 0.037,
+      "averageScoreDifference": 4.028,
+      "ownPolicy": "a3",
+      "opponentPolicy": "a2",
+      "ownYHandFrequency": {
+        "HighCard": 1557,
+        "OnePair": 841,
+        "Straight": 578,
+        "PureOnePair": 3712,
+        "Flush": 1969,
+        "PureStraight": 9582,
+        "StraightFlush": 252,
+        "ThreeOfAKind": 578,
+        "PureStraightFlush": 931
+      },
+      "opponentYHandFrequency": {
+        "HighCard": 1905,
+        "OnePair": 324,
+        "Straight": 740,
+        "PureOnePair": 6780,
+        "Flush": 6111,
+        "PureStraight": 2324,
+        "StraightFlush": 371,
+        "ThreeOfAKind": 937,
+        "PureStraightFlush": 508
+      },
+      "ownPureStraightPerGame": 2.3955,
+      "opponentPureStraightPerGame": 0.581
+    },
+    "polarizedHigh66611": {
+      "pairedDeals": 2000,
+      "games": 4000,
+      "meanUtility": 0.448,
+      "standardError": 0.016596,
+      "lower95": 0.415473,
+      "upper95": 0.480527,
+      "winRate": 0.7145,
+      "drawRate": 0.019,
+      "averageScoreDifference": 5.85125,
+      "ownPolicy": "a3",
+      "opponentPolicy": "a2",
+      "ownYHandFrequency": {
+        "HighCard": 1450,
+        "OnePair": 819,
+        "Straight": 598,
+        "PureOnePair": 3494,
+        "Flush": 2018,
+        "PureStraight": 9955,
+        "StraightFlush": 271,
+        "ThreeOfAKind": 533,
+        "PureStraightFlush": 862
+      },
+      "opponentYHandFrequency": {
+        "HighCard": 1744,
+        "OnePair": 322,
+        "Straight": 802,
+        "PureOnePair": 6962,
+        "Flush": 6124,
+        "PureStraight": 2122,
+        "StraightFlush": 393,
+        "ThreeOfAKind": 1047,
+        "PureStraightFlush": 484
+      },
+      "ownPureStraightPerGame": 2.48875,
+      "opponentPureStraightPerGame": 0.5305
+    },
+    "ordinarySpread65421": {
+      "pairedDeals": 2000,
+      "games": 4000,
+      "meanUtility": 0.4395,
+      "standardError": 0.01678,
+      "lower95": 0.406612,
+      "upper95": 0.472388,
+      "winRate": 0.69975,
+      "drawRate": 0.04,
+      "averageScoreDifference": 4.974,
+      "ownPolicy": "a3",
+      "opponentPolicy": "a2",
+      "ownYHandFrequency": {
+        "HighCard": 1429,
+        "OnePair": 805,
+        "Straight": 563,
+        "PureOnePair": 3581,
+        "Flush": 1998,
+        "PureStraight": 9978,
+        "StraightFlush": 236,
+        "ThreeOfAKind": 535,
+        "PureStraightFlush": 875
+      },
+      "opponentYHandFrequency": {
+        "HighCard": 2007,
+        "OnePair": 363,
+        "Straight": 718,
+        "PureOnePair": 6667,
+        "Flush": 5994,
+        "PureStraight": 2456,
+        "StraightFlush": 350,
+        "ThreeOfAKind": 937,
+        "PureStraightFlush": 508
+      },
+      "ownPureStraightPerGame": 2.4945,
+      "opponentPureStraightPerGame": 0.614
+    },
+    "lowCompressed22211": {
+      "pairedDeals": 2000,
+      "games": 4000,
+      "meanUtility": 0.207,
+      "standardError": 0.017215,
+      "lower95": 0.173259,
+      "upper95": 0.240741,
+      "winRate": 0.54825,
+      "drawRate": 0.1105,
+      "averageScoreDifference": 1.0715,
+      "ownPolicy": "a3",
+      "opponentPolicy": "a2",
+      "ownYHandFrequency": {
+        "HighCard": 1719,
+        "OnePair": 750,
+        "Straight": 528,
+        "PureOnePair": 3569,
+        "Flush": 1689,
+        "PureStraight": 9834,
+        "StraightFlush": 233,
+        "ThreeOfAKind": 591,
+        "PureStraightFlush": 1087
+      },
+      "opponentYHandFrequency": {
+        "HighCard": 2505,
+        "OnePair": 269,
+        "Straight": 660,
+        "PureOnePair": 8696,
+        "Flush": 3784,
+        "PureStraight": 1837,
+        "StraightFlush": 458,
+        "ThreeOfAKind": 1204,
+        "PureStraightFlush": 587
+      },
+      "ownPureStraightPerGame": 2.4585,
+      "opponentPureStraightPerGame": 0.45925
+    }
+  },
+  "sensitivityVsA3": {
+    "conservativeRandomDice": {
+      "pairedDeals": 2000,
+      "games": 4000,
+      "meanUtility": -0.02125,
+      "standardError": 0.019197,
+      "lower95": -0.058876,
+      "upper95": 0.016376,
+      "winRate": 0.46775,
+      "drawRate": 0.04325,
+      "averageScoreDifference": -0.15375,
+      "ownPolicy": "pure_conservative",
+      "opponentPolicy": "a3",
+      "ownYHandFrequency": {
+        "HighCard": 1103,
+        "OnePair": 520,
+        "Straight": 593,
+        "PureOnePair": 4467,
+        "Flush": 1951,
+        "PureStraight": 9113,
+        "StraightFlush": 328,
+        "ThreeOfAKind": 877,
+        "PureStraightFlush": 1048
+      },
+      "opponentYHandFrequency": {
+        "HighCard": 1217,
+        "OnePair": 701,
+        "Straight": 547,
+        "PureOnePair": 3463,
+        "Flush": 1912,
+        "PureStraight": 10213,
+        "StraightFlush": 243,
+        "ThreeOfAKind": 638,
+        "PureStraightFlush": 1066
+      },
+      "ownPureStraightPerGame": 2.27825,
+      "opponentPureStraightPerGame": 2.55325
+    },
+    "aggressiveRandomDice": {
+      "pairedDeals": 2000,
+      "games": 4000,
+      "meanUtility": 0.02325,
+      "standardError": 0.020003,
+      "lower95": -0.015956,
+      "upper95": 0.062456,
+      "winRate": 0.4885,
+      "drawRate": 0.04625,
+      "averageScoreDifference": 0.15025,
+      "ownPolicy": "pure_aggressive",
+      "opponentPolicy": "a3",
+      "ownYHandFrequency": {
+        "HighCard": 1272,
+        "OnePair": 793,
+        "Straight": 580,
+        "PureOnePair": 3514,
+        "Flush": 1623,
+        "PureStraight": 10471,
+        "StraightFlush": 201,
+        "ThreeOfAKind": 569,
+        "PureStraightFlush": 977
+      },
+      "opponentYHandFrequency": {
+        "HighCard": 1336,
+        "OnePair": 796,
+        "Straight": 539,
+        "PureOnePair": 3667,
+        "Flush": 1877,
+        "PureStraight": 9958,
+        "StraightFlush": 263,
+        "ThreeOfAKind": 603,
+        "PureStraightFlush": 961
+      },
+      "ownPureStraightPerGame": 2.61775,
+      "opponentPureStraightPerGame": 2.4895
+    }
+  },
+  "limitations": [
+    "Category equity uses uniformly random ordered three-card hands and ignores within-category kickers.",
+    "Completion outs describe a canonical two-card prefix; actual value also depends on held cards, visible removals, dice, opponent progress, X-hand interactions, and bonus timing.",
+    "A3-versus-A2 is a policy comparison, not proof of exact full-game Nash equilibrium."
+  ]
+}
