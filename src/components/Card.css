@@ -233,14 +233,20 @@
 }
 
 /* Conventional playing-card face */
-.card.hearts,
-.card.diamonds {
-  color: #c52333;
+.card.hearts {
+  color: #c4273d;
 }
 
-.card.clubs,
 .card.spades {
   color: #17191c;
+}
+
+.card.diamonds {
+  color: #2367c9;
+}
+
+.card.clubs {
+  color: #147a48;
 }
 
 .card-index {
@@ -325,14 +331,28 @@
   stroke-linejoin: round;
 }
 
-.card.hearts .court-robe,
-.card.diamonds .court-robe {
+.card.hearts .court-robe {
   fill: #bd3b4a;
 }
 
-.card.hearts .court-hair,
-.card.diamonds .court-hair {
+.card.hearts .court-hair {
   fill: #523241;
+}
+
+.card.diamonds .court-robe {
+  fill: #2e62ad;
+}
+
+.card.diamonds .court-hair {
+  fill: #263f6a;
+}
+
+.card.clubs .court-robe {
+  fill: #277c55;
+}
+
+.card.clubs .court-hair {
+  fill: #244b3a;
 }
 
 .court-suit-mark {
