@@ -1332,6 +1332,8 @@ body {
 
 .game-result-overlay { z-index: 2100 !important; }
 
+.rematch-modal-overlay { z-index: 2600 !important; }
+
 .rules-content,
 .contact-modal,
 .skin-store-modal,

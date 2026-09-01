@@ -521,6 +521,8 @@ function App() {
         setIsQuickMatch(() => false);
         setOpponentName(() => 'Player 2');
         setRatingUpdates(null); // Clear rating updates
+        setRematchRequested(false);
+        setRematchInvited(false);
 
         // Reset game state to initial
         dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
@@ -541,6 +543,8 @@ function App() {
       setIsOnlineGame(false);
       setIsQuickMatch(false);
       setRatingUpdates(null);
+      setRematchRequested(false);
+      setRematchInvited(false);
       dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
     });
 
@@ -1171,6 +1175,8 @@ function App() {
     setIsOnlineGame(false);
     setIsQuickMatch(false);
     setRatingUpdates(null);
+    setRematchRequested(false);
+    setRematchInvited(false);
     dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
   };
 
@@ -1368,7 +1374,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v09011603</span>}
+          {showVersion && <span className="version">v09012027</span>}
         </div>
 
         <button
@@ -1627,7 +1633,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09011603</div>
+                          <div className="home-version">v09012027</div>
                         </div>
                       </div>
                     )}
@@ -1814,7 +1820,7 @@ function App() {
       )}
 
       {rematchInvited && (
-        <div className="modal-overlay">
+        <div className="modal-overlay rematch-modal-overlay">
           <div className="modal-content">
             <h3>Rematch Request</h3>
             <p>Opponent wants to play again.</p>

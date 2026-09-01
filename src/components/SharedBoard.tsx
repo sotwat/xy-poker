@@ -121,6 +121,14 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                 role={isCurrentPlayer ? 'button' : undefined}
                 tabIndex={isCurrentPlayer ? 0 : -1}
                 aria-label={isCurrentPlayer ? `Place selected card in column ${colIndex + 1}, dice ${dice[colIndex]}` : undefined}
+                onClick={(event) => {
+                    if (!isCurrentPlayer) return;
+
+                    const target = event.target;
+                    if (target instanceof Element && target.closest('.card-slot')) return;
+
+                    onColumnClick(colIndex);
+                }}
                 onKeyDown={(event) => {
                     if (isCurrentPlayer && (event.key === 'Enter' || event.key === ' ')) {
                         event.preventDefault();
