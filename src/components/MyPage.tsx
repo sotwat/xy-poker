@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 import { socket } from '../logic/online';
+import type { BoardSkin, CardSkin, DiceSkin } from '../logic/types';
+import {
+    getGameRecordResult,
+    isGameRecordData,
+    loadLocalGameRecords,
+    mergeGameRecords,
+    type GameRecordData,
+} from '../logic/gameRecord';
 import { PremiumBadge } from './PremiumBadge';
+import { GameRecordViewer } from './GameRecordViewer';
 import './MyPage.css';
 
 interface MyPageProps {
@@ -10,6 +19,9 @@ interface MyPageProps {
     userId: string;
     isPremium: boolean;
     onNameChange?: (newName: string) => void;
+    selectedSkin: DiceSkin;
+    selectedCardSkin: CardSkin;
+    selectedBoardSkin: BoardSkin;
 }
 
 interface Profile {
@@ -34,11 +46,22 @@ interface LeaderboardEntry {
     id: string;
 }
 
-export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremium, onNameChange }) => {
-    const [activeTab, setActiveTab] = useState<'stats' | 'ranking' | 'achievements'>('stats');
+export const MyPage: React.FC<MyPageProps> = ({
+    isOpen,
+    onClose,
+    userId,
+    isPremium,
+    onNameChange,
+    selectedSkin,
+    selectedCardSkin,
+    selectedBoardSkin,
+}) => {
+    const [activeTab, setActiveTab] = useState<'stats' | 'records' | 'ranking' | 'achievements'>('stats');
     const [profile, setProfile] = useState<Profile | null>(null);
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     const [achievements, setAchievements] = useState<Achievement[]>([]);
+    const [gameRecords, setGameRecords] = useState<GameRecordData[]>([]);
+    const [selectedRecord, setSelectedRecord] = useState<GameRecordData | null>(null);
     const [loading, setLoading] = useState(false);
 
     // Name Editing State
@@ -92,6 +115,33 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
 
                     if (error) throw error;
                     if (!cancelled) setAchievements((data ?? []) as Achievement[]);
+                }
+
+                if (activeTab === 'records') {
+                    const localRecords = loadLocalGameRecords();
+                    if (!cancelled) setGameRecords(localRecords);
+
+                    const { data, error } = await supabase
+                        .from('game_records')
+                        .select('id, record_data')
+                        .eq('player_id', nextProfile.id)
+                        .order('played_at', { ascending: false })
+                        .limit(50);
+
+                    if (error) throw error;
+                    const cloudRecords = (data ?? [])
+                        .map(row => row.record_data as unknown)
+                        .filter(isGameRecordData);
+                    if (!cancelled) setGameRecords(mergeGameRecords(cloudRecords, localRecords));
+
+                    if (socket.connected) {
+                        const cloudIds = new Set(cloudRecords.map(record => record.id));
+                        for (const localRecord of localRecords) {
+                            if (!cloudIds.has(localRecord.id)) {
+                                socket.emit('save_game_record', { record: localRecord });
+                            }
+                        }
+                    }
                 }
             } catch (err) {
                 console.error('Error fetching MyPage data:', err);
@@ -183,6 +233,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
 
                 <div className="mypage-tabs">
                     <button type="button" className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>Stats & Progress</button>
+                    <button type="button" className={activeTab === 'records' ? 'active' : ''} onClick={() => { setSelectedRecord(null); setActiveTab('records'); }}>Game Records</button>
                     <button type="button" className={activeTab === 'ranking' ? 'active' : ''} onClick={() => setActiveTab('ranking')}>World Ranking</button>
                     <button type="button" className={activeTab === 'achievements' ? 'active' : ''} onClick={() => setActiveTab('achievements')}>Achievements</button>
                 </div>
@@ -237,6 +288,60 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                                 </tbody>
                             </table>
                         </div>
+                    )}
+
+                    {!loading && activeTab === 'records' && (
+                        selectedRecord ? (
+                            <GameRecordViewer
+                                record={selectedRecord}
+                                onBack={() => setSelectedRecord(null)}
+                                selectedSkin={selectedSkin}
+                                selectedCardSkin={selectedCardSkin}
+                                selectedBoardSkin={selectedBoardSkin}
+                            />
+                        ) : (
+                            <div className="records-view">
+                                <div className="records-heading">
+                                    <div>
+                                        <span>MATCH ARCHIVE</span>
+                                        <h3>Game Records / 棋譜</h3>
+                                    </div>
+                                    <strong>{gameRecords.length}</strong>
+                                </div>
+                                {gameRecords.length === 0 ? (
+                                    <div className="empty-state records-empty">
+                                        <strong>No game records yet</strong>
+                                        <span>Completed matches will appear here automatically.</span>
+                                    </div>
+                                ) : (
+                                    <div className="records-list">
+                                        {gameRecords.map(record => {
+                                            const result = getGameRecordResult(record);
+                                            const opponentIndex = record.viewerPlayerIndex === 0 ? 1 : 0;
+                                            return (
+                                                <button
+                                                    type="button"
+                                                    className="record-list-item"
+                                                    key={record.id}
+                                                    onClick={() => setSelectedRecord(record)}
+                                                >
+                                                    <span className={`record-list-result record-list-result-${result}`}>{result[0].toUpperCase()}</span>
+                                                    <span className="record-list-main">
+                                                        <strong>vs {record.playerNames[opponentIndex]}</strong>
+                                                        <span>{new Date(record.completedAt).toLocaleString()}</span>
+                                                    </span>
+                                                    <span className="record-list-meta">
+                                                        <strong>{record.scores[record.viewerPlayerIndex]} – {record.scores[opponentIndex]}</strong>
+                                                        <span>{record.mode === 'bot' ? 'BOT' : record.mode === 'ranked' ? 'RANKED' : 'PRIVATE'}</span>
+                                                    </span>
+                                                    <span className="record-list-arrow" aria-hidden="true">→</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        )
                     )}
 
                     {!loading && activeTab === 'achievements' && (

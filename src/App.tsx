@@ -15,6 +15,14 @@ import type { PopupData } from './components/ShowdownPopup';
 import { updatePlayerStats } from './logic/gamification';
 import { socket, connectSocket } from './logic/online';
 import { QUICK_MATCH_BOT_FALLBACK_MS, QUICK_MATCH_BOT_FALLBACK_SECONDS } from './logic/matchmaking';
+import {
+  beginGameRecording,
+  captureGameRecordMoves,
+  finalizeGameRecord,
+  saveLocalGameRecord,
+  type ActiveGameRecording,
+  type GameRecordMode,
+} from './logic/gameRecord';
 import { supabase, fetchGlobalAiParameters, updateGlobalAiParameters } from './supabase';
 import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS, setGlobalAiParams } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
@@ -191,6 +199,7 @@ function App() {
   const processedGameRef = useRef<string | null>(null); // Guard for scoring animation
   const showdownRunRef = useRef(0);
   const gameStateRef = useRef(gameState); // Ref to access state in listeners
+  const gameRecordingRef = useRef<ActiveGameRecording | null>(null);
 
   // Keep Ref updated
   useEffect(() => {
@@ -677,6 +686,50 @@ function App() {
 
   const p1DisplayName = isOnlineGame && playerRole === 'guest' ? opponentName : playerName;
   const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
+
+  useEffect(() => {
+    if (phase === 'setup') {
+      gameRecordingRef.current = null;
+      return;
+    }
+
+    if (phase === 'turn_selection' && gameState.turnCount === 1) {
+      if (!gameRecordingRef.current) {
+        gameRecordingRef.current = beginGameRecording(
+          gameState,
+          crypto.randomUUID(),
+          new Date().toISOString(),
+        );
+      }
+      return;
+    }
+
+    const activeRecording = gameRecordingRef.current;
+    if (!activeRecording) return;
+    const capturedRecording = captureGameRecordMoves(activeRecording, gameState);
+    gameRecordingRef.current = capturedRecording;
+
+    if (phase !== 'ended') return;
+
+    const recordMode: GameRecordMode = mode === 'local'
+      ? 'bot'
+      : isRankedGame ? 'ranked' : 'private';
+    const record = finalizeGameRecord(capturedRecording, gameState, {
+      completedAt: new Date().toISOString(),
+      mode: recordMode,
+      viewerPlayerIndex: isOnlineGame && playerRole === 'guest' ? 1 : 0,
+      playerNames: [p1DisplayName, p2DisplayName],
+    });
+    gameRecordingRef.current = null;
+    if (!record) return;
+
+    saveLocalGameRecord(record);
+    if (dbPlayerId && socket.connected) {
+      socket.emit('save_game_record', { record }, (response: { success?: boolean; error?: string }) => {
+        if (!response?.success) console.error('Unable to save cloud game record:', response?.error);
+      });
+    }
+  }, [dbPlayerId, gameState, isOnlineGame, isRankedGame, mode, p1DisplayName, p2DisplayName, phase, playerRole]);
 
   // Sync local phase with game winner/turn
   const prevPhaseRef = useRef<Phase>('setup');
@@ -1420,7 +1473,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v09012139</span>}
+          {showVersion && <span className="version">v09012158</span>}
         </div>
 
         <button
@@ -1679,7 +1732,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09012139</div>
+                          <div className="home-version">v09012158</div>
                         </div>
                       </div>
                     )}
@@ -1912,6 +1965,9 @@ function App() {
         onClose={() => setShowMyPage(false)}
         userId={dbPlayerId}
         isPremium={isPremium}
+        selectedSkin={selectedSkin}
+        selectedCardSkin={selectedCardSkin}
+        selectedBoardSkin={selectedBoardSkin}
         onNameChange={(newName) => {
           setPlayerName(newName);
           localStorage.setItem('xypoker_playerName_v2', newName);

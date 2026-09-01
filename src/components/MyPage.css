@@ -161,10 +161,12 @@
 .mypage-tabs {
     display: flex;
     background: #111;
+    overflow-x: auto;
 }
 
 .mypage-tabs button {
     flex: 1;
+    min-width: max-content;
     background: transparent;
     border: none;
     padding: 15px;
@@ -353,4 +355,166 @@
     box-sizing: border-box !important;
     overflow-y: auto !important;
     margin: 0 !important;
+}
+
+/* Game records / 棋譜 */
+.records-view {
+    display: grid;
+    gap: 14px;
+}
+
+.records-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #30363d;
+}
+
+.records-heading div {
+    display: grid;
+    gap: 3px;
+}
+
+.records-heading span {
+    color: #77828d;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.records-heading h3 {
+    margin: 0;
+    color: #f1f4f7;
+    font-size: 1.1rem;
+}
+
+.records-heading > strong {
+    color: #8995a1;
+    font-size: 1.35rem;
+}
+
+.records-list {
+    display: grid;
+    gap: 7px;
+}
+
+.record-list-item {
+    width: 100%;
+    min-height: 62px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    border: 1px solid #303842;
+    border-radius: 8px;
+    color: #dbe1e7;
+    background: #14191f;
+    text-align: left;
+    cursor: pointer;
+}
+
+.record-list-item:hover {
+    border-color: #536171;
+    background: #191f26;
+}
+
+.record-list-result {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    font-size: 0.72rem;
+    font-weight: 900;
+}
+
+.record-list-result-win { color: #a6dfba; background: #193428; }
+.record-list-result-loss { color: #f0b2b2; background: #3a2022; }
+.record-list-result-draw { color: #c7cdd4; background: #30363d; }
+
+.record-list-main,
+.record-list-meta {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.record-list-main strong {
+    overflow: hidden;
+    color: #f0f3f6;
+    font-size: 0.86rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.record-list-main span,
+.record-list-meta span {
+    color: #75808b;
+    font-size: 0.65rem;
+}
+
+.record-list-meta {
+    justify-items: end;
+}
+
+.record-list-meta strong {
+    color: #dce2e8;
+    font-size: 0.86rem;
+}
+
+.record-list-arrow {
+    color: #75808b;
+}
+
+.records-empty {
+    min-height: 180px;
+    display: grid;
+    place-content: center;
+    gap: 6px;
+    margin-top: 0;
+    border: 1px dashed #303842;
+    border-radius: 9px;
+}
+
+.records-empty strong {
+    color: #cfd5dc;
+}
+
+.records-empty span {
+    font-size: 0.75rem;
+}
+
+@media (max-width: 620px) {
+    .mypage-overlay {
+        padding: 0 !important;
+    }
+
+    .mypage-content {
+        border-radius: 0 !important;
+        padding: 10px !important;
+    }
+
+    .mypage-header {
+        padding: 10px 44px 10px 4px;
+    }
+
+    .mypage-tabs button {
+        padding: 11px 9px;
+        font-size: 0.7rem;
+    }
+
+    .mypage-body {
+        padding: 8px;
+    }
+
+    .record-list-item {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .record-list-meta {
+        display: none;
+    }
 }

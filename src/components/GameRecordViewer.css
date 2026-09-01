@@ -1,0 +1,165 @@
+.record-viewer {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+}
+
+.record-viewer-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.record-viewer-header > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.record-viewer-header strong {
+    overflow: hidden;
+    color: #f5f7fa;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.record-viewer-header time {
+    color: #87909c;
+    font-size: 0.72rem;
+}
+
+.record-back-btn,
+.record-controls button {
+    min-height: 36px;
+    padding: 7px 11px;
+    border: 1px solid #39424d;
+    border-radius: 7px;
+    color: #dbe1e8;
+    background: #151a20;
+    cursor: pointer;
+}
+
+.record-back-btn:hover,
+.record-controls button:hover:not(:disabled) {
+    border-color: #607080;
+    background: #1b222a;
+}
+
+.record-controls button:disabled {
+    cursor: default;
+    opacity: 0.35;
+}
+
+.record-result {
+    flex: 0 0 auto;
+    padding: 3px 7px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.record-result-win { color: #a8dfbd; background: #183428; }
+.record-result-loss { color: #efb1b1; background: #3a2022; }
+.record-result-draw { color: #c4cad1; background: #30363d; }
+
+.record-scoreline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #9aa4af;
+    font-size: 0.78rem;
+}
+
+.record-scoreline strong {
+    margin: 0 3px;
+    color: #f5f7fa;
+    font-size: 1.15rem;
+}
+
+.record-board-wrap {
+    container-type: size;
+    width: 100%;
+    height: min(52vh, 560px);
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid #303842;
+    border-radius: 10px;
+    background: #0c1014;
+}
+
+.record-board-wrap .shared-board {
+    width: min(100%, 700px) !important;
+    max-height: 100% !important;
+    padding: clamp(6px, 1cqh, 10px) !important;
+    gap: clamp(5px, 1.3cqw, 10px) !important;
+    box-shadow: none !important;
+}
+
+.record-board-wrap .card-slot {
+    height: clamp(42px, 8.2cqh, 62px) !important;
+}
+
+.record-board-wrap .dice-row .dice {
+    font-size: clamp(22px, 3.4cqw, 34px) !important;
+}
+
+.record-move-copy {
+    min-height: 42px;
+    display: grid;
+    gap: 3px;
+    padding: 9px 11px;
+    border: 1px solid #303842;
+    border-radius: 8px;
+    background: #11161b;
+}
+
+.record-move-copy span {
+    color: #6f7b87;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+}
+
+.record-move-copy strong {
+    color: #dce2e8;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.record-scrubber {
+    width: 100%;
+    accent-color: #7d95ad;
+}
+
+.record-controls {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+}
+
+@media (max-width: 620px) {
+    .record-viewer-header {
+        grid-template-columns: auto 1fr;
+    }
+
+    .record-viewer-header time {
+        display: none;
+    }
+
+    .record-board-wrap {
+        height: min(50vh, 480px);
+        min-height: 330px;
+    }
+
+    .record-controls button {
+        padding-inline: 5px;
+        font-size: 0.7rem;
+    }
+}

@@ -69,26 +69,27 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09012139` (2026-09-01 21:39)
+- **Current Version:** `09012158` (2026-09-01 21:58)
 - **Status:** **Full local quality gate verified; deployment pending**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ 320×568, 390×844, 768×1024, and landscape layouts checked
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 10 passing
-    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~267 kB
+    - Automated tests: ✅ 15 passing
+    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~275 kB
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
     - Deployment: ⏳ Not run for this local UI overhaul
 
-### Before the next production deployment
-- Apply `supa_schema_v8_hardening.sql` in the Supabase SQL editor.
-- Configure the Render backend with `SUPABASE_SERVICE_KEY`; the legacy `SUPABASE_KEY` name remains a temporary fallback.
+### Database status
+- `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
+- Render uses the server-side Supabase client for validated game-record writes.
 
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09012158** (2026-09-01): **Game Records / 棋譜** - Added compact 30-move match recording for AI, ranked, and private games; resilient local storage plus authenticated Supabase sync; server-side payload validation; owner-only RLS; and a responsive My Page archive with move-by-move board replay.
 1. **v09011603** (2026-09-01): **Developer Support Link** - Added a restrained, responsive OFUSE support button to the home footer with safe external-link behavior and keyboard focus styling.
 2. **v09011601** (2026-09-01): **Repository Hardening & Performance** - Cleared all repository lint debt, added reducer/server tests and a single `npm run check` quality gate, split React/Supabase/realtime/lazy feature bundles to remove the 500 kB warning, upgraded dependencies to zero known audit vulnerabilities, removed committed `node_modules` and obsolete mutation scripts/assets, hardened multiplayer input/auth/rate limits and server-authoritative rewards, locked sensitive Supabase writes behind the backend, added Cloudflare Pages caching/security headers, and made setup/deployment scripts portable and fail-safe.
 3. **v09011511** (2026-09-01): **Minimal Responsive UI Overhaul** - Rebuilt the home, online lobby, game board, rules, authentication, scoring, and showdown surfaces around a restrained responsive design. Removed the home character and excessive visual effects, fixed duplicate long-press/click placement behavior, shortened and stabilized dice/coin animations with timer cleanup and reduced-motion support, added keyboard-accessible board columns, and verified the core flow across phone, tablet, and landscape layouts.
@@ -249,6 +250,7 @@ xy-poker/
 | **Skin Gacha Store** | Earn tickets via rewarded ads; unlock card / dice / board skins |
 | **Premium Tier** | Ad-free experience managed via Supabase (`is_premium` flag) |
 | **Achievements** | In-game achievement & stats tracking |
+| **Game Records / 棋譜** | Automatic 30-move archive with cloud sync and step-by-step board replay |
 | **Turn Timer** | 60-second per-turn countdown |
 | **Audio / TTS** | Sound effects + text-to-speech for game events |
 | **Mobile Web Ready** | Responsive UI, reduced-motion support, and iOS audio unlock |

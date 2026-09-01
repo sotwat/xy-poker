@@ -11,6 +11,7 @@ import {
     generateSessionToken,
     isValidBrowserId,
     isValidGameAction,
+    isValidGameRecord,
     normalizeRoomId,
     randomPlayerIndex,
     rollDice,
@@ -338,6 +339,33 @@ io.on('connection', socket => {
         } catch (error) {
             console.error('Unable to update username:', error);
             acknowledge(callback, { success: false, error: 'Unable to update username' });
+        }
+    });
+
+    socket.on('save_game_record', async ({ record } = {}, callback) => {
+        try {
+            const userId = socket.data.userId;
+            if (!userId) throw new Error('Authentication required');
+            if (!isValidGameRecord(record)) throw new Error('Invalid game record');
+
+            const viewerWinner = record.winner === 'draw'
+                ? 'draw'
+                : record.winner === `p${record.viewerPlayerIndex + 1}` ? 'win' : 'loss';
+            const opponentIndex = record.viewerPlayerIndex === 0 ? 1 : 0;
+            const { error } = await supabase.from('game_records').upsert({
+                id: record.id,
+                player_id: userId,
+                played_at: record.completedAt,
+                mode: record.mode,
+                result: viewerWinner,
+                opponent_name: record.playerNames[opponentIndex],
+                record_data: record,
+            }, { onConflict: 'id', ignoreDuplicates: true });
+            if (error) throw error;
+            acknowledge(callback, { success: true, id: record.id });
+        } catch (error) {
+            console.error('Unable to save game record:', error);
+            acknowledge(callback, { success: false, error: 'Unable to save game record' });
         }
     });
 

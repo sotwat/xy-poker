@@ -8,6 +8,7 @@ import {
     generateSessionToken,
     isValidBrowserId,
     isValidGameAction,
+    isValidGameRecord,
     normalizeRoomId,
     randomPlayerIndex,
     sanitizePlayerName,
@@ -50,6 +51,34 @@ test('validates browser IDs and relayed game actions', () => {
     assert.equal(isValidGameAction({ type: 'PLACE_AND_DRAW', payload: { cardId: 'hearts-10', colIndex: 4, isHidden: false } }), true);
     assert.equal(isValidGameAction({ type: 'PLACE_AND_DRAW', payload: { cardId: 'x', colIndex: 9, isHidden: false } }), false);
     assert.equal(isValidGameAction({ type: 'SYNC_STATE', payload: {} }), false);
+});
+
+test('validates complete compact game records', () => {
+    const deck = createDeck();
+    const record = {
+        schemaVersion: 1,
+        id: '00000000-0000-4000-8000-000000000001',
+        startedAt: '2026-09-01T00:00:00.000Z',
+        completedAt: '2026-09-01T00:10:00.000Z',
+        mode: 'ranked',
+        viewerPlayerIndex: 0,
+        playerNames: ['Alice', 'Bob'],
+        dice: [6, 5, 4, 3, 2],
+        winner: 'p1',
+        scores: [12, 8],
+        bonuses: [2, 1],
+        moves: Array.from({ length: 30 }, (_, index) => ({
+            ply: index + 1,
+            playerIndex: index % 2,
+            card: { ...deck[index], isHidden: false },
+            column: Math.floor(index / 6),
+            row: Math.floor((index % 6) / 2),
+        })),
+    };
+
+    assert.equal(isValidGameRecord(record), true);
+    assert.equal(isValidGameRecord({ ...record, moves: record.moves.slice(0, 29) }), false);
+    assert.equal(isValidGameRecord({ ...record, viewerPlayerIndex: 2 }), false);
 });
 
 test('calculates symmetric Elo changes', () => {

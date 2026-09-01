@@ -78,6 +78,51 @@ export function isValidGameAction(action) {
         && typeof action.payload.isHidden === 'boolean';
 }
 
+export function isValidGameRecord(record) {
+    if (!record || typeof record !== 'object' || record.schemaVersion !== 1) return false;
+    if (typeof record.id !== 'string'
+        || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(record.id)) return false;
+    const startedAt = Date.parse(record.startedAt);
+    const completedAt = Date.parse(record.completedAt);
+    if (!Number.isFinite(startedAt) || !Number.isFinite(completedAt) || completedAt < startedAt) return false;
+    if (!['bot', 'ranked', 'private'].includes(record.mode)) return false;
+    if (record.viewerPlayerIndex !== 0 && record.viewerPlayerIndex !== 1) return false;
+    if (!Array.isArray(record.playerNames) || record.playerNames.length !== 2
+        || !record.playerNames.every(name => typeof name === 'string' && name.trim().length > 0 && name.length <= 15)) return false;
+    if (!Array.isArray(record.dice) || record.dice.length !== 5
+        || !record.dice.every(die => Number.isInteger(die) && die >= 1 && die <= 6)) return false;
+    if (!['p1', 'p2', 'draw'].includes(record.winner)) return false;
+    if (!Array.isArray(record.scores) || record.scores.length !== 2
+        || !record.scores.every(score => Number.isInteger(score) && score >= 0 && score <= 200)) return false;
+    if (!Array.isArray(record.bonuses) || record.bonuses.length !== 2
+        || !record.bonuses.every(bonus => Number.isInteger(bonus) && bonus >= 0 && bonus <= 5)) return false;
+    if (!Array.isArray(record.moves) || record.moves.length !== 30) return false;
+    if (JSON.stringify(record).length > 25_000) return false;
+
+    const occupiedSlots = new Set();
+    const usedCards = new Set();
+    const playerMoveCounts = [0, 0];
+    for (let index = 0; index < record.moves.length; index += 1) {
+        const move = record.moves[index];
+        if (!move || typeof move !== 'object' || move.ply !== index + 1) return false;
+        if (move.playerIndex !== 0 && move.playerIndex !== 1) return false;
+        if (!Number.isInteger(move.column) || move.column < 0 || move.column >= 5) return false;
+        if (!Number.isInteger(move.row) || move.row < 0 || move.row >= 3) return false;
+        if (!move.card || typeof move.card !== 'object') return false;
+        if (typeof move.card.id !== 'string' || move.card.id !== `${move.card.suit}-${move.card.rank}`) return false;
+        if (!SUITS.includes(move.card.suit) || !RANKS.includes(move.card.rank)) return false;
+        if (typeof move.card.isHidden !== 'boolean') return false;
+
+        const slotKey = `${move.playerIndex}-${move.row}-${move.column}`;
+        if (occupiedSlots.has(slotKey) || usedCards.has(move.card.id)) return false;
+        occupiedSlots.add(slotKey);
+        usedCards.add(move.card.id);
+        playerMoveCounts[move.playerIndex] += 1;
+    }
+
+    return playerMoveCounts[0] === 15 && playerMoveCounts[1] === 15;
+}
+
 const AI_PARAMETER_DEFAULTS = {
     trip_preference: 1,
     flush_preference: 1,
