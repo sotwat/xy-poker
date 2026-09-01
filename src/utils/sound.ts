@@ -58,43 +58,96 @@ export const playClickSound = () => {
 
 export const playCoinTossSound = () => {
     try {
-        const audioContext = getAudioContext();
-        
-        // Ringing sound
-        const osc1 = audioContext.createOscillator();
-        const osc2 = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(0.24, now);
+        master.connect(ctx.destination);
 
-        osc1.connect(gainNode);
-        osc2.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+        const playMetalPartial = (
+            start: number,
+            frequency: number,
+            duration: number,
+            volume: number,
+            type: OscillatorType,
+        ) => {
+            const oscillator = ctx.createOscillator();
+            const gain = ctx.createGain();
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(frequency, start);
+            oscillator.frequency.exponentialRampToValueAtTime(frequency * 0.985, start + duration);
+            gain.gain.setValueAtTime(0.0001, start);
+            gain.gain.exponentialRampToValueAtTime(volume, start + 0.004);
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+            oscillator.connect(gain).connect(master);
+            oscillator.start(start);
+            oscillator.stop(start + duration + 0.01);
+        };
 
-        osc1.type = 'triangle';
-        osc1.frequency.value = 1500;
-        
-        osc2.type = 'sine';
-        osc2.frequency.value = 2100;
+        const playContactNoise = (start: number, duration: number, frequency: number, volume: number) => {
+            const sampleCount = Math.ceil(ctx.sampleRate * duration);
+            const buffer = ctx.createBuffer(1, sampleCount, ctx.sampleRate);
+            const samples = buffer.getChannelData(0);
+            for (let index = 0; index < sampleCount; index++) {
+                const decay = 1 - index / sampleCount;
+                samples[index] = (Math.random() * 2 - 1) * decay;
+            }
 
-        // Base volume envelope
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2.0);
+            const source = ctx.createBufferSource();
+            const filter = ctx.createBiquadFilter();
+            const gain = ctx.createGain();
+            source.buffer = buffer;
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(frequency, start);
+            filter.Q.value = 2.6;
+            gain.gain.setValueAtTime(volume, start);
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+            source.connect(filter).connect(gain).connect(master);
+            source.start(start);
+            source.stop(start + duration);
+        };
 
-        // Flipping modulation effect
-        const lfo = audioContext.createOscillator();
-        lfo.type = 'sine';
-        lfo.frequency.value = 15; // 15 flips per second
-        const lfoGain = audioContext.createGain();
-        lfoGain.gain.value = 0.3; // Depth of modulation
-        lfo.connect(lfoGain);
-        lfoGain.connect(gainNode.gain);
+        // Fingernail/thumb flick and the first metallic launch ring.
+        playContactNoise(now, 0.028, 2400, 0.26);
+        playMetalPartial(now, 2250, 0.2, 0.22, 'triangle');
+        playMetalPartial(now + 0.006, 3375, 0.15, 0.1, 'sine');
 
-        osc1.start(audioContext.currentTime);
-        osc2.start(audioContext.currentTime);
-        lfo.start(audioContext.currentTime);
+        // Brief, separated edge sounds follow the visible 650 ms coin rotations.
+        const flipTimes = [0.18, 0.36, 0.53, 0.69, 0.84, 0.98];
+        const flipOscillator = ctx.createOscillator();
+        const flipGain = ctx.createGain();
+        flipOscillator.type = 'triangle';
+        flipGain.gain.setValueAtTime(0.0001, now);
+        flipTimes.forEach((offset, index) => {
+            const start = now + offset;
+            flipOscillator.frequency.setValueAtTime(index % 2 === 0 ? 1950 : 2320, start);
+            flipGain.gain.setValueAtTime(0.0001, start);
+            flipGain.gain.linearRampToValueAtTime(0.075, start + 0.003);
+            flipGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.034);
+        });
+        flipOscillator.connect(flipGain).connect(master);
+        flipOscillator.start(now + flipTimes[0] - 0.01);
+        flipOscillator.stop(now + flipTimes[flipTimes.length - 1] + 0.05);
 
-        osc1.stop(audioContext.currentTime + 2.0);
-        osc2.stop(audioContext.currentTime + 2.0);
-        lfo.stop(audioContext.currentTime + 2.0);
+        // Hard-surface landing: a small impact plus inharmonic coin-like ringing.
+        const landing = now + 1.12;
+        playContactNoise(landing, 0.045, 1750, 0.34);
+        playMetalPartial(landing, 1860, 0.46, 0.32, 'triangle');
+        playMetalPartial(landing + 0.004, 2840, 0.38, 0.17, 'sine');
+        playMetalPartial(landing + 0.008, 4210, 0.28, 0.08, 'sine');
+
+        const landingBody = ctx.createOscillator();
+        const landingBodyGain = ctx.createGain();
+        landingBody.type = 'sine';
+        landingBody.frequency.setValueAtTime(155, landing);
+        landingBody.frequency.exponentialRampToValueAtTime(72, landing + 0.12);
+        landingBodyGain.gain.setValueAtTime(0.22, landing);
+        landingBodyGain.gain.exponentialRampToValueAtTime(0.0001, landing + 0.13);
+        landingBody.connect(landingBodyGain).connect(master);
+        landingBody.start(landing);
+        landingBody.stop(landing + 0.14);
+
+        window.setTimeout(() => master.disconnect(), 1_700);
     } catch (error) {
         console.warn('Audio playback not supported:', error);
     }

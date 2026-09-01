@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09012319` (2026-09-01 23:19)
+- **Current Version:** `09012325` (2026-09-01 23:25)
 - **Status:** **Full local quality gate verified; deployment pending**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -89,11 +89,12 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v09012319** (2026-09-01): **Dual-Color X-Hand Showdown** - Preserved the gold X-hand identity while carrying the blue or red winner color through the background glow, diagonal panels, streaks, shards, card edges, hand banner, and winner badge.
-2. **v09012310** (2026-09-01): **Showdown Cut-In Overhaul** - Rebuilt showdown reveals with staggered left-to-right winning-card slides, finite diagonal cut-ins, speed lines, light shards, impact typography, synchronized spoken hand names, a lightweight synthesized stinger, a gold final X-hand climax, and reduced-motion fallbacks without video or bitmap effect assets.
-3. **v09012256** (2026-09-01): **Visible X-Hand Result** - Removed the nested result-table scroll trap so the final X-hand row is always rendered with both hand names and scores; short screens now scroll the complete result modal instead.
-4. **v09012249** (2026-09-01): **Authenticated Home Header Fix** - Moved signed-in email and player ID into the responsive player block, removed duplicate header metadata, and constrained long account identifiers to prevent overlap with the version label.
-5. **v09012237** (2026-09-01): **GTO Runtime AI** - Connected XY-GTO-A1 to production move selection with a 72% normalized GTO prior, GTO-derived turn-order and concealment behavior, belief sampling for both opponent hands and hidden board cards, canonical unseen-deck identities, hidden-information-safe root evaluation, fair timeout fallback, and full-game legality regression tests.
+1. **v09012325** (2026-09-01): **Physical Coin-Toss Sound** - Replaced the continuous electronic LFO tone with a timed thumb flick, short edge-flip ticks, and a hard-surface landing built from inharmonic metal partials and tiny filtered contact-noise bursts synchronized to the 1.4-second toss.
+2. **v09012319** (2026-09-01): **Dual-Color X-Hand Showdown** - Preserved the gold X-hand identity while carrying the blue or red winner color through the background glow, diagonal panels, streaks, shards, card edges, hand banner, and winner badge.
+3. **v09012310** (2026-09-01): **Showdown Cut-In Overhaul** - Rebuilt showdown reveals with staggered left-to-right winning-card slides, finite diagonal cut-ins, speed lines, light shards, impact typography, synchronized spoken hand names, a lightweight synthesized stinger, a gold final X-hand climax, and reduced-motion fallbacks without video or bitmap effect assets.
+4. **v09012256** (2026-09-01): **Visible X-Hand Result** - Removed the nested result-table scroll trap so the final X-hand row is always rendered with both hand names and scores; short screens now scroll the complete result modal instead.
+5. **v09012249** (2026-09-01): **Authenticated Home Header Fix** - Moved signed-in email and player ID into the responsive player block, removed duplicate header metadata, and constrained long account identifiers to prevent overlap with the version label.
+6. **v09012237** (2026-09-01): **GTO Runtime AI** - Connected XY-GTO-A1 to production move selection with a 72% normalized GTO prior, GTO-derived turn-order and concealment behavior, belief sampling for both opponent hands and hidden board cards, canonical unseen-deck identities, hidden-information-safe root evaluation, fair timeout fallback, and full-game legality regression tests.
 2. **v09012214** (2026-09-01): **Approximate GTO / 近似GTO** - Added a reproducible PSRO-style self-play solver, paired seat/deal variance reduction, regret-matching+ meta-game solution, independent best-response validation, machine-readable results, unit tests, and a Japanese methodology/results report with explicit exact-solution limitations.
 3. **v09012158** (2026-09-01): **Game Records / 棋譜** - Added compact 30-move match recording for AI, ranked, and private games; resilient local storage plus authenticated Supabase sync; server-side payload validation; owner-only RLS; and a responsive My Page archive with move-by-move board replay.
 1. **v09011603** (2026-09-01): **Developer Support Link** - Added a restrained, responsive OFUSE support button to the home footer with safe external-link behavior and keyboard focus styling.
