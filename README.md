@@ -69,14 +69,14 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09012158` (2026-09-01 21:58)
+- **Current Version:** `09012214` (2026-09-01 22:14)
 - **Status:** **Full local quality gate verified; deployment pending**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ 320×568, 390×844, 768×1024, and landscape layouts checked
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 15 passing
+    - Automated tests: ✅ 17 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~275 kB
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
     - Deployment: ⏳ Not run for this local UI overhaul
@@ -89,7 +89,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v09012158** (2026-09-01): **Game Records / 棋譜** - Added compact 30-move match recording for AI, ranked, and private games; resilient local storage plus authenticated Supabase sync; server-side payload validation; owner-only RLS; and a responsive My Page archive with move-by-move board replay.
+1. **v09012214** (2026-09-01): **Approximate GTO / 近似GTO** - Added a reproducible PSRO-style self-play solver, paired seat/deal variance reduction, regret-matching+ meta-game solution, independent best-response validation, machine-readable results, unit tests, and a Japanese methodology/results report with explicit exact-solution limitations.
+2. **v09012158** (2026-09-01): **Game Records / 棋譜** - Added compact 30-move match recording for AI, ranked, and private games; resilient local storage plus authenticated Supabase sync; server-side payload validation; owner-only RLS; and a responsive My Page archive with move-by-move board replay.
 1. **v09011603** (2026-09-01): **Developer Support Link** - Added a restrained, responsive OFUSE support button to the home footer with safe external-link behavior and keyboard focus styling.
 2. **v09011601** (2026-09-01): **Repository Hardening & Performance** - Cleared all repository lint debt, added reducer/server tests and a single `npm run check` quality gate, split React/Supabase/realtime/lazy feature bundles to remove the 500 kB warning, upgraded dependencies to zero known audit vulnerabilities, removed committed `node_modules` and obsolete mutation scripts/assets, hardened multiplayer input/auth/rate limits and server-authoritative rewards, locked sensitive Supabase writes behind the backend, added Cloudflare Pages caching/security headers, and made setup/deployment scripts portable and fail-safe.
 3. **v09011511** (2026-09-01): **Minimal Responsive UI Overhaul** - Rebuilt the home, online lobby, game board, rules, authentication, scoring, and showdown surfaces around a restrained responsive design. Removed the home character and excessive visual effects, fixed duplicate long-press/click placement behavior, shortened and stabilized dice/coin animations with timer cleanup and reduced-motion support, added keyboard-accessible board columns, and verified the core flow across phone, tablet, and landscape layouts.

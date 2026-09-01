@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-01T13:13:08.288Z",
+  "solver": {
+    "method": "PSRO-style response expansion + paired self-play payoff matrix + regret-matching+",
+    "utility": "+1 win, 0 draw, -1 loss",
+    "seed": 1482252367,
+    "pairedDealsPerCell": 600,
+    "probePairedDeals": 1500,
+    "searchDealsPerCell": 220,
+    "candidateDeals": 180,
+    "searchRoundsRequested": 4,
+    "regretIterations": 300000,
+    "runtimeSeconds": 28.22
+  },
+  "strategies": [
+    {
+      "id": "balanced",
+      "name": "均衡型",
+      "description": "Y役、X役、列完成ボーナス、選択肢維持を同程度に評価する。",
+      "parameters": {
+        "yWeight": 1,
+        "xWeight": 1,
+        "tempoWeight": 1,
+        "diceWeight": 1,
+        "flexibilityWeight": 1,
+        "row3Delay": 1,
+        "concealment": 0.15,
+        "firstBias": 0,
+        "temperature": 0.025
+      },
+      "equilibriumProbability": 0,
+      "bestResponseValueAgainstMixture": -0.114167,
+      "responseStandardError": 0.033525
+    },
+    {
+      "id": "y_pressure",
+      "name": "Y役圧力型",
+      "description": "縦3枚役の完成度を最優先し、高い出目の列を強く争う。",
+      "parameters": {
+        "yWeight": 1.55,
+        "xWeight": 0.55,
+        "tempoWeight": 0.75,
+        "diceWeight": 1.35,
+        "flexibilityWeight": 0.65,
+        "row3Delay": 0.55,
+        "concealment": -0.2,
+        "firstBias": 0.2,
+        "temperature": 0.02
+      },
+      "equilibriumProbability": 0,
+      "bestResponseValueAgainstMixture": -0.114167,
+      "responseStandardError": 0.03406
+    },
+    {
+      "id": "x_architect",
+      "name": "X役構築型",
+      "description": "3段目の5枚役のペア、同スート、ストレート受けを優先する。",
+      "parameters": {
+        "yWeight": 0.65,
+        "xWeight": 1.8,
+        "tempoWeight": 0.7,
+        "diceWeight": 0.7,
+        "flexibilityWeight": 1.15,
+        "row3Delay": 1.25,
+        "concealment": 0,
+        "firstBias": -0.15,
+        "temperature": 0.02
+      },
+      "equilibriumProbability": 0,
+      "bestResponseValueAgainstMixture": -0.310833,
+      "responseStandardError": 0.031924
+    },
+    {
+      "id": "tempo_draw",
+      "name": "テンポ・ドロー型",
+      "description": "相手より先に列を埋め、追加ドローと手札選択肢を獲得する。",
+      "parameters": {
+        "yWeight": 0.75,
+        "xWeight": 0.75,
+        "tempoWeight": 1.9,
+        "diceWeight": 0.75,
+        "flexibilityWeight": 0.8,
+        "row3Delay": 0.2,
+        "concealment": -0.25,
+        "firstBias": 0.75,
+        "temperature": 0.03
+      },
+      "equilibriumProbability": 0,
+      "bestResponseValueAgainstMixture": -0.2625,
+      "responseStandardError": 0.032853
+    },
+    {
+      "id": "high_dice_control",
+      "name": "高出目支配型",
+      "description": "カード資源を高い出目の列へ集中し、低い列を捨て列として扱う。",
+      "parameters": {
+        "yWeight": 1.25,
+        "xWeight": 0.7,
+        "tempoWeight": 0.65,
+        "diceWeight": 1.9,
+        "flexibilityWeight": 0.7,
+        "row3Delay": 0.85,
+        "concealment": 0.1,
+        "firstBias": 0.1,
+        "temperature": 0.02
+      },
+      "equilibriumProbability": 0,
+      "bestResponseValueAgainstMixture": -0.071667,
+      "responseStandardError": 0.033566
+    },
+    {
+      "id": "concealment",
+      "name": "情報隠蔽型",
+      "description": "伏せ札を積極的に使い、強弱と消費カードの情報を隠す。",
+      "parameters": {
+        "yWeight": 0.95,
+        "xWeight": 0.95,
+        "tempoWeight": 0.85,
+        "diceWeight": 1.05,
+        "flexibilityWeight": 1,
+        "row3Delay": 1.05,
+        "concealment": 1.45,
+        "firstBias": -0.1,
+        "temperature": 0.04
+      },
+      "equilibriumProbability": 0,
+      "bestResponseValueAgainstMixture": -0.161667,
+      "responseStandardError": 0.033333
+    },
+    {
+      "id": "option_value",
+      "name": "選択肢温存型",
+      "description": "3段目の確定を遅らせ、複数の役への受けと高札を長く保持する。",
+      "parameters": {
+        "yWeight": 0.9,
+        "xWeight": 1.15,
+        "tempoWeight": 0.5,
+        "diceWeight": 0.9,
+        "flexibilityWeight": 1.75,
+        "row3Delay": 1.9,
+        "concealment": 0.25,
+        "firstBias": -0.55,
+        "temperature": 0.025
+      },
+      "equilibriumProbability": 1,
+      "bestResponseValueAgainstMixture": 0,
+      "responseStandardError": 0
+    },
+    {
+      "id": "reactive",
+      "name": "後攻対応型",
+      "description": "後攻を選びやすくし、相手の公開済み列に応じて資源配分を変える。",
+      "parameters": {
+        "yWeight": 1.05,
+        "xWeight": 0.9,
+        "tempoWeight": 0.55,
+        "diceWeight": 1.15,
+        "flexibilityWeight": 1.35,
+        "row3Delay": 1.35,
+        "concealment": -0.05,
+        "firstBias": -1.1,
+        "temperature": 0.02
+      },
+      "equilibriumProbability": 0,
+      "bestResponseValueAgainstMixture": -0.043333,
+      "responseStandardError": 0.033377
+    }
+  ],
+  "payoffMatrix": [
+    [
+      0,
+      -0.100833,
+      0.136667,
+      0.210833,
+      -0.025,
+      -0.009167,
+      -0.114167,
+      -0.148333
+    ],
+    [
+      0.100833,
+      0,
+      0.231667,
+      0.239167,
+      0.020833,
+      -0.018333,
+      -0.114167,
+      -0.0575
+    ],
+    [
+      -0.136667,
+      -0.231667,
+      0,
+      0.0125,
+      -0.2075,
+      -0.1375,
+      -0.310833,
+      -0.215833
+    ],
+    [
+      -0.210833,
+      -0.239167,
+      -0.0125,
+      0,
+      -0.1875,
+      -0.1475,
+      -0.2625,
+      -0.2125
+    ],
+    [
+      0.025,
+      -0.020833,
+      0.2075,
+      0.1875,
+      0,
+      -0.030833,
+      -0.071667,
+      -0.073333
+    ],
+    [
+      0.009167,
+      0.018333,
+      0.1375,
+      0.1475,
+      0.030833,
+      0,
+      -0.161667,
+      -0.19
+    ],
+    [
+      0.114167,
+      0.114167,
+      0.310833,
+      0.2625,
+      0.071667,
+      0.161667,
+      0,
+      0.043333
+    ],
+    [
+      0.148333,
+      0.0575,
+      0.215833,
+      0.2125,
+      0.073333,
+      0.19,
+      -0.043333,
+      0
+    ]
+  ],
+  "payoffStandardErrors": [
+    [
+      0,
+      0.035587,
+      0.033164,
+      0.034209,
+      0.034994,
+      0.035097,
+      0.033525,
+      0.034177
+    ],
+    [
+      0.035587,
+      0,
+      0.033353,
+      0.033773,
+      0.035009,
+      0.035514,
+      0.03406,
+      0.03464
+    ],
+    [
+      0.033164,
+      0.033353,
+      0,
+      0.034776,
+      0.033316,
+      0.034706,
+      0.031924,
+      0.03287
+    ],
+    [
+      0.034209,
+      0.033773,
+      0.034776,
+      0,
+      0.034796,
+      0.034577,
+      0.032853,
+      0.0337
+    ],
+    [
+      0.034994,
+      0.035009,
+      0.033316,
+      0.034796,
+      0,
+      0.035195,
+      0.033566,
+      0.03389
+    ],
+    [
+      0.035097,
+      0.035514,
+      0.034706,
+      0.034577,
+      0.035195,
+      0,
+      0.033333,
+      0.033748
+    ],
+    [
+      0.033525,
+      0.03406,
+      0.031924,
+      0.032853,
+      0.033566,
+      0.033333,
+      0,
+      0.033377
+    ],
+    [
+      0.034177,
+      0.03464,
+      0.03287,
+      0.0337,
+      0.03389,
+      0.033748,
+      0.033377,
+      0
+    ]
+  ],
+  "populationExploitability": 0,
+  "populationExploitabilityUpper95": 0.022085,
+  "bestResponse": "option_value",
+  "responseSearch": [
+    {
+      "round": 1,
+      "testedCandidates": 40,
+      "candidateId": "response_r1_15",
+      "exploration": {
+        "mean": 0.166667,
+        "standardError": 0.058827,
+        "pairedDeals": 180
+      },
+      "confirmation": {
+        "mean": -0.000667,
+        "standardError": 0.020829,
+        "pairedDeals": 1500
+      },
+      "lower95": -0.041491,
+      "accepted": false
+    }
+  ],
+  "outOfPopulationProbes": [
+    {
+      "id": "probe_y_extreme",
+      "name": "検証用・極端Y型",
+      "mean": -0.102333,
+      "standardError": 0.021377,
+      "pairedDeals": 1500,
+      "upper95": -0.060434
+    },
+    {
+      "id": "probe_x_extreme",
+      "name": "検証用・極端X型",
+      "mean": -0.529,
+      "standardError": 0.017243,
+      "pairedDeals": 1500,
+      "upper95": -0.495205
+    },
+    {
+      "id": "probe_all_hidden",
+      "name": "検証用・最大隠蔽型",
+      "mean": -0.212667,
+      "standardError": 0.02237,
+      "pairedDeals": 1500,
+      "upper95": -0.168822
+    }
+  ],
+  "equilibriumPlayStudy": {
+    "games": 1500,
+    "firstPlayerUtility": 0.002667,
+    "firstPlayerUtilityStandardError": 0.025219,
+    "firstWinRate": 0.478,
+    "secondWinRate": 0.475333,
+    "drawRate": 0.046667,
+    "chooserChoseFirstRate": 0.147333,
+    "averageScore": 11.925,
+    "averageHiddenCards": 2.962333,
+    "averageBonusDraws": 2.5
+  },
+  "limitations": [
+    "This is an approximate equilibrium over the declared policy population, not an exact equilibrium of the full extensive-form game.",
+    "The exploitability value only tests best responses inside the population; probe policies are additional stress tests, not an exhaustive best response.",
+    "Policies never inspect the identity of an opponent hidden card, but they use public placement and hidden/visible status."
+  ]
+}
