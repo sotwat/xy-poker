@@ -116,10 +116,6 @@
     font-size: 3.2cqw !important;
 }
 
-.opponent-slot .card {
-    transform: rotate(180deg) !important;
-}
-
 /* Board Skins (RESTORED BEAUTIFUL ORIGINAL BACKS) */
 .board-theme-classic {
     background: #27ae60 !important; /* Green felt board */

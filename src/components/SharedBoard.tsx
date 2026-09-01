@@ -85,6 +85,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         // If bottomPlayerId is 'p2', then Top is P1.
         const topPlayerId = bottomPlayerId === 'p1' ? 'p2' : 'p1';
 
+        // Both players stack from the dice outwards. The top player's logical
+        // row 0 therefore belongs at the bottom of this group, next to the die.
         const opponentCards = [opponentBoard[2][colIndex], opponentBoard[1][colIndex], opponentBoard[0][colIndex]];
         const playerCards = [playerBoard[0][colIndex], playerBoard[1][colIndex], playerBoard[2][colIndex]];
 

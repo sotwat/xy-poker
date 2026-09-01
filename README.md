@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09012123` (2026-09-01 21:23)
+- **Current Version:** `09012130` (2026-09-01 21:30)
 - **Status:** **Full local quality gate verified; deployment pending**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working

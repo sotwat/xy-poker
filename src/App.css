@@ -1051,10 +1051,6 @@ body {
   animation: none !important;
 }
 
-.opponent-slots {
-  transform: rotate(180deg) !important;
-}
-
 .card-slot {
   width: auto !important;
   height: clamp(47px, 8.2cqh, 70px) !important;
