@@ -165,8 +165,12 @@ export const GameResult: React.FC<GameResultProps> = ({
 
                     <div className="table-divider"></div>
 
-                    <div className="table-row x-hand-row">
-                        <div>X-Hand</div>
+                    <div
+                        className="table-row x-hand-row"
+                        role="row"
+                        aria-label={`X Hand: ${p1Name} ${getHandName(p1XRes.type)} ${p1XScore} points; ${p2Name} ${getHandName(p2XRes.type)} ${p2XScore} points`}
+                    >
+                        <div className="x-hand-label">X Hand</div>
                         <div className={`hand-name ${xWinner === 'p1' ? 'p1-text' : ''}`}>
                             {getHandName(p1XRes.type)} <span className="score-detail">({p1XScore})</span>
                         </div>

@@ -341,8 +341,30 @@
 
 /* Scroll area container inside result modal */
 .results-table {
-    overflow-y: auto !important;
-    max-height: 250px !important; /* Prevent table from pushing buttons out of view */
+    flex: 0 0 auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    transform: none !important;
+}
+
+.x-hand-row {
+    border-bottom: 0 !important;
+}
+
+.x-hand-label {
+    color: #f0c96b;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.score-detail {
+    color: #8d98a6;
+    font-variant-numeric: tabular-nums;
+}
+
+.final-scores,
+.button-group {
+    transform: none !important;
 }
 
 /* Button Group Styling Unification */
