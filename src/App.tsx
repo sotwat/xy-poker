@@ -682,8 +682,6 @@ function App() {
   // Lobby view is ONLY for Online mode initialization
   // Local mode setup is handled by the game board view (with setup overlay)
   const isLobbyView = mode === 'online' && !isOnlineGame && !isQuickMatch;
-  const showVersion = isLobbyView || (mode === 'local' && phase === 'setup');
-
   const p1DisplayName = isOnlineGame && playerRole === 'guest' ? opponentName : playerName;
   const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
 
@@ -1473,7 +1471,6 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v09012237</span>}
         </div>
 
         <button
@@ -1490,14 +1487,11 @@ function App() {
           <div className="auth-status">
             {session ? (
               <div className="auth-user">
-                <div className="auth-user-copy">
-                  <span>{session.user.email}</span>
-                  <small>ID: {session.user.id.slice(0, 8)}</small>
-                </div>
                 <button
                   type="button"
                   onClick={() => setShowMyPage(true)}
                   className="btn-account"
+                  aria-label={`Account: ${session.user.email ?? session.user.id}`}
                 >
                   Account
                 </button>
@@ -1634,6 +1628,11 @@ function App() {
                           <div className="home-player-copy">
                             <span className="home-eyebrow">PLAYER</span>
                             <strong>{playerName || 'Guest'}</strong>
+                            {session?.user.email && (
+                              <span className="home-player-email" title={session.user.email}>
+                                {session.user.email}
+                              </span>
+                            )}
                             <span className="home-player-id">
                               {session ? `ID ${session.user.id.slice(0, 8)}` : 'Local guest'}
                             </span>
@@ -1732,7 +1731,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09012237</div>
+                          <div className="home-version">v09012249</div>
                         </div>
                       </div>
                     )}

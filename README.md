@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09012237` (2026-09-01 22:37)
+- **Current Version:** `09012249` (2026-09-01 22:49)
 - **Status:** **Full local quality gate verified; deployment pending**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -89,7 +89,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v09012237** (2026-09-01): **GTO Runtime AI** - Connected XY-GTO-A1 to production move selection with a 72% normalized GTO prior, GTO-derived turn-order and concealment behavior, belief sampling for both opponent hands and hidden board cards, canonical unseen-deck identities, hidden-information-safe root evaluation, fair timeout fallback, and full-game legality regression tests.
+1. **v09012249** (2026-09-01): **Authenticated Home Header Fix** - Moved signed-in email and player ID into the responsive player block, removed duplicate header metadata, and constrained long account identifiers to prevent overlap with the version label.
+2. **v09012237** (2026-09-01): **GTO Runtime AI** - Connected XY-GTO-A1 to production move selection with a 72% normalized GTO prior, GTO-derived turn-order and concealment behavior, belief sampling for both opponent hands and hidden board cards, canonical unseen-deck identities, hidden-information-safe root evaluation, fair timeout fallback, and full-game legality regression tests.
 2. **v09012214** (2026-09-01): **Approximate GTO / 近似GTO** - Added a reproducible PSRO-style self-play solver, paired seat/deal variance reduction, regret-matching+ meta-game solution, independent best-response validation, machine-readable results, unit tests, and a Japanese methodology/results report with explicit exact-solution limitations.
 3. **v09012158** (2026-09-01): **Game Records / 棋譜** - Added compact 30-move match recording for AI, ranked, and private games; resilient local storage plus authenticated Supabase sync; server-side payload validation; owner-only RLS; and a responsive My Page archive with move-by-move board replay.
 1. **v09011603** (2026-09-01): **Developer Support Link** - Added a restrained, responsive OFUSE support button to the home footer with safe external-link behavior and keyboard focus styling.
