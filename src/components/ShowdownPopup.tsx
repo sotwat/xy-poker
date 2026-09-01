@@ -20,36 +20,87 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
     if (!data) return null;
 
     const revealedCards = data.cards?.map(card => ({ ...card, isHidden: false })) ?? [];
+    const accentClass = `showdown-${data.winner}`;
+    const handKindClass = data.isXHand ? 'showdown-x-hand' : 'showdown-y-hand';
     const winnerLabel = data.winner === 'draw'
         ? 'Draw'
         : data.winner === 'p1'
             ? 'Blue wins'
             : 'Red wins';
+    const contextLabel = data.isXHand ? 'FINAL X-HAND' : `DICE ${data.diceValue ?? '—'}`;
+    const announcement = `${contextLabel}. ${data.text}. ${winnerLabel}.`;
 
     return (
         <div
-            className="showdown-popup-overlay"
+            className={`showdown-popup-overlay ${accentClass} ${handKindClass}`}
             role="status"
             aria-live="assertive"
             aria-atomic="true"
+            aria-label={announcement}
             key={data.id}
         >
-            <div className={`showdown-popup-content popup-${data.winner}`}>
-                <span className="popup-subtitle">
-                    {data.isXHand ? 'X-HAND' : `DICE ${data.diceValue ?? '—'}`}
-                </span>
-                <strong className="popup-title">{data.text}</strong>
-                <span className="popup-winner">{winnerLabel}</span>
+            <div className="showdown-flash" aria-hidden="true" />
+            <div className="showdown-cut-panel panel-back" aria-hidden="true" />
+            <div className="showdown-cut-panel panel-front" aria-hidden="true" />
+            <div className="showdown-speed-field" aria-hidden="true" />
+            <div className="showdown-impact-label" aria-hidden="true">SHOWDOWN</div>
+
+            <div className="showdown-streaks" aria-hidden="true">
+                {Array.from({ length: 7 }, (_, index) => (
+                    <span
+                        className="showdown-streak"
+                        key={index}
+                        style={{
+                            '--streak-top': `${15 + index * 10}%`,
+                            '--streak-delay': `${120 + index * 55}ms`,
+                        } as React.CSSProperties}
+                    />
+                ))}
+            </div>
+
+            <div className="showdown-shards" aria-hidden="true">
+                {Array.from({ length: 12 }, (_, index) => (
+                    <span
+                        className="showdown-shard"
+                        key={index}
+                        style={{
+                            '--shard-angle': `${index * 30}deg`,
+                            '--shard-delay': `${390 + index * 11}ms`,
+                        } as React.CSSProperties}
+                    />
+                ))}
+            </div>
+
+            <div className="showdown-popup-content">
+                <div className="showdown-context-line">
+                    <span className="showdown-context-rule" aria-hidden="true" />
+                    <span className="popup-subtitle">{contextLabel}</span>
+                    <span className="showdown-context-rule" aria-hidden="true" />
+                </div>
 
                 {revealedCards.length > 0 && (
                     <div className="showdown-cards-container" aria-label="Winning cards">
                         {revealedCards.map((card, index) => (
-                            <div className="showdown-card-wrapper" key={card.id || index}>
+                            <div
+                                className="showdown-card-wrapper"
+                                key={card.id || index}
+                                style={{
+                                    '--card-delay': `${220 + index * 105}ms`,
+                                    '--card-edge-delay': `${600 + index * 105}ms`,
+                                } as React.CSSProperties}
+                            >
                                 <Card card={card} size="normal" isHidden={false} />
                             </div>
                         ))}
                     </div>
                 )}
+
+                <div className="showdown-title-cut">
+                    <span className="showdown-title-kicker" aria-hidden="true">SHOWDOWN</span>
+                    <strong className="popup-title">{data.text}</strong>
+                </div>
+
+                <span className="popup-winner">{winnerLabel}</span>
             </div>
         </div>
     );

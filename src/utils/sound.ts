@@ -124,6 +124,71 @@ export const playSuccessSound = () => {
     }
 };
 
+export const playShowdownStinger = (isFinalHand = false) => {
+    try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(0.22, now);
+        master.connect(ctx.destination);
+
+        // A short upward sweep supplies the cut-in motion without loading audio assets.
+        const sweep = ctx.createOscillator();
+        const sweepFilter = ctx.createBiquadFilter();
+        const sweepGain = ctx.createGain();
+        sweep.type = 'sawtooth';
+        sweep.frequency.setValueAtTime(110, now);
+        sweep.frequency.exponentialRampToValueAtTime(isFinalHand ? 2100 : 1450, now + 0.28);
+        sweepFilter.type = 'bandpass';
+        sweepFilter.frequency.setValueAtTime(520, now);
+        sweepFilter.frequency.exponentialRampToValueAtTime(2600, now + 0.28);
+        sweepFilter.Q.value = 1.4;
+        sweepGain.gain.setValueAtTime(0.0001, now);
+        sweepGain.gain.exponentialRampToValueAtTime(0.3, now + 0.05);
+        sweepGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.34);
+        sweep.connect(sweepFilter).connect(sweepGain).connect(master);
+        sweep.start(now);
+        sweep.stop(now + 0.36);
+
+        // A compact sub hit gives the title cut-in weight.
+        const impact = ctx.createOscillator();
+        const impactGain = ctx.createGain();
+        impact.type = 'sine';
+        impact.frequency.setValueAtTime(isFinalHand ? 145 : 118, now + 0.28);
+        impact.frequency.exponentialRampToValueAtTime(42, now + 0.64);
+        impactGain.gain.setValueAtTime(0.0001, now);
+        impactGain.gain.setValueAtTime(0.72, now + 0.28);
+        impactGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+        impact.connect(impactGain).connect(master);
+        impact.start(now + 0.28);
+        impact.stop(now + 0.72);
+
+        // Pachinko-like metallic pings; finite oscillators keep CPU use predictable.
+        const chimeFrequencies = isFinalHand
+            ? [880, 1174.66, 1567.98, 2093]
+            : [784, 1046.5, 1567.98];
+
+        chimeFrequencies.forEach((frequency, index) => {
+            const chime = ctx.createOscillator();
+            const chimeGain = ctx.createGain();
+            const start = now + 0.34 + index * 0.055;
+            chime.type = index % 2 === 0 ? 'triangle' : 'sine';
+            chime.frequency.setValueAtTime(frequency, start);
+            chime.frequency.exponentialRampToValueAtTime(frequency * 1.04, start + 0.22);
+            chimeGain.gain.setValueAtTime(0.0001, start);
+            chimeGain.gain.exponentialRampToValueAtTime(0.22, start + 0.015);
+            chimeGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.52);
+            chime.connect(chimeGain).connect(master);
+            chime.start(start);
+            chime.stop(start + 0.54);
+        });
+
+        window.setTimeout(() => master.disconnect(), 1_200);
+    } catch (error) {
+        console.warn('Showdown sound playback failed:', error);
+    }
+};
+
 // Helper to get voices robustly
 let cachedVoices: SpeechSynthesisVoice[] = [];
 

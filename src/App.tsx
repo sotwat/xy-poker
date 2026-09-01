@@ -26,7 +26,7 @@ import {
 import { supabase, fetchGlobalAiParameters, updateGlobalAiParameters } from './supabase';
 import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS, setGlobalAiParams } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
-import { playClickSound, playSuccessSound, playCoinTossSound, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
+import { playClickSound, playSuccessSound, playCoinTossSound, playShowdownStinger, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
 import './App.css';
 
@@ -830,6 +830,23 @@ function App() {
     const runId = ++showdownRunRef.current;
     const isCurrentRun = () => showdownRunRef.current === runId;
     const wait = (duration: number) => new Promise<void>(resolve => window.setTimeout(resolve, duration));
+    const presentShowdown = async (handName: string | null, isFinalHand: boolean) => {
+      playShowdownStinger(isFinalHand);
+      const minimumDuration = isFinalHand ? 2600 : 2200;
+
+      if (!handName) {
+        await wait(minimumDuration);
+        return;
+      }
+
+      await Promise.all([
+        (async () => {
+          await wait(isFinalHand ? 720 : 620);
+          if (isCurrentRun()) await speakText(handName);
+        })(),
+        wait(minimumDuration),
+      ]);
+    };
 
     setRevealedCols([]);
     setShowXHand(false);
@@ -881,8 +898,6 @@ function App() {
     else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type, cards: p2.board[2] as Card[] };
 
     for (let currentStep = 0; currentStep <= 5; currentStep++) {
-      playClickSound();
-
       if (currentStep <= 4) {
         const currentCol = orderedColIndices[currentStep];
         setRevealedCols(prev => [...prev, currentCol]);
@@ -897,14 +912,7 @@ function App() {
           cards: res.cards
         });
 
-        if (res.winner !== 'draw' && res.type) {
-          await Promise.all([
-            speakText(getReadableHandName(res.type)),
-            wait(2200),
-          ]);
-        } else {
-          await wait(2200);
-        }
+        await presentShowdown(res.winner !== 'draw' && res.type ? getReadableHandName(res.type) : null, false);
       } else if (currentStep === 5) {
         setShowXHand(true);
         
@@ -916,14 +924,7 @@ function App() {
           cards: rowResult.cards
         });
 
-        if (rowResult.winner !== 'draw' && rowResult.type) {
-          await Promise.all([
-            speakText(getReadableHandName(rowResult.type)),
-            wait(2200),
-          ]);
-        } else {
-          await wait(2200);
-        }
+        await presentShowdown(rowResult.winner !== 'draw' && rowResult.type ? getReadableHandName(rowResult.type) : null, true);
       }
 
       if (!isCurrentRun()) return;
@@ -1731,7 +1732,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09012256</div>
+                          <div className="home-version">v09012310</div>
                         </div>
                       </div>
                     )}
