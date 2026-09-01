@@ -1375,7 +1375,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v09012036</span>}
+          {showVersion && <span className="version">v09012057</span>}
         </div>
 
         <button
@@ -1634,7 +1634,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09012036</div>
+                          <div className="home-version">v09012057</div>
                         </div>
                       </div>
                     )}

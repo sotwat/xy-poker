@@ -1,86 +1,34 @@
 .card {
   width: 12.5cqw;
   height: 18.75cqw;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #ccc;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 4px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s;
-  user-select: none;
   position: relative;
-  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-.card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 30%,
-    rgba(255, 255, 255, 0.8) 50%,
-    rgba(255, 255, 255, 0) 70%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  background-size: 200% 100%;
-  background-position: -50% 0;
-  pointer-events: none;
-  z-index: 5;
-  animation: shine 0.6s ease-in-out forwards;
-}
-
-@keyframes popIn {
-  0% { transform: scale(0.7) translateY(15px); opacity: 0; box-shadow: 0 0 0 rgba(0, 242, 254, 0); }
-  50% { transform: scale(1.06) translateY(-4px); box-shadow: 0 0 20px rgba(0, 242, 254, 0.7); }
-  100% { transform: scale(1) translateY(0); opacity: 1; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-}
-
-@keyframes shine {
-  0% {
-    background-position: -50% 0;
-  }
-  100% {
-    background-position: 150% 0;
-  }
+  overflow: hidden;
+  container-type: size;
+  padding: 0;
+  border: 1px solid #b9b7b1;
+  border-radius: 5px;
+  background: #fffefa;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 24%);
+  font-family: Georgia, "Times New Roman", serif;
+  cursor: pointer;
+  transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  user-select: none;
 }
 
 .card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 10;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgb(0 0 0 / 30%);
 }
 
 .card.selected {
-  border: 2px solid #007bff;
-  transform: translateY(-12px) scale(1.05);
-  box-shadow: 0 0 20px rgba(0, 123, 255, 0.6);
+  border: 2px solid #4f8cff;
+  transform: translateY(-6px);
+  box-shadow: 0 5px 14px rgb(0 0 0 / 34%);
   z-index: 10;
 }
 
 /* CARD SKINS */
-
-/* Base hidden card style overrides based on skin */
-.card.hidden {
-  border: 2px solid #fff;
-  background: #333;
-  /* Fallback */
-}
-
-/* 1. Classic */
-.card-back-classic .card-back {
-  background: repeating-linear-gradient(45deg, #2c3e50, #2c3e50 10px, #34495e 10px, #34495e 20px);
-}
 
 /* 2. Red Modern */
 .card-back-red-modern {
@@ -242,77 +190,14 @@
   }
 }
 
-.card.hearts,
-.card.diamonds {
-  color: #e74c3c;
-}
-
-.card.clubs,
-.card.spades {
-  color: #2c3e50;
-}
-
 .card.joker {
   color: #8e44ad;
-}
-
-.card-top,
-.card-bottom {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: clamp(8px, 1.1cqw, 11px);
-  line-height: 1;
-  min-width: 0;
-}
-
-.card-bottom {
-  transform: rotate(180deg);
-}
-
-.card-center {
-  font-size: clamp(14px, 2.3cqw, 22px);
-  text-align: center;
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 0;
-  line-height: 1;
 }
 
 .card .rank,
 .card .suit {
   line-height: 1;
   white-space: nowrap;
-}
-
-.card .rank {
-  font-size: inherit;
-}
-
-.card .suit {
-  font-size: inherit;
-}
-
-@media (max-width: 600px) {
-  .card {
-    padding: 2px;
-    /* Reduced padding */
-    border-radius: 4px;
-    /* Smaller radius */
-  }
-
-  .card-top,
-  .card-bottom {
-    font-size: 10px;
-    /* Smaller corner text */
-  }
-
-  .card-center {
-    font-size: 16px;
-    /* Smaller center text */
-  }
 }
 
 /* Peek overlay for temporarily revealed hidden cards */
@@ -337,47 +222,165 @@
 .card.small {
   width: 36px;
   height: 54px;
-  padding: 2px;
   border-radius: 4px;
-}
-
-.card.small .card-top,
-.card.small .card-bottom {
-  font-size: 8px;
-}
-
-.card.small .card-center {
-  font-size: 16px;
 }
 
 /* XS SIZE VARIANT (Extra Small) */
 .card.xs {
   width: 30px;
   height: 45px;
-  padding: 1px;
   border-radius: 3px;
 }
 
-.card.xs .card-top,
-.card.xs .card-bottom {
-  font-size: 7px;
+/* Conventional playing-card face */
+.card.hearts,
+.card.diamonds {
+  color: #c52333;
 }
 
-.card.xs .card-center {
-  font-size: 12px;
+.card.clubs,
+.card.spades {
+  color: #17191c;
 }
 
-/* Extra accessibility sizes for hand cards to make ranks and suits extremely readable */
-.hand .card {
-  padding: 6px !important;
+.card-index {
+  position: absolute;
+  z-index: 3;
+  top: 1.5%;
+  left: 6%;
+  font-size: min(46cqw, 31cqh);
+  font-weight: 600;
+  letter-spacing: -0.09em;
+  line-height: 1;
 }
 
-.hand .card .card-top,
-.hand .card .card-bottom {
-  font-size: 12px !important;
-  font-weight: 700 !important;
+.card-index .rank {
+  display: block;
+  min-width: 0.7em;
+  text-align: left;
 }
 
-.hand .card .card-center {
-  font-size: 28px !important;
+.card-art {
+  position: absolute;
+  inset: 25% 4% 2% 12%;
+  display: flex;
+  place-items: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.large-suit {
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: min(68cqw, 48cqh);
+  line-height: 0.9;
+}
+
+.court-art {
+  inset: 20% 2% 0 18%;
+  overflow: hidden;
+}
+
+.court-portrait {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.court-frame {
+  fill: #f2e8d1;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.court-face {
+  fill: #f7d8b5;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+.court-hair {
+  fill: #28384d;
+  stroke: currentColor;
+  stroke-width: 1.4;
+}
+
+.court-robe {
+  fill: #355f91;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.court-accent {
+  fill: #d3a640;
+  stroke: currentColor;
+  stroke-width: 1.3;
+}
+
+.court-detail {
+  fill: none;
+  stroke: #fffefa;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card.hearts .court-robe,
+.card.diamonds .court-robe {
+  fill: #bd3b4a;
+}
+
+.card.hearts .court-hair,
+.card.diamonds .court-hair {
+  fill: #523241;
+}
+
+.court-suit-mark {
+  position: absolute;
+  right: 2%;
+  bottom: 1%;
+  z-index: 2;
+  padding: 0.02em 0.08em;
+  background: #fffefa;
+  font-size: min(27cqw, 18cqh);
+  line-height: 1;
+}
+
+.card.hidden {
+  padding: 3px;
+  border: 1px solid #b9b7b1;
+  background: #fffefa;
+}
+
+.card-back {
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 72%), inset 0 0 0 3px rgb(20 31 51 / 46%);
+}
+
+.card-back-classic .card-back {
+  background-color: #233b66;
+  background-image:
+    linear-gradient(45deg, rgb(255 255 255 / 18%) 25%, transparent 25%, transparent 75%, rgb(255 255 255 / 18%) 75%),
+    linear-gradient(-45deg, rgb(255 255 255 / 13%) 25%, transparent 25%, transparent 75%, rgb(255 255 255 / 13%) 75%);
+  background-position: 0 0, 4px 4px;
+  background-size: 8px 8px;
+}
+
+@container (max-width: 38px) {
+  .card-index {
+    top: 2%;
+    left: 7%;
+  }
+
+  .card-art {
+    inset: 26% 2% 2% 11%;
+  }
+
+  .court-art {
+    inset: 21% 0 0 18%;
+  }
+
+  .court-detail {
+    stroke-width: 4;
+  }
 }
