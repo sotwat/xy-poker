@@ -1,44 +1,66 @@
+.mypage-content.record-open {
+    gap: 0 !important;
+    padding: clamp(8px, 2.4cqw, 12px) !important;
+    overflow: hidden !important;
+}
+
+.mypage-content.record-open .mypage-body {
+    padding: 0;
+    overflow-y: auto !important;
+}
+
 .record-viewer {
-    display: grid;
-    gap: 12px;
+    width: 100%;
     min-width: 0;
+    display: grid;
+    gap: clamp(7px, 1.3cqh, 11px);
+    padding-bottom: 2px;
 }
 
 .record-viewer-header {
+    min-height: 38px;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 12px;
+    gap: 9px;
+    padding-right: 50px;
 }
 
-.record-viewer-header > div {
+.record-match-meta {
+    min-width: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    min-width: 0;
+    gap: 7px;
 }
 
-.record-viewer-header strong {
+.record-match-meta strong {
     overflow: hidden;
     color: #f5f7fa;
+    font-size: 0.82rem;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .record-viewer-header time {
     color: #87909c;
-    font-size: 0.72rem;
+    font-size: 0.64rem;
+    white-space: nowrap;
 }
 
 .record-back-btn,
 .record-controls button {
-    min-height: 36px;
-    padding: 7px 11px;
+    min-height: 34px;
+    padding: 6px 9px;
     border: 1px solid #39424d;
     border-radius: 7px;
     color: #dbe1e8;
     background: #151a20;
     cursor: pointer;
+}
+
+.record-back-btn {
+    min-height: 34px !important;
+    font-size: 0.7rem;
 }
 
 .record-back-btn:hover,
@@ -54,9 +76,9 @@
 
 .record-result {
     flex: 0 0 auto;
-    padding: 3px 7px;
+    padding: 3px 6px;
     border-radius: 999px;
-    font-size: 0.65rem;
+    font-size: 0.58rem;
     font-weight: 800;
     letter-spacing: 0.08em;
 }
@@ -66,55 +88,173 @@
 .record-result-draw { color: #c4cad1; background: #30363d; }
 
 .record-scoreline {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    color: #7f8994;
+    font-size: 0.7rem;
+    text-align: center;
+}
+
+.record-scoreline > span:first-child { text-align: right; }
+.record-scoreline > span:last-child { text-align: left; }
+
+.record-scoreline strong {
+    color: #f5f7fa;
+    font-size: 1rem;
+}
+
+.record-scoreline .record-player-1 strong { color: var(--player-one); }
+.record-scoreline .record-player-2 strong { color: var(--player-two); }
+
+.record-stage {
+    min-width: 0;
+    display: grid;
+    gap: 6px;
+}
+
+.record-hand-panel {
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+    padding: 5px 7px 6px;
+    border: 1px solid #29313a;
+    border-radius: 8px;
+    background: #0f1419;
+}
+
+.record-hand-panel.is-next {
+    border-color: rgb(255 255 255 / 28%);
+    background: #131a21;
+}
+
+.record-hand-heading {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 6px;
+    color: #77828d;
+    font-size: 0.58rem;
+}
+
+.record-hand-heading strong {
+    overflow: hidden;
+    color: #dce2e8;
+    font-size: 0.68rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.record-hand-heading em {
+    padding: 2px 5px;
+    border-radius: 999px;
+    color: #dfe8f2;
+    background: #28323d;
+    font-size: 0.52rem;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.record-player-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--player-one);
+}
+
+.record-player-2 .record-player-dot {
+    background: var(--player-two);
+}
+
+.record-hand-cards {
+    width: 100%;
+    min-width: 0;
+    height: clamp(43px, 6.4cqh, 56px);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    color: #9aa4af;
-    font-size: 0.78rem;
+    gap: clamp(2px, 0.8cqw, 4px);
 }
 
-.record-scoreline strong {
-    margin: 0 3px;
-    color: #f5f7fa;
-    font-size: 1.15rem;
+.record-hand-card {
+    flex: 1 1 0;
+    width: auto;
+    max-width: clamp(31px, 4.6cqh, 40px);
+    min-width: 0;
+    height: auto;
+    aspect-ratio: 5 / 7;
+}
+
+.record-hand-card .card {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+}
+
+.record-hands-unavailable {
+    padding: 8px 10px;
+    border: 1px solid #3b3327;
+    border-radius: 8px;
+    color: #c9b99e;
+    background: #1b1813;
+    font-size: 0.67rem;
+    text-align: center;
 }
 
 .record-board-wrap {
     container-type: size;
     width: 100%;
-    height: min(52vh, 560px);
-    min-height: 380px;
+    height: clamp(238px, 43cqh, 370px);
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     border: 1px solid #303842;
-    border-radius: 10px;
+    border-radius: 9px;
     background: #0c1014;
 }
 
 .record-board-wrap .shared-board {
-    width: min(100%, 700px) !important;
+    width: min(100%, 520px) !important;
+    max-width: 100% !important;
     max-height: 100% !important;
-    padding: clamp(6px, 1cqh, 10px) !important;
-    gap: clamp(5px, 1.3cqw, 10px) !important;
+    padding: clamp(5px, 1.5cqh, 9px) !important;
+    gap: clamp(4px, 1.4cqw, 8px) !important;
     box-shadow: none !important;
 }
 
+.record-board-wrap .shared-column {
+    gap: clamp(2px, 0.8cqh, 4px) !important;
+}
+
+.record-board-wrap .opponent-slots,
+.record-board-wrap .player-slots {
+    gap: clamp(2px, 0.7cqh, 4px) !important;
+}
+
 .record-board-wrap .card-slot {
-    height: clamp(42px, 8.2cqh, 62px) !important;
+    height: clamp(27px, 10.4cqh, 46px) !important;
+}
+
+.record-board-wrap .dice-row {
+    padding: 2px !important;
 }
 
 .record-board-wrap .dice-row .dice {
-    font-size: clamp(22px, 3.4cqw, 34px) !important;
+    font-size: clamp(10px, 4.2cqw, 18px) !important;
 }
 
 .record-move-copy {
-    min-height: 42px;
+    min-height: 43px;
     display: grid;
+    align-content: center;
     gap: 3px;
-    padding: 9px 11px;
+    padding: 7px 9px;
     border: 1px solid #303842;
     border-radius: 8px;
     background: #11161b;
@@ -122,44 +262,99 @@
 
 .record-move-copy span {
     color: #6f7b87;
-    font-size: 0.62rem;
+    font-size: 0.57rem;
     font-weight: 800;
     letter-spacing: 0.1em;
 }
 
 .record-move-copy strong {
+    overflow-wrap: anywhere;
     color: #dce2e8;
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     font-weight: 600;
 }
 
 .record-scrubber {
     width: 100%;
+    height: 22px;
+    min-height: 22px;
+    margin: 0;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-sizing: border-box;
     accent-color: #7d95ad;
 }
 
 .record-controls {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 7px;
+    gap: 6px;
 }
 
-@media (max-width: 620px) {
+.record-controls button {
+    padding-inline: 4px;
+    font-size: 0.67rem;
+}
+
+@container (max-width: 370px) {
+    .record-viewer {
+        gap: 7px;
+    }
+
     .record-viewer-header {
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto minmax(0, 1fr);
+        padding-right: 50px;
     }
 
     .record-viewer-header time {
         display: none;
     }
 
-    .record-board-wrap {
-        height: min(50vh, 480px);
-        min-height: 330px;
+    .record-match-meta {
+        gap: 5px;
     }
 
-    .record-controls button {
-        padding-inline: 5px;
-        font-size: 0.7rem;
+    .record-match-meta strong {
+        font-size: 0.72rem;
+    }
+
+    .record-hand-cards {
+        height: 43px;
+    }
+
+    .record-hand-card {
+        max-width: 31px;
+    }
+
+    .record-board-wrap {
+        height: clamp(230px, 42cqh, 278px);
+    }
+}
+
+@container (max-height: 650px) {
+    .record-viewer {
+        gap: 6px;
+    }
+
+    .record-hand-panel {
+        padding-block: 4px;
+    }
+
+    .record-hand-cards {
+        height: 34px;
+    }
+
+    .record-hand-card {
+        max-width: 24px;
+    }
+
+    .record-board-wrap {
+        height: 200px;
+    }
+
+    .record-move-copy {
+        min-height: 40px;
+        padding: 5px 7px;
     }
 }

@@ -81,6 +81,57 @@ test('validates complete compact game records', () => {
     assert.equal(isValidGameRecord({ ...record, viewerPlayerIndex: 2 }), false);
 });
 
+test('validates hand-aware version 2 game records', () => {
+    const deck = createDeck();
+    const initialHands = [deck.slice(0, 4), deck.slice(4, 8)];
+    const hands = initialHands.map(hand => hand.map(card => ({ ...card })));
+    const moveCounts = [0, 0];
+    let drawIndex = 8;
+    const moves = Array.from({ length: 30 }, (_, index) => {
+        const playerIndex = index % 2;
+        const playerMove = moveCounts[playerIndex];
+        moveCounts[playerIndex] += 1;
+        const card = hands[playerIndex].shift();
+        const drawnCards = drawIndex < deck.length ? [{ ...deck[drawIndex] }] : [];
+        drawIndex += drawnCards.length;
+        hands[playerIndex].push(...drawnCards);
+        return {
+            ply: index + 1,
+            playerIndex,
+            card: { ...card, isHidden: false },
+            column: Math.floor(playerMove / 3),
+            row: playerMove % 3,
+            drawnCards,
+        };
+    });
+    const record = {
+        schemaVersion: 2,
+        id: '00000000-0000-4000-8000-000000000002',
+        startedAt: '2026-09-01T00:00:00.000Z',
+        completedAt: '2026-09-01T00:10:00.000Z',
+        mode: 'ranked',
+        viewerPlayerIndex: 0,
+        playerNames: ['Alice', 'Bob'],
+        dice: [6, 5, 4, 3, 2],
+        winner: 'p1',
+        scores: [12, 8],
+        bonuses: [2, 1],
+        initialHands,
+        moves,
+    };
+
+    assert.equal(isValidGameRecord(record), true);
+    assert.ok(JSON.stringify(record).length < 25_000);
+
+    const cardNotInHand = structuredClone(record);
+    cardNotInHand.moves[0].card = { ...deck.at(-1), isHidden: false };
+    assert.equal(isValidGameRecord(cardNotInHand), false);
+
+    const duplicatedDraw = structuredClone(record);
+    duplicatedDraw.moves[0].drawnCards = [{ ...initialHands[1][0] }];
+    assert.equal(isValidGameRecord(duplicatedDraw), false);
+});
+
 test('calculates symmetric Elo changes', () => {
     assert.equal(calculateEloChange(1500, 1500, 1), 16);
     assert.equal(calculateEloChange(1500, 1500, 0), -16);

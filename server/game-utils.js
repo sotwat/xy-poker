@@ -78,8 +78,20 @@ export function isValidGameAction(action) {
         && typeof action.payload.isHidden === 'boolean';
 }
 
+function isValidRecordCard(card, requireHidden = false) {
+    if (!card || typeof card !== 'object') return false;
+    const validHidden = requireHidden
+        ? typeof card.isHidden === 'boolean'
+        : card.isHidden === undefined || card.isHidden === false;
+    return typeof card.id === 'string'
+        && card.id === `${card.suit}-${card.rank}`
+        && SUITS.includes(card.suit)
+        && RANKS.includes(card.rank)
+        && validHidden;
+}
+
 export function isValidGameRecord(record) {
-    if (!record || typeof record !== 'object' || record.schemaVersion !== 1) return false;
+    if (!record || typeof record !== 'object' || ![1, 2].includes(record.schemaVersion)) return false;
     if (typeof record.id !== 'string'
         || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(record.id)) return false;
     const startedAt = Date.parse(record.startedAt);
@@ -102,22 +114,45 @@ export function isValidGameRecord(record) {
     const occupiedSlots = new Set();
     const usedCards = new Set();
     const playerMoveCounts = [0, 0];
+    let replayHands = null;
+    const introducedCards = new Set();
+
+    if (record.schemaVersion === 2) {
+        if (!Array.isArray(record.initialHands) || record.initialHands.length !== 2
+            || !record.initialHands.every(hand => Array.isArray(hand)
+                && hand.length === 4
+                && hand.every(card => isValidRecordCard(card)))) return false;
+        replayHands = record.initialHands.map(hand => hand.map(card => ({ ...card })));
+        for (const card of replayHands.flat()) {
+            if (introducedCards.has(card.id)) return false;
+            introducedCards.add(card.id);
+        }
+    }
+
     for (let index = 0; index < record.moves.length; index += 1) {
         const move = record.moves[index];
         if (!move || typeof move !== 'object' || move.ply !== index + 1) return false;
         if (move.playerIndex !== 0 && move.playerIndex !== 1) return false;
         if (!Number.isInteger(move.column) || move.column < 0 || move.column >= 5) return false;
         if (!Number.isInteger(move.row) || move.row < 0 || move.row >= 3) return false;
-        if (!move.card || typeof move.card !== 'object') return false;
-        if (typeof move.card.id !== 'string' || move.card.id !== `${move.card.suit}-${move.card.rank}`) return false;
-        if (!SUITS.includes(move.card.suit) || !RANKS.includes(move.card.rank)) return false;
-        if (typeof move.card.isHidden !== 'boolean') return false;
+        if (!isValidRecordCard(move.card, true)) return false;
 
         const slotKey = `${move.playerIndex}-${move.row}-${move.column}`;
         if (occupiedSlots.has(slotKey) || usedCards.has(move.card.id)) return false;
         occupiedSlots.add(slotKey);
         usedCards.add(move.card.id);
         playerMoveCounts[move.playerIndex] += 1;
+
+        if (record.schemaVersion === 2) {
+            const cardIndex = replayHands[move.playerIndex].findIndex(card => card.id === move.card.id);
+            if (cardIndex < 0 || !Array.isArray(move.drawnCards) || move.drawnCards.length > 2) return false;
+            replayHands[move.playerIndex].splice(cardIndex, 1);
+            for (const drawnCard of move.drawnCards) {
+                if (!isValidRecordCard(drawnCard) || introducedCards.has(drawnCard.id)) return false;
+                introducedCards.add(drawnCard.id);
+                replayHands[move.playerIndex].push({ ...drawnCard });
+            }
+        }
     }
 
     return playerMoveCounts[0] === 15 && playerMoveCounts[1] === 15;

@@ -5,6 +5,7 @@ import { gameReducer, INITIAL_GAME_STATE } from './game';
 import {
     beginGameRecording,
     buildReplayBoards,
+    buildReplayHands,
     captureGameRecordMoves,
     finalizeGameRecord,
     getGameRecordResult,
@@ -33,7 +34,25 @@ test('records placements and reconstructs the replay board', () => {
         card: { ...card, isHidden: true },
         column: 2,
         row: 0,
+        drawnCards: [{ ...state.players[0].hand.at(-1)! }],
     });
+
+    const initialHands = buildReplayHands({
+        schemaVersion: 2,
+        id: recording.id,
+        startedAt: recording.startedAt,
+        completedAt: '2026-09-01T00:10:00.000Z',
+        mode: 'bot',
+        viewerPlayerIndex: 0,
+        playerNames: ['Player', 'AI'],
+        dice: recording.dice,
+        winner: 'p1',
+        scores: [10, 5],
+        bonuses: [0, 0],
+        initialHands: recording.initialHands,
+        moves: recording.moves,
+    }, 0);
+    assert.deepEqual(initialHands, recording.initialHands);
 
     const partialRecord = {
         schemaVersion: 1 as const,
@@ -93,9 +112,17 @@ test('finalizes and validates a complete thirty-move game', () => {
         playerNames: ['Player', 'AI'],
     });
     assert.ok(record);
+    assert.equal(record.schemaVersion, 2);
     assert.equal(record.moves.length, 30);
     assert.equal(isGameRecordData(record), true);
+    assert.ok(JSON.stringify(record).length < 25_000);
 
     const replayBoards = buildReplayBoards(record, 30);
     assert.deepEqual(replayBoards, state.players.map(player => player.board.map(row => row.map(card => card ? { ...card, isHidden: false } : null))));
+    const replayHands = buildReplayHands(record, 30);
+    assert.deepEqual(replayHands, state.players.map(player => player.hand));
+
+    const invalidRecord = structuredClone(record);
+    invalidRecord.moves[0].drawnCards = [{ ...invalidRecord.initialHands[1][0] }];
+    assert.equal(isGameRecordData(invalidRecord), false);
 });

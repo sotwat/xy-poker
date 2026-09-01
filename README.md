@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09012337` (2026-09-01 23:37)
+- **Current Version:** `09012358` (2026-09-01 23:58)
 - **Status:** **Full local quality gate and production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ 320×568, 390×844, 768×1024, and landscape layouts checked
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 22 passing
+    - Automated tests: ✅ 23 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~280 kB
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09012337` live on Cloudflare Pages; Render health endpoint responding normally
+    - Deployment: ✅ `v09012358` live on Cloudflare Pages; Render health endpoint responding normally
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,7 +89,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v09012337** (2026-09-01): **Always-Visible Hand Layout** - Replaced the fixed-width, centered overflow strip with evenly shrinking, aspect-ratio-preserving hand cards so every card remains visible and selectable as bonus draws increase the hand size on phone, tablet, and desktop layouts. Made the unified release script work in restored environments that provide Node.js without globally installed npm/npx shims.
+1. **v09012358** (2026-09-01): **Hand-Aware Game Record Replay** - Added backward-compatible record schema v2 with both initial hands and per-move draw data, deterministic hand reconstruction at every replay position, strict client/server hand-evolution validation under the existing 25 kB database limit, a legacy-record notice, and a compact responsive replay stage that shows both players' current hands around the board.
+2. **v09012337** (2026-09-01): **Always-Visible Hand Layout** - Replaced the fixed-width, centered overflow strip with evenly shrinking, aspect-ratio-preserving hand cards so every card remains visible and selectable as bonus draws increase the hand size on phone, tablet, and desktop layouts. Made the unified release script work in restored environments that provide Node.js without globally installed npm/npx shims.
 2. **v09012325** (2026-09-01): **Physical Coin-Toss Sound** - Replaced the continuous electronic LFO tone with a timed thumb flick, short edge-flip ticks, and a hard-surface landing built from inharmonic metal partials and tiny filtered contact-noise bursts synchronized to the 1.4-second toss.
 2. **v09012319** (2026-09-01): **Dual-Color X-Hand Showdown** - Preserved the gold X-hand identity while carrying the blue or red winner color through the background glow, diagonal panels, streaks, shards, card edges, hand banner, and winner badge.
 3. **v09012310** (2026-09-01): **Showdown Cut-In Overhaul** - Rebuilt showdown reveals with staggered left-to-right winning-card slides, finite diagonal cut-ins, speed lines, light shards, impact typography, synchronized spoken hand names, a lightweight synthesized stinger, a gold final X-hand climax, and reduced-motion fallbacks without video or bitmap effect assets.
@@ -258,7 +259,7 @@ xy-poker/
 | **Skin Gacha Store** | Earn tickets via rewarded ads; unlock card / dice / board skins |
 | **Premium Tier** | Ad-free experience managed via Supabase (`is_premium` flag) |
 | **Achievements** | In-game achievement & stats tracking |
-| **Game Records / 棋譜** | Automatic 30-move archive with cloud sync and step-by-step board replay |
+| **Game Records / 棋譜** | Automatic 30-move archive with cloud sync and step-by-step board and hand reconstruction; legacy records remain viewable without inferred hand data |
 | **Turn Timer** | 60-second per-turn countdown |
 | **Audio / TTS** | Sound effects + text-to-speech for game events |
 | **Mobile Web Ready** | Responsive UI, reduced-motion support, and iOS audio unlock |

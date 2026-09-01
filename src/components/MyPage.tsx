@@ -193,50 +193,54 @@ export const MyPage: React.FC<MyPageProps> = ({
 
     return (
         <div className="mypage-overlay">
-            <div className="mypage-content">
+            <div className={`mypage-content ${selectedRecord ? 'record-open' : ''}`}>
                 <button type="button" className="close-btn" onClick={onClose} aria-label="Close">&times;</button>
 
-                <div className="mypage-header">
-                    <div className="header-left">
-                        <h2>My Page</h2>
-                        {profile && (
-                            <div className="user-identity">
-                                {isEditingName ? (
-                                    <div className="name-edit-row">
-                                        <input
-                                            className="name-input"
-                                            value={editNameValue}
-                                            onChange={(e) => setEditNameValue(e.target.value)}
-                                            placeholder="Enter Name"
-                                        />
-                                        <button type="button" onClick={handleUpdateName} className="save-btn">Save</button>
-                                        <button type="button" onClick={() => setIsEditingName(false)} className="cancel-btn">Cancel</button>
-                                    </div>
-                                ) : (
-                                    <div className="name-display-row">
-                                        <span className="username">
-                                            {isPremium && <PremiumBadge />}
-                                            {profile.username || 'No Name'}
-                                        </span>
-                                        <button type="button" onClick={() => setIsEditingName(true)} className="edit-icon-btn" aria-label="Edit name">Edit</button>
+                {!selectedRecord && (
+                    <>
+                        <div className="mypage-header">
+                            <div className="header-left">
+                                <h2>My Page</h2>
+                                {profile && (
+                                    <div className="user-identity">
+                                        {isEditingName ? (
+                                            <div className="name-edit-row">
+                                                <input
+                                                    className="name-input"
+                                                    value={editNameValue}
+                                                    onChange={(e) => setEditNameValue(e.target.value)}
+                                                    placeholder="Enter Name"
+                                                />
+                                                <button type="button" onClick={handleUpdateName} className="save-btn">Save</button>
+                                                <button type="button" onClick={() => setIsEditingName(false)} className="cancel-btn">Cancel</button>
+                                            </div>
+                                        ) : (
+                                            <div className="name-display-row">
+                                                <span className="username">
+                                                    {isPremium && <PremiumBadge />}
+                                                    {profile.username || 'No Name'}
+                                                </span>
+                                                <button type="button" onClick={() => setIsEditingName(true)} className="edit-icon-btn" aria-label="Edit name">Edit</button>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
-                        )}
-                    </div>
 
-                    <div className="level-badge">
-                        <span className="level-label">LV</span>
-                        <span className="level-val">{profile?.level || 1}</span>
-                    </div>
-                </div>
+                            <div className="level-badge">
+                                <span className="level-label">LV</span>
+                                <span className="level-val">{profile?.level || 1}</span>
+                            </div>
+                        </div>
 
-                <div className="mypage-tabs">
-                    <button type="button" className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>Stats & Progress</button>
-                    <button type="button" className={activeTab === 'records' ? 'active' : ''} onClick={() => { setSelectedRecord(null); setActiveTab('records'); }}>Game Records</button>
-                    <button type="button" className={activeTab === 'ranking' ? 'active' : ''} onClick={() => setActiveTab('ranking')}>World Ranking</button>
-                    <button type="button" className={activeTab === 'achievements' ? 'active' : ''} onClick={() => setActiveTab('achievements')}>Achievements</button>
-                </div>
+                        <div className="mypage-tabs">
+                            <button type="button" className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>Stats & Progress</button>
+                            <button type="button" className={activeTab === 'records' ? 'active' : ''} onClick={() => { setSelectedRecord(null); setActiveTab('records'); }}>Game Records</button>
+                            <button type="button" className={activeTab === 'ranking' ? 'active' : ''} onClick={() => setActiveTab('ranking')}>World Ranking</button>
+                            <button type="button" className={activeTab === 'achievements' ? 'active' : ''} onClick={() => setActiveTab('achievements')}>Achievements</button>
+                        </div>
+                    </>
+                )}
 
                 <div className="mypage-body">
                     {loading && <div className="loading">Loading...</div>}

@@ -1732,7 +1732,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09012337</div>
+                          <div className="home-version">v09012358</div>
                         </div>
                       </div>
                     )}
