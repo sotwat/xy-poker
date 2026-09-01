@@ -17,7 +17,8 @@
     "deploy": "./deploy_all.sh",
     "dev:all": "concurrently \"npm run start\" \"npm run dev\"",
     "train": "tsx scripts/train.ts",
-    "solve:gto": "tsx scripts/solve_gto.ts"
+    "solve:gto": "tsx scripts/solve_gto.ts",
+    "benchmark:ai": "tsx scripts/benchmark_ai.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",

@@ -23,8 +23,8 @@ import {
   type ActiveGameRecording,
   type GameRecordMode,
 } from './logic/gameRecord';
-import { supabase, fetchGlobalAiParameters, updateGlobalAiParameters } from './supabase';
-import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS, setGlobalAiParams } from './logic/ai';
+import { supabase, updateGlobalAiParameters } from './supabase';
+import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, playCoinTossSound, playShowdownStinger, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
@@ -230,14 +230,6 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Load Global Collaborative AI parameters on App Startup
-  useEffect(() => {
-    fetchGlobalAiParameters().then(params => {
-      if (params) {
-        setGlobalAiParams(params);
-      }
-    });
-  }, []);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Turn Timer State
@@ -954,7 +946,8 @@ function App() {
         const isDraw = winner === 'draw';
         recordGameResult(aiWon, isDraw);
 
-        // Contribute game outcome to the global collaborative AI parameters
+        // Keep outcome telemetry for offline policy evaluation. Production
+        // move weights are fixed and are not mutated from client results.
         const gameToken = localGameTokenRef.current;
         if ((opponentName === 'AI' || isBotDisguise) && dbPlayerId && gameToken) {
           updateGlobalAiParameters(aiWon, isDraw, gameToken);
@@ -1082,12 +1075,6 @@ function App() {
       setIsBotDisguise(false);
       setOpponentName('AI');
 
-      // Fetch latest global AI parameters for collaborative learning
-      fetchGlobalAiParameters().then(params => {
-        if (params) {
-          setGlobalAiParams(params);
-        }
-      });
     }
 
     dispatch({ type: 'START_GAME' });
@@ -1732,7 +1719,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09012358</div>
+                          <div className="home-version">v09020022</div>
                         </div>
                       </div>
                     )}

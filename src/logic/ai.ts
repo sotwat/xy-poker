@@ -1,10 +1,12 @@
-import type { GameState, Card, Rank, YHandResult } from './types';
-import { getLearningData, type LearningData } from './aiLearning';
-import { evaluateYHand, evaluateXHand } from './evaluation';
+import { createDeck } from './deck';
+import { gameReducer } from './game';
 import { getGtoHideProbability, getGtoTurnOrderScore, scoreGtoMove } from './gtoPolicy';
-import type { GlobalAiParams } from '../supabase';
+import type { Card, GameState } from './types';
 
 export interface AiParams {
+    // Legacy tuning keys remain part of the public shape so old training tools
+    // and stored champion files keep loading. Runtime play is governed by the
+    // fixed XY-GTO policy plus information-set rollouts below.
     tripsInHandBonus: number;
     pairInHandBonus: number;
     lowCardPenalty: number;
@@ -13,7 +15,6 @@ export interface AiParams {
     row3DelayPenalty: number;
     bluffBonus: number;
     mcSimulations: number;
-    // --- Turn Selection Params ---
     turnOrderBaseFirstValue: number;
     turnOrderPairBonus: number;
     turnOrderHighCardBonus: number;
@@ -33,820 +34,396 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     turnOrderBaseFirstValue: 0,
     turnOrderPairBonus: 2,
     turnOrderHighCardBonus: 2,
-    gtoPriorWeight: 0.72,
+    gtoPriorWeight: 0.2,
     timeBudgetMs: 400,
 };
 
-// ==========================================
-// Collaborative Learning Overrides
-// ==========================================
-let activeGlobalParams: GlobalAiParams | null = null;
-
-export function setGlobalAiParams(params: GlobalAiParams): void {
-    activeGlobalParams = params;
+export interface AiDecisionDiagnostics {
+    elapsedMs: number;
+    legalMoves: number;
+    searchedMoves: number;
+    completedBeliefSamples: number;
+    usedRollout: boolean;
 }
 
-function getActiveLearningData(): LearningData {
-    const localLearning = getLearningData();
-    if (!activeGlobalParams) {
-        return localLearning;
-    }
-    // Map database snake_case parameters to game's camelCase variables
-    return {
-        ...localLearning,
-        tripPreference: activeGlobalParams.trip_preference ?? localLearning.tripPreference,
-        flushPreference: activeGlobalParams.flush_preference ?? localLearning.flushPreference,
-        straightPreference: activeGlobalParams.straight_preference ?? localLearning.straightPreference,
-        xHandFocus: activeGlobalParams.x_hand_focus ?? localLearning.xHandFocus,
-        bonusAggression: activeGlobalParams.bonus_aggression ?? localLearning.bonusAggression,
-        defensiveAwareness: activeGlobalParams.defensive_awareness ?? localLearning.defensiveAwareness,
-        // strategy.md Compliant features
-        purePreference: activeGlobalParams.pure_preference ?? 1.0,
-        tripsInHandFocus: activeGlobalParams.trips_in_hand_focus ?? 1.0,
-        row3DelayFocus: activeGlobalParams.row3_delay_focus ?? 1.0,
-        showdownDelayFocus: activeGlobalParams.showdown_delay_focus ?? 1.0,
-        lowCardAvoidance: activeGlobalParams.low_card_avoidance ?? 1.0,
-        turnOrderFlexibility: activeGlobalParams.turn_order_flexibility ?? 1.0,
-        weakHandAvoidance: activeGlobalParams.weak_hand_avoidance ?? 1.0,
-        pairInHandScale: activeGlobalParams.pair_in_hand_scale ?? 1.0,
-        queenFirstScale: activeGlobalParams.queen_first_scale ?? 1.0,
-        bluffBonusScale: activeGlobalParams.bluff_bonus_scale ?? 1.0,
-        hidingStrategy: activeGlobalParams.hiding_strategy ?? 0.3,
-        trashBinRushScale: activeGlobalParams.trash_bin_rush_scale ?? 1.0,
-    };
+interface ScoredMove {
+    cardId: string;
+    colIndex: number;
+    gtoScore: number;
 }
 
-// ==========================================
-// Cache & Transposition System for Deep Search
-// ==========================================
-const evCache = new Map<string, number>();
+let lastDecisionDiagnostics: AiDecisionDiagnostics = {
+    elapsedMs: 0,
+    legalMoves: 0,
+    searchedMoves: 0,
+    completedBeliefSamples: 0,
+    usedRollout: false,
+};
 
-function getBoardHash(player: GameState['players'][0], opponent: GameState['players'][0]): string {
-    const getCardsStr = (board: (Card | null)[][]) => {
-        return board.map(row => row.map(c => c ? c.id + (c.isHidden ? 'H' : 'V') : 'E').join(',')).join('|');
-    };
-    return getCardsStr(player.board) + '||' + getCardsStr(opponent.board);
+export function getLastAiDecisionDiagnostics(): AiDecisionDiagnostics {
+    return { ...lastDecisionDiagnostics };
 }
 
-function getHandHash(hand: Card[]): string {
-    return hand.map(c => c.id).sort().join(',');
-}
-
-// ==========================================
-// Turn Order & Main Move Decisions
-// ==========================================
 export function getBestTurnOrder(
     gameState: GameState,
     playerIndex: number,
-    params: AiParams = DEFAULT_AI_PARAMS
+    params: AiParams = DEFAULT_AI_PARAMS,
 ): boolean {
-    void params; // Kept for API compatibility; XY-GTO-A1 owns turn selection.
+    void params;
     return getGtoTurnOrderScore(gameState.players[playerIndex]) > 0;
 }
 
+/**
+ * Selects a move without inspecting the true opponent hand, hidden-card
+ * identities, or deck order. Each rollout samples a complete world consistent
+ * with the acting player's information set, then plays the real reducer to the
+ * end. Standard draws, completion bonus draws, turn passing, Y scoring, and X
+ * scoring are therefore evaluated under the same rules as an actual match.
+ */
 export function getBestMove(
     gameState: GameState,
     playerIndex: number,
-    params: AiParams = DEFAULT_AI_PARAMS
+    params: AiParams = DEFAULT_AI_PARAMS,
 ): { cardId: string; colIndex: number; isHidden: boolean } {
-    const startTime = Date.now();
-    const timeoutMs = params.timeBudgetMs ?? 400;
-
+    const startedAt = now();
     const player = gameState.players[playerIndex];
-    const opponent = gameState.players[1 - playerIndex];
-    const hand = player.hand;
+    const legalMoves = enumeratePlacements(gameState, playerIndex as 0 | 1);
 
-    if (hand.length === 0) return { cardId: '', colIndex: 0, isHidden: false };
-
-    const validColumns: number[] = [];
-    for (let c = 0; c < 5; c++) {
-        if (player.board[2][c] === null) validColumns.push(c);
+    if (legalMoves.length === 0) {
+        const fallback = { cardId: player.hand[0]?.id ?? '', colIndex: 0, isHidden: false };
+        setDiagnostics(startedAt, 0, 0, 0);
+        return fallback;
     }
 
-    if (validColumns.length === 0) return { cardId: hand[0].id, colIndex: 0, isHidden: false };
+    const candidates = selectRootCandidates(legalMoves);
+    const fallback = candidates[0];
+    const timeoutMs = clampFinite(params.timeBudgetMs, 1, 2_000, DEFAULT_AI_PARAMS.timeBudgetMs);
+    const deadline = startedAt + Math.max(0, timeoutMs - 4);
+    const requestedSamples = Math.round(clampFinite(
+        params.mcSimulations,
+        1,
+        48,
+        DEFAULT_AI_PARAMS.mcSimulations,
+    ));
+    const totals = candidates.map(() => 0);
+    const squaredTotals = candidates.map(() => 0);
+    const informationSeed = hashInformationState(gameState, playerIndex as 0 | 1);
+    let completedSamples = 0;
+    let previousSampleMs = 0;
 
-    const visibleCards = getVisibleCards(player, opponent);
-    const remainingDeck = getRemainingDeck(visibleCards);
-    const learning = getActiveLearningData();
+    for (let sampleIndex = 0; sampleIndex < requestedSamples; sampleIndex++) {
+        const sampleStartedAt = now();
+        if (sampleIndex > 0 && sampleStartedAt + Math.max(previousSampleMs * 1.15, 2) >= deadline) break;
 
-    // Sample the opponent hand and every hidden board identity jointly. The
-    // actual hidden identities never enter the search evaluation.
-    const opponentBeliefs = sampleOpponentBeliefs(remainingDeck, opponent, 3);
-    const candidates = hand.flatMap(card => validColumns.map(col => ({
-        card,
-        col,
-        gtoScore: scoreGtoMove(gameState, playerIndex as 0 | 1, card, col),
-    }))).sort((a, b) => b.gtoScore - a.gtoScore);
+        const beliefSeed = mixSeed(informationSeed, sampleIndex, 0x42454c49);
+        const beliefState = sampleInformationSet(gameState, playerIndex as 0 | 1, beliefSeed);
+        const sampleScores: number[] = [];
+        let complete = true;
 
-    let bestMove = { cardId: candidates[0].card.id, colIndex: candidates[0].col, isHidden: false };
-    let currentBestMove = { ...bestMove };
-    let depth = 2;
-    const maxAllowedDepth = 5;
-
-    // Iterative deepening refines the GTO prior with a belief-state lookahead.
-    // A partial depth is discarded, leaving the fast GTO policy as a safe
-    // timeout fallback rather than whichever action happened to run first.
-    while (depth <= maxAllowedDepth) {
-        evCache.clear();
-        const depthScores: Array<{
-            card: Card;
-            col: number;
-            gtoScore: number;
-            searchScore: number;
-        }> = [];
-        let isTimedOut = false;
-
-        for (const candidate of candidates) {
-            if (Date.now() - startTime > timeoutMs) {
-                isTimedOut = true;
+        for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex++) {
+            if (now() >= deadline) {
+                complete = false;
                 break;
             }
 
-            const { card, col } = candidate;
-            const nextGameState = cloneGameState(gameState);
-            const nextPlayer = nextGameState.players[playerIndex];
-            const emptySlotIdx = [
-                nextPlayer.board[0][col],
-                nextPlayer.board[1][col],
-                nextPlayer.board[2][col],
-            ].indexOf(null);
-            if (emptySlotIdx !== -1) nextPlayer.board[emptySlotIdx][col] = card;
-            nextPlayer.hand = nextPlayer.hand.filter(candidateCard => candidateCard.id !== card.id);
-
-            let averageScore = 0;
-            for (const belief of opponentBeliefs) {
-                const sampleGameState = applyOpponentBelief(nextGameState, playerIndex, belief);
-                averageScore += expectimax(
-                    sampleGameState,
-                    playerIndex,
-                    1,
-                    depth,
-                    false,
-                    belief.remainingDeck,
-                    params,
-                    learning,
-                    startTime,
-                    timeoutMs,
-                );
+            const candidate = candidates[candidateIndex];
+            // Common random numbers keep chance noise comparable across root
+            // candidates inside the same determinization.
+            const rolloutRandom = seededRandom(mixSeed(beliefSeed, 0x524f4c4c));
+            const selectedCard = beliefState.players[playerIndex].hand.find(card => card.id === candidate.cardId);
+            if (!selectedCard) {
+                complete = false;
+                break;
             }
-            averageScore /= opponentBeliefs.length;
-
-            const rootBonus = calculateRootMoveBonus(
-                player,
-                opponent,
-                card,
-                col,
-                emptySlotIdx,
-                gameState.turnCount,
-                params,
-                learning,
+            const isHidden = rolloutRandom() < getGtoHideProbability(
+                beliefState,
+                playerIndex as 0 | 1,
+                selectedCard,
+                candidate.colIndex,
             );
-            depthScores.push({ ...candidate, searchScore: averageScore + rootBonus * 0.25 });
+            const afterMove = gameReducer(beliefState, {
+                type: 'PLACE_AND_DRAW',
+                payload: { cardId: candidate.cardId, colIndex: candidate.colIndex, isHidden },
+            });
+            const result = rolloutToEnd(afterMove, playerIndex as 0 | 1, rolloutRandom, deadline);
+            if (result === null) {
+                complete = false;
+                break;
+            }
+            sampleScores.push(result);
         }
 
-        if (isTimedOut || depthScores.length !== candidates.length) break;
-
-        const selected = selectGtoBlendedMove(depthScores, params.gtoPriorWeight ?? 0.72);
-        currentBestMove = { cardId: selected.card.id, colIndex: selected.col, isHidden: false };
-        depth++;
+        if (!complete || sampleScores.length !== candidates.length) break;
+        for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex++) {
+            totals[candidateIndex] += sampleScores[candidateIndex];
+            squaredTotals[candidateIndex] += sampleScores[candidateIndex] ** 2;
+        }
+        completedSamples++;
+        previousSampleMs = now() - sampleStartedAt;
     }
 
-    bestMove = currentBestMove;
-    const selectedCard = hand.find(card => card.id === bestMove.cardId)!;
-    const hideProbability = getGtoHideProbability(
-        gameState,
-        playerIndex as 0 | 1,
-        selectedCard,
-        bestMove.colIndex,
-    );
-    bestMove.isHidden = Math.random() < hideProbability;
+    let selected = fallback;
+    if (completedSamples > 0) {
+        const robustOutcomes = totals.map((total, index) => {
+            const mean = total / completedSamples;
+            if (completedSamples === 1) return mean;
+            const variance = Math.max(0, squaredTotals[index] / completedSamples - mean ** 2);
+            // A small confidence penalty avoids chasing a lucky determinization.
+            return mean - Math.sqrt(variance / completedSamples) * 0.08;
+        });
+        const normalizedOutcomes = normalizeScores(robustOutcomes);
+        const normalizedPriors = normalizeScores(candidates.map(candidate => candidate.gtoScore));
+        const priorWeight = clampFinite(
+            params.gtoPriorWeight,
+            0.05,
+            0.65,
+            DEFAULT_AI_PARAMS.gtoPriorWeight,
+        );
+        let bestIndex = 0;
+        let bestScore = Number.NEGATIVE_INFINITY;
+        for (let index = 0; index < candidates.length; index++) {
+            const blendedScore = normalizedOutcomes[index] * (1 - priorWeight)
+                + normalizedPriors[index] * priorWeight;
+            if (blendedScore > bestScore) {
+                bestScore = blendedScore;
+                bestIndex = index;
+            }
+        }
+        selected = candidates[bestIndex];
+    }
 
-    return bestMove;
+    const selectedCard = player.hand.find(card => card.id === selected.cardId) ?? player.hand[0];
+    const hideProbability = selectedCard
+        ? getGtoHideProbability(
+            gameState,
+            playerIndex as 0 | 1,
+            selectedCard,
+            selected.colIndex,
+        )
+        : 0;
+    setDiagnostics(startedAt, legalMoves.length, candidates.length, completedSamples);
+    return {
+        cardId: selected.cardId,
+        colIndex: selected.colIndex,
+        isHidden: Math.random() < hideProbability,
+    };
 }
 
-function normalizeScores(values: number[]): number[] {
-    const finiteValues = values.filter(Number.isFinite);
-    if (finiteValues.length === 0) return values.map(() => 0);
-    const minimum = Math.min(...finiteValues);
-    const maximum = Math.max(...finiteValues);
-    if (maximum === minimum) return values.map(() => 0.5);
-    return values.map(value => Number.isFinite(value) ? (value - minimum) / (maximum - minimum) : 0);
-}
-
-function selectGtoBlendedMove<T extends { gtoScore: number; searchScore: number }>(
-    candidates: T[],
-    requestedGtoWeight: number,
-): T {
-    const gtoWeight = Math.min(1, Math.max(0, requestedGtoWeight));
-    const normalizedGto = normalizeScores(candidates.map(candidate => candidate.gtoScore));
-    const normalizedSearch = normalizeScores(candidates.map(candidate => candidate.searchScore));
-    let bestIndex = 0;
-    let bestScore = Number.NEGATIVE_INFINITY;
-    for (let index = 0; index < candidates.length; index++) {
-        const score = normalizedGto[index] * gtoWeight + normalizedSearch[index] * (1 - gtoWeight);
-        if (score > bestScore) {
-            bestScore = score;
-            bestIndex = index;
+function enumeratePlacements(state: GameState, playerIndex: 0 | 1): ScoredMove[] {
+    const player = state.players[playerIndex];
+    const moves: ScoredMove[] = [];
+    for (const card of player.hand) {
+        for (let column = 0; column < 5; column++) {
+            if (player.board[2][column] !== null) continue;
+            moves.push({
+                cardId: card.id,
+                colIndex: column,
+                gtoScore: scoreGtoMove(state, playerIndex, card, column),
+            });
         }
     }
-    return candidates[bestIndex];
+    return moves.sort((a, b) => b.gtoScore - a.gtoScore);
 }
 
-interface OpponentBelief {
-    hand: Card[];
-    hiddenBoardCards: Array<{ row: number; column: number; card: Card }>;
-    remainingDeck: Card[];
+function selectRootCandidates(moves: ScoredMove[]): ScoredMove[] {
+    const limit = 20;
+    if (moves.length <= limit) return moves;
+
+    const selected: ScoredMove[] = [];
+    const selectedKeys = new Set<string>();
+    const add = (move: ScoredMove | undefined) => {
+        if (!move) return;
+        const key = `${move.cardId}:${move.colIndex}`;
+        if (selectedKeys.has(key) || selected.length >= limit) return;
+        selectedKeys.add(key);
+        selected.push(move);
+    };
+
+    // Preserve card and column diversity before filling from the overall prior.
+    for (let column = 0; column < 5; column++) add(moves.find(move => move.colIndex === column));
+    for (const cardId of new Set(moves.map(move => move.cardId))) {
+        add(moves.find(move => move.cardId === cardId));
+    }
+    for (const move of moves) add(move);
+    return selected.sort((a, b) => b.gtoScore - a.gtoScore);
 }
 
-function sampleOpponentBeliefs(
-    remainingDeck: Card[],
-    opponent: GameState['players'][0],
-    count: number,
-): OpponentBelief[] {
+function rolloutToEnd(
+    initialState: GameState,
+    rootPlayerIndex: 0 | 1,
+    random: () => number,
+    deadline: number,
+): number | null {
+    let state = initialState;
+    let safety = 0;
+    while (state.phase === 'playing' && safety < 40) {
+        if ((safety & 3) === 0 && now() >= deadline) return null;
+        const actor = state.currentPlayerIndex as 0 | 1;
+        const move = selectRolloutMove(state, actor, random);
+        const nextState = gameReducer(state, { type: 'PLACE_AND_DRAW', payload: move });
+        if (nextState === state) return null;
+        state = nextState;
+        safety++;
+    }
+    if (state.phase === 'scoring') state = gameReducer(state, { type: 'CALCULATE_SCORE' });
+    if (state.phase !== 'ended') return null;
+
+    const rootId = rootPlayerIndex === 0 ? 'p1' : 'p2';
+    const opponentId = rootPlayerIndex === 0 ? 'p2' : 'p1';
+    const winUtility = state.winner === rootId ? 1 : state.winner === opponentId ? -1 : 0;
+    const scoreDifference = state.players[rootPlayerIndex].score - state.players[1 - rootPlayerIndex].score;
+    return winUtility + Math.max(-0.45, Math.min(0.45, scoreDifference / 40));
+}
+
+function selectRolloutMove(
+    state: GameState,
+    playerIndex: 0 | 1,
+    random: () => number,
+): { cardId: string; colIndex: number; isHidden: boolean } {
+    const placements = enumeratePlacements(state, playerIndex);
+    const selected = placements[0];
+    const card = state.players[playerIndex].hand.find(candidate => candidate.id === selected.cardId);
+    return {
+        cardId: selected.cardId,
+        colIndex: selected.colIndex,
+        isHidden: card
+            ? random() < getGtoHideProbability(state, playerIndex, card, selected.colIndex)
+            : false,
+    };
+}
+
+function sampleInformationSet(state: GameState, playerIndex: 0 | 1, seed: number): GameState {
+    const sampled = cloneGameState(state);
+    const opponentIndex = (1 - playerIndex) as 0 | 1;
+    const opponent = sampled.players[opponentIndex];
     const hiddenPositions: Array<{ row: number; column: number }> = [];
     for (let row = 0; row < 3; row++) {
         for (let column = 0; column < 5; column++) {
             if (opponent.board[row][column]?.isHidden) hiddenPositions.push({ row, column });
         }
     }
-    const unknownCardsNeeded = opponent.hand.length + hiddenPositions.length;
 
-    return Array.from({ length: count }, () => {
-        const sample = getRandomSample(remainingDeck, Math.min(unknownCardsNeeded, remainingDeck.length));
-        const hiddenBoardCards = hiddenPositions.map((position, index) => ({
-            ...position,
-            card: { ...sample[index], isHidden: true },
-        }));
-        return {
-            hiddenBoardCards,
-            hand: sample.slice(hiddenPositions.length).map(card => ({ ...card, isHidden: false })),
-            remainingDeck: remainingDeck.filter(card => !sample.some(sampled => sampled.id === card.id)),
-        };
-    });
+    const unseen = getRemainingDeck(getKnownCards(state, playerIndex));
+    shuffleInPlace(unseen, seededRandom(seed));
+    let cursor = 0;
+    for (const position of hiddenPositions) {
+        const card = unseen[cursor++];
+        if (card) opponent.board[position.row][position.column] = { ...card, isHidden: true };
+    }
+    opponent.hand = unseen
+        .slice(cursor, cursor + state.players[opponentIndex].hand.length)
+        .map(card => ({ ...card, isHidden: false }));
+    cursor += opponent.hand.length;
+    sampled.deck = unseen.slice(cursor, cursor + state.deck.length).map(card => ({ ...card, isHidden: false }));
+    return sampled;
 }
 
-function applyOpponentBelief(
-    state: GameState,
-    playerIndex: number,
-    belief: OpponentBelief,
-): GameState {
-    const sampleState = cloneGameState(state);
-    const opponent = sampleState.players[1 - playerIndex];
-    opponent.hand = belief.hand;
-    for (const hidden of belief.hiddenBoardCards) {
-        opponent.board[hidden.row][hidden.column] = hidden.card;
+function getKnownCards(state: GameState, playerIndex: 0 | 1): Card[] {
+    const player = state.players[playerIndex];
+    const opponent = state.players[1 - playerIndex];
+    const known = [...player.hand];
+    for (const card of player.board.flat()) {
+        if (card) known.push(card);
     }
-    return sampleState;
+    for (const card of opponent.board.flat()) {
+        if (card && !card.isHidden) known.push(card);
+    }
+    return known;
 }
 
-// ==========================================
-// ExpectiMax Search with Timeout Interruption
-// ==========================================
-function expectimax(
-    gameState: GameState,
-    playerIndex: number,
-    depth: number,
-    maxDepth: number,
-    isMaxNode: boolean,
-    remainingDeck: Card[],
-    params: AiParams,
-    learning: LearningData,
-    startTime: number,
-    timeoutMs: number
-): number {
-    if (Date.now() - startTime > timeoutMs) {
-        return 0;
-    }
-
-    const player = gameState.players[playerIndex];
-    const opponent = gameState.players[1 - playerIndex];
-
-    const boardHash = getBoardHash(player, opponent);
-    const handHash = `${getHandHash(player.hand)}::${getHandHash(opponent.hand)}`;
-    const cacheKey = `${boardHash}_${handHash}_${depth}_${isMaxNode}`;
-    if (evCache.has(cacheKey)) {
-        return evCache.get(cacheKey)!;
-    }
-
-    if (depth === maxDepth || isTerminalState(gameState)) {
-        const val = evaluateStaticBoard(player, opponent, remainingDeck, params, learning);
-        evCache.set(cacheKey, val);
-        return val;
-    }
-
-    if (isMaxNode) {
-        let maxVal = -Infinity;
-        const validColumns = [];
-        for (let c = 0; c < 5; c++) {
-            if (player.board[2][c] === null) validColumns.push(c);
-        }
-
-        if (validColumns.length === 0 || player.hand.length === 0) {
-            return evaluateStaticBoard(player, opponent, remainingDeck, params, learning);
-        }
-
-        for (const card of player.hand) {
-            for (const col of validColumns) {
-                const nextGameState = cloneGameState(gameState);
-                const nextPlayer = nextGameState.players[playerIndex];
-                const emptySlotIdx = [nextPlayer.board[0][col], nextPlayer.board[1][col], nextPlayer.board[2][col]].indexOf(null);
-                if (emptySlotIdx !== -1) {
-                    nextPlayer.board[emptySlotIdx][col] = card;
-                }
-                nextPlayer.hand = nextPlayer.hand.filter(c => c.id !== card.id);
-
-                const val = expectimax(nextGameState, playerIndex, depth + 1, maxDepth, false, remainingDeck, params, learning, startTime, timeoutMs);
-                if (val > maxVal) {
-                    maxVal = val;
-                }
-            }
-        }
-        evCache.set(cacheKey, maxVal);
-        return maxVal;
-    } else {
-        let minVal = Infinity;
-        const validColumns = [];
-        for (let c = 0; c < 5; c++) {
-            if (opponent.board[2][c] === null) validColumns.push(c);
-        }
-
-        if (validColumns.length === 0 || opponent.hand.length === 0) {
-            return evaluateStaticBoard(player, opponent, remainingDeck, params, learning);
-        }
-
-        for (const card of opponent.hand) {
-            for (const col of validColumns) {
-                const nextGameState = cloneGameState(gameState);
-                const nextOpponent = nextGameState.players[1 - playerIndex];
-                const emptySlotIdx = [nextOpponent.board[0][col], nextOpponent.board[1][col], nextOpponent.board[2][col]].indexOf(null);
-                if (emptySlotIdx !== -1) {
-                    nextOpponent.board[emptySlotIdx][col] = card;
-                }
-                nextOpponent.hand = nextOpponent.hand.filter(c => c.id !== card.id);
-
-                const val = expectimax(nextGameState, playerIndex, depth + 1, maxDepth, true, remainingDeck, params, learning, startTime, timeoutMs);
-                if (val < minVal) {
-                    minVal = val;
-                }
-            }
-        }
-
-        const defensiveScore = minVal * (learning.defensiveAwareness || 0.8);
-        evCache.set(cacheKey, defensiveScore);
-        return defensiveScore;
-    }
-}
-
-// ==========================================
-// 2D Cross-Synergy Heuristics & EV Calculations
-// ==========================================
-function evaluateStaticBoard(
-    player: GameState['players'][0],
-    opponent: GameState['players'][0],
-    remainingDeck: Card[],
-    params: AiParams,
-    learning: LearningData
-): number {
-    let score = player.score - opponent.score;
-    const isLosingBadly = (opponent.score - player.score) > 15;
-
-    // 1. Column-wise Y-Hand (vertical) EV
-    for (let c = 0; c < 5; c++) {
-        const myCol = [player.board[0][c], player.board[1][c], player.board[2][c]];
-        const oppCol = [opponent.board[0][c], opponent.board[1][c], opponent.board[2][c]];
-        const diceValue = player.dice[c];
-
-        const colEV = calculateColEV(myCol, oppCol, diceValue, remainingDeck, isLosingBadly, params, learning);
-        score += colEV;
-    }
-
-    // 2. 2D Cross-Synergy: X-Hand (horizontal) expectation evaluation
-    // Inverse Dice Scaling (strategy.md §2): X-hand value is inversely proportional to total dice sum.
-    // Low dice total → Y-hands score little → X fixed points become dominant → boost X focus
-    // High dice total → Y-hands can score big → X-hands are secondary → reduce X focus
-    const diceSum = player.dice.reduce((a, b) => a + b, 0); // Range: 5 (min) ~ 30 (max)
-    const inverseDiceScale = Math.max(0.3, Math.min(2.0, (35 - diceSum) / 17.5));
-    const effectiveXFocus = inverseDiceScale * (learning.xHandFocus ?? 1.0);
-
-    const myXScore = evaluateXHandSynergy(player.board, remainingDeck) * effectiveXFocus;
-    const oppXScore = evaluateXHandSynergy(opponent.board, remainingDeck) * effectiveXFocus;
-    
-    score += (myXScore - oppXScore) * 0.5;
-
-    return score;
-}
-
-function evaluateXHandSynergy(
-    board: (Card | null)[][],
-    remainingDeck: Card[]
-): number {
-    const bottomRow = [...board[2]];
-    const emptyIndices = getNullIndices(bottomRow);
-
-    if (emptyIndices.length === 0) {
-        const res = evaluateXHand(bottomRow as Card[]);
-        return calculateXHandScoreValue(res.type);
-    }
-
-    const N = remainingDeck.length;
-    if (N < emptyIndices.length) return 0;
-
-    let totalScore = 0;
-    const sampleSize = 10;
-    
-    for (let s = 0; s < sampleSize; s++) {
-        const drawn = getRandomSample(remainingDeck, emptyIndices.length);
-        const simulatedRow = [...bottomRow];
-        emptyIndices.forEach((emptyIdx, i) => {
-            simulatedRow[emptyIdx] = drawn[i];
-        });
-        const res = evaluateXHand(simulatedRow as Card[]);
-        totalScore += calculateXHandScoreValue(res.type);
-    }
-
-    return totalScore / sampleSize;
-}
-
-function calculateXHandScoreValue(type: string): number {
-    switch (type) {
-        case 'RoyalFlush': return 800;
-        case 'StraightFlush': return 600;
-        case 'FourOfAKind': return 400;
-        case 'FullHouse': return 300;
-        case 'Flush': return 200;
-        case 'Straight': return 150;
-        case 'ThreeOfAKind': return 100;
-        case 'TwoPair': return 50;
-        case 'OnePair': return 20;
-        default: return 0;
-    }
-}
-
-function calculateColEV(
-    myCol: (Card | null)[],
-    oppCol: (Card | null)[],
-    diceValue: number,
-    remainingDeck: Card[],
-    isLosingBadly: boolean,
-    params: AiParams,
-    learning: LearningData
-): number {
-    const myMissing = myCol.filter(c => c === null).length;
-    const oppMissing = oppCol.filter(c => c === null).length;
-    const N = remainingDeck.length;
-
-    if (N < myMissing + oppMissing) return 0;
-
-    if (myMissing === 0 && oppMissing === 0) {
-        const myRes = evaluateYHand(myCol as Card[], diceValue);
-        const oppRes = evaluateYHand(oppCol as Card[], diceValue);
-        return compareAndScore(myCol as Card[], myRes, oppRes, diceValue, learning, isLosingBadly);
-    }
-
-    let totalScore = 0;
-    let totalCombinations = 0;
-    const totalMissing = myMissing + oppMissing;
-
-    if (totalMissing <= 2) {
-        if (myMissing === 1 && oppMissing === 0) {
-            const emptyIdx = myCol.indexOf(null);
-            const oppRes = evaluateYHand(oppCol as Card[], diceValue);
-            for (let i = 0; i < N; i++) {
-                const mySim = [...myCol];
-                mySim[emptyIdx] = remainingDeck[i];
-                const myRes = evaluateYHand(mySim as Card[], diceValue);
-                totalScore += compareAndScore(mySim as Card[], myRes, oppRes, diceValue, learning, isLosingBadly);
-            }
-            return totalScore / N;
-        } 
-        else if (myMissing === 0 && oppMissing === 1) {
-            const emptyIdx = oppCol.indexOf(null);
-            const myRes = evaluateYHand(myCol as Card[], diceValue);
-            for (let i = 0; i < N; i++) {
-                const oppSim = [...oppCol];
-                oppSim[emptyIdx] = remainingDeck[i];
-                const oppRes = evaluateYHand(oppSim as Card[], diceValue);
-                totalScore += compareAndScore(myCol as Card[], myRes, oppRes, diceValue, learning, isLosingBadly);
-            }
-            return totalScore / N;
-        }
-        else if (myMissing === 1 && oppMissing === 1) {
-            const myEmptyIdx = myCol.indexOf(null);
-            const oppEmptyIdx = oppCol.indexOf(null);
-            for (let i = 0; i < N; i++) {
-                for (let j = 0; j < N; j++) {
-                    if (i === j) continue;
-                    const mySim = [...myCol];
-                    mySim[myEmptyIdx] = remainingDeck[i];
-                    const oppSim = [...oppCol];
-                    oppSim[oppEmptyIdx] = remainingDeck[j];
-
-                    const myRes = evaluateYHand(mySim as Card[], diceValue);
-                    const oppRes = evaluateYHand(oppSim as Card[], diceValue);
-                    totalScore += compareAndScore(mySim as Card[], myRes, oppRes, diceValue, learning, isLosingBadly);
-                    totalCombinations++;
-                }
-            }
-            return totalScore / totalCombinations;
-        }
-        else if (myMissing === 2 && oppMissing === 0) {
-            const emptyIndices = getNullIndices(myCol);
-            const oppRes = evaluateYHand(oppCol as Card[], diceValue);
-            for (let i = 0; i < N; i++) {
-                for (let j = i + 1; j < N; j++) {
-                    const mySim = [...myCol];
-                    mySim[emptyIndices[0]] = remainingDeck[i];
-                    mySim[emptyIndices[1]] = remainingDeck[j];
-                    const myRes = evaluateYHand(mySim as Card[], diceValue);
-                    totalScore += compareAndScore(mySim as Card[], myRes, oppRes, diceValue, learning, isLosingBadly);
-                    totalCombinations++;
-                }
-            }
-            return totalScore / totalCombinations;
-        }
-    }
-
-    const iterations = params.mcSimulations;
-    for (let i = 0; i < iterations; i++) {
-        const drawnCards = getRandomSample(remainingDeck, totalMissing);
-        let drawIndex = 0;
-
-        const mySimulatedCol = myCol.map(c => c === null ? drawnCards[drawIndex++] : c) as Card[];
-        const oppSimulatedCol = oppCol.map(c => c === null ? drawnCards[drawIndex++] : c) as Card[];
-
-        const myRes = evaluateYHand(mySimulatedCol, diceValue);
-        const oppRes = evaluateYHand(oppSimulatedCol, diceValue);
-
-        totalScore += compareAndScore(mySimulatedCol, myRes, oppRes, diceValue, learning, isLosingBadly);
-    }
-
-    return totalScore / iterations;
-}
-
-function compareAndScore(
-    myCards: Card[],
-    myRes: YHandResult,
-    oppRes: YHandResult,
-    diceValue: number,
-    learning: LearningData,
-    isLosingBadly: boolean
-): number {
-    let weWin = false;
-    if (myRes.rankValue > oppRes.rankValue) {
-        weWin = true;
-    } else if (myRes.rankValue === oppRes.rankValue) {
-        for (let k = 0; k < Math.max(myRes.kickers.length, oppRes.kickers.length); k++) {
-            const mk = myRes.kickers[k] || 0;
-            const ok = oppRes.kickers[k] || 0;
-            if (mk > ok) { weWin = true; break; }
-            if (ok > mk) { break; }
-        }
-    }
-
-    if (weWin) {
-        return calculateHandValue(myCards, diceValue, learning, isLosingBadly);
-    }
-    return 0;
-}
-
-function calculateHandValue(cards: Card[], diceValue: number, learning: LearningData, isLosingBadly: boolean): number {
-    const result = evaluateYHand(cards, diceValue);
-    let baseValue = Math.pow(result.rankValue, 2) * 10 * diceValue;
-
-    if (result.type.includes('Flush')) baseValue *= learning.flushPreference;
-    if (result.type.includes('Straight')) baseValue *= learning.straightPreference;
-    if (result.type.includes('Pair') || result.type.includes('Trips')) baseValue *= learning.tripPreference;
-
-    // Apply pure_preference multiplier from global learning pool
-    if (result.type.startsWith('Pure')) {
-        baseValue *= (learning.purePreference ?? 1.0);
-    }
-
-    if (isLosingBadly && result.rankValue >= 5) {
-        baseValue *= 1.5;
-    }
-
-    return baseValue;
-}
-
-function calculateRootMoveBonus(
-    player: GameState['players'][0],
-    opponent: GameState['players'][0],
-    card: Card,
-    colIndex: number,
-    emptySlotIdx: number,
-    turnCount: number,
-    params: AiParams,
-    learning: LearningData
-): number {
-    let bonus = 0;
-    const colDice = player.dice[colIndex];
-
-    // Alignment Bonus: rewards placing strong cards on high-dice columns and weak cards on low-dice
-    // Scaled by bonusAggression (strategy.md §12): higher aggression = bolder card-dice alignment
-    bonus += (card.rank - 8) * (colDice - 3.5) * 40 * (learning.bonusAggression ?? 1.0);
-
-    // Trash Bin Rush (strategy.md §3): reward filling low-dice columns quickly to gain draw bonus
-    // The urgency grows as the column gets closer to completion and as dice value gets lower
-    if (colDice <= 3) {
-        const rushPriority = (4 - colDice);           // dice=1→3, dice=2→2, dice=3→1
-        const slotProgress = (emptySlotIdx + 1);      // 1st card→1, 2nd→2, 3rd(completing)→3
-        bonus += rushPriority * slotProgress * 120 * (learning.trashBinRushScale ?? 1.0);
-    }
-
-    // Apply low_card_avoidance to low card penalties
-    if (emptySlotIdx === 0) {
-        if (card.rank === 14 || card.rank === 13 || card.rank === 2) {
-            const hasStraightSynergy = player.hand.some(c => c !== card && Math.abs(c.rank - card.rank) <= 2);
-            if (!hasStraightSynergy) {
-                bonus += params.lowCardPenalty * (learning.lowCardAvoidance ?? 1.0);
-            }
-        } else if (card.rank === 12) {
-            bonus += params.queenFirstRowBonus * (learning.queenFirstScale ?? 1.0);
-        }
-    }
-
-    // Apply row3_delay_focus to row 3 delay penalty
-    if (emptySlotIdx === 2 && colDice >= 3 && turnCount <= 8) {
-        bonus -= params.row3DelayPenalty * (learning.row3DelayFocus ?? 1.0);
-    }
-
-    // Apply showdown_delay_focus to showdown delay decisions
-    const oppCol = [opponent.board[0][colIndex], opponent.board[1][colIndex], opponent.board[2][colIndex]];
-    const oppCards = oppCol.filter((candidate): candidate is Card => candidate !== null && !candidate.isHidden);
-    const myCol = [player.board[0][colIndex], player.board[1][colIndex], player.board[2][colIndex]];
-    const myCards = myCol.filter(c => c !== null) as Card[];
-    
-    if (emptySlotIdx === 2 && oppCards.length === 3 && myCards.length === 2) {
-        // AI is about to fill the column and finalize it. If AI is already winning by far, slow play!
-        const tempCol = [...myCol];
-        tempCol[2] = card;
-        const myRes = evaluateYHand(tempCol as Card[], colDice);
-        const oppRes = evaluateYHand(oppCards, colDice);
-        const weWin = myRes.rankValue > oppRes.rankValue;
-        if (weWin && turnCount <= 9) {
-            // Check for Trips completion: Skip Showdown Delay, prioritize heavily
-            if (myRes.rankValue === 8) {
-                bonus += 1500 * (colDice / 6); // Strategic Trips completion bonus (dominant weight)
-            } else {
-                bonus -= params.showdownDelayPenalty * (learning.showdownDelayFocus ?? 1.0);
-            }
-        }
-        
-        // Defensive/Offensive Strong Hand Finalization:
-        // If completing the column results in a very strong hand (Flush/Trips/PureStraight/StraightFlush)
-        // on a high-dice column (dice >= 4), apply a massive bonus to lock it in.
-        if (weWin && colDice >= 4 && myRes.rankValue >= 5) {
-            bonus += 1200 * (colDice / 6); // Ensure we secure wins on valuable columns
-        }
-    }
-
-    // Apply trips_in_hand_focus to Trips and Pairs hand values
-    const handRanks = player.hand.map(c => c.rank);
-    const tripsRanks = handRanks.filter((r, _, self) => self.filter(x => x === r).length === 3);
-    const pairRanks = handRanks.filter((r, _, self) => self.filter(x => x === r).length === 2);
-    
-    if (tripsRanks.includes(card.rank)) {
-        bonus += params.tripsInHandBonus * (learning.tripsInHandFocus ?? 1.0);
-    } else if (pairRanks.includes(card.rank)) {
-        bonus += params.pairInHandBonus * (learning.pairInHandScale ?? 1.0);
-    }
-
-    // Penalize completing columns with weak hands (HighCard, OnePair, plain Straight)
-    // Scale by (diceVal/6): low-dice = acceptable trash bin. Scale by weakHandAvoidance from global learning.
-    if (emptySlotIdx === 2) {
-        const myCol = [player.board[0][colIndex], player.board[1][colIndex], player.board[2][colIndex]];
-        const tempCol = [...myCol];
-        tempCol[2] = card;
-        const colDiceVal = player.dice[colIndex];
-        const diceScale = colDiceVal / 6;
-        const avoidScale = learning.weakHandAvoidance ?? 1.0;
-        const projectedResult = evaluateYHand(tempCol as Card[], colDiceVal);
-        if (projectedResult.rankValue === 1) {
-            // HighCard: heavily penalized on high-dice columns, tolerated on low-dice
-            bonus -= 800 * diceScale * avoidScale;
-        } else if (projectedResult.rankValue === 2) {
-            // Plain OnePair (non-pure)
-            bonus -= 400 * diceScale * avoidScale;
-        } else if (projectedResult.rankValue === 3) {
-            // Plain Straight (non-pure)
-            bonus -= 200 * diceScale * avoidScale;
-        }
-    }
-
-    // Dead Column Cut-loss logic (strategy.md §7)
-    // If opponent has already secured a strong hand in this column that we cannot beat,
-    // immediately discourage placing high-value cards, and encourage dumping low-value cards.
-    if (oppCards.length === 3) {
-        const oppRes = evaluateYHand(oppCards, colDice);
-        const myPotentialCol = [...myCol];
-        const emptySlot = myPotentialCol.indexOf(null);
-        if (emptySlot !== -1) {
-            myPotentialCol[emptySlot] = card;
-        }
-        const filledCol = myPotentialCol.map(c => c === null ? card : c) as Card[];
-        const maxProjectedRes = evaluateYHand(filledCol, colDice);
-
-        if (maxProjectedRes.rankValue < oppRes.rankValue) {
-            // We are mathematically dead in this Y-column!
-            if (card.rank >= 11) {
-                // Penalize placing J, Q, K, A on a dead column
-                bonus -= 500 * (colDice / 6);
-            } else if (card.rank <= 6) {
-                // Reward dumping 2, 3, 4, 5, 6 as trash/fillers
-                bonus += 150;
-            }
-        }
-    }
-
-    bonus += evaluateOpponentBlock(opponent, colIndex);
-
-    return bonus;
-}
-
-function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: number): number {
-    const oppCol = [opponent.board[0][colIndex], opponent.board[1][colIndex], opponent.board[2][colIndex]];
-    const oppCards = oppCol.filter((candidate): candidate is Card => candidate !== null && !candidate.isHidden);
-
-    if (oppCards.length < 2) return 0;
-
-    const oppRanks = oppCards.map(c => c.rank);
-    const oppSuits = oppCards.map(c => c.suit);
-    let blockValue = 0;
-
-    const uniqueOppRanks = new Set(oppRanks);
-    if (uniqueOppRanks.size === 1) blockValue += 50;
-
-    const uniqueOppSuits = new Set(oppSuits);
-    if (uniqueOppSuits.size === 1 && oppCards.length >= 2) blockValue += 40;
-
-    return blockValue;
-}
-
-// ==========================================
-// Game State Utilities & Belief Samplers
-// ==========================================
 function cloneGameState(state: GameState): GameState {
-    return JSON.parse(JSON.stringify(state));
-}
-
-function isTerminalState(state: GameState): boolean {
-    const p1Full = state.players[0].board[2].every(c => c !== null);
-    const p2Full = state.players[1].board[2].every(c => c !== null);
-    return p1Full && p2Full;
-}
-
-function getNullIndices(arr: (Card | null)[]): number[] {
-    const indices: number[] = [];
-    arr.forEach((val, idx) => {
-        if (val === null) indices.push(idx);
-    });
-    return indices;
-}
-
-function getVisibleCards(player: GameState['players'][0], opponent: GameState['players'][0]): Card[] {
-    const visible: Card[] = [];
-    visible.push(...player.hand);
-    
-    for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 5; c++) {
-            if (player.board[r][c]) visible.push(player.board[r][c]!);
-        }
-    }
-    
-    for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 5; c++) {
-            const oppCard = opponent.board[r][c];
-            if (oppCard && !oppCard.isHidden) visible.push(oppCard);
-        }
-    }
-    
-    return visible;
+    return structuredClone(state);
 }
 
 export function getRemainingDeck(visibleCards: Card[]): Card[] {
-    const suits: Card['suit'][] = ['spades', 'hearts', 'diamonds', 'clubs'];
-    const ranks: Rank[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-    const fullDeck: Card[] = [];
-    
-    for (const suit of suits) {
-        for (const rank of ranks) {
-            fullDeck.push({ id: `${suit}-${rank}`, suit, rank, isHidden: false });
-        }
-    }
-    
-    const visibleIds = new Set(visibleCards.map(c => c.id));
-    return fullDeck.filter(c => !visibleIds.has(c.id));
+    const visibleIds = new Set(visibleCards.map(card => card.id));
+    return createDeck().filter(card => !visibleIds.has(card.id));
 }
 
-function getRandomSample<T>(arr: T[], n: number): T[] {
-    const result = new Array(n);
-    let len = arr.length;
-    const taken = new Array(len);
-    while (n--) {
-        const x = Math.floor(Math.random() * len);
-        result[n] = arr[x in taken ? taken[x] : x];
-        taken[x] = --len in taken ? taken[len] : len;
+function normalizeScores(values: number[]): number[] {
+    const finite = values.filter(Number.isFinite);
+    if (finite.length === 0) return values.map(() => 0);
+    const minimum = Math.min(...finite);
+    const maximum = Math.max(...finite);
+    if (maximum === minimum) return values.map(() => 0.5);
+    return values.map(value => Number.isFinite(value) ? (value - minimum) / (maximum - minimum) : 0);
+}
+
+function hashInformationState(state: GameState, playerIndex: 0 | 1): number {
+    const player = state.players[playerIndex];
+    const opponent = state.players[1 - playerIndex];
+    const ownBoard = player.board.flat().map(card => card?.id ?? '-').join(',');
+    const opponentBoard = opponent.board.flat().map(card => (
+        card?.isHidden ? '?' : card?.id ?? '-'
+    )).join(',');
+    return hashString([
+        state.turnCount,
+        state.currentPlayerIndex,
+        player.hand.map(card => card.id).sort().join(','),
+        ownBoard,
+        opponentBoard,
+        player.dice.join(','),
+        opponent.hand.length,
+        state.deck.length,
+    ].join('|'));
+}
+
+function hashString(value: string): number {
+    let hash = 0x811c9dc5;
+    for (let index = 0; index < value.length; index++) {
+        hash ^= value.charCodeAt(index);
+        hash = Math.imul(hash, 0x01000193);
     }
-    return result;
+    return hash >>> 0;
+}
+
+function mixSeed(...values: number[]): number {
+    let hash = 0x811c9dc5;
+    for (const value of values) {
+        hash ^= value >>> 0;
+        hash = Math.imul(hash, 0x01000193);
+    }
+    return hash >>> 0;
+}
+
+function seededRandom(seed: number): () => number {
+    let value = seed >>> 0;
+    return () => {
+        value = (value + 0x6d2b79f5) >>> 0;
+        let result = value;
+        result = Math.imul(result ^ (result >>> 15), result | 1);
+        result ^= result + Math.imul(result ^ (result >>> 7), result | 61);
+        return ((result ^ (result >>> 14)) >>> 0) / 4_294_967_296;
+    };
+}
+
+function shuffleInPlace<T>(values: T[], random: () => number): void {
+    for (let index = values.length - 1; index > 0; index--) {
+        const target = Math.floor(random() * (index + 1));
+        [values[index], values[target]] = [values[target], values[index]];
+    }
+}
+
+function clampFinite(value: number, minimum: number, maximum: number, fallback: number): number {
+    if (!Number.isFinite(value)) return fallback;
+    return Math.max(minimum, Math.min(maximum, value));
+}
+
+function now(): number {
+    return typeof performance === 'undefined' ? Date.now() : performance.now();
+}
+
+function setDiagnostics(
+    startedAt: number,
+    legalMoves: number,
+    searchedMoves: number,
+    completedBeliefSamples: number,
+): void {
+    lastDecisionDiagnostics = {
+        elapsedMs: now() - startedAt,
+        legalMoves,
+        searchedMoves,
+        completedBeliefSamples,
+        usedRollout: completedBeliefSamples > 0,
+    };
 }

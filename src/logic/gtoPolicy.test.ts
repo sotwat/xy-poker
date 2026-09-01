@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { DEFAULT_AI_PARAMS, getBestMove, getBestTurnOrder, getRemainingDeck } from './ai';
+import {
+    DEFAULT_AI_PARAMS,
+    getBestMove,
+    getBestTurnOrder,
+    getLastAiDecisionDiagnostics,
+    getRemainingDeck,
+} from './ai';
 import { createDeck } from './deck';
 import { gameReducer, INITIAL_GAME_STATE } from './game';
 import { getGtoHideProbability, getGtoTurnOrderScore, scoreGtoMove } from './gtoPolicy';
@@ -94,4 +100,57 @@ test('GTO-integrated AI completes a deterministic game using only legal moves', 
     state = gameReducer(state, { type: 'CALCULATE_SCORE' });
     assert.equal(state.phase, 'ended');
     assert.ok(state.players.every(player => player.hiddenCardsCount <= 3));
+});
+
+test('runtime AI completes full-rule belief rollouts instead of timing out to its prior', () => {
+    let state = startedState();
+    state = gameReducer(state, { type: 'CHOOSE_TURN_ORDER', payload: { startingPlayer: 0 } });
+    const move = getBestMove(state, 0, {
+        ...DEFAULT_AI_PARAMS,
+        mcSimulations: 2,
+        timeBudgetMs: 2_000,
+    });
+    const diagnostics = getLastAiDecisionDiagnostics();
+
+    assert.ok(state.players[0].hand.some(card => card.id === move.cardId));
+    assert.equal(state.players[0].board[2][move.colIndex], null);
+    assert.equal(diagnostics.completedBeliefSamples, 2);
+    assert.equal(diagnostics.usedRollout, true);
+    assert.ok(diagnostics.searchedMoves > 1);
+});
+
+test('runtime AI decision cannot depend on the true deck order or hidden identities', () => {
+    let base = startedState();
+    base = gameReducer(base, { type: 'CHOOSE_TURN_ORDER', payload: { startingPlayer: 0 } });
+    const hiddenBoard = base.players[1].board.map(row => [...row]);
+    hiddenBoard[0][0] = { ...base.players[1].hand[0], isHidden: true };
+    const stateA = {
+        ...base,
+        players: [
+            base.players[0],
+            { ...base.players[1], board: hiddenBoard, hand: base.players[1].hand.slice(1) },
+        ],
+    } as GameState;
+    const alternateBoard = stateA.players[1].board.map(row => [...row]);
+    alternateBoard[0][0] = { ...stateA.deck[10], isHidden: true };
+    const stateB = {
+        ...stateA,
+        deck: [...stateA.deck].reverse(),
+        players: [
+            stateA.players[0],
+            {
+                ...stateA.players[1],
+                board: alternateBoard,
+                hand: [...stateA.players[1].hand].reverse(),
+            },
+        ],
+    } as GameState;
+    const originalRandom = Math.random;
+    Math.random = () => 0.99;
+    try {
+        const params = { ...DEFAULT_AI_PARAMS, mcSimulations: 2, timeBudgetMs: 2_000 };
+        assert.deepEqual(getBestMove(stateA, 0, params), getBestMove(stateB, 0, params));
+    } finally {
+        Math.random = originalRandom;
+    }
 });
