@@ -7,6 +7,7 @@
     min-height: 110px;
     align-items: center;
     justify-content: center;
+    overflow: visible;
     transition: background 0.3s;
 }
 
@@ -16,6 +17,14 @@
 }
 
 .hand-card-wrapper {
+    flex: 1 1 0;
+    width: auto;
+    max-width: 66px;
+    min-width: 0;
+    height: auto;
+    aspect-ratio: 5 / 7;
+    display: flex;
+    align-items: center;
     transition: transform 0.2s;
 }
 
@@ -46,8 +55,8 @@
         /* Slightly increased gap for better touch targets */
         min-height: 125px !important;
         /* Reduced height to make hand smaller */
-        overflow-x: auto;
-        /* Allow scrolling if too many cards */
+        overflow: visible;
+        /* Every legal hand fits by shrinking each card evenly. */
         justify-content: center;
         /* Center cards */
         width: 100%;
@@ -61,7 +70,12 @@
     }
 
     .hand-card-wrapper {
-        height: 100%;
+        flex: 1 1 0;
+        width: auto;
+        max-width: 66px;
+        min-width: 0;
+        height: auto;
+        aspect-ratio: 5 / 7;
         display: flex;
         align-items: center;
     }

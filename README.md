@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09012325` (2026-09-01 23:25)
+- **Current Version:** `09012337` (2026-09-01 23:37)
 - **Status:** **Full local quality gate verified; deployment pending**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -89,7 +89,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v09012325** (2026-09-01): **Physical Coin-Toss Sound** - Replaced the continuous electronic LFO tone with a timed thumb flick, short edge-flip ticks, and a hard-surface landing built from inharmonic metal partials and tiny filtered contact-noise bursts synchronized to the 1.4-second toss.
+1. **v09012337** (2026-09-01): **Always-Visible Hand Layout** - Replaced the fixed-width, centered overflow strip with evenly shrinking, aspect-ratio-preserving hand cards so every card remains visible and selectable as bonus draws increase the hand size on phone, tablet, and desktop layouts. Made the unified release script work in restored environments that provide Node.js without globally installed npm/npx shims.
+2. **v09012325** (2026-09-01): **Physical Coin-Toss Sound** - Replaced the continuous electronic LFO tone with a timed thumb flick, short edge-flip ticks, and a hard-surface landing built from inharmonic metal partials and tiny filtered contact-noise bursts synchronized to the 1.4-second toss.
 2. **v09012319** (2026-09-01): **Dual-Color X-Hand Showdown** - Preserved the gold X-hand identity while carrying the blue or red winner color through the background glow, diagonal panels, streaks, shards, card edges, hand banner, and winner badge.
 3. **v09012310** (2026-09-01): **Showdown Cut-In Overhaul** - Rebuilt showdown reveals with staggered left-to-right winning-card slides, finite diagonal cut-ins, speed lines, light shards, impact typography, synchronized spoken hand names, a lightweight synthesized stinger, a gold final X-hand climax, and reduced-motion fallbacks without video or bitmap effect assets.
 4. **v09012256** (2026-09-01): **Visible X-Hand Result** - Removed the nested result-table scroll trap so the final X-hand row is always rendered with both hand names and scores; short screens now scroll the complete result modal instead.

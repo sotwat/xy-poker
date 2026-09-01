@@ -1163,7 +1163,7 @@ body {
   justify-content: center;
   gap: clamp(3px, 1.2cqw, 6px);
   padding: 5px 7px;
-  overflow-x: auto;
+  overflow: visible;
   border: 0;
   border-radius: var(--radius-sm);
   background: #0d1117;
@@ -1179,8 +1179,10 @@ body {
 }
 
 .hand-card-wrapper {
-  flex: 0 0 auto;
-  height: 100%;
+  flex: 1 1 0;
+  width: auto;
+  max-width: clamp(47px, 8.5cqh, 66px);
+  height: auto;
   aspect-ratio: 5 / 7;
   min-width: 0;
   display: flex;
@@ -2104,6 +2106,10 @@ body {
   .hand {
     min-height: clamp(66px, 11cqh, 78px) !important;
     height: clamp(66px, 11cqh, 78px);
+  }
+
+  .hand-card-wrapper {
+    max-width: 48px;
   }
 
   .game-status-bar {

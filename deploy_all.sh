@@ -18,7 +18,18 @@ if [[ -z "$app_version" || "$app_version" != "$readme_version" ]]; then
 fi
 
 git diff --check
-npm run check
+
+if command -v npm >/dev/null 2>&1; then
+  npm run check
+elif command -v node >/dev/null 2>&1; then
+  node_modules/.bin/eslint .
+  node --import tsx --test src/logic/*.test.ts server/*.test.js
+  node_modules/.bin/tsc -b
+  node_modules/.bin/vite build
+else
+  echo "Node.js 20.19 or newer is required for deployment." >&2
+  exit 1
+fi
 
 if [[ -n "$(git status --short)" ]]; then
   commit_message="$app_version ${1:-Release}"
@@ -26,7 +37,14 @@ if [[ -n "$(git status --short)" ]]; then
   git commit -m "$commit_message"
 fi
 
-npx wrangler pages deploy dist --project-name xy-poker
+if command -v npx >/dev/null 2>&1; then
+  npx wrangler pages deploy dist --project-name xy-poker
+elif [[ -x node_modules/.bin/wrangler ]]; then
+  node_modules/.bin/wrangler pages deploy dist --project-name xy-poker
+else
+  echo "Wrangler 4.x is required for Cloudflare Pages deployment." >&2
+  exit 1
+fi
 git push origin main
 
 echo "Deployment complete: $app_version"
