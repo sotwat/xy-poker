@@ -456,8 +456,9 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('cancel_matchmaking', ({ roomId } = {}) => {
-        removeSocketFromRoom(socket, roomId, false);
+    socket.on('cancel_matchmaking', ({ roomId } = {}, callback) => {
+        const removed = removeSocketFromRoom(socket, roomId, false);
+        acknowledge(callback, { success: removed });
     });
 
     socket.on('leave_room', ({ roomId } = {}) => {

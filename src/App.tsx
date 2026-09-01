@@ -14,6 +14,7 @@ import { TurnTimer } from './components/TurnTimer';
 import type { PopupData } from './components/ShowdownPopup';
 import { updatePlayerStats } from './logic/gamification';
 import { socket, connectSocket } from './logic/online';
+import { QUICK_MATCH_BOT_FALLBACK_MS, QUICK_MATCH_BOT_FALLBACK_SECONDS } from './logic/matchmaking';
 import { supabase, fetchGlobalAiParameters, updateGlobalAiParameters } from './supabase';
 import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS, setGlobalAiParams } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
@@ -365,6 +366,7 @@ function App() {
 
   // Timeout ref for Quick Match Bot Fallback
   const quickMatchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const quickMatchRequestRef = useRef(0);
   const lastActionTimeRef = useRef<number>(0);
   const isAIActingRef = useRef<boolean>(false); // Guard against double AI moves
   const localGameTokenRef = useRef<string | null>(null);
@@ -427,6 +429,10 @@ function App() {
     });
 
     socket.on('opponent_joined', ({ name }: { name: string }) => {
+      if (quickMatchTimeoutRef.current) {
+        clearTimeout(quickMatchTimeoutRef.current);
+        quickMatchTimeoutRef.current = null;
+      }
       setOpponentName(name);
       playSuccessSound();
     });
@@ -441,6 +447,12 @@ function App() {
         roomId, initialDice, initialDeck, p1Name, p2Name, p1Id, p2Id,
         isRanked, p1IsPremium, p2IsPremium, startingPlayer
       } = data;
+
+      quickMatchRequestRef.current += 1;
+      if (quickMatchTimeoutRef.current) {
+        clearTimeout(quickMatchTimeoutRef.current);
+        quickMatchTimeoutRef.current = null;
+      }
 
       setMode('online');
       setRoomId(roomId);
@@ -1039,6 +1051,11 @@ function App() {
   };
 
   const startBotMatch = () => {
+    quickMatchRequestRef.current += 1;
+    if (quickMatchTimeoutRef.current) {
+      clearTimeout(quickMatchTimeoutRef.current);
+      quickMatchTimeoutRef.current = null;
+    }
     beginTrackedLocalGame();
 
     // Get current roomId using ref
@@ -1134,17 +1151,28 @@ function App() {
   };
 
   const handleQuickMatch = () => {
+    const requestId = quickMatchRequestRef.current + 1;
+    quickMatchRequestRef.current = requestId;
     setIsQuickMatch(true);
+    setIsOnlineGame(false);
 
-    // Start 15s Timer
+    // Fall back to a local bot if no human match starts within 30 seconds.
     if (quickMatchTimeoutRef.current) clearTimeout(quickMatchTimeoutRef.current);
     quickMatchTimeoutRef.current = setTimeout(() => {
+      if (quickMatchRequestRef.current !== requestId) return;
       startBotMatch();
-    }, 15000);
+    }, QUICK_MATCH_BOT_FALLBACK_MS);
 
     const browserId = getBrowserId();
     const userId = session?.user?.id;
     socket.emit('quick_match', { playerName, browserId, userId }, (response: RoomResponse) => {
+      if (quickMatchRequestRef.current !== requestId) {
+        if (response.success && response.roomId) {
+          socket.emit('cancel_matchmaking', { roomId: response.roomId });
+        }
+        return;
+      }
+
       if (response.success && response.roomId && response.role) {
         // NOTE: response.roomId should be set immediately
         setRoomId(response.roomId);
@@ -1152,10 +1180,14 @@ function App() {
         setIsOnlineGame(true);
         if (response.opponentName) {
           setOpponentName(response.opponentName);
+          if (quickMatchTimeoutRef.current) {
+            clearTimeout(quickMatchTimeoutRef.current);
+            quickMatchTimeoutRef.current = null;
+          }
         }
-        // DO NOT clear timer here. We are just in the queue.
-        // Timer clears only on game_start or cancel.
+        // A waiting host keeps the timer; a matched guest clears it above.
       } else {
+        quickMatchRequestRef.current += 1;
         setIsQuickMatch(false);
         if (quickMatchTimeoutRef.current) {
           clearTimeout(quickMatchTimeoutRef.current);
@@ -1183,15 +1215,28 @@ function App() {
 
   const handleCancelMatchmaking = () => {
     playClickSound();
+    quickMatchRequestRef.current += 1;
     if (quickMatchTimeoutRef.current) {
       clearTimeout(quickMatchTimeoutRef.current);
+      quickMatchTimeoutRef.current = null;
     }
 
-    if (mode === 'local') {
-      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
-    } else {
-      socket.emit('surrender', { roomId });
+    const currentRoomId = roomIdRef.current;
+    if (currentRoomId) {
+      socket.emit('cancel_matchmaking', { roomId: currentRoomId });
     }
+
+    setMode('online');
+    setRoomId(null);
+    setPlayerRole(null);
+    setIsOnlineGame(false);
+    setIsQuickMatch(false);
+    setIsBotDisguise(false);
+    setOpponentName('Player 2');
+    setRatingUpdates(null);
+    setRematchRequested(false);
+    setRematchInvited(false);
+    dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
   };
 
   const calculateWinningColumns = (): ('p1' | 'p2' | 'draw')[] => {
@@ -1375,7 +1420,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v09012130</span>}
+          {showVersion && <span className="version">v09012139</span>}
         </div>
 
         <button
@@ -1468,7 +1513,7 @@ function App() {
                 <h3>Quick Match</h3>
                 <h2>Waiting for opponent...</h2>
                 <div className="loading-spinner"></div>
-                <p>Your game will start automatically when an opponent joins</p>
+                <p>If no player joins within {QUICK_MATCH_BOT_FALLBACK_SECONDS} seconds, a bot match starts automatically.</p>
                 <button type="button" className="btn-cancel" onClick={handleCancelMatchmaking}>
                   Cancel
                 </button>
@@ -1525,7 +1570,7 @@ function App() {
                         <h3>Quick Match</h3>
                         <h2>Waiting for opponent...</h2>
                         <div className="loading-spinner"></div>
-                        <p>Your game will start automatically when an opponent joins</p>
+                        <p>If no player joins within {QUICK_MATCH_BOT_FALLBACK_SECONDS} seconds, a bot match starts automatically.</p>
                         <button type="button" className="btn-cancel" onClick={handleCancelMatchmaking}>
                           Cancel
                         </button>
@@ -1634,7 +1679,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09012130</div>
+                          <div className="home-version">v09012139</div>
                         </div>
                       </div>
                     )}
