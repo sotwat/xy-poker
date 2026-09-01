@@ -1,6 +1,7 @@
 import type { GameState, Card, Rank, YHandResult } from './types';
 import { getLearningData, type LearningData } from './aiLearning';
 import { evaluateYHand, evaluateXHand } from './evaluation';
+import { getGtoHideProbability, getGtoTurnOrderScore, scoreGtoMove } from './gtoPolicy';
 import type { GlobalAiParams } from '../supabase';
 
 export interface AiParams {
@@ -16,6 +17,8 @@ export interface AiParams {
     turnOrderBaseFirstValue: number;
     turnOrderPairBonus: number;
     turnOrderHighCardBonus: number;
+    gtoPriorWeight: number;
+    timeBudgetMs: number;
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
@@ -29,7 +32,9 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     mcSimulations: 20,
     turnOrderBaseFirstValue: 0,
     turnOrderPairBonus: 2,
-    turnOrderHighCardBonus: 2
+    turnOrderHighCardBonus: 2,
+    gtoPriorWeight: 0.72,
+    timeBudgetMs: 400,
 };
 
 // ==========================================
@@ -95,27 +100,8 @@ export function getBestTurnOrder(
     playerIndex: number,
     params: AiParams = DEFAULT_AI_PARAMS
 ): boolean {
-    const player = gameState.players[playerIndex];
-    const hand = player.hand;
-
-    let hasPair = false;
-    let highCardsCount = 0;
-
-    for (let i = 0; i < hand.length; i++) {
-        if (hand[i].rank >= 10) highCardsCount++;
-        for (let j = i + 1; j < hand.length; j++) {
-            if (hand[i].rank === hand[j].rank) hasPair = true;
-        }
-    }
-
-    const learning = getActiveLearningData();
-
-    let score = params.turnOrderBaseFirstValue;
-    // Apply turnOrderFlexibility from collaborative learning pool
-    if (hasPair) score += params.turnOrderPairBonus * learning.turnOrderFlexibility;
-    if (highCardsCount >= 2) score += params.turnOrderHighCardBonus * learning.turnOrderFlexibility;
-
-    return score > 0;
+    void params; // Kept for API compatibility; XY-GTO-A1 owns turn selection.
+    return getGtoTurnOrderScore(gameState.players[playerIndex]) > 0;
 }
 
 export function getBestMove(
@@ -124,7 +110,7 @@ export function getBestMove(
     params: AiParams = DEFAULT_AI_PARAMS
 ): { cardId: string; colIndex: number; isHidden: boolean } {
     const startTime = Date.now();
-    const TIMEOUT_MS = 400; // Expanded to 400ms to allow deeper ExpectiMax search (depth 3-4)
+    const timeoutMs = params.timeBudgetMs ?? 400;
 
     const player = gameState.players[playerIndex];
     const opponent = gameState.players[1 - playerIndex];
@@ -132,7 +118,7 @@ export function getBestMove(
 
     if (hand.length === 0) return { cardId: '', colIndex: 0, isHidden: false };
 
-    const validColumns = [];
+    const validColumns: number[] = [];
     for (let c = 0; c < 5; c++) {
         if (player.board[2][c] === null) validColumns.push(c);
     }
@@ -143,88 +129,174 @@ export function getBestMove(
     const remainingDeck = getRemainingDeck(visibleCards);
     const learning = getActiveLearningData();
 
-    // 1. Belief Hand Sampler for Opponent (Cheating/覗き見 Prevention)
-    const oppHandSize = opponent.hand.length;
-    const opponentHandSamples = sampleOpponentHands(remainingDeck, oppHandSize, 3);
+    // Sample the opponent hand and every hidden board identity jointly. The
+    // actual hidden identities never enter the search evaluation.
+    const opponentBeliefs = sampleOpponentBeliefs(remainingDeck, opponent, 3);
+    const candidates = hand.flatMap(card => validColumns.map(col => ({
+        card,
+        col,
+        gtoScore: scoreGtoMove(gameState, playerIndex as 0 | 1, card, col),
+    }))).sort((a, b) => b.gtoScore - a.gtoScore);
 
-    let bestMove = { cardId: hand[0].id, colIndex: validColumns[0], isHidden: false };
+    let bestMove = { cardId: candidates[0].card.id, colIndex: candidates[0].col, isHidden: false };
     let currentBestMove = { ...bestMove };
     let depth = 2;
     const maxAllowedDepth = 5;
 
-    // 2. Iterative Deepening ExpectiMax Loop
+    // Iterative deepening refines the GTO prior with a belief-state lookahead.
+    // A partial depth is discarded, leaving the fast GTO policy as a safe
+    // timeout fallback rather than whichever action happened to run first.
     while (depth <= maxAllowedDepth) {
         evCache.clear();
-        let depthBestMove = { ...bestMove };
-        let depthBestScore = -Infinity;
+        const depthScores: Array<{
+            card: Card;
+            col: number;
+            gtoScore: number;
+            searchScore: number;
+        }> = [];
         let isTimedOut = false;
 
-        for (const card of hand) {
-            if (Date.now() - startTime > TIMEOUT_MS) {
+        for (const candidate of candidates) {
+            if (Date.now() - startTime > timeoutMs) {
                 isTimedOut = true;
                 break;
             }
 
-            for (const col of validColumns) {
-                if (Date.now() - startTime > TIMEOUT_MS) {
-                    isTimedOut = true;
-                    break;
-                }
+            const { card, col } = candidate;
+            const nextGameState = cloneGameState(gameState);
+            const nextPlayer = nextGameState.players[playerIndex];
+            const emptySlotIdx = [
+                nextPlayer.board[0][col],
+                nextPlayer.board[1][col],
+                nextPlayer.board[2][col],
+            ].indexOf(null);
+            if (emptySlotIdx !== -1) nextPlayer.board[emptySlotIdx][col] = card;
+            nextPlayer.hand = nextPlayer.hand.filter(candidateCard => candidateCard.id !== card.id);
 
-                // Apply hypothetical move
-                const nextGameState = cloneGameState(gameState);
-                const nextPlayer = nextGameState.players[playerIndex];
-                const emptySlotIdx = [nextPlayer.board[0][col], nextPlayer.board[1][col], nextPlayer.board[2][col]].indexOf(null);
-                if (emptySlotIdx !== -1) {
-                    nextPlayer.board[emptySlotIdx][col] = card;
-                }
-                nextPlayer.hand = nextPlayer.hand.filter(c => c.id !== card.id);
-
-                // Calculate average ExpectiMax score across sampled opponent hands
-                let averageScore = 0;
-                for (const oppHand of opponentHandSamples) {
-                    const sampleGameState = cloneGameState(nextGameState);
-                    sampleGameState.players[1 - playerIndex].hand = oppHand;
-
-                    const score = expectimax(
-                        sampleGameState,
-                        playerIndex,
-                        1,
-                        depth,
-                        false,
-                        remainingDeck,
-                        params,
-                        learning,
-                        startTime,
-                        TIMEOUT_MS
-                    );
-                    averageScore += score;
-                }
-                averageScore /= opponentHandSamples.length;
-
-                // Root heuristic adjustment with strategy.md parameters
-                const rootBonus = calculateRootMoveBonus(player, opponent, card, col, emptySlotIdx, gameState.turnCount, params, learning);
-                const finalScore = averageScore + rootBonus;
-
-                if (finalScore > depthBestScore) {
-                    depthBestScore = finalScore;
-                    depthBestMove = { cardId: card.id, colIndex: col, isHidden: false };
-                }
+            let averageScore = 0;
+            for (const belief of opponentBeliefs) {
+                const sampleGameState = applyOpponentBelief(nextGameState, playerIndex, belief);
+                averageScore += expectimax(
+                    sampleGameState,
+                    playerIndex,
+                    1,
+                    depth,
+                    false,
+                    belief.remainingDeck,
+                    params,
+                    learning,
+                    startTime,
+                    timeoutMs,
+                );
             }
+            averageScore /= opponentBeliefs.length;
+
+            const rootBonus = calculateRootMoveBonus(
+                player,
+                opponent,
+                card,
+                col,
+                emptySlotIdx,
+                gameState.turnCount,
+                params,
+                learning,
+            );
+            depthScores.push({ ...candidate, searchScore: averageScore + rootBonus * 0.25 });
         }
 
-        if (isTimedOut) {
-            break;
-        }
+        if (isTimedOut || depthScores.length !== candidates.length) break;
 
-        currentBestMove = { ...depthBestMove };
+        const selected = selectGtoBlendedMove(depthScores, params.gtoPriorWeight ?? 0.72);
+        currentBestMove = { cardId: selected.card.id, colIndex: selected.col, isHidden: false };
         depth++;
     }
 
     bestMove = currentBestMove;
-    bestMove.isHidden = shouldHideCard(bestMove, hand, player, player.board, gameState.turnCount, opponent, params, learning);
+    const selectedCard = hand.find(card => card.id === bestMove.cardId)!;
+    const hideProbability = getGtoHideProbability(
+        gameState,
+        playerIndex as 0 | 1,
+        selectedCard,
+        bestMove.colIndex,
+    );
+    bestMove.isHidden = Math.random() < hideProbability;
 
     return bestMove;
+}
+
+function normalizeScores(values: number[]): number[] {
+    const finiteValues = values.filter(Number.isFinite);
+    if (finiteValues.length === 0) return values.map(() => 0);
+    const minimum = Math.min(...finiteValues);
+    const maximum = Math.max(...finiteValues);
+    if (maximum === minimum) return values.map(() => 0.5);
+    return values.map(value => Number.isFinite(value) ? (value - minimum) / (maximum - minimum) : 0);
+}
+
+function selectGtoBlendedMove<T extends { gtoScore: number; searchScore: number }>(
+    candidates: T[],
+    requestedGtoWeight: number,
+): T {
+    const gtoWeight = Math.min(1, Math.max(0, requestedGtoWeight));
+    const normalizedGto = normalizeScores(candidates.map(candidate => candidate.gtoScore));
+    const normalizedSearch = normalizeScores(candidates.map(candidate => candidate.searchScore));
+    let bestIndex = 0;
+    let bestScore = Number.NEGATIVE_INFINITY;
+    for (let index = 0; index < candidates.length; index++) {
+        const score = normalizedGto[index] * gtoWeight + normalizedSearch[index] * (1 - gtoWeight);
+        if (score > bestScore) {
+            bestScore = score;
+            bestIndex = index;
+        }
+    }
+    return candidates[bestIndex];
+}
+
+interface OpponentBelief {
+    hand: Card[];
+    hiddenBoardCards: Array<{ row: number; column: number; card: Card }>;
+    remainingDeck: Card[];
+}
+
+function sampleOpponentBeliefs(
+    remainingDeck: Card[],
+    opponent: GameState['players'][0],
+    count: number,
+): OpponentBelief[] {
+    const hiddenPositions: Array<{ row: number; column: number }> = [];
+    for (let row = 0; row < 3; row++) {
+        for (let column = 0; column < 5; column++) {
+            if (opponent.board[row][column]?.isHidden) hiddenPositions.push({ row, column });
+        }
+    }
+    const unknownCardsNeeded = opponent.hand.length + hiddenPositions.length;
+
+    return Array.from({ length: count }, () => {
+        const sample = getRandomSample(remainingDeck, Math.min(unknownCardsNeeded, remainingDeck.length));
+        const hiddenBoardCards = hiddenPositions.map((position, index) => ({
+            ...position,
+            card: { ...sample[index], isHidden: true },
+        }));
+        return {
+            hiddenBoardCards,
+            hand: sample.slice(hiddenPositions.length).map(card => ({ ...card, isHidden: false })),
+            remainingDeck: remainingDeck.filter(card => !sample.some(sampled => sampled.id === card.id)),
+        };
+    });
+}
+
+function applyOpponentBelief(
+    state: GameState,
+    playerIndex: number,
+    belief: OpponentBelief,
+): GameState {
+    const sampleState = cloneGameState(state);
+    const opponent = sampleState.players[1 - playerIndex];
+    opponent.hand = belief.hand;
+    for (const hidden of belief.hiddenBoardCards) {
+        opponent.board[hidden.row][hidden.column] = hidden.card;
+    }
+    return sampleState;
 }
 
 // ==========================================
@@ -250,7 +322,7 @@ function expectimax(
     const opponent = gameState.players[1 - playerIndex];
 
     const boardHash = getBoardHash(player, opponent);
-    const handHash = getHandHash(player.hand);
+    const handHash = `${getHandHash(player.hand)}::${getHandHash(opponent.hand)}`;
     const cacheKey = `${boardHash}_${handHash}_${depth}_${isMaxNode}`;
     if (evCache.has(cacheKey)) {
         return evCache.get(cacheKey)!;
@@ -601,11 +673,11 @@ function calculateRootMoveBonus(
 
     // Apply showdown_delay_focus to showdown delay decisions
     const oppCol = [opponent.board[0][colIndex], opponent.board[1][colIndex], opponent.board[2][colIndex]];
-    const oppCards = oppCol.filter(c => c !== null) as Card[];
+    const oppCards = oppCol.filter((candidate): candidate is Card => candidate !== null && !candidate.isHidden);
     const myCol = [player.board[0][colIndex], player.board[1][colIndex], player.board[2][colIndex]];
     const myCards = myCol.filter(c => c !== null) as Card[];
     
-    if (emptySlotIdx === 2 && oppCards.length >= 2 && myCards.length === 2) {
+    if (emptySlotIdx === 2 && oppCards.length === 3 && myCards.length === 2) {
         // AI is about to fill the column and finalize it. If AI is already winning by far, slow play!
         const tempCol = [...myCol];
         tempCol[2] = card;
@@ -666,7 +738,7 @@ function calculateRootMoveBonus(
     // If opponent has already secured a strong hand in this column that we cannot beat,
     // immediately discourage placing high-value cards, and encourage dumping low-value cards.
     if (oppCards.length === 3) {
-        const oppRes = evaluateYHand(oppCol.filter(c => c !== null) as Card[], colDice);
+        const oppRes = evaluateYHand(oppCards, colDice);
         const myPotentialCol = [...myCol];
         const emptySlot = myPotentialCol.indexOf(null);
         if (emptySlot !== -1) {
@@ -694,7 +766,7 @@ function calculateRootMoveBonus(
 
 function evaluateOpponentBlock(opponent: GameState['players'][0], colIndex: number): number {
     const oppCol = [opponent.board[0][colIndex], opponent.board[1][colIndex], opponent.board[2][colIndex]];
-    const oppCards = oppCol.filter(c => c !== null) as Card[];
+    const oppCards = oppCol.filter((candidate): candidate is Card => candidate !== null && !candidate.isHidden);
 
     if (oppCards.length < 2) return 0;
 
@@ -752,14 +824,14 @@ function getVisibleCards(player: GameState['players'][0], opponent: GameState['p
     return visible;
 }
 
-function getRemainingDeck(visibleCards: Card[]): Card[] {
+export function getRemainingDeck(visibleCards: Card[]): Card[] {
     const suits: Card['suit'][] = ['spades', 'hearts', 'diamonds', 'clubs'];
     const ranks: Rank[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     const fullDeck: Card[] = [];
     
     for (const suit of suits) {
         for (const rank of ranks) {
-            fullDeck.push({ id: `${rank}${suit}`, suit, rank, isHidden: false });
+            fullDeck.push({ id: `${suit}-${rank}`, suit, rank, isHidden: false });
         }
     }
     
@@ -777,116 +849,4 @@ function getRandomSample<T>(arr: T[], n: number): T[] {
         taken[x] = --len in taken ? taken[len] : len;
     }
     return result;
-}
-
-function sampleOpponentHands(remainingDeck: Card[], handSize: number, count: number): Card[][] {
-    const samples: Card[][] = [];
-    for (let i = 0; i < count; i++) {
-        if (remainingDeck.length >= handSize) {
-            samples.push(getRandomSample(remainingDeck, handSize));
-        } else {
-            samples.push([...remainingDeck]);
-        }
-    }
-    return samples;
-}
-
-function shouldHideCard(
-    move: { cardId: string, colIndex: number }, 
-    hand: Card[], 
-    player: GameState['players'][0], 
-    board: (Card | null)[][], 
-    turnCount: number,
-    opponent: GameState['players'][0],
-    params: AiParams,
-    learning: LearningData
-): boolean {
-    if (player.hiddenCardsCount >= 3) return false;
-
-    // If opponent column is already full, hiding has absolutely zero strategic value.
-    // This check must take precedence over forced quota logic.
-    const col = move.colIndex;
-    const oppColFull = opponent.board[2][col] !== null;
-    if (oppColFull) return false;
-
-    // Calculate remaining empty spaces and hidden cards quota
-    const emptySpaces = board.flat().filter(cell => cell === null).length;
-    const remainingNorma = 3 - player.hiddenCardsCount;
-
-    // Forced hidden placement: ensure all 3 hidden cards are used up before board is full
-    if (emptySpaces <= remainingNorma || 
-        (emptySpaces <= 12 && remainingNorma === 3) ||
-        (emptySpaces <= 8 && remainingNorma === 2) || 
-        (emptySpaces <= 4 && remainingNorma === 1)) {
-        return true;
-    }
-
-    let hiddenInCol = 0;
-    for (let r = 0; r < 3; r++) {
-        const c = board[r][move.colIndex];
-        if (c && c.isHidden) hiddenInCol++;
-    }
-    if (hiddenInCol >= 2) return false;
-
-    const card = hand.find(c => c.id === move.cardId);
-    if (!card) return false;
-
-    let baseProb = 0.05;
-    const emptySlotIdx = [board[0][col], board[1][col], board[2][col]].findIndex(c => c === null);
-
-    // First card in column: LOW value to hide — opponent can't read a 1-card column anyway
-    if (emptySlotIdx === 0) baseProb += 0.10;
-    // Second card: MEDIUM — now opponent might start reading the pattern
-    else if (emptySlotIdx === 1) baseProb += 0.20;
-    // Third card completing trips: HIGH — hide the finishing blow for maximum surprise
-    else if (emptySlotIdx === 2) {
-        const c0 = board[0][col];
-        const c1 = board[1][col];
-        if (c0 && c1 && c0.rank === c1.rank && c0.rank === card.rank) {
-            baseProb += 0.8; // Completing 3-of-a-kind = maximum hiding value
-        } else {
-            baseProb += 0.10; // Other 3rd card: mild benefit
-        }
-    }
-
-    // Early game: mild bonus — spread hidden cards through the game, not dump all at once
-    // The forced quota system already guarantees completion; this just nudges timing slightly earlier
-    if (turnCount <= 4) baseProb += 0.15;      // Slight early preference
-    else if (turnCount <= 8) baseProb += 0.08; // Very mild mid-game nudge
-
-    // Weak card on a winning column dice: hide the weakness
-    const myDice = player.dice[col];
-    const oppDice = opponent.dice[col];
-    if (card.rank <= 6 && myDice >= 4) baseProb += 0.3;
-    // Strong card on opponent-favoured column: hide key blocker
-    if (card.rank >= 11 && oppDice >= 4) baseProb += 0.3;
-
-    // Denying opponent's hand: HIGHEST strategic value — hide the disruption card
-    let isDenyingOut = false;
-    for (let c = 0; c < 5; c++) {
-        const oppCards = [opponent.board[0][c], opponent.board[1][c], opponent.board[2][c]].filter(x => x !== null) as Card[];
-        if (oppCards.length === 2) {
-            const r1 = oppCards[0].rank;
-            const r2 = oppCards[1].rank;
-            const s1 = oppCards[0].suit;
-            const s2 = oppCards[1].suit;
-
-            if (s1 === s2 && card.suit === s1) isDenyingOut = true;
-            
-            const minR = Math.min(r1, r2);
-            const maxR = Math.max(r1, r2);
-            if (maxR - minR <= 3 && card.rank >= minR - 2 && card.rank <= maxR + 2) isDenyingOut = true;
-
-            if (card.rank === r1 || card.rank === r2) isDenyingOut = true;
-        }
-    }
-
-    if (isDenyingOut) {
-        baseProb += 0.6; // Disruption hiding is highly valuable
-    }
-
-    baseProb *= (params.bluffBonus / 2) * (learning.bluffBonusScale ?? 1.0);
-
-    const finalProb = Math.min(baseProb * learning.hidingStrategy / 0.3, 1);
-    return Math.random() < finalProb;
 }

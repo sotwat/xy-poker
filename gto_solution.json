@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-01T13:13:08.288Z",
+  "generatedAt": "2026-09-01T13:39:10.216Z",
   "solver": {
     "method": "PSRO-style response expansion + paired self-play payoff matrix + regret-matching+",
     "utility": "+1 win, 0 draw, -1 loss",
@@ -11,7 +11,7 @@
     "candidateDeals": 180,
     "searchRoundsRequested": 4,
     "regretIterations": 300000,
-    "runtimeSeconds": 28.22
+    "runtimeSeconds": 28.019
   },
   "strategies": [
     {

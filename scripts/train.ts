@@ -9,7 +9,7 @@ function mutateParams(params: AiParams, mutationRate: number = 0.1): AiParams {
     const keys = Object.keys(mutated) as (keyof AiParams)[];
     
     for (const key of keys) {
-        if (key === 'mcSimulations') continue; // keep fixed for speed during training
+        if (key === 'mcSimulations' || key === 'timeBudgetMs' || key === 'gtoPriorWeight') continue;
         
         if (Math.random() < mutationRate) {
             // +/- 20% mutation

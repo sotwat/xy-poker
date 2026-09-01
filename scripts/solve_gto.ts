@@ -3,6 +3,7 @@ import { createDeck } from '../src/logic/deck';
 import { evaluateXHand, evaluateYHand } from '../src/logic/evaluation';
 import { gameReducer, INITIAL_GAME_STATE } from '../src/logic/game';
 import { solveSymmetricZeroSum } from '../src/logic/gto';
+import { XY_GTO_A1 } from '../src/logic/gtoPolicy';
 import type { Card, GameState, PlayerState, Rank } from '../src/logic/types';
 
 interface StrategyProfile {
@@ -134,14 +135,7 @@ const STRATEGIES: StrategyProfile[] = [
         id: 'option_value',
         name: '選択肢温存型',
         description: '3段目の確定を遅らせ、複数の役への受けと高札を長く保持する。',
-        yWeight: 0.9,
-        xWeight: 1.15,
-        tempoWeight: 0.5,
-        diceWeight: 0.9,
-        flexibilityWeight: 1.75,
-        row3Delay: 1.9,
-        concealment: 0.25,
-        firstBias: -0.55,
+        ...XY_GTO_A1,
         temperature: 0.025,
     },
     {
