@@ -45,7 +45,7 @@ graph TD
     subgraph Frontend [Cloudflare Pages]
         React[React 19 App]
         SocketClient[Socket.IO Client]
-        SupabaseClient[Supabase Client]
+        SupabaseClient[Supabase Auth and Read Client]
     end
     
     subgraph Backend [Render]
@@ -60,7 +60,8 @@ graph TD
     
     User -->|HTTPS| React
     React -->|WebSockets| SocketServer
-    React -->|REST| Postgres
+    React -->|Auth and public reads| Postgres
+    SocketServer -->|Privileged writes| Postgres
     SocketServer <-->|Sync| React
 ```
 
@@ -68,21 +69,29 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `06301048` (2026-06-30 10:48)
-- **Status:** **Stable**
+- **Current Version:** `09011603` (2026-09-01 16:03)
+- **Status:** **Full local quality gate verified; deployment pending**
 - **Last Critical Verification:**
-    - Local vs AI: ✅ Working (Preset Ultimate Evolutionary AI)
-    - Online Match: ✅ Working
-    - Deployment: ✅ Automated via scripts
-    - Code Health: ✅ Linting Improved
+    - Local vs AI: ✅ Start flow, turn selection, card placement working
+    - Online Match: ✅ Responsive lobby and connection state verified locally
+    - Responsive UI: ✅ 320×568, 390×844, 768×1024, and landscape layouts checked
+    - Repository lint: ✅ 0 errors / 0 warnings
+    - Automated tests: ✅ 10 passing
+    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~267 kB
+    - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
+    - Deployment: ⏳ Not run for this local UI overhaul
 
-### Known Issues
-- **None.** Codebase is stable.
+### Before the next production deployment
+- Apply `supa_schema_v8_hardening.sql` in the Supabase SQL editor.
+- Configure the Render backend with `SUPABASE_SERVICE_KEY`; the legacy `SUPABASE_KEY` name remains a temporary fallback.
 
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09011603** (2026-09-01): **Developer Support Link** - Added a restrained, responsive OFUSE support button to the home footer with safe external-link behavior and keyboard focus styling.
+2. **v09011601** (2026-09-01): **Repository Hardening & Performance** - Cleared all repository lint debt, added reducer/server tests and a single `npm run check` quality gate, split React/Supabase/realtime/lazy feature bundles to remove the 500 kB warning, upgraded dependencies to zero known audit vulnerabilities, removed committed `node_modules` and obsolete mutation scripts/assets, hardened multiplayer input/auth/rate limits and server-authoritative rewards, locked sensitive Supabase writes behind the backend, added Cloudflare Pages caching/security headers, and made setup/deployment scripts portable and fail-safe.
+3. **v09011511** (2026-09-01): **Minimal Responsive UI Overhaul** - Rebuilt the home, online lobby, game board, rules, authentication, scoring, and showdown surfaces around a restrained responsive design. Removed the home character and excessive visual effects, fixed duplicate long-press/click placement behavior, shortened and stabilized dice/coin animations with timer cleanup and reduced-motion support, added keyboard-accessible board columns, and verified the core flow across phone, tablet, and landscape layouts.
 1. **v06301048** (2026-06-30): **Migration Verification** - Deployed a minor version bump from the new development environment to verify that deployment scripting, credentials, and repository syncing are functioning correctly on the new Mac.
 1. **v06291657** (2026-06-29): **Preset Ultimate Evolutionary AI** - Synchronized the default fallback weights in `ai.ts` and `aiLearning.ts` to match the optimized release state parameters (Pure ratio, Trips concealed, Showdown delays, low card penalties, and defensive focus), ensuring the AI behaves at its absolute maximum evolutionary strength right from launch without waiting for player updates.
 1. **v06291649** (2026-06-29): **12-Parameter Collaborative Strategy AI Upgrade** - Fully integrated all strategic requirements from `strategy.md` and "Pure" vs "Unordered" hand differences into the collective learning loop. (1) Created `supa_schema_v7_ai.sql` mapping 12 distinct parameters. (2) Extended the database schema to track Pure hand preferences, trips in hand concealing, row-3 delay penalties, showdown delay (slow playing), low card avoidance, and turn order selection flexibility. (3) Updated `ai.ts` to scale structural heuristic penalties/bonuses based on dynamic global parameters, achieving true strategy-level evolutionary learning.
@@ -131,7 +140,7 @@ graph TD
 ## 💻 Local Development Setup
 
 ### 1. Prerequisites
-- Node.js (v18+)
+- Node.js (v20.19+)
 - Supabase Account
 
 ### 2. Environment Variables
@@ -149,15 +158,17 @@ SUPABASE_SERVICE_KEY=your_service_role_key
 
 ### 3. Quick Start
 ```bash
-# Install dependencies
-npm install
-cd server && npm install && cd ..
+# Install locked dependencies
+./setup_env.sh
 
 # Start Dev Server (Frontend + Backend)
 npm run dev:all   # Starts both servers concurrently (Recommended)
 # OR manually:
 npm run dev   # Frontend: http://localhost:5173
 npm run start # Backend: http://localhost:3001
+
+# Run the complete local quality gate
+npm run check
 ```
 
 ---
@@ -172,7 +183,6 @@ xy-poker/
 │   │   ├── Board.tsx         # Game board layout
 │   │   ├── Card.tsx          # Individual card display
 │   │   ├── ContactForm.tsx   # Contact / feedback form
-│   │   ├── DevBadge.tsx      # Developer indicator badge
 │   │   ├── Dice.tsx          # Dice face display
 │   │   ├── DiceRollOverlay.tsx # Dice roll animation overlay
 │   │   ├── GachaReveal.tsx   # Gacha skin reveal animation
@@ -180,9 +190,8 @@ xy-poker/
 │   │   ├── GameResult.tsx    # Post-game result screen
 │   │   ├── Hand.tsx          # Player hand display
 │   │   ├── Lobby.tsx         # Main lobby screen
-│   │   ├── MonetagBanner.tsx # Ad banner wrapper
 │   │   ├── MyPage.tsx        # User profile & premium management
-│   │   ├── RewardAdButton.tsx# Rewarded ad button (skin tickets)
+│   │   ├── PremiumBadge.tsx  # Premium membership indicator
 │   │   ├── RulesModal.tsx    # Game rules explanation
 │   │   ├── ScoringOverlay.tsx# Step-by-step score reveal overlay
 │   │   ├── SharedBoard.tsx   # Shared board for online play
@@ -214,10 +223,14 @@ xy-poker/
 ├── server/
 │   ├── index.js              # Socket.IO + Express 5 server
 │   ├── db.js                 # Supabase server-side client
+│   ├── game-utils.js         # Validated room/game/security helpers
+│   ├── game-utils.test.js    # Backend unit tests
 │   └── package.json          # Server-side dependencies
 │
 ├── supa_schema.sql           # Initial Supabase schema
 ├── supa_schema_v2~v5_*.sql   # Incremental schema migrations
+├── supa_schema_v8_hardening.sql # Production RLS and schema hardening
+├── public/_headers           # Cloudflare cache and security headers
 ├── deploy_all.sh             # Unified deployment script
 ├── vite.config.ts            # Vite build configuration
 └── README.md                 # This file
@@ -238,7 +251,7 @@ xy-poker/
 | **Achievements** | In-game achievement & stats tracking |
 | **Turn Timer** | 60-second per-turn countdown |
 | **Audio / TTS** | Sound effects + text-to-speech for game events |
-| **PWA Ready** | iOS audio unlock & browser fingerprint for guest play |
+| **Mobile Web Ready** | Responsive UI, reduced-motion support, and iOS audio unlock |
 
 ---
 
@@ -254,7 +267,7 @@ xy-poker/
 | **Auth** | Supabase Auth |
 | **Hosting (FE)** | Cloudflare Pages |
 | **Hosting (BE)** | Render |
-| **Ads** | Monetag |
+| **Optional Reward Link** | External rewarded-draw flow |
 
 ---
 
@@ -281,8 +294,7 @@ To revoke, set `is_premium = FALSE`.
 ### Database Schema Migrations
 Schema migrations are tracked as incremental SQL files at the root:
 - `supa_schema.sql` — Initial schema
-- `supa_schema_v2.sql` ~ `supa_schema_v5_contact.sql` — Incremental patches
+- `supa_schema_v2.sql` ~ `supa_schema_v7_ai.sql` — Incremental feature patches
+- `supa_schema_v8_hardening.sql` — Required server-authoritative write policies and transactional RPCs
 
 Apply in order when setting up a new Supabase project.
-- コイントスの3D表現を強化
-- UIのダブルクリックによる連続配置バグを修正

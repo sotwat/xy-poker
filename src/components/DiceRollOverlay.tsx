@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dice } from './Dice';
 import './DiceRollOverlay.css';
 import { playClickSound } from '../utils/sound';
@@ -11,37 +11,49 @@ interface DiceRollOverlayProps {
 }
 
 export const DiceRollOverlay: React.FC<DiceRollOverlayProps> = ({ targetValues, onComplete, selectedSkin }) => {
-    const [displayValues, setDisplayValues] = useState<number[]>([1, 1, 1, 1, 1]);
-    const [rolling, setRolling] = useState<boolean[]>([true, true, true, true, true]);
-    const [stage, setStage] = useState<'ready' | 'rolling' | 'finished'>('ready');
+    const targetsRef = useRef(targetValues.slice(0, 5));
+    const onCompleteRef = useRef(onComplete);
+    const [reduceMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const [displayValues, setDisplayValues] = useState<number[]>(() =>
+        reduceMotion ? targetValues.slice(0, 5) : [1, 1, 1, 1, 1]
+    );
+    const [rolling, setRolling] = useState<boolean[]>(() =>
+        reduceMotion ? [false, false, false, false, false] : [true, true, true, true, true]
+    );
+    const [stage, setStage] = useState<'rolling' | 'finished'>(() =>
+        reduceMotion ? 'finished' : 'rolling'
+    );
 
     useEffect(() => {
-        console.log('[DiceRollOverlay] Mounted. Target Values:', targetValues);
-        // Auto start rolling
-        setStage('rolling');
-        const intervals: any[] = [];
+        onCompleteRef.current = onComplete;
+    }, [onComplete]);
 
-        // Determine stop times for each dice (staggered)
-        const stopDelays = [1500, 1800, 2100, 2400, 2700];
+    useEffect(() => {
+        const intervals: number[] = [];
+        const timers: number[] = [];
 
-        // Start rolling effect
-        displayValues.forEach((_, idx) => {
-            const interval = setInterval(() => {
+        if (reduceMotion) {
+            timers.push(window.setTimeout(() => onCompleteRef.current(), 500));
+            return () => timers.forEach(window.clearTimeout);
+        }
+
+        const stopDelays = [700, 860, 1020, 1180, 1340];
+
+        targetsRef.current.forEach((target, idx) => {
+            const interval = window.setInterval(() => {
                 setDisplayValues(prev => {
                     const next = [...prev];
-                    // Random 1-6
                     next[idx] = Math.floor(Math.random() * 6) + 1;
                     return next;
                 });
-            }, 80);
+            }, 90);
             intervals.push(interval);
 
-            // Stop each dice
-            setTimeout(() => {
-                clearInterval(intervals[idx]);
+            timers.push(window.setTimeout(() => {
+                window.clearInterval(interval);
                 setDisplayValues(prev => {
                     const next = [...prev];
-                    next[idx] = targetValues[idx];
+                    next[idx] = target;
                     return next;
                 });
                 setRolling(prev => {
@@ -49,30 +61,26 @@ export const DiceRollOverlay: React.FC<DiceRollOverlayProps> = ({ targetValues, 
                     next[idx] = false;
                     return next;
                 });
-
-                // Play sound on land?
                 playClickSound();
-            }, stopDelays[idx]);
+            }, stopDelays[idx]));
         });
 
-        // Cleanup and finish
-        const totalDuration = 3500;
-        const finishTimer = setTimeout(() => {
+        timers.push(window.setTimeout(() => {
             setStage('finished');
-            setTimeout(onComplete, 500); // Wait a bit after finish before close
-        }, totalDuration);
+            timers.push(window.setTimeout(() => onCompleteRef.current(), 450));
+        }, 1550));
 
         return () => {
-            intervals.forEach(clearInterval);
-            clearTimeout(finishTimer);
+            intervals.forEach(window.clearInterval);
+            timers.forEach(window.clearTimeout);
         };
-    }, []);
+    }, [reduceMotion]);
 
     return (
         <div className="dice-roll-overlay">
             <div className="dice-roll-content">
                 <h2 className="dice-roll-title">
-                    {stage === 'rolling' ? 'Rolling Dice...' : 'Battle Start!'}
+                    {stage === 'rolling' ? 'Rolling dice' : 'Ready'}
                 </h2>
                 <div className="dice-container-large">
                     {displayValues.map((val, idx) => (

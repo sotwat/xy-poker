@@ -1,49 +1,166 @@
-import { useReducer, useState, useEffect, useRef } from 'react';
-import { gameReducer, INITIAL_GAME_STATE } from './logic/game';
+import { lazy, Suspense, useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import type { Session } from '@supabase/supabase-js';
+import { gameReducer, INITIAL_GAME_STATE, type GameAction } from './logic/game';
 import { evaluateYHand, evaluateXHand } from './logic/evaluation';
 import { calculateXHandScores } from './logic/scoring';
 import { recordGameResult } from './logic/aiLearning';
-import type { Card, DiceSkin, CardSkin, BoardSkin } from './logic/types';
+import type { BoardSkin, Card, CardSkin, DiceSkin, GameState, Phase } from './logic/types';
 import { SharedBoard } from './components/SharedBoard';
 import { Hand } from './components/Hand';
 import { GameInfo } from './components/GameInfo';
-import { GameResult } from './components/GameResult';
 import { Lobby } from './components/Lobby';
-import { SkinStore } from './components/SkinStore';
-import ContactForm from './components/ContactForm';
-// import { DevBadge } from './components/DevBadge';
-import './App.css';
-
 import { DiceRollOverlay } from './components/DiceRollOverlay';
-import { RulesModal } from './components/RulesModal';
 import { TurnTimer } from './components/TurnTimer';
-import { AuthModal } from './components/AuthModal';
-import { MyPage } from './components/MyPage'; // [NEW]
-import { ShowdownPopup } from './components/ShowdownPopup'; // [NEW]
-import type { PopupData } from './components/ShowdownPopup'; // [NEW]
-import { updatePlayerStats, checkAchievements } from './logic/gamification'; // [NEW]
+import type { PopupData } from './components/ShowdownPopup';
+import { updatePlayerStats } from './logic/gamification';
 import { socket, connectSocket } from './logic/online';
 import { supabase, fetchGlobalAiParameters, updateGlobalAiParameters } from './supabase';
 import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS, setGlobalAiParams } from './logic/ai';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, playCoinTossSound, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
+import './App.css';
+
+const GameResult = lazy(() => import('./components/GameResult').then(module => ({ default: module.GameResult })));
+const SkinStore = lazy(() => import('./components/SkinStore').then(module => ({ default: module.SkinStore })));
+const ContactForm = lazy(() => import('./components/ContactForm'));
+const RulesModal = lazy(() => import('./components/RulesModal').then(module => ({ default: module.RulesModal })));
+const AuthModal = lazy(() => import('./components/AuthModal').then(module => ({ default: module.AuthModal })));
+const MyPage = lazy(() => import('./components/MyPage').then(module => ({ default: module.MyPage })));
+const ShowdownPopup = lazy(() => import('./components/ShowdownPopup').then(module => ({ default: module.ShowdownPopup })));
+
+interface RatingChange {
+  old: number;
+  new: number;
+  change: number;
+}
+
+interface RatingUpdates {
+  p1: RatingChange;
+  p2: RatingChange;
+}
+
+interface GameStartPayload {
+  roomId: string;
+  initialDice: number[];
+  initialDeck: Card[];
+  p1Name: string;
+  p2Name: string;
+  p1Id: string;
+  p2Id: string;
+  isRanked: boolean;
+  p1IsPremium?: boolean;
+  p2IsPremium?: boolean;
+  startingPlayer: 0 | 1;
+}
+
+interface RoomResponse {
+  success?: boolean;
+  roomId?: string;
+  role?: 'host' | 'guest';
+  opponentName?: string;
+  message?: string;
+}
+
+type FullscreenDocument = Document & {
+  webkitFullscreenElement?: Element | null;
+  webkitExitFullscreen?: () => Promise<void> | void;
+};
+
+type FullscreenElement = HTMLElement & {
+  webkitRequestFullscreen?: () => Promise<void> | void;
+};
+
+const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000;
+
+function readStoredJson<T>(key: string, fallback: T): T {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) as T : fallback;
+  } catch {
+    localStorage.removeItem(key);
+    return fallback;
+  }
+}
+
+function loadSkins<T extends string>(storageKey: string, timeKey: string, defaults: T[]): T[] {
+  const storedSkins = readStoredJson<unknown>(storageKey, defaults);
+  const skins = Array.isArray(storedSkins) ? storedSkins.filter((skin): skin is T => typeof skin === 'string') : defaults;
+  const storedTimes = readStoredJson<unknown>(timeKey, {});
+  const times = storedTimes && typeof storedTimes === 'object' ? storedTimes as Record<string, number> : {};
+
+  const now = Date.now();
+  let hasChanges = false;
+  const nextSkins: T[] = [];
+  const nextTimes = { ...times };
+
+  skins.forEach(skin => {
+    if (defaults.includes(skin)) {
+      nextSkins.push(skin);
+      return;
+    }
+
+    if (!nextTimes[skin]) {
+      nextTimes[skin] = now;
+      hasChanges = true;
+    }
+
+    if (now - nextTimes[skin] < SKIN_EXPIRY_MS) {
+      nextSkins.push(skin);
+    } else {
+      delete nextTimes[skin];
+      hasChanges = true;
+    }
+  });
+
+  defaults.forEach(defaultSkin => {
+    if (!nextSkins.includes(defaultSkin)) nextSkins.push(defaultSkin);
+  });
+
+  if (hasChanges) {
+    localStorage.setItem(storageKey, JSON.stringify(nextSkins));
+    localStorage.setItem(timeKey, JSON.stringify(nextTimes));
+  }
+  return nextSkins;
+}
+
+function loadSelectedSkin<T extends string>(key: string, defaultSkin: T, unlockedList: T[]): T {
+  const saved = localStorage.getItem(key) as T | null;
+  return saved && unlockedList.includes(saved) ? saved : defaultSkin;
+}
+
+function unlockSkinGeneric<T extends string>(
+  skinId: T,
+  currentList: T[],
+  setList: (list: T[]) => void,
+  listKey: string,
+  timeKey: string,
+  setSelected: (skin: T) => void,
+  selectedKey: string,
+) {
+  const nextUnlocked = Array.from(new Set([...currentList, skinId]));
+  setList(nextUnlocked);
+  localStorage.setItem(listKey, JSON.stringify(nextUnlocked));
+
+  const currentTimes = readStoredJson<Record<string, number>>(timeKey, {});
+  localStorage.setItem(timeKey, JSON.stringify({ ...currentTimes, [skinId]: Date.now() }));
+  setSelected(skinId);
+  localStorage.setItem(selectedKey, skinId);
+}
 
 function App() {
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
-  const [phase, setPhase] = useState<'setup' | 'turn_selection' | 'playing' | 'scoring' | 'ended'>('setup');
+  const phase = gameState.phase;
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [placeHidden, setPlaceHidden] = useState(false);
   const [showDiceAnimation, setShowDiceAnimation] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
-  const [isShaking, setIsShaking] = useState(false); // [Juice] Screen Shake
 
   // Rematch State
   const [rematchRequested, setRematchRequested] = useState(false);
 
   const [rematchInvited, setRematchInvited] = useState(false);
-  const [showFinishAnimation, setShowFinishAnimation] = useState(false);
 
   // Coin Toss State
   const [isTossingCoin, setIsTossingCoin] = useState(false);
@@ -68,9 +185,10 @@ function App() {
 
   // Rating State
   const [myRating, setMyRating] = useState<number | null>(null);
-  const [ratingUpdates, setRatingUpdates] = useState<any>(null);
+  const [ratingUpdates, setRatingUpdates] = useState<RatingUpdates | null>(null);
   const [isBotDisguise, setIsBotDisguise] = useState(false);
   const processedGameRef = useRef<string | null>(null); // Guard for scoring animation
+  const showdownRunRef = useRef(0);
   const gameStateRef = useRef(gameState); // Ref to access state in listeners
 
   // Keep Ref updated
@@ -84,7 +202,7 @@ function App() {
   }, []);
 
   // Supabase Session
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isSessionLoading, setIsSessionLoading] = useState(true); // [NEW] Start as loading
 
   useEffect(() => {
@@ -114,7 +232,6 @@ function App() {
 
   // Turn Timer State
   const [timeLeft, setTimeLeft] = useState(60);
-  const turnTimerRef = useRef<any>(null);
 
   // Player Names - Generate random name for uniqueness
   const [playerName, setPlayerName] = useState(() => {
@@ -128,70 +245,59 @@ function App() {
   const roomIdRef = useRef(roomId);
 
   // SKIN STATE MANAGEMENT & EXPIRY
-  const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 hours
   const [showSkinStore, setShowSkinStore] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
 
   // My Page State
   const [showMyPage, setShowMyPage] = useState(false);
   const [dbPlayerId, setDbPlayerId] = useState<string | null>(null);
-  const [isPremium, setIsPremium] = useState(false); // [NEW] Premium Status
-  const [isProfileLoaded, setIsProfileLoaded] = useState(false); // [NEW] Loading State
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
-    // 0. Wait for session to initialize
     if (isSessionLoading) return;
 
-    if (session?.user?.id) {
-      supabase.from('players').select('id, is_premium, username').eq('id', session.user.id).single()
-        .then(({ data }) => {
-          if (data) {
-            setDbPlayerId(data.id);
-            setIsPremium(!!data.is_premium);
-            if (data.username) {
-              setPlayerName(data.username);
-              localStorage.setItem('xypoker_playerName_v2', data.username);
-            }
-          }
-          setIsProfileLoaded(true);
-        });
-    } else {
-      // Guest or not signed in
-      setIsProfileLoaded(true);
-    }
+    let cancelled = false;
+    const loadProfile = async () => {
+      await Promise.resolve();
+      if (!session?.user.id) {
+        if (!cancelled) {
+          setDbPlayerId(null);
+          setIsPremium(false);
+        }
+        return;
+      }
+
+      const { data } = await supabase
+        .from('players')
+        .select('id, is_premium, username')
+        .eq('id', session.user.id)
+        .single();
+
+      if (cancelled) return;
+      setDbPlayerId(data?.id ?? null);
+      setIsPremium(Boolean(data?.is_premium));
+      if (data?.username) {
+        setPlayerName(data.username);
+        localStorage.setItem('xypoker_playerName_v2', data.username);
+      }
+    };
+
+    void loadProfile();
+    return () => {
+      cancelled = true;
+    };
   }, [session, isSessionLoading]);
 
-  const handleChooseTurnOrder = (startingPlayer: number) => {
-    const action = { type: 'CHOOSE_TURN_ORDER', payload: { startingPlayer } };
-    dispatch(action as any);
+  const handleChooseTurnOrder = useCallback((startingPlayer: number) => {
+    setTurnSelectionTimeLeft(null);
+    setIsTossingCoin(false);
+    setTossResult(null);
+    const action: GameAction = { type: 'CHOOSE_TURN_ORDER', payload: { startingPlayer } };
+    dispatch(action);
     if (isOnlineGame && roomId) {
       socket.emit('game_action', { roomId, action });
     }
-  };
-
-  useEffect(() => {
-    // 1. Wait until profile is fully loaded
-    if (!isProfileLoaded) return;
-
-    // 2. If Premium, REMOVE script if it exists (Cleanup) and don't inject
-    if (isPremium) {
-      const existing = document.querySelector('script[data-zone="10326935"]');
-      if (existing) {
-        existing.remove();
-        console.log('Developer (Premium) user detected: Removed existing ad script.');
-      }
-      return;
-    }
-
-    // 3. Inject Ad Script (Non-Developer)
-    const existing = document.querySelector('script[data-zone="10326935"]');
-    if (!existing) {
-      const s = document.createElement('script');
-      s.dataset.zone = '10326935';
-      s.src = 'https://groleegni.net/vignette.min.js';
-      document.body.appendChild(s);
-    }
-  }, [isPremium, isProfileLoaded]);
+  }, [isOnlineGame, roomId]);
 
   // -- GENERIC SKIN LOADER HELPER --
   // We needed to duplicate this logic for Dice, Cards, Board to keep it clean and explicit
@@ -221,62 +327,6 @@ function App() {
     return loadSelectedSkin<BoardSkin>('xypoker_selectedBoardSkin', 'classic-green', unlockedBoardSkins);
   });
 
-  // -- LOADERS --
-  function loadSkins<T extends string>(storageKey: string, timeKey: string, defaults: T[]): T[] {
-    const savedSkins = localStorage.getItem(storageKey);
-    const savedTimes = localStorage.getItem(timeKey);
-
-    const skins: T[] = savedSkins ? JSON.parse(savedSkins) : defaults;
-    const times: Record<string, number> = savedTimes ? JSON.parse(savedTimes) : {};
-
-    const now = Date.now();
-    let hasChanges = false;
-    const newSkins: T[] = [];
-    const newTimes: Record<string, number> = { ...times };
-
-    skins.forEach(skin => {
-      // Defaults never expire
-      if (defaults.includes(skin)) {
-        newSkins.push(skin);
-        return;
-      }
-
-      // Legacy migration: if unlocked but no time, set to NOW
-      if (!newTimes[skin as string]) {
-        newTimes[skin as string] = now;
-        hasChanges = true;
-      }
-
-      // Check Expiry
-      if (now - newTimes[skin as string] < SKIN_EXPIRY_MS) {
-        newSkins.push(skin);
-      } else {
-        console.log(`Skin expired: ${skin}`);
-        delete newTimes[skin as string];
-        hasChanges = true;
-      }
-    });
-
-    // Ensure defaults are always present (sanity check)
-    defaults.forEach(def => {
-      if (!newSkins.includes(def)) newSkins.push(def);
-    });
-
-    if (hasChanges) {
-      localStorage.setItem(storageKey, JSON.stringify(newSkins));
-      localStorage.setItem(timeKey, JSON.stringify(newTimes));
-    }
-    return newSkins;
-  }
-
-  function loadSelectedSkin<T extends string>(key: string, defaultSkin: T, unlockedList: T[]): T {
-    const saved = localStorage.getItem(key) as T;
-    if (saved && unlockedList.includes(saved)) {
-      return saved;
-    }
-    return defaultSkin;
-  }
-
   // -- UNLOCK HANDLERS --
   const handleUnlockSkin = (skinId: DiceSkin) => {
     unlockSkinGeneric<DiceSkin>(skinId, unlockedSkins, setUnlockedSkins, 'xypoker_unlockedSkins', 'xypoker_skinUnlockTimes', setSelectedSkin, 'xypoker_selectedSkin');
@@ -287,30 +337,6 @@ function App() {
   const handleUnlockBoardSkin = (skinId: BoardSkin) => {
     unlockSkinGeneric<BoardSkin>(skinId, unlockedBoardSkins, setUnlockedBoardSkins, 'xypoker_unlockedBoardSkins', 'xypoker_boardUnlockTimes', setSelectedBoardSkin, 'xypoker_selectedBoardSkin');
   };
-
-  function unlockSkinGeneric<T extends string>(
-    skinId: T,
-    currentList: T[],
-    setList: (l: T[]) => void,
-    listKey: string,
-    timeKey: string,
-    setSelect: (s: T) => void,
-    selectKey: string
-  ) {
-    const now = Date.now();
-    const newUnlocked = Array.from(new Set([...currentList, skinId]));
-    setList(newUnlocked);
-    localStorage.setItem(listKey, JSON.stringify(newUnlocked));
-
-    const loadedTimes = localStorage.getItem(timeKey);
-    const currentTimes = loadedTimes ? JSON.parse(loadedTimes) : {};
-    const newTimes = { ...currentTimes, [skinId]: now };
-    localStorage.setItem(timeKey, JSON.stringify(newTimes));
-
-    // Auto-select
-    setSelect(skinId);
-    localStorage.setItem(selectKey, skinId);
-  }
 
   // -- SELECT HANDLERS --
   const handleSelectSkin = (skinId: DiceSkin) => { setSelectedSkin(skinId); localStorage.setItem('xypoker_selectedSkin', skinId); };
@@ -338,9 +364,18 @@ function App() {
   }, [isQuickMatch]);
 
   // Timeout ref for Quick Match Bot Fallback
-  const quickMatchTimeoutRef = useRef<any>(null);
+  const quickMatchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastActionTimeRef = useRef<number>(0);
   const isAIActingRef = useRef<boolean>(false); // Guard against double AI moves
+  const localGameTokenRef = useRef<string | null>(null);
+
+  const beginTrackedLocalGame = useCallback(() => {
+    localGameTokenRef.current = null;
+    if (!dbPlayerId || !socket.connected) return;
+    socket.emit('start_local_game', {}, (response: { success: boolean; token?: string }) => {
+      if (response.success && response.token) localGameTokenRef.current = response.token;
+    });
+  }, [dbPlayerId]);
 
   useEffect(() => {
     // Clear timeout if quick match ends (game starts or cancelled)
@@ -362,37 +397,28 @@ function App() {
     socket.on('disconnect', onDisconnect);
 
     // When we join quick match queue, server returns our rating
-    socket.on('quick_match_joined', (data: any = {}) => {
-      // data.rating might be present if server sends it
-      if (data.rating) {
-        setMyRating(data.rating);
-      }
-      setIsQuickMatch(true);
-      // Note: lobby logic handles the "Waiting" UI
-    });
-
-    socket.on('player_joined', ({ roomId, role }) => {
+    socket.on('player_joined', ({ roomId, role, opponentName }: { roomId: string; role: 'host'; opponentName?: string }) => {
       setRoomId(roomId);
       setPlayerRole(role);
+      if (opponentName) setOpponentName(opponentName);
       setIsOnlineGame(true);
       setMode('online');
     });
 
-    socket.on('sync_state', (remoteState: any) => { // remoteState should be GameState
+    socket.on('sync_state', (remoteState: GameState) => {
       // Guard: Only accept sync if we are actually in a room
       if (!roomIdRef.current) return;
 
-      dispatch({ type: 'SYNC_STATE', payload: remoteState } as any);
+      dispatch({ type: 'SYNC_STATE', payload: remoteState });
       // setIsOnlineGame(true); // Don't force this true here? Or maybe fine if we are in room.
       // Actually, if we are in lobby (roomId null), we returned above.
       // If we are in room, we are seemingly online.
-      if (!isOnlineGame) setIsOnlineGame(true);
+      setIsOnlineGame(true);
     });
 
     socket.on('request_sync', () => {
       // Host is authority.
       if (playerRoleRef.current === 'host' && roomIdRef.current) {
-        console.log('Received sync request, broadcasting state');
         socket.emit('sync_state', {
           roomId: roomIdRef.current,
           state: gameStateRef.current
@@ -400,31 +426,17 @@ function App() {
       }
     });
 
-    socket.on('auto_start_game', () => {
-      console.log('Auto-starting Quick Match game');
-      setIsQuickMatch(false);
-      setIsOnlineGame(true);
-      playSuccessSound();
-
-      // Both host and guest should start the game locally
-      dispatch({ type: 'START_GAME' });
-      setShowDiceAnimation(true);
-      setShowResultsModal(false);
-    });
-
-    socket.on('opponent_joined', ({ name }) => {
-      setOpponentName(name);
+    socket.on('opponent_joined', ({ name }: { name: string }) => {
       setOpponentName(name);
       playSuccessSound();
     });
 
-    socket.on('rematch_requested', ({ requesterName }) => {
-      console.log('Rematch requested by:', requesterName);
+    socket.on('rematch_requested', () => {
       setRematchInvited(true);
       playSuccessSound();
     });
 
-    socket.on('game_start', (data: any) => {
+    socket.on('game_start', (data: GameStartPayload) => {
       const {
         roomId, initialDice, initialDeck, p1Name, p2Name, p1Id, p2Id,
         isRanked, p1IsPremium, p2IsPremium, startingPlayer
@@ -432,11 +444,13 @@ function App() {
 
       setMode('online');
       setRoomId(roomId);
-      setPhase('playing');
       setIsQuickMatch(false); // Clear quick match status
       setIsOnlineGame(true); // Confirm online game status
       setRematchRequested(false); // Clear any pending rematch requests
       setRematchInvited(false); // Clear any pending rematch invitations
+      setIsTossingCoin(false);
+      setTossResult(null);
+      setTurnSelectionTimeLeft(null);
 
       // Robustly set Role and Opponent Name from server authoritative data
       if (socket.id === p1Id) {
@@ -459,26 +473,24 @@ function App() {
           initialDeck,
           startingPlayer,
           playerConfig: {
-            p1: { id: p1Id, isDeveloper: !!p1IsPremium }, // Map premium to developer
-            p2: { id: p2Id, isDeveloper: !!p2IsPremium }
+            p1: { id: p1Id, isPremium: Boolean(p1IsPremium) },
+            p2: { id: p2Id, isPremium: Boolean(p2IsPremium) }
           }
         }
       });
 
-      console.log(`Game started in room ${roomId} (Ranked: ${isRanked}). Starting: ${startingPlayer}`);
       playSuccessSound();
       setShowDiceAnimation(true); // Show dice animation for everyone
       setShowResultsModal(false); // Ensure results modal is hidden
     });
 
-    socket.on('player_data', (data: any) => {
+    socket.on('player_data', (data: { rating?: number }) => {
       if (data && data.rating) {
         setMyRating(data.rating);
       }
     });
 
-    socket.on('rating_update', (updates: any) => {
-      console.log('Rating updates received:', updates);
+    socket.on('rating_update', (updates: RatingUpdates) => {
       setRatingUpdates(updates);
 
       // Update local rating state immediately so Lobby shows correct value
@@ -489,20 +501,18 @@ function App() {
       }
     });
 
-    socket.on('game_action', (action: any) => {
+    socket.on('game_action', (action: GameAction) => {
       dispatch(action);
     });
 
-    socket.on('game_end_surrender', ({ winner }) => {
+    socket.on('game_end_surrender', () => {
       // Ignore if we are in local mode (bot match)
       if (modeRef.current === 'local') return;
 
       // Handle surrender ending the game
-      console.log('[SURRENDER] Received game_end_surrender event, winner:', winner);
 
       // Return to lobby after 1 second (showing winner briefly)
       setTimeout(() => {
-        console.log('[SURRENDER] Returning to lobby - resetting ALL state');
         // Reset all state at once using functional updates
         setMode(() => 'online');
         setRoomId(() => null);
@@ -511,11 +521,9 @@ function App() {
         setIsQuickMatch(() => false);
         setOpponentName(() => 'Player 2');
         setRatingUpdates(null); // Clear rating updates
-        setPhase('setup'); // [FIX] Reset phase to setup
 
         // Reset game state to initial
-        dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
-        console.log('[SURRENDER] State reset complete - should show lobby');
+        dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
       }, 1000);
     });
 
@@ -523,70 +531,35 @@ function App() {
       // Ignore if we are in local mode (bot match)
       // This is critical because cancelling matchmaking might trigger player_left from server
       if (modeRef.current === 'local') {
-        console.log('Ignored player_left event because we are in local mode');
         return;
       }
 
       // Opponent left/cancelled - return to lobby
-      console.log('Opponent left the room');
       setMode('online');
       setRoomId(null);
       setPlayerRole(null);
       setIsOnlineGame(false);
       setIsQuickMatch(false);
       setRatingUpdates(null);
-      setPhase('setup'); // [FIX] Reset phase to setup
-      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
     });
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-      socket.off('quick_match_joined');
       socket.off('game_start');
       socket.off('player_data'); // Clean up
       socket.off('rating_update');
       socket.off('player_joined');
       socket.off('sync_state');
       socket.off('request_sync');
-      socket.off('auto_start_game');
       socket.off('opponent_joined');
       socket.off('game_action');
       socket.off('game_end_surrender');
       socket.off('player_left');
       // Don't disconnect on cleanup - only when component unmounts
     };
-  }, []); // Empty dependency array - only run once on mount
-
-  // Re-authenticate socket when session changes
-  useEffect(() => {
-    if (session?.access_token) {
-      if (socket.connected) {
-        socket.auth = { token: session.access_token };
-        socket.disconnect().connect();
-      } else {
-        connectSocket(session.access_token);
-      }
-    }
   }, [session?.access_token]);
-
-  // Fetch rating on connect
-  // (Moved to combined effect above to include session dependency)
-  /*
-  useEffect(() => {
-    if (isConnected) {
-      const id = getBrowserId(); // Use utility to get or create
-      socket.emit('get_player_data', { browserId: id });
-    }
-  }, [isConnected]);
-  */
-
-  // Sync State on Change (Host only)
-  useEffect(() => {
-    if (isOnlineGame && playerRole === 'host' && roomId) {
-      socket.emit('sync_state', { roomId, state: gameState });
-    }
-  }, [gameState, isOnlineGame, playerRole, roomId]);
 
   // Rating: Handle Game End Report (Host only)
   useEffect(() => {
@@ -595,11 +568,9 @@ function App() {
       socket.emit('report_game_end', {
         roomId,
         winner: gameState.winner,
-        p1Score: gameState.players[0].score,
-        p2Score: gameState.players[1].score
       });
     }
-  }, [gameState.phase, gameState.winner, isOnlineGame, playerRole, roomId]);
+  }, [gameState, isOnlineGame, isRankedGame, playerRole, roomId]);
 
   const { currentPlayerIndex, players } = gameState;
   const currentPlayer = players[currentPlayerIndex];
@@ -607,18 +578,10 @@ function App() {
   // Auto-Finish Logic
   useEffect(() => {
     if (phase === 'scoring') {
-      // 1. Show Finish Animation
-      setShowFinishAnimation(true);
-      playSuccessSound(); // Use success sound for "Finish!"
-
-      // Juice: Screen Shake on Showdown
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500);
+      playSuccessSound();
 
       // 2. Wait 2 seconds, then Calculate
       const timer = setTimeout(() => {
-        setShowFinishAnimation(false);
-        // Dispatch calculate (locally for both players, as they both reach this phase)
         dispatch({ type: 'CALCULATE_SCORE' });
       }, 2000);
 
@@ -628,31 +591,30 @@ function App() {
 
   // Turn Selection Logic
   useEffect(() => {
-    let timer1: ReturnType<typeof setTimeout>;
     let timer2: ReturnType<typeof setTimeout>;
 
-    if (phase === 'turn_selection') {
-      if (showDiceAnimation) {
-        setIsTossingCoin(false);
-        setTossResult(null);
-      } else {
-        timer1 = setTimeout(() => {
-          setIsTossingCoin(true);
-          playCoinTossSound();
-          setTossResult(currentPlayerIndex as 0 | 1); // 0 (Host/P1) or 1 (Guest/P2/AI)
+    if (phase !== 'turn_selection' || showDiceAnimation) return;
 
-          timer2 = setTimeout(() => {
-            setIsTossingCoin(false);
-          }, 3000); // 3 seconds animation
-        }, 1500); // 1.5s pause to see hand
-      }
-    }
+    const timer1 = setTimeout(() => {
+      const winner = currentPlayerIndex as 0 | 1;
+      setIsTossingCoin(true);
+      playCoinTossSound();
+      setTossResult(winner);
+
+      timer2 = setTimeout(() => {
+        setIsTossingCoin(false);
+        const isMyChoice = mode === 'local'
+          ? winner === 0
+          : (playerRole === 'host' && winner === 0) || (playerRole === 'guest' && winner === 1);
+        if (isMyChoice) setTurnSelectionTimeLeft(10);
+      }, 1400);
+    }, 500);
 
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
     };
-  }, [phase, showDiceAnimation, currentPlayerIndex]);
+  }, [currentPlayerIndex, mode, phase, playerRole, showDiceAnimation]);
 
   // AI Turn Selection Logic (When AI wins the toss)
   useEffect(() => {
@@ -663,24 +625,11 @@ function App() {
       const timer = setTimeout(() => {
         const chosenStartingPlayer = shouldGoFirst ? 1 : 0;
         handleChooseTurnOrder(chosenStartingPlayer);
-      }, 1500); // Small delay for human to see AI is "thinking"
+      }, 700);
 
       return () => clearTimeout(timer); // ← クリーンアップ: 二重発火を防ぐ
     }
-  }, [phase, isTossingCoin, tossResult, currentPlayerIndex, isOnlineGame]); // gameState を依存配列から除去
-
-  // Turn Selection Timer Logic (Human)
-  useEffect(() => {
-    if (phase === 'turn_selection' && !isTossingCoin) {
-      const isMyChoice = ((mode === 'local' && tossResult === 0) || (mode === 'online' && ((playerRole === 'host' && tossResult === 0) || (playerRole === 'guest' && tossResult === 1))));
-      
-      if (isMyChoice && turnSelectionTimeLeft === null) {
-        setTurnSelectionTimeLeft(10);
-      }
-    } else {
-      setTurnSelectionTimeLeft(null);
-    }
-  }, [phase, isTossingCoin, tossResult, mode, playerRole, turnSelectionTimeLeft]);
+  }, [currentPlayerIndex, gameState, handleChooseTurnOrder, isOnlineGame, isTossingCoin, phase, tossResult]);
 
   // Turn Selection Timer Tick
   useEffect(() => {
@@ -690,15 +639,14 @@ function App() {
       }, 1000);
       return () => clearTimeout(timer);
     } else if (turnSelectionTimeLeft === 0) {
-      // Auto-choose randomly
-      const randomChoice = Math.random() > 0.5;
-      const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
-      const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
-      const chosenIndex = randomChoice ? myIndex : opIndex;
-      handleChooseTurnOrder(chosenIndex);
-      setTurnSelectionTimeLeft(null);
+      const timer = window.setTimeout(() => {
+        const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
+        const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
+        handleChooseTurnOrder(Math.random() > 0.5 ? myIndex : opIndex);
+      }, 0);
+      return () => window.clearTimeout(timer);
     }
-  }, [turnSelectionTimeLeft, mode, playerRole]);
+  }, [handleChooseTurnOrder, mode, playerRole, turnSelectionTimeLeft]);
 
   // Determine if we are in the Lobby view (where version and title inputs are shown)
   // Lobby view is:
@@ -714,27 +662,27 @@ function App() {
   const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
 
   // Sync local phase with game winner/turn
-  const prevPhaseRef = useRef<string>('');
+  const prevPhaseRef = useRef<Phase>('setup');
   useEffect(() => {
-    if (gameState.winner) {
-      setPhase('ended');
-    } else if (gameState.phase === 'turn_selection') {
-      setPhase('turn_selection');
-    } else if (gameState.phase === 'scoring') {
-      setPhase('scoring');
-    } else if (gameState.turnCount > 0 || gameState.phase === 'playing') {
-      if (prevPhaseRef.current !== 'playing') {
-        // Show turn announce banner when game first starts
-        const firstIdx = gameState.currentPlayerIndex;
-        const first = firstIdx === 0 ? p1DisplayName : p2DisplayName;
-        const second = firstIdx === 0 ? p2DisplayName : p1DisplayName;
-        setTurnAnnounce({ firstName: first, secondName: second });
-        setTimeout(() => setTurnAnnounce(null), 3000);
-      }
-      setPhase('playing');
-    }
+    const enteredPlaying = gameState.phase === 'playing' && prevPhaseRef.current !== 'playing';
     prevPhaseRef.current = gameState.phase;
-  }, [gameState]);
+    if (!enteredPlaying) return;
+
+    const firstIdx = gameState.currentPlayerIndex;
+    const first = firstIdx === 0 ? p1DisplayName : p2DisplayName;
+    const second = firstIdx === 0 ? p2DisplayName : p1DisplayName;
+    const showTimer = window.setTimeout(() => {
+      setTurnAnnounce({ firstName: first, secondName: second });
+    }, 0);
+    const hideTimer = window.setTimeout(() => {
+      setTurnAnnounce(null);
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(showTimer);
+      window.clearTimeout(hideTimer);
+    };
+  }, [gameState.currentPlayerIndex, gameState.phase, p1DisplayName, p2DisplayName]);
 
   // AI Turn Logic
   useEffect(() => {
@@ -765,7 +713,7 @@ function App() {
         isAIActingRef.current = false;
       };
     }
-  }, [gameState, mode, isBotDisguise, phase, showDiceAnimation, turnAnnounce]);
+  }, [currentPlayerIndex, gameState, isBotDisguise, mode, phase, showDiceAnimation, turnAnnounce]);
 
   // User Auto-Play Logic (Both Local P1 and Online Self)
   useEffect(() => {
@@ -784,7 +732,7 @@ function App() {
         const myIndex = currentPlayerIndex;
         const move = getBestMove(gameState, myIndex);
 
-        const action = {
+        const action: GameAction = {
           type: 'PLACE_AND_DRAW',
           payload: {
             cardId: move.cardId,
@@ -794,7 +742,7 @@ function App() {
         };
 
         playClickSound(); // Feedback
-        dispatch(action as any);
+        dispatch(action);
 
         if (isOnlineGame && roomId) {
           socket.emit('game_action', { roomId, action });
@@ -806,7 +754,15 @@ function App() {
   }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState, showDiceAnimation, turnAnnounce]);
 
   // Showdown sequence runner (Re-usable for Replay Showdown)
-  const triggerShowdownSequence = async () => {
+  useEffect(() => {
+    if (phase !== 'ended') showdownRunRef.current += 1;
+  }, [phase]);
+
+  const triggerShowdownSequence = useCallback(async () => {
+    const runId = ++showdownRunRef.current;
+    const isCurrentRun = () => showdownRunRef.current === runId;
+    const wait = (duration: number) => new Promise<void>(resolve => window.setTimeout(resolve, duration));
+
     setRevealedCols([]);
     setShowXHand(false);
     setCurrentShowdownPopup(null);
@@ -876,10 +832,10 @@ function App() {
         if (res.winner !== 'draw' && res.type) {
           await Promise.all([
             speakText(getReadableHandName(res.type)),
-            new Promise(r => setTimeout(r, 2200)) // Wait at least 2200ms for visual animation
+            wait(2200),
           ]);
         } else {
-          await new Promise(r => setTimeout(r, 2200));
+          await wait(2200);
         }
       } else if (currentStep === 5) {
         setShowXHand(true);
@@ -895,23 +851,23 @@ function App() {
         if (rowResult.winner !== 'draw' && rowResult.type) {
           await Promise.all([
             speakText(getReadableHandName(rowResult.type)),
-            new Promise(r => setTimeout(r, 2200))
+            wait(2200),
           ]);
         } else {
-          await new Promise(r => setTimeout(r, 2200));
+          await wait(2200);
         }
       }
-      
-      // Small buffer between steps
-      await new Promise(r => setTimeout(r, 100));
+
+      if (!isCurrentRun()) return;
+      await wait(100);
+      if (!isCurrentRun()) return;
     }
 
-    // Finished
-    setTimeout(() => {
-      setCurrentShowdownPopup(null); // Hide popup before showing modal
-      setShowResultsModal(true);
-    }, 2500); // Extended to match 2.8s sustain
-  };
+    await wait(2500);
+    if (!isCurrentRun()) return;
+    setCurrentShowdownPopup(null);
+    setShowResultsModal(true);
+  }, [gameState]);
 
   useEffect(() => {
     if (phase === 'ended') {
@@ -921,69 +877,40 @@ function App() {
       }
       processedGameRef.current = gameSignature;
 
-      triggerShowdownSequence();
+      void triggerShowdownSequence();
 
       if (mode === 'local') {
         const { winner } = gameState;
         const aiWon = winner === 'p2';
-        const isDraw = winner === null;
+        const isDraw = winner === 'draw';
         recordGameResult(aiWon, isDraw);
 
         // Contribute game outcome to the global collaborative AI parameters
-        if (opponentName === 'AI') {
-          updateGlobalAiParameters(aiWon, isDraw);
+        const gameToken = localGameTokenRef.current;
+        if ((opponentName === 'AI' || isBotDisguise) && dbPlayerId && gameToken) {
+          updateGlobalAiParameters(aiWon, isDraw, gameToken);
         }
 
         // Update Gamification Stats (Only if logged in and I am Player 1 against AI)
-        if (dbPlayerId) {
-          // Calculate Score locally
-          const p1 = gameState.players[0];
-          const p2 = gameState.players[1];
-          // Determine if p1 has board[2] filled?
-          // At 'ended' phase, yes.
-          const p1XRes = evaluateXHand(p1.board[2] as Card[]);
-          const p2XRes = evaluateXHand(p2.board[2] as Card[]);
-          const { p1Score } = calculateXHandScores(p1XRes, p2XRes);
-
-          const myScore = p1Score;
+        if (dbPlayerId && gameToken) {
           let resultStr: 'win' | 'loss' | 'draw' = 'draw';
           if (!aiWon && !isDraw) resultStr = 'win';
           else if (aiWon) resultStr = 'loss';
 
-          updatePlayerStats(dbPlayerId, resultStr, myScore).then(res => {
+          updatePlayerStats(dbPlayerId, resultStr, gameToken).then(res => {
             if (res?.leveledUp) {
-              // Level Up Alert
               alert(`Level Up! You are now Level ${res.newLevel}`);
             }
-            if (res?.coinsEarned && res.coinsEarned > 0) {
-              // Optional: Show coin toast
-            }
           });
-          checkAchievements(dbPlayerId, gameState, resultStr);
         }
+        localGameTokenRef.current = null;
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, mode]);
+  }, [dbPlayerId, gameState, isBotDisguise, mode, opponentName, phase, roomId, triggerShowdownSequence]);
 
   useEffect(() => {
     localStorage.setItem('xypoker_playerName_v2', playerName);
   }, [playerName]);
-
-  // Auth Listener
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   // Fetch data when connection or session changes
   useEffect(() => {
@@ -995,40 +922,7 @@ function App() {
     }
   }, [isConnected, session]); // Trigger on session change too
 
-  useEffect(() => {
-    if (mode === 'local') {
-      if (!isBotDisguise) {
-        setOpponentName('AI');
-      }
-    } else if (mode === 'online' && !isOnlineGame) {
-      setOpponentName('Player 2');
-    }
-  }, [mode, isOnlineGame, isBotDisguise]);
-
-  // Turn Timer Logic
-  useEffect(() => {
-    if (phase !== 'playing' || showDiceAnimation) return;
-
-    // Reset timer on turn change
-    setTimeLeft(60);
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleAutoPlay();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    turnTimerRef.current = timer;
-
-    return () => clearInterval(timer);
-  }, [currentPlayerIndex, phase, showDiceAnimation]); // Reset when turn changes
-
-  const handleAutoPlay = () => {
+  const handleAutoPlay = useCallback(() => {
     if (phase !== 'playing') return;
 
     // Check if it's "MY" turn to act.
@@ -1042,11 +936,8 @@ function App() {
 
     // Safety: If online and not my turn, DO NOT auto-play for opponent (they handle their own)
     if (isOnlineGame && currentPlayerIndex !== myPlayerIndex) {
-      console.log("Timer expired for opponent - waiting for their move...");
       return;
     }
-
-    console.log("Timer expired - Auto-playing random move");
 
     const currentPlayer = gameState.players[currentPlayerIndex];
     if (currentPlayer.hand.length === 0) return; // Should not happen in playing phase
@@ -1056,7 +947,7 @@ function App() {
     const card = currentPlayer.hand[randomCardIndex];
 
     // Find valid columns
-    const validCols = [];
+    const validCols: number[] = [];
     for (let c = 0; c < 5; c++) {
       if (!currentPlayer.board[0][c] || !currentPlayer.board[1][c] || !currentPlayer.board[2][c]) {
         // Check specific row availability is complex with current structure?
@@ -1074,7 +965,7 @@ function App() {
 
     const randomCol = validCols[Math.floor(Math.random() * validCols.length)];
 
-    const action = {
+    const action: GameAction = {
       type: 'PLACE_AND_DRAW',
       payload: {
         cardId: card.id,
@@ -1083,13 +974,33 @@ function App() {
       }
     };
 
-    dispatch(action as any);
+    dispatch(action);
     playClickSound();
 
     if (isOnlineGame && roomId) {
       socket.emit('game_action', { roomId, action });
     }
-  };
+  }, [currentPlayerIndex, gameState, isOnlineGame, phase, playerRole, roomId]);
+
+  useEffect(() => {
+    if (phase !== 'playing' || showDiceAnimation) return;
+
+    let remaining = 60;
+    const resetTimer = window.setTimeout(() => setTimeLeft(remaining), 0);
+    const timer = window.setInterval(() => {
+      remaining -= 1;
+      setTimeLeft(remaining);
+      if (remaining <= 0) {
+        window.clearInterval(timer);
+        handleAutoPlay();
+      }
+    }, 1000);
+
+    return () => {
+      window.clearTimeout(resetTimer);
+      window.clearInterval(timer);
+    };
+  }, [currentPlayerIndex, handleAutoPlay, phase, showDiceAnimation]);
 
   const handleStartGame = () => {
     playClickSound();
@@ -1098,6 +1009,7 @@ function App() {
 
     // Explicitly reset disguise for manual local starts (e.g. from Setup screen)
     if (mode === 'local') {
+      beginTrackedLocalGame();
       setIsBotDisguise(false);
       setOpponentName('AI');
 
@@ -1110,6 +1022,9 @@ function App() {
     }
 
     dispatch({ type: 'START_GAME' });
+    setIsTossingCoin(false);
+    setTossResult(null);
+    setTurnSelectionTimeLeft(null);
     setShowDiceAnimation(true);
     setShowResultsModal(false);
     processedGameRef.current = null; // Reset animation trigger
@@ -1119,17 +1034,14 @@ function App() {
   };
 
   const startBotMatch = () => {
-    console.log('Quick Match Timeout: Starting Bot Match');
+    beginTrackedLocalGame();
 
     // Get current roomId using ref
     const currentRoomId = roomIdRef.current;
 
     // Cancel socket request
     if (currentRoomId) {
-      console.log(`Cancelling matchmaking for roomId: ${currentRoomId}`);
       socket.emit('cancel_matchmaking', { roomId: currentRoomId });
-    } else {
-      console.log('No roomId found to cancel matchmaking.');
     }
 
     // Switch to Local Mode vs AI
@@ -1144,12 +1056,15 @@ function App() {
     setIsBotDisguise(true);
 
     // Reset state and start
-    dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+    dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
 
     // Slight delay to allow state updates before starting
     setTimeout(() => {
       playSuccessSound();
       dispatch({ type: 'START_GAME' });
+      setIsTossingCoin(false);
+      setTossResult(null);
+      setTurnSelectionTimeLeft(null);
       setShowDiceAnimation(true);
     }, 500);
   };
@@ -1157,15 +1072,17 @@ function App() {
   const handleCreateRoom = () => {
     const browserId = getBrowserId();
     const userId = session?.user?.id;
-    socket.emit('create_room', { playerName, browserId, userId }, (response: any) => {
-      setRoomId(response.roomId);
-      setPlayerRole('host');
+    socket.emit('create_room', { playerName, browserId, userId }, (response: RoomResponse) => {
+      if (response.roomId) {
+        setRoomId(response.roomId);
+        setPlayerRole('host');
+      }
     });
   };
   const handleJoinRoom = (id: string) => {
     const browserId = getBrowserId();
     const userId = session?.user?.id;
-    socket.emit('join_room', { roomId: id, playerName, browserId, userId }, (response: any) => {
+    socket.emit('join_room', { roomId: id, playerName, browserId, userId }, (response: RoomResponse) => {
       if (response.success) {
         setRoomId(id);
         setPlayerRole('guest');
@@ -1173,7 +1090,7 @@ function App() {
           setOpponentName(response.opponentName);
         }
       } else {
-        alert(response.message);
+        alert(response.message ?? 'Unable to join this room.');
       }
     });
   };
@@ -1191,7 +1108,7 @@ function App() {
         // But let's clear the current game state first to be safe.
         setRoomId(null);
         setPlayerRole(null);
-        setPhase('setup');
+        dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
         setIsOnlineGame(false); // Temporarily false until match found
 
         // 3. Start Search
@@ -1222,8 +1139,8 @@ function App() {
 
     const browserId = getBrowserId();
     const userId = session?.user?.id;
-    socket.emit('quick_match', { playerName, browserId, userId }, (response: any) => {
-      if (response.success) {
+    socket.emit('quick_match', { playerName, browserId, userId }, (response: RoomResponse) => {
+      if (response.success && response.roomId && response.role) {
         // NOTE: response.roomId should be set immediately
         setRoomId(response.roomId);
         setPlayerRole(response.role);
@@ -1254,8 +1171,7 @@ function App() {
     setIsOnlineGame(false);
     setIsQuickMatch(false);
     setRatingUpdates(null);
-    setPhase('setup');
-    dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+    dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
   };
 
   const handleCancelMatchmaking = () => {
@@ -1265,7 +1181,7 @@ function App() {
     }
 
     if (mode === 'local') {
-      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
     } else {
       socket.emit('surrender', { roomId });
     }
@@ -1320,8 +1236,7 @@ function App() {
     }
 
     if (mode === 'local') {
-      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
-      setPhase('setup');
+      dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
     } else {
       socket.emit('surrender', { roomId });
     }
@@ -1360,7 +1275,7 @@ function App() {
 
     if (currentPlayerIndex !== myPlayerIndex) return;
 
-    const action = {
+    const action: GameAction = {
       type: 'PLACE_AND_DRAW',
       payload: {
         cardId: selectedCardId,
@@ -1368,7 +1283,7 @@ function App() {
         isHidden: placeHidden,
       }
     };
-    dispatch(action as any);
+    dispatch(action);
 
     if (isOnlineGame && roomId) {
       socket.emit('game_action', { roomId, action });
@@ -1385,10 +1300,8 @@ function App() {
   useEffect(() => {
     const handleFsChange = () => {
       // Check standard and vendor-prefixed properties
-      const isFs = !!(document.fullscreenElement ||
-        (document as any).webkitFullscreenElement ||
-        (document as any).mozFullScreenElement ||
-        (document as any).msFullscreenElement);
+      const fullscreenDocument = document as FullscreenDocument;
+      const isFs = !!(document.fullscreenElement || fullscreenDocument.webkitFullscreenElement);
       setIsFullscreen(isFs);
     };
 
@@ -1407,21 +1320,15 @@ function App() {
 
   const toggleFullscreen = async () => {
     try {
-      const doc = document.documentElement as any;
-      const currentFs = document.fullscreenElement ||
-        (document as any).webkitFullscreenElement ||
-        (document as any).mozFullScreenElement ||
-        (document as any).msFullscreenElement;
+      const fullscreenDocument = document as FullscreenDocument;
+      const fullscreenElement = document.documentElement as FullscreenElement;
+      const currentFs = document.fullscreenElement || fullscreenDocument.webkitFullscreenElement;
 
       if (!currentFs) {
-        if (doc.requestFullscreen) {
-          await doc.requestFullscreen();
-        } else if (doc.webkitRequestFullscreen) {
-          await doc.webkitRequestFullscreen();
-        } else if (doc.mozRequestFullScreen) {
-          await doc.mozRequestFullScreen();
-        } else if (doc.msRequestFullscreen) {
-          await doc.msRequestFullscreen();
+        if (fullscreenElement.requestFullscreen) {
+          await fullscreenElement.requestFullscreen();
+        } else if (fullscreenElement.webkitRequestFullscreen) {
+          await fullscreenElement.webkitRequestFullscreen();
         } else {
           // Fallback for iOS Safari which usually doesn't support DOM fullscreen API
           alert("Fullscreen API not supported on this device/browser.\nTry 'Add to Home Screen' for fullscreen experience.");
@@ -1429,12 +1336,8 @@ function App() {
       } else {
         if (document.exitFullscreen) {
           await document.exitFullscreen();
-        } else if ((document as any).webkitExitFullscreen) {
-          await (document as any).webkitExitFullscreen();
-        } else if ((document as any).mozCancelFullScreen) {
-          await (document as any).mozCancelFullScreen();
-        } else if ((document as any).msExitFullscreen) {
-          await (document as any).msExitFullscreen();
+        } else if (fullscreenDocument.webkitExitFullscreen) {
+          await fullscreenDocument.webkitExitFullscreen();
         }
       }
     } catch (err) {
@@ -1444,7 +1347,7 @@ function App() {
   };
 
   return (
-    <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase} ${isShaking ? 'shake-intense' : ''} ${phase === 'scoring' ? 'showdown-active' : ''}`}>
+    <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase} ${phase === 'scoring' ? 'showdown-active' : ''}`}>
 
       {/* 先攻・後攻 アナウンスオーバーレイ */}
       {turnAnnounce && (
@@ -1465,10 +1368,11 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v07110355</span>}
+          {showVersion && <span className="version">v09011603</span>}
         </div>
 
         <button
+          type="button"
           className="btn-fullscreen"
           onClick={toggleFullscreen}
           aria-label="Toggle Fullscreen"
@@ -1477,27 +1381,29 @@ function App() {
         </button>
 
         {/* Auth Button (Top Right) */}
-        {!isOnlineGame && phase !== 'playing' && (
+        {!isOnlineGame && phase === 'setup' && (
           <div className="auth-status">
             {session ? (
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: '1.2' }}>
-                  <span style={{ fontSize: '0.8rem', color: '#fff' }}>{session.user.email}</span>
-                  <span style={{ fontSize: '0.6rem', color: '#aaa' }}>ID: {session.user.id.slice(0, 8)}</span>
+              <div className="auth-user">
+                <div className="auth-user-copy">
+                  <span>{session.user.email}</span>
+                  <small>ID: {session.user.id.slice(0, 8)}</small>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setShowMyPage(true)}
-                  style={{ padding: '4px 8px', fontSize: '0.7rem', background: '#4da8da', border: 'none', color: '#000', borderRadius: '4px', cursor: 'pointer', marginLeft: '10px', fontWeight: 'bold' }}
+                  className="btn-account"
                 >
-                  My Page
+                  Account
                 </button>
               </div>
             ) : (
               <button
+                type="button"
                 className="btn-auth"
                 onClick={() => setShowAuthModal(true)}
               >
-                Sign In / Sign Up
+                Sign in
               </button>
             )}
           </div>
@@ -1506,6 +1412,7 @@ function App() {
         {((mode === 'local' && phase === 'setup') || (mode === 'online' && !isOnlineGame)) && (
           <div className="mode-switch">
             <button
+              type="button"
               className={mode === 'local' ? 'active' : ''}
               onClick={() => {
                 playClickSound();
@@ -1515,12 +1422,13 @@ function App() {
                 setPlayerRole(null);
                 setIsBotDisguise(false); // Reset disguise for explicit local mode
                 setOpponentName('AI');   // Explicit AI name
-                dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE } as any);
+                dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
               }}
             >
               Local (vs AI)
             </button>
             <button
+              type="button"
               className={mode === 'online' ? 'active' : ''}
               onClick={() => { playClickSound(); setMode('online'); }}
             >
@@ -1550,11 +1458,11 @@ function App() {
           {mode === 'online' && isQuickMatch ? (
             <div className="setup-screen">
               <div className="waiting-message">
-                <h3>🎲 Quick Match</h3>
+                <h3>Quick Match</h3>
                 <h2>Waiting for opponent...</h2>
                 <div className="loading-spinner"></div>
                 <p>Your game will start automatically when an opponent joins</p>
-                <button className="btn-cancel" onClick={handleCancelMatchmaking}>
+                <button type="button" className="btn-cancel" onClick={handleCancelMatchmaking}>
                   Cancel
                 </button>
               </div>
@@ -1587,19 +1495,18 @@ function App() {
                 <div className="game-status-bar">
                   <TurnTimer
                     timeLeft={timeLeft}
-                    totalTime={15}
                     currentPlayerIndex={currentPlayerIndex}
                     isMyTurn={
                       (isOnlineGame && playerRole === 'host' && currentPlayerIndex === 0) ||
                       (isOnlineGame && playerRole === 'guest' && currentPlayerIndex === 1) ||
                       (mode === 'local' && currentPlayerIndex === 0)
                     }
-                    onResync={() => {
+                    onResync={playerRole === 'guest' ? () => {
                       if (isOnlineGame && roomIdRef.current) {
                         playClickSound();
                         socket.emit('request_sync', { roomId: roomIdRef.current });
                       }
-                    }}
+                    } : undefined}
                   />
                 </div>
               )}
@@ -1608,135 +1515,136 @@ function App() {
                   <div className="setup-screen">
                     {isQuickMatch ? (
                       <div className="waiting-message">
-                        <h3>🎲 Quick Match</h3>
+                        <h3>Quick Match</h3>
                         <h2>Waiting for opponent...</h2>
                         <div className="loading-spinner"></div>
                         <p>Your game will start automatically when an opponent joins</p>
-                        <button className="btn-cancel" onClick={handleCancelMatchmaking}>
+                        <button type="button" className="btn-cancel" onClick={handleCancelMatchmaking}>
                           Cancel
                         </button>
                       </div>
                     ) : (
-                        <div className="lobby-home">
-                          {/* Top Status Panel (Glassmorphic Resource Panel - Rating Focus) */}
-                          <div className="lobby-top-bar">
-                            <div className="player-rating-badge">
-                              <span className="rating-label">RATE</span>
-                              <span className="rating-value">{myRating || 1500}</span>
-                            </div>
-                            <div className="player-meta-info" style={{ marginLeft: '12px', flex: 1, textAlign: 'left' }}>
-                              <span className="player-display-name">
-                                {playerName || 'Guest'}
-                                <span className="lobby-version-badge" style={{ marginLeft: '6px', fontSize: '0.62rem', background: 'rgba(255,255,255,0.15)', padding: '2px 5px', borderRadius: '4px', color: '#ccc', fontWeight: 'normal', verticalAlign: 'middle', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                  v07110355
-                                </span>
-                              </span>
-                              <span className="player-display-id">ID: {session?.user?.id?.slice(0, 8) || 'GuestID'}</span>
-                            </div>
+                      <div className="lobby-home">
+                        <div className="home-player-bar">
+                          <div className="home-player-copy">
+                            <span className="home-eyebrow">PLAYER</span>
+                            <strong>{playerName || 'Guest'}</strong>
+                            <span className="home-player-id">
+                              {session ? `ID ${session.user.id.slice(0, 8)}` : 'Local guest'}
+                            </span>
                           </div>
-
-                          {/* Central Character Standee (No speech bubble, fully visible) */}
-                          <div className="lobby-character-area">
-                            <img 
-                              src="/assets/images/lobby_character.png" 
-                              alt="Queen of Hearts" 
-                              className="lobby-character-image"
-                            />
-                          </div>
-
-                          {/* Action Panel: Main Quest and Support Battles (Clean English, No wrap) */}
-                          <div className="lobby-actions-panel">
-                            <button 
-                              className="quest-btn-primary" 
-                              onClick={() => {
-                                setIsAutoPlay(false);
-                                playClickSound();
-                                handleStartGame();
-                              }}
-                            >
-                              <span className="quest-tag">SINGLE PLAY</span>
-                              <span className="quest-title">Local Match (vs AI)</span>
-                            </button>
-
-                            <div className="sub-battle-actions">
-                              <button 
-                                className="quest-btn-secondary" 
-                                style={{ width: '100%', whiteSpace: 'nowrap' }}
-                                onClick={() => {
-                                  playClickSound();
-                                  setMode('online');
-                                  setIsOnlineGame(false);
-                                  setIsQuickMatch(false);
-                                }}
-                              >
-                                ⚔️ Online Match
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Footer Tab Navigation Bar (All English - 5 Tabs) */}
-                          <div className="lobby-footer-tabs">
-                            <button className="tab-item active" onClick={() => playClickSound()}>
-                              <span className="tab-icon">🏠</span>
-                              <span className="tab-label">Home</span>
-                            </button>
-                            <button 
-                              className="tab-item" 
-                              onClick={() => {
-                                playClickSound();
-                                setShowSkinStore(true);
-                              }}
-                            >
-                              <span className="tab-icon">🎨</span>
-                              <span className="tab-label">Skins</span>
-                            </button>
-                            <button 
-                              className="tab-item" 
-                              onClick={() => {
-                                playClickSound();
-                                setShowRules(true);
-                              }}
-                            >
-                              <span className="tab-icon">📖</span>
-                              <span className="tab-label">Rules</span>
-                            </button>
-                            <button 
-                              className="tab-item" 
-                              onClick={() => {
-                                playClickSound();
-                                setShowMyPage(true);
-                              }}
-                            >
-                              <span className="tab-icon">👤</span>
-                              <span className="tab-label">Profile</span>
-                            </button>
-                            <button 
-                              className="tab-item" 
-                              onClick={() => {
-                                playClickSound();
-                                setShowContactModal(true);
-                              }}
-                            >
-                              <span className="tab-icon">📬</span>
-                              <span className="tab-label">Report</span>
-                            </button>
+                          <div className="home-rating" aria-label={`Rating ${myRating || 1500}`}>
+                            <span>RATING</span>
+                            <strong>{myRating || 1500}</strong>
                           </div>
                         </div>
+
+                        <section className="home-intro" aria-labelledby="home-title">
+                          <span className="home-kicker">CARD + DICE STRATEGY</span>
+                          <h2 id="home-title">XY Poker</h2>
+                          <p>Build five poker hands across a shared line of dice. Every placement matters.</p>
+                          <div className="home-meta" aria-label="Game overview">
+                            <span>2 players</span>
+                            <span>5 columns</span>
+                            <span>Quick matches</span>
+                          </div>
+                        </section>
+
+                        <div className="lobby-actions-panel">
+                          <button
+                            type="button"
+                            className="quest-btn-primary"
+                            onClick={() => {
+                              setIsAutoPlay(false);
+                              playClickSound();
+                              handleStartGame();
+                            }}
+                          >
+                            <span className="quest-tag">PLAY NOW</span>
+                            <span className="quest-title">Play against AI</span>
+                            <span className="quest-arrow" aria-hidden="true">→</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="quest-btn-secondary"
+                            onClick={() => {
+                              playClickSound();
+                              setMode('online');
+                              setIsOnlineGame(false);
+                              setIsQuickMatch(false);
+                            }}
+                          >
+                            <span>
+                              <small>PLAY WITH OTHERS</small>
+                              Online match
+                            </span>
+                            <span aria-hidden="true">→</span>
+                          </button>
+                        </div>
+
+                        <nav className="lobby-footer-tabs" aria-label="Home menu">
+                          <button type="button" className="tab-item" onClick={() => {
+                            playClickSound();
+                            setShowSkinStore(true);
+                          }}>
+                            <span className="tab-index">01</span>
+                            <span className="tab-label">Skins</span>
+                          </button>
+                          <button type="button" className="tab-item" onClick={() => {
+                            playClickSound();
+                            setShowRules(true);
+                          }}>
+                            <span className="tab-index">02</span>
+                            <span className="tab-label">Rules</span>
+                          </button>
+                          <button type="button" className="tab-item" onClick={() => {
+                            playClickSound();
+                            if (session) setShowMyPage(true);
+                            else setShowAuthModal(true);
+                          }}>
+                            <span className="tab-index">03</span>
+                            <span className="tab-label">Account</span>
+                          </button>
+                          <button type="button" className="tab-item" onClick={() => {
+                            playClickSound();
+                            setShowContactModal(true);
+                          }}>
+                            <span className="tab-index">04</span>
+                            <span className="tab-label">Feedback</span>
+                          </button>
+                        </nav>
+
+                        <div className="home-support-row">
+                          <a
+                            className="home-support-link"
+                            href="https://ofuse.me/c1b70795"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="開発者を支援（新しいタブで開く）"
+                            onClick={playClickSound}
+                          >
+                            <span>開発者を支援</span>
+                            <span aria-hidden="true">↗</span>
+                          </a>
+                          <div className="home-version">v09011603</div>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}
                 {phase === 'turn_selection' && (isTossingCoin || tossResult !== null) && (
                   <div className="turn-selection-overlay">
-                    <h2 style={{ marginBottom: '20px' }}>Coin Toss</h2>
+                    <h2>Coin toss</h2>
                     {isTossingCoin ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div className="coin-toss-motion">
                         <div className="coin-container">
                           <div className={`coin flipping winner-${tossResult ?? 0}`}>
                             <div className="coin-front" />
                             <div className="coin-back" />
                           </div>
                         </div>
-                        <h2 style={{ marginTop: '20px' }}>Spinning Coin...</h2>
+                        <p className="coin-toss-status">Choosing at random…</p>
                       </div>
                     ) : (
                       <div className="coin-container">
@@ -1749,32 +1657,32 @@ function App() {
 
                     {!isTossingCoin && tossResult !== null && (
                       <div className="toss-result-area">
-                        <div className="toss-winner-text" style={{ color: tossResult === 0 ? '#4facfe' : '#ff0844' }}>
-                          {tossResult === 0 ? (mode === 'online' && playerRole === 'guest' ? opponentName : playerName) : (mode === 'online' && playerRole === 'guest' ? playerName : opponentName)} won the toss!
+                        <div className="toss-winner-text">
+                          {tossResult === 0 ? (mode === 'online' && playerRole === 'guest' ? opponentName : playerName) : (mode === 'online' && playerRole === 'guest' ? playerName : opponentName)} won the toss
                         </div>
                         
                         {/* If it's my turn to choose (I won the toss) */}
                         {((mode === 'local' && tossResult === 0) || (mode === 'online' && ((playerRole === 'host' && tossResult === 0) || (playerRole === 'guest' && tossResult === 1)))) ? (
-                          <div className="turn-choice-container" style={{ textAlign: 'center' }}>
+                          <div className="turn-choice-container">
                             {turnSelectionTimeLeft !== null && (
-                              <div style={{ color: '#ffcc00', marginBottom: '10px', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                                残り時間: {turnSelectionTimeLeft}秒
+                              <div className="turn-choice-timer">
+                                Choose in {turnSelectionTimeLeft}s
                               </div>
                             )}
                             <div className="turn-choice-buttons">
-                              <button onClick={() => {
+                              <button type="button" onClick={() => {
                                 playClickSound();
                                 const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
                                 handleChooseTurnOrder(myIndex);
                               }}>
-                                First (先攻)
+                                Go first
                               </button>
-                              <button onClick={() => {
+                              <button type="button" onClick={() => {
                                 playClickSound();
                                 const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
                                 handleChooseTurnOrder(opIndex);
                               }}>
-                                Second (後攻)
+                                Go second
                               </button>
                             </div>
                           </div>
@@ -1861,19 +1769,19 @@ function App() {
 
                   {phase === 'ended' && !showResultsModal && (
                     <div className="end-game-controls" style={{ display: 'flex', gap: '10px' }}>
-                      <button className="btn-secondary" onClick={() => {
+                      <button type="button" className="btn-secondary" onClick={() => {
                         playClickSound();
                         triggerShowdownSequence();
                       }}>
                         Replay Showdown
                       </button>
-                      <button className="btn-primary" onClick={() => {
+                      <button type="button" className="btn-primary" onClick={() => {
                         playClickSound();
                         setShowResultsModal(true);
                       }}>
                         Show Details
                       </button>
-                      <button className="btn-secondary" onClick={() => {
+                      <button type="button" className="btn-secondary" onClick={() => {
                         returnToLobby();
                       }}>
                         Back to Lobby
@@ -1896,6 +1804,7 @@ function App() {
           selectedSkin={selectedSkin}
         />
       )}
+      <Suspense fallback={null}>
       {showRules && <RulesModal onClose={() => { playClickSound(); setShowRules(false); }} />}
       {showContactModal && (
         <ContactForm
@@ -1910,10 +1819,10 @@ function App() {
             <h3>Rematch Request</h3>
             <p>Opponent wants to play again.</p>
             <div className="modal-actions">
-              <button className="btn-secondary" onClick={() => {
+              <button type="button" className="btn-secondary" onClick={() => {
                 setRematchInvited(false);
               }}>Cancel</button>
-              <button className="btn-primary" onClick={() => {
+              <button type="button" className="btn-primary" onClick={() => {
                 setRematchInvited(false);
                 socket.emit('accept_rematch', { roomId });
               }}>OK</button>
@@ -1939,23 +1848,23 @@ function App() {
       )}
 
       {/* Modals moved to global scope */}
-      <AuthModal
+      {showAuthModal && <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onSuccess={() => {
           // fetchElo();
         }}
-      />
-      <MyPage
+      />}
+      {showMyPage && dbPlayerId && <MyPage
         isOpen={showMyPage}
         onClose={() => setShowMyPage(false)}
-        userId={dbPlayerId!}
+        userId={dbPlayerId}
         isPremium={isPremium}
         onNameChange={(newName) => {
           setPlayerName(newName);
           localStorage.setItem('xypoker_playerName_v2', newName);
         }}
-      />
+      />}
       {phase === 'ended' && showResultsModal && (
         <GameResult
           gameState={gameState}
@@ -1969,14 +1878,14 @@ function App() {
               if (phase === 'ended') returnToLobby();
               else handleCancelMatchmaking();
             } else {
-              setPhase('setup');
+              dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
             }
             setShowResultsModal(false);
           }}
         />
       )}
 
-      <SkinStore
+      {showSkinStore && <SkinStore
         isOpen={showSkinStore}
         onClose={() => setShowSkinStore(false)}
         userId={session?.user?.id}
@@ -1993,17 +1902,18 @@ function App() {
         selectedBoardSkin={selectedBoardSkin}
         onUnlockBoard={handleUnlockBoardSkin}
         onSelectBoard={handleSelectBoardSkin}
-      />
+      />}
 
       {/* Finish Animation Overlay - only during scoring */}
-      {showFinishAnimation && phase === 'scoring' && (
+      {phase === 'scoring' && (
         <div className="finish-overlay">
           <h1 className="finish-text">FINISH!!</h1>
         </div>
       )}
 
       {/* Showdown popup overlay mounted at root to prevent transform misalignment */}
-      <ShowdownPopup data={currentShowdownPopup} />
+      {currentShowdownPopup && <ShowdownPopup data={currentShowdownPopup} />}
+      </Suspense>
     </div>
   );
 }

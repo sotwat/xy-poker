@@ -1,6 +1,6 @@
 // AI Learning System - stores and learns from game outcomes
 
-interface LearningData {
+export interface LearningData {
     totalGames: number;
     wins: number;
     losses: number;
@@ -13,6 +13,17 @@ interface LearningData {
     bonusAggression: number;
     hidingStrategy: number;
     defensiveAwareness: number;
+    purePreference: number;
+    tripsInHandFocus: number;
+    row3DelayFocus: number;
+    showdownDelayFocus: number;
+    lowCardAvoidance: number;
+    turnOrderFlexibility: number;
+    weakHandAvoidance: number;
+    pairInHandScale: number;
+    queenFirstScale: number;
+    bluffBonusScale: number;
+    trashBinRushScale: number;
 }
 
 const DEFAULT_LEARNING_DATA: LearningData = {
@@ -27,6 +38,17 @@ const DEFAULT_LEARNING_DATA: LearningData = {
     bonusAggression: 1.400,
     hidingStrategy: 0.3,
     defensiveAwareness: 1.300,
+    purePreference: 0.700,
+    tripsInHandFocus: 1.350,
+    row3DelayFocus: 1.400,
+    showdownDelayFocus: 1.200,
+    lowCardAvoidance: 1.500,
+    turnOrderFlexibility: 1.100,
+    weakHandAvoidance: 1.0,
+    pairInHandScale: 1.0,
+    queenFirstScale: 1.0,
+    bluffBonusScale: 1.0,
+    trashBinRushScale: 1.0,
 };
 
 const STORAGE_KEY = 'xypoker_ai_learning';

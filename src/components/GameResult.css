@@ -203,7 +203,7 @@
     .game-result-modal {
         padding: 0.25rem;
         width: 95%;
-        max-height: 90vh;
+        max-height: calc(100% - 24px);
         overflow-y: auto;
         transform: translateY(-20px);
     }

@@ -19,7 +19,7 @@
     padding: 24px;
     width: 90%;
     max-width: 600px;
-    max-height: 85vh;
+    max-height: calc(100% - 32px);
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 30px rgba(77, 168, 218, 0.3);
@@ -134,7 +134,7 @@ ol {
 @media (max-width: 600px) {
     .rules-content {
         padding: 16px;
-        max-height: 90vh;
+        max-height: calc(100% - 20px);
     }
 
     .rules-content h2 {

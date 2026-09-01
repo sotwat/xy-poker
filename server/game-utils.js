@@ -1,0 +1,161 @@
+import crypto from 'node:crypto';
+
+export const ROOM_ID_PATTERN = /^[A-HJ-NP-Z2-9]{4}$/;
+export const BROWSER_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const ROOM_ID_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
+const RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+const ALLOWED_ACTIONS = new Set(['CHOOSE_TURN_ORDER', 'PLACE_AND_DRAW']);
+
+export function calculateEloChange(playerRating, opponentRating, actualScore, kFactor = 32) {
+    const expectedScore = 1 / (1 + 10 ** ((opponentRating - playerRating) / 400));
+    return Math.round(kFactor * (actualScore - expectedScore));
+}
+
+export function createDeck() {
+    return SUITS.flatMap(suit => RANKS.map(rank => ({
+        suit,
+        rank,
+        id: `${suit}-${rank}`,
+    })));
+}
+
+export function shuffleDeck(deck) {
+    const shuffled = [...deck];
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const target = crypto.randomInt(index + 1);
+        [shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]];
+    }
+    return shuffled;
+}
+
+export function rollDice() {
+    return Array.from({ length: 5 }, () => crypto.randomInt(1, 7)).sort((a, b) => b - a);
+}
+
+export function randomPlayerIndex() {
+    return crypto.randomInt(2);
+}
+
+export function generateSessionToken() {
+    return crypto.randomBytes(24).toString('base64url');
+}
+
+export function generateRoomId() {
+    return Array.from({ length: 4 }, () => ROOM_ID_CHARS[crypto.randomInt(ROOM_ID_CHARS.length)]).join('');
+}
+
+export function sanitizePlayerName(value) {
+    if (typeof value !== 'string') return 'Player';
+    const sanitized = value.replace(/[\p{Cc}\p{Cf}]/gu, '').trim().slice(0, 15);
+    return sanitized || 'Player';
+}
+
+export function normalizeRoomId(value) {
+    if (typeof value !== 'string') return null;
+    const roomId = value.trim().toUpperCase();
+    return ROOM_ID_PATTERN.test(roomId) ? roomId : null;
+}
+
+export function isValidBrowserId(value) {
+    return typeof value === 'string' && BROWSER_ID_PATTERN.test(value);
+}
+
+export function isValidGameAction(action) {
+    if (!action || typeof action !== 'object' || !ALLOWED_ACTIONS.has(action.type)) return false;
+    if (!action.payload || typeof action.payload !== 'object') return false;
+
+    if (action.type === 'CHOOSE_TURN_ORDER') {
+        return action.payload.startingPlayer === 0 || action.payload.startingPlayer === 1;
+    }
+
+    return typeof action.payload.cardId === 'string'
+        && action.payload.cardId.length <= 40
+        && Number.isInteger(action.payload.colIndex)
+        && action.payload.colIndex >= 0
+        && action.payload.colIndex < 5
+        && typeof action.payload.isHidden === 'boolean';
+}
+
+const AI_PARAMETER_DEFAULTS = {
+    trip_preference: 1,
+    flush_preference: 1,
+    straight_preference: 1,
+    x_hand_focus: 1,
+    bonus_aggression: 1,
+    defensive_awareness: 0.8,
+    pure_preference: 1,
+    trips_in_hand_focus: 1,
+    row3_delay_focus: 1,
+    showdown_delay_focus: 1,
+    low_card_avoidance: 1,
+    turn_order_flexibility: 1,
+    weak_hand_avoidance: 1,
+    pair_in_hand_scale: 1,
+    queen_first_scale: 1,
+    bluff_bonus_scale: 1,
+    hiding_strategy: 0.3,
+    trash_bin_rush_scale: 1,
+};
+
+function clamp(value, minimum, maximum) {
+    return Math.min(Math.max(value, minimum), maximum);
+}
+
+export function calculateUpdatedAiParams(current, aiWon, isDraw = false) {
+    const updated = Object.fromEntries(Object.entries(AI_PARAMETER_DEFAULTS).map(([key, fallback]) => {
+        const value = Number(current?.[key]);
+        return [key, Number.isFinite(value) ? value : fallback];
+    }));
+
+    if (aiWon && !isDraw) {
+        for (const key of ['trip_preference', 'flush_preference', 'straight_preference', 'bonus_aggression']) {
+            updated[key] *= 1.015;
+        }
+        for (const key of ['pure_preference', 'trips_in_hand_focus', 'row3_delay_focus', 'showdown_delay_focus', 'low_card_avoidance', 'turn_order_flexibility']) {
+            updated[key] *= 1.012;
+        }
+        updated.weak_hand_avoidance *= 0.988;
+        updated.pair_in_hand_scale *= 1.012;
+        updated.queen_first_scale *= 1.012;
+        updated.bluff_bonus_scale *= 1.012;
+        updated.hiding_strategy *= 1.01;
+        updated.trash_bin_rush_scale *= 1.015;
+    } else if (!isDraw) {
+        const candidates = [
+            'trip_preference', 'flush_preference', 'straight_preference', 'bonus_aggression',
+            'pure_preference', 'trips_in_hand_focus', 'row3_delay_focus',
+            'showdown_delay_focus', 'low_card_avoidance', 'turn_order_flexibility',
+        ].sort((left, right) => updated[left] - updated[right]);
+        updated[candidates[0]] *= 1.04;
+        updated[candidates.at(-1)] *= 0.985;
+        updated.defensive_awareness *= 1.02;
+        updated.low_card_avoidance *= 1.02;
+        updated.weak_hand_avoidance *= 1.025;
+        updated.pair_in_hand_scale *= 0.99;
+        updated.queen_first_scale *= 0.99;
+        updated.bluff_bonus_scale *= 1.015;
+        updated.hiding_strategy *= 0.99;
+        updated.trash_bin_rush_scale *= 0.99;
+    }
+
+    const ranges = {
+        trip_preference: [0.4, 2], flush_preference: [0.4, 2], straight_preference: [0.4, 2],
+        x_hand_focus: [0.4, 2], bonus_aggression: [0.4, 2.5], defensive_awareness: [0.4, 1.5],
+        pure_preference: [0.3, 2], trips_in_hand_focus: [0.4, 2], row3_delay_focus: [0.4, 2],
+        showdown_delay_focus: [0.4, 2], low_card_avoidance: [0.4, 2], turn_order_flexibility: [0.4, 2],
+        weak_hand_avoidance: [0.5, 3], pair_in_hand_scale: [0.3, 2.5], queen_first_scale: [0.3, 2.5],
+        bluff_bonus_scale: [0.5, 3], hiding_strategy: [0.1, 0.6], trash_bin_rush_scale: [0.3, 3],
+    };
+    for (const [key, [minimum, maximum]] of Object.entries(ranges)) {
+        updated[key] = clamp(updated[key], minimum, maximum);
+    }
+
+    return {
+        ...updated,
+        total_games: Math.max(0, Number(current?.total_games) || 0) + 1,
+        ai_wins: Math.max(0, Number(current?.ai_wins) || 0) + (aiWon && !isDraw ? 1 : 0),
+        updated_at: new Date().toISOString(),
+    };
+}

@@ -1,760 +1,661 @@
 import express from 'express';
-import { createServer } from 'http';
+import { createServer } from 'node:http';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Server } from 'socket.io';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import crypto from 'crypto';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-const server = createServer(app);
-
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../dist')));
-
 import supabase from './db.js';
+import {
+    calculateUpdatedAiParams,
+    createDeck,
+    generateRoomId,
+    generateSessionToken,
+    isValidBrowserId,
+    isValidGameAction,
+    normalizeRoomId,
+    randomPlayerIndex,
+    rollDice,
+    sanitizePlayerName,
+    shuffleDeck,
+} from './game-utils.js';
 
-// Health check endpoint (Used by cron-job.org or UptimeRobot to keep Render and Supabase alive)
-app.get('/api/health', async (req, res) => {
+const directory = path.dirname(fileURLToPath(import.meta.url));
+const app = express();
+const httpServer = createServer(app);
+const port = Number.parseInt(process.env.PORT || '3001', 10);
+const defaultOrigins = [
+    'https://xy-poker.pages.dev',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:4173',
+];
+const allowedOrigins = new Set([
+    ...defaultOrigins,
+    ...(process.env.ALLOWED_ORIGINS || '').split(',').map(origin => origin.trim()).filter(Boolean),
+]);
+
+app.disable('x-powered-by');
+app.use((request, response, next) => {
+    response.setHeader('X-Content-Type-Options', 'nosniff');
+    response.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    response.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    if (request.secure) response.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
+});
+app.use(express.static(path.join(directory, '../dist'), {
+    etag: true,
+    maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0,
+}));
+
+app.get('/api/health', async (_request, response) => {
     try {
-        // Ping Supabase to prevent the 7-day auto-pause on free tier
-        await supabase.from('players').select('id').limit(1);
-        res.status(200).json({ status: 'ok', message: 'Backend and Supabase are alive' });
+        const { error } = await supabase.from('players').select('id').limit(1);
+        if (error) throw error;
+        response.status(200).json({ status: 'ok' });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: 'Supabase ping failed' });
+        console.error('Health check failed:', error);
+        response.status(503).json({ status: 'error' });
     }
 });
 
-const io = new Server(server, {
+const io = new Server(httpServer, {
     cors: {
-        origin: ["https://xy-poker.pages.dev", "http://localhost:5173", "http://localhost:4173"],
-        methods: ["GET", "POST"]
-    }
+        origin(origin, callback) {
+            callback(null, !origin || allowedOrigins.has(origin));
+        },
+        methods: ['GET', 'POST'],
+    },
+    maxHttpBufferSize: 100_000,
+    pingTimeout: 20_000,
+    pingInterval: 25_000,
 });
 
-// Store room state: { [roomId]: { players: [socketId1, socketId2], gameState: ... } }
-// For simplicity, we just track players in room.
-const rooms = {};
+const rooms = new Map();
+const games = new Map();
+const matchmakingQueue = [];
+const recentStatUpdates = new Map();
+const recentAiUpdates = new Map();
 
-// Matchmaking queue: stores roomId of rooms waiting for second player
-
-// Elo Rating Constants
-const K_FACTOR = 32;
-
-function calculateEloChange(playerRating, opponentRating, actualScore) {
-    // actualScore: 1 (win), 0.5 (draw), 0 (loss)
-    const expectedScore = 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 400));
-    const change = Math.round(K_FACTOR * (actualScore - expectedScore));
-    return change;
+function acknowledge(callback, payload) {
+    if (typeof callback === 'function') callback(payload);
 }
 
-// ... (existing code for quickMatchQueue)
-// We need to fetch player data when joining queue
-const matchmakingQueue = []; // This was already here, but the new code implies a 'quickMatchQueue'
+function getUniqueRoomId() {
+    let roomId = generateRoomId();
+    while (rooms.has(roomId)) roomId = generateRoomId();
+    return roomId;
+}
 
-// Helper to get or create player
-// Helper to get or create player with Account Linking
+function getRoomForSocket(socket, rawRoomId) {
+    const roomId = normalizeRoomId(rawRoomId);
+    const room = roomId ? rooms.get(roomId) : null;
+    if (!room || !room.players.some(player => player.id === socket.id)) return null;
+    return { roomId, room };
+}
+
+function isAuthorizedUser(socket, userId) {
+    return !userId || socket.data.userId === userId;
+}
+
+function removeRoomFromQueue(roomId) {
+    let index = matchmakingQueue.indexOf(roomId);
+    while (index !== -1) {
+        matchmakingQueue.splice(index, 1);
+        index = matchmakingQueue.indexOf(roomId);
+    }
+}
+
+function removeSocketFromRoom(socket, rawRoomId, notify = true) {
+    const membership = getRoomForSocket(socket, rawRoomId);
+    if (!membership) return false;
+
+    const { roomId, room } = membership;
+    room.players = room.players.filter(player => player.id !== socket.id);
+    socket.leave(roomId);
+    if (notify) socket.to(roomId).emit('player_left');
+    removeRoomFromQueue(roomId);
+
+    const gameStarted = games.has(roomId);
+    if (room.players.length === 0 || gameStarted) {
+        rooms.delete(roomId);
+        games.delete(roomId);
+        for (const player of room.players) io.sockets.sockets.get(player.id)?.leave(roomId);
+    } else {
+        rooms.set(roomId, room);
+    }
+    return true;
+}
+
 async function getOrCreatePlayer(browserId, userId) {
-    // 1. If userId is provided, try to find by User ID first (Primary Identity)
     if (userId) {
-        const { data: userPlayer } = await supabase
-            .from('players')
-            .select('*')
-            .eq('id', userId)
-            .single();
-
-        if (userPlayer) return userPlayer;
+        const { data, error } = await supabase.from('players').select('*').eq('id', userId).maybeSingle();
+        if (error) throw error;
+        if (data) return data;
     }
 
-    // 2. Fallback: Find by Browser ID (Device Identity)
-    const { data: browserPlayer } = await supabase
+    if (!isValidBrowserId(browserId)) throw new Error('Invalid browser ID');
+    const { data: browserPlayer, error: browserError } = await supabase
         .from('players')
         .select('*')
         .eq('browser_id', browserId)
-        .single();
-
-    // 3. Account Linking: DISABLED (Cannot update PK 'id' to link guest to auth user easily)
-    // if (userId && browserPlayer && !browserPlayer.user_id) { ... }
-
-    // 4. Return browser player if found (and not linked above)
+        .maybeSingle();
+    if (browserError) throw browserError;
     if (browserPlayer) return browserPlayer;
 
-    // 5. Create NEW player
-    // If logged in, create with user_id. Else, just browser_id.
-    const newPlayerData = {
-        browser_id: browserId,
-        rating: 1500,
-        ...(userId ? { id: userId } : {})
-    };
-
-    const { data: newPlayer, error: createError } = await supabase
+    const { data, error } = await supabase
         .from('players')
-        .insert([newPlayerData])
+        .insert({ browser_id: browserId, rating: 1500, ...(userId ? { id: userId } : {}) })
         .select()
         .single();
-
-    if (createError) {
-        console.error('Error creating player:', createError);
-        return null; // Should handle gracefully
-    }
-    return newPlayer;
+    if (error) throw error;
+    return data;
 }
 
-// --- Deck Utilities (Server Side) ---
-const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
-const RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-
-function createDeck() {
-    const deck = [];
-    for (const suit of SUITS) {
-        for (const rank of RANKS) {
-            deck.push({
-                suit,
-                rank,
-                id: `${suit}-${rank}`,
-            });
-        }
-    }
-    return deck;
+function toRoomPlayer(socket, player, playerName) {
+    return {
+        id: socket.id,
+        name: sanitizePlayerName(playerName),
+        browserId: player.browser_id,
+        dbId: player.id,
+        rating: Number(player.rating) || 1500,
+        isPremium: Boolean(player.is_premium),
+    };
 }
 
-function shuffleDeck(deck) {
-    const newDeck = [...deck];
-    for (let i = newDeck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
-    }
-    return newDeck;
+function startGame(roomId, room) {
+    if (room.players.length !== 2) return;
+    const [p1, p2] = room.players;
+    const isRanked = Boolean(room.isQuickMatch);
+    const startingPlayer = randomPlayerIndex();
+    const initialDeck = shuffleDeck(createDeck());
+
+    games.set(roomId, {
+        isRanked,
+        processed: false,
+        processing: false,
+        p1DbId: p1.dbId,
+        p2DbId: p2.dbId,
+        p1SocketId: p1.id,
+        choiceOwnerIndex: startingPlayer,
+        currentPlayerIndex: null,
+        placementCount: 0,
+        playerPlacementCounts: [0, 0],
+        columnCounts: [Array(5).fill(0), Array(5).fill(0)],
+        hiddenColumnCounts: [Array(5).fill(0), Array(5).fill(0)],
+        hiddenTotals: [0, 0],
+        hands: [
+            new Set(initialDeck.slice(0, 4).map(card => card.id)),
+            new Set(initialDeck.slice(4, 8).map(card => card.id)),
+        ],
+        remainingDeck: initialDeck.slice(8),
+    });
+
+    io.to(roomId).emit('game_start', {
+        roomId,
+        p1Name: p1.name,
+        p2Name: p2.name,
+        p1Rating: p1.rating,
+        p2Rating: p2.rating,
+        p1Id: p1.id,
+        p2Id: p2.id,
+        initialDice: rollDice(),
+        initialDeck,
+        startingPlayer,
+        p1IsPremium: p1.isPremium,
+        p2IsPremium: p2.isPremium,
+        isRanked,
+    });
 }
 
-// New structure for quick match queue, using sockets directly
-const quickMatchQueue = [];
-const games = {}; // To store game-specific data for quick matches
+function drawServerCard(game, playerIndex) {
+    const card = game.remainingDeck.shift();
+    if (card) game.hands[playerIndex].add(card.id);
+}
+
+function validateAndApplyGameAction(socket, membership, action) {
+    const game = games.get(membership.roomId);
+    if (!game) return false;
+
+    if (action.type === 'CHOOSE_TURN_ORDER') {
+        const chooser = membership.room.players[game.choiceOwnerIndex];
+        if (game.currentPlayerIndex !== null || chooser?.id !== socket.id) return false;
+        game.currentPlayerIndex = action.payload.startingPlayer;
+        return true;
+    }
+
+    if (game.currentPlayerIndex === null || game.placementCount >= 30) return false;
+    const playerIndex = membership.room.players.findIndex(player => player.id === socket.id);
+    if (playerIndex !== game.currentPlayerIndex) return false;
+
+    const { cardId, colIndex, isHidden } = action.payload;
+    if (!game.hands[playerIndex].has(cardId) || game.columnCounts[playerIndex][colIndex] >= 3) return false;
+    if (isHidden && (game.hiddenTotals[playerIndex] >= 3 || game.hiddenColumnCounts[playerIndex][colIndex] >= 2)) {
+        return false;
+    }
+
+    game.hands[playerIndex].delete(cardId);
+    game.columnCounts[playerIndex][colIndex] += 1;
+    game.playerPlacementCounts[playerIndex] += 1;
+    game.placementCount += 1;
+    if (isHidden) {
+        game.hiddenTotals[playerIndex] += 1;
+        game.hiddenColumnCounts[playerIndex][colIndex] += 1;
+    }
+
+    if (game.columnCounts[playerIndex][colIndex] === 3
+        && game.columnCounts[playerIndex === 0 ? 1 : 0][colIndex] < 3) {
+        drawServerCard(game, playerIndex);
+    }
+    drawServerCard(game, playerIndex);
+
+    let nextPlayerIndex = playerIndex === 0 ? 1 : 0;
+    if (game.playerPlacementCounts[nextPlayerIndex] >= 15 && game.playerPlacementCounts[playerIndex] < 15) {
+        nextPlayerIndex = playerIndex;
+    }
+    game.currentPlayerIndex = nextPlayerIndex;
+    return true;
+}
+
+async function processRankedResult(roomId, winner) {
+    const room = rooms.get(roomId);
+    const game = games.get(roomId);
+    if (!room || room.players.length !== 2 || !game?.isRanked || game.processed || game.processing) return false;
+    if (!['p1', 'p2', 'draw'].includes(winner)) return false;
+
+    game.processing = true;
+    try {
+        const { data, error } = await supabase.rpc('record_ranked_result', {
+            p_player_one: game.p1DbId,
+            p_player_two: game.p2DbId,
+            p_winner: winner,
+        });
+        if (error) throw error;
+        const result = Array.isArray(data) ? data[0] : data;
+        if (!result) throw new Error('Rating transaction returned no result');
+
+        room.players[0].rating = result.p1_new;
+        room.players[1].rating = result.p2_new;
+
+        game.processed = true;
+        io.to(roomId).emit('rating_update', {
+            p1: { old: result.p1_old, new: result.p1_new, change: result.p1_change },
+            p2: { old: result.p2_old, new: result.p2_new, change: result.p2_change },
+        });
+        return true;
+    } finally {
+        game.processing = false;
+    }
+}
 
 io.use(async (socket, next) => {
-    const token = socket.handshake.auth?.token;
-    if (token) {
-        const { data: { user }, error } = await supabase.auth.getUser(token);
-        if (user && !error) {
-            socket.user = user;
+    try {
+        const token = socket.handshake.auth?.token;
+        if (typeof token === 'string' && token.length > 0) {
+            const { data: { user }, error } = await supabase.auth.getUser(token);
+            if (error || !user) return next(new Error('Invalid authentication token'));
+            socket.data.userId = user.id;
         }
+        return next();
+    } catch {
+        return next(new Error('Authentication failed'));
     }
-    next();
 });
 
-io.on('connection', (socket) => {
-    console.log('New client connected:', socket.id);
+io.on('connection', socket => {
+    socket.data.rateWindowStartedAt = Date.now();
+    socket.data.rateEventCount = 0;
 
-    socket.on('join_quick_match', async ({ browserId, playerName, userId }) => {
-        // If no browserId provided (old client), generate a random temp one or fail
-        const bId = browserId || `temp_${socket.id}`;
-
-        if (userId && (!socket.user || socket.user.id !== userId)) {
-            socket.emit('error', 'Unauthorized: User ID mismatch');
-            return;
+    socket.use((_packet, next) => {
+        const now = Date.now();
+        if (now - socket.data.rateWindowStartedAt >= 10_000) {
+            socket.data.rateWindowStartedAt = now;
+            socket.data.rateEventCount = 0;
         }
-
-        // Fetch player data
-        const player = await getOrCreatePlayer(bId, userId);
-        if (!player) {
-            socket.emit('error', 'Failed to fetch player data');
-            return;
-        }
-
-        socket.browserId = player.browser_id; // Use canonical DB Browser ID for updates
-        socket.rating = player.rating;
-        socket.playerName = playerName || `Player (R:${player.rating})`; // Store name
-
-        // Add to queue
-        quickMatchQueue.push(socket);
-        socket.emit('quick_match_joined', { rating: player.rating });
-        console.log(`User ${socket.id} (${socket.playerName}) joined quick match queue. Queue size: ${quickMatchQueue.length}`);
-
-        // Check for match
-        if (quickMatchQueue.length >= 2) {
-            // Simple matchmaking: just take next 2
-            // In future: find closest rating
-            const p1 = quickMatchQueue.shift();
-            const p2 = quickMatchQueue.shift();
-
-            if (!p1 || !p2) return; // safety
-
-            const roomId = `room_${Date.now()}_${crypto.randomUUID()}`;
-            p1.join(roomId);
-            p2.join(roomId);
-
-            p1.data = { roomId, role: 'host', opponentId: p2.id };
-            p2.data = { roomId, role: 'guest', opponentId: p1.id };
-
-            // Initialize game state (REMOVED default rating, will effectively be handled in game logic if needed, but here we just manage room)
-            games[roomId] = {
-                gameState: {
-                    p1Rating: p1.rating,
-                    p2Rating: p2.rating,
-                    p1BrowserId: p1.browserId,
-                    p2BrowserId: p2.browserId
-                }
-            };
-
-            const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
-            const initialDeck = shuffleDeck(createDeck());
-            const startingPlayer = Math.floor(Math.random() * 2);
-
-            io.to(roomId).emit('game_start', {
-                roomId,
-                p1Name: p1.playerName,
-                p2Name: p2.playerName,
-                p1Rating: p1.rating,
-                p2Rating: p2.rating,
-                p1Id: p1.id,
-                p2Id: p2.id,
-                initialDice,
-                initialDeck,
-                startingPlayer,
-                p1IsPremium: !!p1.data.isPremium,
-                p2IsPremium: !!p2.data.isPremium,
-                isRanked: true // Quick Match is Ranked
-            });
-        }
+        socket.data.rateEventCount += 1;
+        if (socket.data.rateEventCount > 100) return next(new Error('Rate limit exceeded'));
+        return next();
     });
 
-    socket.on('get_player_data', async ({ browserId, userId }) => {
-        const player = await getOrCreatePlayer(browserId || `temp_${socket.id}`, userId);
-        if (player) {
-            socket.emit('player_data', { rating: player.rating });
-        }
-    });
-
-    socket.on('deduct_coins', async ({ amount, browserId, userId }, callback) => {
-        if (userId && (!socket.user || socket.user.id !== userId)) {
-            if (callback) callback({ success: false, error: 'Unauthorized' });
-            return;
-        }
-
-        const player = await getOrCreatePlayer(browserId, userId);
-        if (!player || player.coins < amount) {
-            if (callback) callback({ success: false, error: 'Insufficient coins or player not found' });
-            return;
-        }
-
-        const newBalance = player.coins - amount;
-        
-        // Use service_role to update (server has service_role)
-        await supabase.from('players').update({ coins: newBalance }).eq('id', player.id);
-
-        if (callback) callback({ success: true, newBalance });
-    });
-
-    socket.on('update_player_stats', async ({ userId, updates }, callback) => {
-        if (!userId || !updates) return;
-        
-        // Ensure user can only update their own stats, or ensure it's a valid local game report.
-        if (!socket.user || socket.user.id !== userId) {
-            if (callback) callback({ success: false, error: 'Unauthorized' });
-            return;
-        }
-
-        // Use service_role to update the DB securely.
-        await supabase.from('players').update(updates).eq('id', userId);
-        if (callback) callback({ success: true });
-    });
-
-    // Listen for game end to update ratings
-    // We need a trusted way to know game ended.
-    // Currently clients emit 'action'.
-    // We'll rely on a specific 'report_result' event or hook into action relay?
-    // Let's modify 'action' handler to check for game end state?
-    // Or add a new event 'game_over_report' sent by Host?
-
-    socket.on('report_game_end', async ({ roomId, winner, p1Score, p2Score }) => {
-        // Only process if sent by Host to avoid double processing
-        // (Or handle idempotency)
-        const room = games[roomId];
-        if (!room || room.processed) return;
-
-        if (socket.id !== room.gameState.p1SocketId) return; // Trust Host only for now
-
-        room.processed = true; // prevent double update
-
-        const p1Rating = room.gameState.p1Rating;
-        const p2Rating = room.gameState.p2Rating;
-
-        // Determine actual score for P1
-        // p1 wins = 1, p2 wins = 0, draw = 0.5
-        let p1Actual = 0.5;
-        if (winner === 'p1') p1Actual = 1;
-        if (winner === 'p2') p1Actual = 0;
-
-        const p2Actual = 1 - p1Actual;
-
-        const p1Change = calculateEloChange(p1Rating, p2Rating, p1Actual);
-        const p2Change = calculateEloChange(p2Rating, p1Rating, p2Actual);
-
-        const newP1Rating = p1Rating + p1Change;
-        const newP2Rating = p2Rating + p2Change;
-
-        console.log(`Game Over ${roomId}: P1 (${p1Rating} -> ${newP1Rating}), P2 (${p2Rating} -> ${newP2Rating})`);
-
-        // Update DB
-        if (room.gameState.p1DbId) {
-            await supabase.from('players').update({ rating: newP1Rating }).eq('id', room.gameState.p1DbId);
-        } else {
-            await supabase.from('players').update({ rating: newP1Rating }).eq('browser_id', room.gameState.p1BrowserId);
-        }
-
-        if (room.gameState.p2DbId) {
-            await supabase.from('players').update({ rating: newP2Rating }).eq('id', room.gameState.p2DbId);
-        } else {
-            await supabase.from('players').update({ rating: newP2Rating }).eq('browser_id', room.gameState.p2BrowserId);
-        }
-
-        // Emit updates to room
-        io.to(roomId).emit('rating_update', {
-            p1: { old: p1Rating, new: newP1Rating, change: p1Change },
-            p2: { old: p2Rating, new: newP2Rating, change: p2Change }
-        });
-
-        // Cleanup room after delay
-        setTimeout(() => {
-            delete games[roomId];
-        }, 5000);
-    });
-
-    // ... existing action handlers ...
-
-
-// Helper to generate a 4-character random uppercase alphanumeric room ID (avoiding O, 0, I, 1)
-function generateRoomId() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let result = '';
-    for (let i = 0; i < 4; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-}
-
-function generateUniqueRoomId() {
-    let id;
-    do {
-        id = generateRoomId();
-    } while (rooms[id]);
-    return id;
-}
-
-    socket.on('create_room', async ({ playerName, browserId, userId }, callback) => {
-        const roomId = generateUniqueRoomId();
-
-        if (userId && (!socket.user || socket.user.id !== userId)) {
-            if (callback) callback({ success: false, error: 'Unauthorized' });
-            return;
-        }
-
-        // Fetch player data for rating
-        const player = await getOrCreatePlayer(browserId, userId);
-        const rating = player ? player.rating : 1500;
-
-        rooms[roomId] = {
-            players: [{
-                id: socket.id,
-                name: playerName || 'Player 1',
-                browserId: player ? player.browser_id : browserId, // Use player's browser_id, or original if player not found
-                userId: player ? player.user_id : userId, // Use player's user_id, or original if player not found
-                rating: rating,
-                isPremium: !!player?.is_premium
-            }]
-        };
-        socket.join(roomId);
-        callback({ roomId });
-        console.log(`Room ${roomId} created by ${socket.id} (Rating: ${rating})`);
-    });
-
-    socket.on('join_room', async ({ roomId, playerName, browserId, userId }, callback) => {
-        if (userId && (!socket.user || socket.user.id !== userId)) {
-            if (callback) callback({ success: false, error: 'Unauthorized' });
-            return;
-        }
-        
+    socket.on('get_player_data', async ({ browserId, userId } = {}) => {
         try {
-            const room = rooms[roomId];
-            if (room && room.players.length < 2) {
-                // Fetch player data
-                const player = await getOrCreatePlayer(browserId, userId);
-                const rating = player ? player.rating : 1500;
-
-                const guestPlayer = {
-                    id: socket.id,
-                    name: playerName || 'Player 2',
-                    browserId: browserId,
-                    userId: userId,
-                    rating: rating,
-                    isPremium: !!player?.is_premium
-                };
-                room.players.push(guestPlayer);
-                await socket.join(roomId);
-
-                // Send opponent name to guest
-                const hostPlayer = room.players[0];
-                const hostName = hostPlayer.name;
-                callback({ success: true, opponentName: hostName });
-
-                // Notify host that P2 joined with their name
-                io.to(hostPlayer.id).emit('player_joined', { playerId: socket.id, playerName: guestPlayer.name });
-                console.log(`User ${socket.id} joined room ${roomId}`);
-
-                // AUTO-START GAME for Room Match
-                console.log(`Room ${roomId} is full, auto-starting game...`);
-
-                // Initialize game state tracking
-                games[roomId] = {
-                    gameState: {
-                        p1Rating: hostPlayer.rating,
-                        p2Rating: guestPlayer.rating,
-                        p1BrowserId: hostPlayer.browserId,
-                        p2BrowserId: guestPlayer.browserId,
-                        p1DbId: hostPlayer.userId,
-                        p2DbId: guestPlayer.userId,
-                        p1SocketId: hostPlayer.id,
-                        p2SocketId: guestPlayer.id
-                    }
-                };
-
-                const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
-                const initialDeck = shuffleDeck(createDeck());
-                const startingPlayer = Math.floor(Math.random() * 2);
-
-                io.to(roomId).emit('game_start', {
-                    roomId,
-                    p1Name: hostPlayer.name,
-                    p2Name: guestPlayer.name,
-                    p1Rating: hostPlayer.rating,
-                    p2Rating: guestPlayer.rating,
-                    p1Id: hostPlayer.id,
-                    p2Id: guestPlayer.id,
-                    initialDice,
-                    initialDeck,
-                    startingPlayer,
-                    p1IsPremium: !!hostPlayer.isPremium,
-                    p2IsPremium: !!guestPlayer.isPremium,
-                    isRanked: false // Room matches are unranked
-                });
-
-            } else {
-                callback({ success: false, message: 'Room not found or full' });
-            }
+            if (!isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
+            const player = await getOrCreatePlayer(browserId, userId);
+            socket.emit('player_data', { rating: Number(player.rating) || 1500 });
         } catch (error) {
-            console.error('Error in join_room:', error);
-            callback({ success: false, message: 'Internal server error' });
+            console.error('Unable to fetch player data:', error);
+            socket.emit('player_data_error', { message: 'Unable to fetch player data' });
         }
     });
 
-    socket.on('quick_match', async ({ playerName, browserId, userId }, callback) => {
-        if (userId && (!socket.user || socket.user.id !== userId)) {
-            if (callback) callback({ success: false, error: 'Unauthorized' });
-            return;
+    socket.on('update_username', async ({ username } = {}, callback) => {
+        try {
+            const userId = socket.data.userId;
+            if (!userId) throw new Error('Authentication required');
+            const safeUsername = sanitizePlayerName(username);
+            const { error } = await supabase.from('players').update({ username: safeUsername }).eq('id', userId);
+            if (error) throw error;
+            acknowledge(callback, { success: true, username: safeUsername });
+        } catch (error) {
+            console.error('Unable to update username:', error);
+            acknowledge(callback, { success: false, error: 'Unable to update username' });
         }
-        // Authenticate / Fetch Data
-        const bId = browserId || `temp_${socket.id}`;
-        const player = await getOrCreatePlayer(bId, userId);
+    });
 
-        if (!player) {
-            // Fallback if DB fails? Or Error?
-            // Let's fallback to temp to allow play even if DB is down, but rating won't save.
-            // But user complaining about rating, so...
-            // For now assume DB works.
-        }
-
-        const rating = player ? player.rating : 1500;
-
-        // Store on socket
-        socket.browserId = bId;
-        socket.rating = rating;
-        socket.playerName = playerName || `Player`;
-        socket.dbId = player ? player.id : null; // Store DB PK
-
-        // Check if there's a room waiting for a player
-        if (matchmakingQueue.length > 0) {
-            // Join the first available room
-            const roomId = matchmakingQueue.shift();
-            const room = rooms[roomId];
-
-            if (room && room.players.length === 1) {
-                const p1 = room.players[0]; // Host
-                const hostName = p1.name;
-                const guestName = socket.playerName;
-
-                // Add Guest to Room
-                room.players.push({
-                    id: socket.id,
-                    name: guestName,
-                    name: guestName,
-                    browserId: socket.browserId,
-                    rating: socket.rating,
-                    dbId: socket.dbId
-                });
-                socket.join(roomId);
-                socket.data.role = 'guest'; // Explicitly set role on socket
-                callback({ success: true, roomId, role: 'guest', opponentName: hostName });
-
-                // Notify both players with opponent names and auto-start
-                io.to(p1.id).emit('opponent_joined', { opponentName: guestName });
-                io.to(socket.id).emit('opponent_joined', { opponentName: hostName });
-
-                // Auto-start game for quick match
-                // Initialize game state for tracking
-                games[roomId] = {
-                    gameState: {
-                        p1Rating: p1.rating,
-                        p2Rating: socket.rating,
-                        p1BrowserId: p1.browserId,
-                        p2BrowserId: socket.browserId,
-                        p1DbId: p1.dbId,
-                        p2DbId: socket.dbId,
-                        p1SocketId: p1.id,
-                        p2SocketId: socket.id
-                    }
-                };
-
-                const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
-                const initialDeck = shuffleDeck(createDeck());
-
-                io.to(roomId).emit('game_start', {
-                    roomId,
-                    p1Name: hostName,
-                    p2Name: guestName,
-                    p1Rating: p1.rating,
-                    p2Rating: socket.rating,
-                    initialDice, // Send synchronized dice
-                    initialDeck, // Send synchronized deck
-                    p1Id: p1.id,
-                    p2Id: socket.id,
-                    isRanked: true // Flag as ranked for rating updates,
-                    // Note: p1.data.isPremium was incorrect as p1 is not the socket here.
-                    // We need to store 'isPremium' in the room player object if we want it here.
-                    // But we don't have it on the player object yet.
-                    // For now, let's omit or fix later. The UI handles missing prem flag gracefully?
-                    // Actually, let's add isPremium to player object in room.
-                });
-
-                console.log(`Quick match: User ${socket.id} (${guestName}) joined ${p1.id} (${hostName}) in room ${roomId}, game auto-starting`);
-            } else {
-                // Room became invalid, create new one
-                matchmakingQueue.length = 0; // Clear invalid queue
-                createMatchmakingRoom(socket, socket.playerName, socket.browserId, socket.rating, callback);
+    socket.on('submit_contact', async ({ category, contactInfo, deviceInfo, message } = {}, callback) => {
+        try {
+            if (!['request', 'bug', 'other'].includes(category)) throw new Error('Invalid category');
+            if (typeof message !== 'string' || message.trim().length < 1 || message.trim().length > 2_000) {
+                throw new Error('Invalid message');
             }
-        } else {
-            // No rooms waiting, create new one
-            createMatchmakingRoom(socket, socket.playerName, socket.browserId, socket.rating, callback);
-        }
-    });
+            if (typeof contactInfo !== 'string' || contactInfo.length > 120) throw new Error('Invalid contact');
+            if (typeof deviceInfo !== 'string' || deviceInfo.length > 200) throw new Error('Invalid device info');
+            if (Date.now() - (socket.data.lastContactAt || 0) < 60_000) throw new Error('Contact rate limit exceeded');
 
-    function createMatchmakingRoom(socket, playerName, browserId, rating, callback) {
-        const roomId = generateUniqueRoomId();
-        rooms[roomId] = {
-            players: [{
-                id: socket.id,
-                name: playerName || 'Player 1',
-                browserId: browserId,
-                rating: rating
-            }],
-            isQuickMatch: true
-        };
-        socket.join(roomId);
-        matchmakingQueue.push(roomId);
-        socket.data.role = 'host'; // Explicitly set role on socket
-        callback({ success: true, roomId, role: 'host', waiting: true });
-        console.log(`Quick match room ${roomId} created by ${socket.id} (${playerName}), waiting for opponent`);
-    }
-
-    socket.on('cancel_matchmaking', ({ roomId }) => {
-        if (roomId && rooms[roomId]) {
-            // Remove player from room
-            const room = rooms[roomId];
-            const playerIndex = room.players.findIndex(p => p.id === socket.id);
-
-            if (playerIndex !== -1) {
-                room.players.splice(playerIndex, 1);
-                socket.leave(roomId);
-
-                // If room is empty, delete it and remove from queue
-                if (room.players.length === 0) {
-                    delete rooms[roomId];
-                    const queueIndex = matchmakingQueue.indexOf(roomId);
-                    if (queueIndex !== -1) {
-                        matchmakingQueue.splice(queueIndex, 1);
-                    }
-                    console.log(`Room ${roomId} cancelled and deleted`);
-                } else {
-                    // Notify remaining player
-                    io.to(roomId).emit('player_left');
-                    console.log(`Player ${socket.id} cancelled matchmaking in room ${roomId}`);
-                }
-            }
-        }
-    });
-
-    socket.on('surrender', async ({ roomId }) => {
-        if (roomId && rooms[roomId]) {
-            // Determine winner (opponent of surrendering player)
-            const room = rooms[roomId];
-            const surrenderIndex = room.players.findIndex(p => p.id === socket.id);
-
-            if (surrenderIndex !== -1) {
-                const winnerIndex = surrenderIndex === 0 ? 1 : 0;
-                const winner = winnerIndex === 0 ? 'p1' : 'p2';
-
-                // Process Rating Update if game exists (Quick Match)
-                const game = games[roomId];
-                if (game && !game.processed) {
-                    game.processed = true;
-
-                    const p1Rating = game.gameState.p1Rating;
-                    const p2Rating = game.gameState.p2Rating;
-
-                    // Surrender is a loss for surrenderer
-                    let p1Actual = 0.5;
-                    if (winner === 'p1') p1Actual = 1;
-                    if (winner === 'p2') p1Actual = 0;
-
-                    const p2Actual = 1 - p1Actual;
-
-                    const p1Change = calculateEloChange(p1Rating, p2Rating, p1Actual);
-                    const p2Change = calculateEloChange(p2Rating, p1Rating, p2Actual);
-
-                    const newP1Rating = p1Rating + p1Change;
-                    const newP2Rating = p2Rating + p2Change;
-
-                    console.log(`Surrender in ${roomId}: P1 (${p1Rating} -> ${newP1Rating}), P2 (${p2Rating} -> ${newP2Rating})`);
-
-                    // Update DB
-                    try {
-                        if (game.gameState.p1DbId) {
-                            await supabase.from('players').update({ rating: newP1Rating }).eq('id', game.gameState.p1DbId);
-                        } else {
-                            await supabase.from('players').update({ rating: newP1Rating }).eq('browser_id', game.gameState.p1BrowserId);
-                        }
-
-                        if (game.gameState.p2DbId) {
-                            await supabase.from('players').update({ rating: newP2Rating }).eq('id', game.gameState.p2DbId);
-                        } else {
-                            await supabase.from('players').update({ rating: newP2Rating }).eq('browser_id', game.gameState.p2BrowserId);
-                        }
-
-                        // Emit updates to room
-                        io.to(roomId).emit('rating_update', {
-                            p1: { old: p1Rating, new: newP1Rating, change: p1Change },
-                            p2: { old: p2Rating, new: newP2Rating, change: p2Change }
-                        });
-                    } catch (err) {
-                        console.error('Error updating ratings on surrender:', err);
-                    }
-
-                    // Cleanup room after delay
-                    setTimeout(() => {
-                        delete games[roomId];
-                    }, 5000);
-                }
-
-                // Notify all players in room
-                io.to(roomId).emit('game_end_surrender', { winner, surrendererId: socket.id });
-                console.log(`Player ${socket.id} surrendered in room ${roomId}, winner: ${winner}`);
-            }
-        }
-    });
-
-    socket.on('game_action', ({ roomId, action }) => {
-        // Relay action to others in room
-        socket.to(roomId).emit('game_action', action);
-    });
-
-    socket.on('sync_state', ({ roomId, state }) => {
-        // Host sends initial state to Guest
-        socket.to(roomId).emit('sync_state', state);
-    });
-
-    socket.on('request_sync', ({ roomId }) => {
-        // Relay request to room so someone (Host) can send state
-        console.log(`Sync requested in room ${roomId} by ${socket.id}`);
-        io.to(roomId).emit('request_sync', { requesterId: socket.id });
-    });
-
-    socket.on('request_rematch', ({ roomId }) => {
-        // Relay to opponent
-        const room = rooms[roomId];
-        if (room) {
-            const player = room.players.find(p => p.id === socket.id);
-            const name = player ? player.name : 'Opponent';
-            socket.to(roomId).emit('rematch_requested', { requesterName: name });
-            console.log(`Rematch requested in room ${roomId} by ${name} (${socket.id})`);
-        }
-    });
-
-    socket.on('accept_rematch', ({ roomId }) => {
-        // Restart game for this room
-        const room = rooms[roomId];
-        if (room && room.players.length === 2) {
-            console.log(`Rematch accepted in room ${roomId}. Restarting game...`);
-
-            // Re-roll Dice and Deck
-            const initialDice = Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
-            const initialDeck = shuffleDeck(createDeck());
-
-            const p1 = room.players[0];
-            const p2 = room.players[1];
-
-            // Notify both to start new game
-            io.to(roomId).emit('game_start', {
-                roomId,
-                p1Name: p1.name,
-                p2Name: p2.name,
-                p1Rating: p1.rating,
-                p2Rating: p2.rating,
-                p1Id: p1.id,
-                p2Id: p2.id,
-                initialDice,
-                initialDeck,
-                isRanked: room.isQuickMatch // Preserve match type
+            const userContact = contactInfo.trim()
+                || (socket.data.userId ? `User:${socket.data.userId}` : 'Anonymous');
+            const body = deviceInfo.trim() ? `[Device: ${deviceInfo.trim()}]\n\n${message.trim()}` : message.trim();
+            const { error } = await supabase.from('contact_messages').insert({
+                category,
+                user_contact: userContact,
+                message: body,
             });
+            if (error) throw error;
+            socket.data.lastContactAt = Date.now();
+            acknowledge(callback, { success: true });
+        } catch (error) {
+            console.error('Unable to submit contact message:', error);
+            acknowledge(callback, { success: false, error: 'Unable to send message' });
         }
     });
 
-    socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
-        // Cleanup rooms...
-        for (const roomId in rooms) {
-            const room = rooms[roomId];
-            // Check if this socket is in the room (players are now objects with {id, name})
-            const playerIndex = room.players.findIndex(p => p.id === socket.id);
+    socket.on('start_local_game', (_payload, callback) => {
+        if (!socket.data.userId) return acknowledge(callback, { success: false, error: 'Authentication required' });
+        const token = generateSessionToken();
+        socket.data.localGame = {
+            token,
+            startedAt: Date.now(),
+            statsRecorded: false,
+            aiRecorded: false,
+        };
+        acknowledge(callback, { success: true, token });
+    });
 
-            if (playerIndex !== -1) {
-                // Remove the player
-                room.players.splice(playerIndex, 1);
+    socket.on('create_room', async ({ playerName, browserId, userId } = {}, callback) => {
+        try {
+            if (!isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
+            const player = await getOrCreatePlayer(browserId, userId);
+            const roomId = getUniqueRoomId();
+            const room = { players: [toRoomPlayer(socket, player, playerName)], isQuickMatch: false };
+            rooms.set(roomId, room);
+            await socket.join(roomId);
+            acknowledge(callback, { success: true, roomId, role: 'host' });
+        } catch (error) {
+            console.error('Unable to create room:', error);
+            acknowledge(callback, { success: false, message: 'Unable to create room' });
+        }
+    });
 
-                // Notify remaining players
-                io.to(roomId).emit('player_left');
+    socket.on('join_room', async ({ roomId: rawRoomId, playerName, browserId, userId } = {}, callback) => {
+        try {
+            if (!isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
+            const roomId = normalizeRoomId(rawRoomId);
+            const room = roomId ? rooms.get(roomId) : null;
+            if (!room || room.players.length !== 1 || room.players[0].id === socket.id) {
+                return acknowledge(callback, { success: false, message: 'Room not found or unavailable' });
+            }
 
-                console.log(`Player ${socket.id} left room ${roomId}, ${room.players.length} players remaining`);
+            const player = await getOrCreatePlayer(browserId, userId);
+            const guest = toRoomPlayer(socket, player, playerName);
+            room.players.push(guest);
+            await socket.join(roomId);
+            const host = room.players[0];
+            acknowledge(callback, { success: true, roomId, role: 'guest', opponentName: host.name });
+            io.to(host.id).emit('player_joined', { roomId, role: 'host', opponentName: guest.name });
+            startGame(roomId, room);
+        } catch (error) {
+            console.error('Unable to join room:', error);
+            acknowledge(callback, { success: false, message: 'Unable to join room' });
+        }
+    });
 
-                // If room is empty, delete it
-                if (room.players.length === 0) {
-                    delete rooms[roomId];
+    socket.on('quick_match', async ({ playerName, browserId, userId } = {}, callback) => {
+        try {
+            if (!isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
+            const player = await getOrCreatePlayer(browserId, userId);
+            const roomPlayer = toRoomPlayer(socket, player, playerName);
 
-                    // Remove from matchmaking queue if present
-                    const queueIndex = matchmakingQueue.indexOf(roomId);
-                    if (queueIndex !== -1) {
-                        matchmakingQueue.splice(queueIndex, 1);
-                        console.log(`Empty room ${roomId} removed from matchmaking queue`);
-                    }
-
-                    console.log(`Empty room ${roomId} deleted`);
+            let waitingRoomId = null;
+            let waitingRoom = null;
+            while (matchmakingQueue.length > 0 && !waitingRoom) {
+                const candidateId = matchmakingQueue.shift();
+                const candidate = rooms.get(candidateId);
+                if (candidate?.isQuickMatch && candidate.players.length === 1 && candidate.players[0].id !== socket.id) {
+                    waitingRoomId = candidateId;
+                    waitingRoom = candidate;
                 }
+            }
+
+            if (waitingRoom && waitingRoomId) {
+                waitingRoom.players.push(roomPlayer);
+                await socket.join(waitingRoomId);
+                const host = waitingRoom.players[0];
+                acknowledge(callback, { success: true, roomId: waitingRoomId, role: 'guest', opponentName: host.name });
+                io.to(host.id).emit('opponent_joined', { name: roomPlayer.name });
+                startGame(waitingRoomId, waitingRoom);
+                return;
+            }
+
+            const roomId = getUniqueRoomId();
+            rooms.set(roomId, { players: [roomPlayer], isQuickMatch: true });
+            matchmakingQueue.push(roomId);
+            await socket.join(roomId);
+            acknowledge(callback, { success: true, roomId, role: 'host', waiting: true });
+        } catch (error) {
+            console.error('Unable to join quick match:', error);
+            acknowledge(callback, { success: false, message: 'Unable to start matchmaking' });
+        }
+    });
+
+    socket.on('cancel_matchmaking', ({ roomId } = {}) => {
+        removeSocketFromRoom(socket, roomId, false);
+    });
+
+    socket.on('leave_room', ({ roomId } = {}) => {
+        removeSocketFromRoom(socket, roomId);
+    });
+
+    socket.on('deduct_coins', async ({ amount, browserId, userId } = {}, callback) => {
+        try {
+            if (!userId || !isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
+            if (!Number.isInteger(amount) || amount < 100 || amount > 1000) throw new Error('Invalid amount');
+            const player = await getOrCreatePlayer(browserId, userId);
+            const currentCoins = Number(player.coins) || 0;
+            if (currentCoins < amount) return acknowledge(callback, { success: false, error: 'Insufficient coins' });
+
+            const newBalance = currentCoins - amount;
+            const { data, error } = await supabase
+                .from('players')
+                .update({ coins: newBalance })
+                .eq('id', player.id)
+                .eq('coins', currentCoins)
+                .select('coins')
+                .maybeSingle();
+            if (error) throw error;
+            if (!data) return acknowledge(callback, { success: false, error: 'Balance changed; retry' });
+            acknowledge(callback, { success: true, newBalance: data.coins });
+        } catch (error) {
+            console.error('Unable to deduct coins:', error);
+            acknowledge(callback, { success: false, error: 'Unable to deduct coins' });
+        }
+    });
+
+    socket.on('update_player_stats', async ({ userId, result, gameToken } = {}, callback) => {
+        try {
+            if (!userId || !isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
+            if (!['win', 'loss', 'draw'].includes(result)) throw new Error('Invalid result');
+            const localGame = socket.data.localGame;
+            if (!localGame || localGame.token !== gameToken || localGame.statsRecorded) throw new Error('Invalid game session');
+            if (Date.now() - localGame.startedAt < 30_000) throw new Error('Game finished too quickly');
+            if (Date.now() - (recentStatUpdates.get(userId) || 0) < 30_000) throw new Error('Stats update too frequent');
+
+            const reward = result === 'win' ? 30 : result === 'draw' ? 20 : 10;
+            const { data, error } = await supabase.rpc('record_player_result', {
+                p_player_id: userId,
+                p_result: result,
+                p_reward: reward,
+            });
+            if (error) throw error;
+            const stats = Array.isArray(data) ? data[0] : data;
+            if (!stats) throw new Error('Stats transaction returned no result');
+            localGame.statsRecorded = true;
+            recentStatUpdates.set(userId, Date.now());
+            acknowledge(callback, {
+                success: true,
+                newLevel: stats.new_level,
+                leveledUp: stats.new_level > stats.old_level,
+                coinsEarned: reward,
+            });
+        } catch (error) {
+            console.error('Unable to update player stats:', error);
+            acknowledge(callback, { success: false, error: 'Unable to update stats' });
+        }
+    });
+
+    socket.on('update_ai_parameters', async ({ aiWon, isDraw = false, gameToken } = {}, callback) => {
+        try {
+            const userId = socket.data.userId;
+            if (!userId) throw new Error('Authentication required');
+            if (typeof aiWon !== 'boolean' || typeof isDraw !== 'boolean') throw new Error('Invalid result');
+            const localGame = socket.data.localGame;
+            if (!localGame || localGame.token !== gameToken || localGame.aiRecorded) throw new Error('Invalid game session');
+            if (Date.now() - localGame.startedAt < 30_000) throw new Error('Game finished too quickly');
+            if (Date.now() - (recentAiUpdates.get(userId) || 0) < 30_000) throw new Error('Update too frequent');
+
+            const { data: current, error: fetchError } = await supabase
+                .from('ai_global_parameters')
+                .select('*')
+                .eq('id', 1)
+                .single();
+            if (fetchError) throw fetchError;
+
+            const updates = calculateUpdatedAiParams(current, aiWon, isDraw);
+            const { error } = await supabase.from('ai_global_parameters').update(updates).eq('id', 1);
+            if (error) throw error;
+            localGame.aiRecorded = true;
+            recentAiUpdates.set(userId, Date.now());
+            acknowledge(callback, { success: true });
+        } catch (error) {
+            console.error('Unable to update AI parameters:', error);
+            acknowledge(callback, { success: false, error: 'Unable to update AI parameters' });
+        }
+    });
+
+    socket.on('report_game_end', async ({ roomId: rawRoomId, winner } = {}) => {
+        const membership = getRoomForSocket(socket, rawRoomId);
+        if (!membership) return;
+        const game = games.get(membership.roomId);
+        if (socket.id !== game?.p1SocketId || game.placementCount !== 30) return;
+        try {
+            await processRankedResult(membership.roomId, winner);
+        } catch (error) {
+            console.error('Unable to update ratings:', error);
+        }
+    });
+
+    socket.on('surrender', async ({ roomId: rawRoomId } = {}) => {
+        const membership = getRoomForSocket(socket, rawRoomId);
+        if (!membership || membership.room.players.length !== 2) return;
+        const surrenderIndex = membership.room.players.findIndex(player => player.id === socket.id);
+        const winner = surrenderIndex === 0 ? 'p2' : 'p1';
+        try {
+            await processRankedResult(membership.roomId, winner);
+        } catch (error) {
+            console.error('Unable to update surrender rating:', error);
+        }
+        io.to(membership.roomId).emit('game_end_surrender', { winner, surrendererId: socket.id });
+    });
+
+    socket.on('game_action', ({ roomId: rawRoomId, action } = {}) => {
+        const membership = getRoomForSocket(socket, rawRoomId);
+        if (!membership || !isValidGameAction(action)) return;
+        if (!validateAndApplyGameAction(socket, membership, action)) return;
+        socket.to(membership.roomId).emit('game_action', action);
+    });
+
+    socket.on('sync_state', ({ roomId: rawRoomId, state } = {}) => {
+        const membership = getRoomForSocket(socket, rawRoomId);
+        if (!membership || membership.room.players[0]?.id !== socket.id) return;
+        if (!state || typeof state !== 'object' || JSON.stringify(state).length > 75_000) return;
+        const game = games.get(membership.roomId);
+        if (!game?.syncRequesterId || Date.now() - game.syncRequestedAt > 5_000) return;
+        if (state.turnCount !== game.placementCount + 1) return;
+        io.to(game.syncRequesterId).emit('sync_state', state);
+        game.syncRequesterId = null;
+    });
+
+    socket.on('request_sync', ({ roomId: rawRoomId } = {}) => {
+        const membership = getRoomForSocket(socket, rawRoomId);
+        if (!membership || membership.room.players[0]?.id === socket.id) return;
+        const game = games.get(membership.roomId);
+        if (!game) return;
+        game.syncRequesterId = socket.id;
+        game.syncRequestedAt = Date.now();
+        socket.to(membership.roomId).emit('request_sync', { requesterId: socket.id });
+    });
+
+    socket.on('request_rematch', ({ roomId: rawRoomId } = {}) => {
+        const membership = getRoomForSocket(socket, rawRoomId);
+        if (!membership || membership.room.players.length !== 2) return;
+        const player = membership.room.players.find(candidate => candidate.id === socket.id);
+        membership.room.rematchRequestedBy = socket.id;
+        socket.to(membership.roomId).emit('rematch_requested', { requesterName: player?.name || 'Opponent' });
+    });
+
+    socket.on('accept_rematch', ({ roomId: rawRoomId } = {}) => {
+        const membership = getRoomForSocket(socket, rawRoomId);
+        if (!membership || membership.room.players.length !== 2) return;
+        if (!membership.room.rematchRequestedBy || membership.room.rematchRequestedBy === socket.id) return;
+        membership.room.rematchRequestedBy = null;
+        startGame(membership.roomId, membership.room);
+    });
+
+    socket.on('disconnect', async () => {
+        const queuedIndex = matchmakingQueue.findIndex(roomId => rooms.get(roomId)?.players[0]?.id === socket.id);
+        if (queuedIndex !== -1) {
+            const [roomId] = matchmakingQueue.splice(queuedIndex, 1);
+            rooms.delete(roomId);
+        }
+
+        for (const [roomId, room] of [...rooms]) {
+            const disconnectedIndex = room.players.findIndex(player => player.id === socket.id);
+            if (disconnectedIndex === -1) continue;
+
+            const game = games.get(roomId);
+            if (game?.isRanked && room.players.length === 2 && !game.processed) {
+                const winner = disconnectedIndex === 0 ? 'p2' : 'p1';
+                try {
+                    await processRankedResult(roomId, winner);
+                } catch (error) {
+                    console.error('Unable to update disconnect rating:', error);
+                }
+                socket.to(roomId).emit('game_end_surrender', { winner, surrendererId: socket.id });
+                removeSocketFromRoom(socket, roomId, false);
+            } else {
+                removeSocketFromRoom(socket, roomId);
             }
         }
     });
 });
 
-const PORT = 3001;
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+httpServer.listen(port, () => {
+    console.log(`XY Poker server listening on port ${port}`);
 });
+
+function shutdown(signal) {
+    console.log(`Received ${signal}; closing server`);
+    io.close(() => httpServer.close(() => process.exit(0)));
+    setTimeout(() => process.exit(1), 10_000).unref();
+}
+
+process.once('SIGTERM', () => shutdown('SIGTERM'));
+process.once('SIGINT', () => shutdown('SIGINT'));

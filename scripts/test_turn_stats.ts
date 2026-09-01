@@ -1,12 +1,14 @@
-import { INITIAL_GAME_STATE, gameReducer, GameState } from '../src/logic/game';
-import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS, AiParams } from '../src/logic/ai';
-import * as fs from 'fs';
+import { INITIAL_GAME_STATE, gameReducer } from '../src/logic/game';
+import type { GameState } from '../src/logic/types';
+import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS } from '../src/logic/ai';
+import type { AiParams } from '../src/logic/ai';
+import * as fs from 'node:fs';
 
 let champParams: AiParams = { ...DEFAULT_AI_PARAMS };
 try {
     const data = fs.readFileSync('champion.json', 'utf8');
     champParams = JSON.parse(data);
-} catch (e) {
+} catch {
     console.log("No champion.json found, using defaults");
 }
 
@@ -53,7 +55,6 @@ for (let i = 0; i < NUM_GAMES; i++) {
             payload: { cardId: move.cardId, colIndex: move.colIndex, isHidden: move.isHidden } 
         });
 
-        state = gameReducer(state, { type: 'END_TURN' });
     }
 
     if (state.phase !== 'ended') {

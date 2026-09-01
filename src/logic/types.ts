@@ -53,7 +53,7 @@ export interface PlayerState {
     score: number;
     hiddenCardsCount: number; // Max 3
     bonusesClaimed: number; // Count of bonuses won
-    isDeveloper?: boolean;
+    isPremium?: boolean;
 }
 
 export type Phase = 'setup' | 'turn_selection' | 'playing' | 'scoring' | 'ended';
@@ -64,7 +64,7 @@ export interface GameState {
     phase: Phase;
     deck: Card[];
     turnCount: number;
-    winner: string | null; // Player ID
+    winner: 'p1' | 'p2' | 'draw' | null;
 }
 
 export type DiceSkin = 'white' | 'red' | 'blue' | 'green' | 'yellow' | 'purple' | 'black' | 'pink' | 'orange' | 'teal' | 'silver' | 'gold';

@@ -1,6 +1,7 @@
 import type { GameState, Card, Rank, YHandResult } from './types';
-import { getLearningData } from './aiLearning';
+import { getLearningData, type LearningData } from './aiLearning';
 import { evaluateYHand, evaluateXHand } from './evaluation';
+import type { GlobalAiParams } from '../supabase';
 
 export interface AiParams {
     tripsInHandBonus: number;
@@ -34,31 +35,16 @@ export const DEFAULT_AI_PARAMS: AiParams = {
 // ==========================================
 // Collaborative Learning Overrides
 // ==========================================
-let activeGlobalParams: any = null;
+let activeGlobalParams: GlobalAiParams | null = null;
 
-export function setGlobalAiParams(params: any): void {
-    console.log('[AI Engine] Hydrating decision engine with 12-parameter Global Collaborative AI weights:', params);
+export function setGlobalAiParams(params: GlobalAiParams): void {
     activeGlobalParams = params;
 }
 
-function getActiveLearningData(): any {
+function getActiveLearningData(): LearningData {
     const localLearning = getLearningData();
     if (!activeGlobalParams) {
-        return {
-            ...localLearning,
-            purePreference: 0.700,
-            tripsInHandFocus: 1.350,
-            row3DelayFocus: 1.400,
-            showdownDelayFocus: 1.200,
-            lowCardAvoidance: 1.500,
-            turnOrderFlexibility: 1.100,
-            weakHandAvoidance: 1.0,
-            pairInHandScale: 1.0,
-            queenFirstScale: 1.0,
-            bluffBonusScale: 1.0,
-            hidingStrategy: 0.3,
-            trashBinRushScale: 1.0,
-        };
+        return localLearning;
     }
     // Map database snake_case parameters to game's camelCase variables
     return {
@@ -252,7 +238,7 @@ function expectimax(
     isMaxNode: boolean,
     remainingDeck: Card[],
     params: AiParams,
-    learning: any,
+    learning: LearningData,
     startTime: number,
     timeoutMs: number
 ): number {
@@ -347,7 +333,7 @@ function evaluateStaticBoard(
     opponent: GameState['players'][0],
     remainingDeck: Card[],
     params: AiParams,
-    learning: any
+    learning: LearningData
 ): number {
     let score = player.score - opponent.score;
     const isLosingBadly = (opponent.score - player.score) > 15;
@@ -431,7 +417,7 @@ function calculateColEV(
     remainingDeck: Card[],
     isLosingBadly: boolean,
     params: AiParams,
-    learning: any
+    learning: LearningData
 ): number {
     const myMissing = myCol.filter(c => c === null).length;
     const oppMissing = oppCol.filter(c => c === null).length;
@@ -530,7 +516,7 @@ function compareAndScore(
     myRes: YHandResult,
     oppRes: YHandResult,
     diceValue: number,
-    learning: any,
+    learning: LearningData,
     isLosingBadly: boolean
 ): number {
     let weWin = false;
@@ -551,7 +537,7 @@ function compareAndScore(
     return 0;
 }
 
-function calculateHandValue(cards: Card[], diceValue: number, learning: any, isLosingBadly: boolean): number {
+function calculateHandValue(cards: Card[], diceValue: number, learning: LearningData, isLosingBadly: boolean): number {
     const result = evaluateYHand(cards, diceValue);
     let baseValue = Math.pow(result.rankValue, 2) * 10 * diceValue;
 
@@ -579,7 +565,7 @@ function calculateRootMoveBonus(
     emptySlotIdx: number,
     turnCount: number,
     params: AiParams,
-    learning: any
+    learning: LearningData
 ): number {
     let bonus = 0;
     const colDice = player.dice[colIndex];
@@ -813,7 +799,7 @@ function shouldHideCard(
     turnCount: number,
     opponent: GameState['players'][0],
     params: AiParams,
-    learning: any
+    learning: LearningData
 ): boolean {
     if (player.hiddenCardsCount >= 3) return false;
 

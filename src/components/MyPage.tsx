@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
-import { DevBadge } from './DevBadge';
+import { socket } from '../logic/online';
+import { PremiumBadge } from './PremiumBadge';
 import './MyPage.css';
 
 interface MyPageProps {
@@ -45,69 +46,65 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
     const [editNameValue, setEditNameValue] = useState('');
 
     useEffect(() => {
-        if (isOpen && userId) {
-            fetchData();
-        }
-    }, [isOpen, userId, activeTab]);
+        if (!isOpen || !userId) return;
 
-    useEffect(() => {
-        if (profile?.username) {
-            setEditNameValue(profile.username);
-        }
-    }, [profile]);
+        let cancelled = false;
 
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            // 1. Fetch Profile
-            // Always re-fetch profile on open to get latest stats
-            const { data: pData } = await supabase
-                .from('players')
-                .select('*')
-                .eq('id', userId)
-                .single();
-            if (pData) {
-                setProfile(pData);
-                if (pData.username) setEditNameValue(pData.username);
-            }
-
-            // 2. Fetch Ranking
-            if (activeTab === 'ranking') {
-                const { data: lData } = await supabase
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const { data: rawProfile, error: profileError } = await supabase
                     .from('players')
-                    .select('id, rating, username')
-                    .order('rating', { ascending: false })
-                    .limit(50);
+                    .select('id, rating, xp, level, games_played, wins, username')
+                    .eq('id', userId)
+                    .single();
 
-                // Map to displayable format
-                const mapped = (lData || []).map((entry: any) => ({
-                    rating: entry.rating,
-                    username: entry.username || `User ${entry.id.slice(0, 4)}`,
-                    id: entry.id
-                }));
-                setLeaderboard(mapped);
+                if (profileError) throw profileError;
+                const nextProfile = rawProfile as Profile;
+
+                if (!cancelled) {
+                    setProfile(nextProfile);
+                    setEditNameValue(nextProfile.username ?? '');
+                }
+
+                if (activeTab === 'ranking') {
+                    const { data, error } = await supabase
+                        .from('players')
+                        .select('id, rating, username')
+                        .order('rating', { ascending: false })
+                        .limit(50);
+
+                    if (error) throw error;
+                    const entries = (data ?? []) as LeaderboardEntry[];
+                    if (!cancelled) {
+                        setLeaderboard(entries.map(entry => ({
+                            ...entry,
+                            username: entry.username || `User ${entry.id.slice(0, 4)}`,
+                        })));
+                    }
+                }
+
+                if (activeTab === 'achievements') {
+                    const { data, error } = await supabase
+                        .from('achievements')
+                        .select('id, achievement_type, unlocked_at')
+                        .eq('player_id', nextProfile.id);
+
+                    if (error) throw error;
+                    if (!cancelled) setAchievements((data ?? []) as Achievement[]);
+                }
+            } catch (err) {
+                console.error('Error fetching MyPage data:', err);
+            } finally {
+                if (!cancelled) setLoading(false);
             }
+        };
 
-            // 3. Fetch Achievements
-            if (activeTab === 'achievements' && profile) {
-                // Assuming we query the new 'achievements' table linked to player_id (which is pData.id)
-                // But wait, key is player_id, which is the internal ID, not necessarily user_id. 
-                // We need the player ID from the profile first.
-                // if (profile) { // This check is now part of the outer if condition
-                const { data: aData } = await supabase
-                    .from('achievements')
-                    .select('*')
-                    .eq('player_id', profile.id);
-                setAchievements(aData || []);
-                // }
-            }
-
-        } catch (err) {
-            console.error('Error fetching MyPage data:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+        void fetchData();
+        return () => {
+            cancelled = true;
+        };
+    }, [activeTab, isOpen, userId]);
 
     const handleUpdateName = async () => {
         if (!profile || !editNameValue.trim()) return;
@@ -117,16 +114,17 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
         }
 
         try {
-            const { error } = await supabase
-                .from('players')
-                .update({ username: editNameValue.trim() })
-                .eq('id', profile.id);
+            const response = await new Promise<{ success: boolean; username?: string; error?: string }>((resolve, reject) => {
+                socket.timeout(3_000).emit('update_username', { username: editNameValue }, (error: Error | null, result?: { success: boolean; username?: string; error?: string }) => {
+                    if (error) reject(error);
+                    else resolve(result ?? { success: false, error: 'No response' });
+                });
+            });
+            if (!response.success || !response.username) throw new Error(response.error || 'Update rejected');
 
-            if (error) throw error;
-
-            setProfile({ ...profile, username: editNameValue.trim() });
+            setProfile({ ...profile, username: response.username });
             setIsEditingName(false);
-            if (onNameChange) onNameChange(editNameValue.trim());
+            onNameChange?.(response.username);
         } catch (err) {
             console.error("Error updating name:", err);
             alert("Failed to update name.");
@@ -146,7 +144,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
     return (
         <div className="mypage-overlay">
             <div className="mypage-content">
-                <button className="close-btn" onClick={onClose}>&times;</button>
+                <button type="button" className="close-btn" onClick={onClose} aria-label="Close">&times;</button>
 
                 <div className="mypage-header">
                     <div className="header-left">
@@ -161,16 +159,16 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                                             onChange={(e) => setEditNameValue(e.target.value)}
                                             placeholder="Enter Name"
                                         />
-                                        <button onClick={handleUpdateName} className="save-btn">Save</button>
-                                        <button onClick={() => setIsEditingName(false)} className="cancel-btn">Cancel</button>
+                                        <button type="button" onClick={handleUpdateName} className="save-btn">Save</button>
+                                        <button type="button" onClick={() => setIsEditingName(false)} className="cancel-btn">Cancel</button>
                                     </div>
                                 ) : (
                                     <div className="name-display-row">
                                         <span className="username">
-                                            {isPremium && <DevBadge />}
+                                            {isPremium && <PremiumBadge />}
                                             {profile.username || 'No Name'}
                                         </span>
-                                        <button onClick={() => setIsEditingName(true)} className="edit-icon-btn">✎</button>
+                                        <button type="button" onClick={() => setIsEditingName(true)} className="edit-icon-btn" aria-label="Edit name">Edit</button>
                                     </div>
                                 )}
                             </div>
@@ -184,9 +182,9 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                 </div>
 
                 <div className="mypage-tabs">
-                    <button className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>Stats & Progress</button>
-                    <button className={activeTab === 'ranking' ? 'active' : ''} onClick={() => setActiveTab('ranking')}>World Ranking</button>
-                    <button className={activeTab === 'achievements' ? 'active' : ''} onClick={() => setActiveTab('achievements')}>Achievements</button>
+                    <button type="button" className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>Stats & Progress</button>
+                    <button type="button" className={activeTab === 'ranking' ? 'active' : ''} onClick={() => setActiveTab('ranking')}>World Ranking</button>
+                    <button type="button" className={activeTab === 'achievements' ? 'active' : ''} onClick={() => setActiveTab('achievements')}>Achievements</button>
                 </div>
 
                 <div className="mypage-body">
@@ -248,7 +246,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                             ) : (
                                 achievements.map(a => (
                                     <div className="achievement-item" key={a.id}>
-                                        <div className="icon">🏆</div>
+                                        <div className="icon">Award</div>
                                         <div className="info">
                                             <div className="title">{getReadableAchievement(a.achievement_type)}</div>
                                             <div className="date">{new Date(a.unlocked_at).toLocaleDateString()}</div>
@@ -262,6 +260,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
 
                 <div className="mypage-footer" style={{ marginTop: 'auto', display: 'flex', gap: '10px', width: '100%' }}>
                     <button
+                        type="button"
                         className="btn-sign-out"
                         onClick={() => {
                             supabase.auth.signOut();
@@ -281,7 +280,7 @@ export const MyPage: React.FC<MyPageProps> = ({ isOpen, onClose, userId, isPremi
                     >
                         Sign Out
                     </button>
-                    <button className="btn-close" onClick={onClose} style={{ flex: 1, margin: 0 }}>Close</button>
+                    <button type="button" className="btn-close" onClick={onClose} style={{ flex: 1, margin: 0 }}>Close</button>
                 </div>
             </div>
         </div>

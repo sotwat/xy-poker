@@ -36,17 +36,17 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
     return (
         <div className="rules-overlay" onClick={onClose}>
             <div className="rules-content" onClick={e => e.stopPropagation()}>
-                <button className="close-btn" onClick={onClose}>×</button>
-                <h2>How to Play "XY Poker"</h2>
+                <button type="button" className="close-btn" onClick={onClose} aria-label="Close">×</button>
+                <h2>How to play</h2>
 
                 <div className="rules-scroll-area">
                     <section>
-                        <h3>🏆 Goal</h3>
+                        <h3>Goal</h3>
                         <p>Build the strongest <strong>Poker Hands (Rows)</strong> and match <strong>Dice Values (Columns)</strong> to score points.</p>
                     </section>
 
                     <section>
-                        <h3>🎲 Game Flow</h3>
+                        <h3>Game flow</h3>
                         <ul>
                             <li><strong>Turns:</strong> Players take turns placing <strong>1 Card</strong> from their hand onto the <strong>5x3 Grid</strong>.</li>
                             <li><strong>X-Axis (Rows):</strong> The bottom row (Row 3, 5 cards) forms a standard Poker Hand. Stronger hand wins bonus points.</li>
@@ -55,7 +55,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                     </section>
 
                     <section>
-                        <h3>✨ Pure vs Normal</h3>
+                        <h3>Pure vs normal</h3>
                         <p>There are two types of 3-card hands in the Y-Axis:</p>
                         <ul>
                             <li><strong>Pure (Stronger):</strong>
@@ -69,7 +69,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                     </section>
 
                     <section>
-                        <h3>🏆 Hand Rankings (Strongest to Weakest)</h3>
+                        <h3>Hand rankings</h3>
                         <div className="rankings-grid">
                             {/* X-AXIS HANDS */}
                             <div className="ranking-column">
@@ -172,7 +172,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                         </div>
                     </section>
                 </div>
-                <button className="rules-close-btn" onClick={onClose}>Close</button>
+                <button type="button" className="rules-close-btn" onClick={onClose}>Close</button>
             </div>
         </div >
     );

@@ -2,10 +2,14 @@
     "name": "xy-poker-server",
     "version": "1.0.0",
     "type": "module",
+    "engines": {
+        "node": ">=20.19.0"
+    },
     "description": "Socket.IO server for XY Poker online multiplayer",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js"
+        "start": "node index.js",
+        "test": "node --test *.test.js"
     },
     "dependencies": {
         "@supabase/supabase-js": "^2.86.2",

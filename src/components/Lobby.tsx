@@ -30,6 +30,17 @@ export const Lobby: React.FC<LobbyProps> = ({
     onBack
 }) => {
     const [joinId, setJoinId] = useState('');
+    const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+
+    const copyRoomId = async () => {
+        if (!roomId) return;
+        try {
+            await navigator.clipboard.writeText(roomId);
+            setCopyStatus('copied');
+        } catch {
+            setCopyStatus('failed');
+        }
+    };
 
     if (!isConnected) {
         return (
@@ -45,9 +56,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 </div>
                 <div className="waiting-room glass-panel">
                     <div className="loading-spinner"></div>
-                    <p style={{ marginTop: '1.5rem', color: '#ff3366', fontWeight: 'bold' }}>
-                        Connecting to game server...
-                    </p>
+                    <p>Connecting to game server...</p>
                 </div>
             </div>
         );
@@ -55,26 +64,25 @@ export const Lobby: React.FC<LobbyProps> = ({
 
     return (
         <div className="lobby-container online-lobby">
-            {/* Top Status Bar with back navigation */}
             <div className="lobby-top-bar-online">
-                <button className="back-btn" onClick={() => { playClickSound(); if (onBack) onBack(); }}>
-                    ← Back
+                <button type="button" className="back-btn" onClick={() => { playClickSound(); if (onBack) onBack(); }}>
+                    <span aria-hidden="true">←</span> Back
                 </button>
                 <div className="player-meta-info-online">
                     <span className="player-display-name">{playerName || 'Guest'}</span>
-                    <span className="player-rating-badge">🏆 {rating || 1500}</span>
+                    <span className="player-rating-badge">Rating {rating ?? 1500}</span>
                 </div>
             </div>
 
-
-
-            {/* Lobby UI Main content panel */}
             <div className="online-lobby-content glass-panel">
-                <h3 className="section-title">Online Multiplayer</h3>
+                <div className="online-lobby-heading">
+                    <span className="home-kicker">MULTIPLAYER</span>
+                    <h3 className="section-title">Online match</h3>
+                    <p>Play ranked or invite someone with a four-character room code.</p>
+                </div>
 
-                {/* Edit player name row */}
                 <div className="lobby-field-row">
-                    <label htmlFor="playerName">Name: </label>
+                    <label htmlFor="playerName">Display name</label>
                     <input
                         id="playerName"
                         type="text"
@@ -85,28 +93,30 @@ export const Lobby: React.FC<LobbyProps> = ({
                     />
                 </div>
 
-                {/* Ranked Match Action Button */}
                 <div className="action-card-primary">
                     <button 
+                        type="button"
                         className="quest-btn-primary" 
                         onClick={() => { playClickSound(); onQuickMatch(); }}
                     >
-                        <span className="quest-tag">RANKED BATTLE</span>
-                        <span className="quest-title">Quick Ranked Match</span>
+                        <span className="quest-tag">RANKED</span>
+                        <span className="quest-title">Find a match</span>
+                        <span className="quest-arrow" aria-hidden="true">→</span>
                     </button>
-                    <p className="hint-text">Find an opponent instantly based on rating.</p>
+                    <p className="hint-text">Matches use your current rating.</p>
                 </div>
 
                 <div className="divider-text">
-                    <span>OR CREATE/JOIN PRIVATE ROOM</span>
+                    <span>PRIVATE ROOM</span>
                 </div>
 
                 {!roomId ? (
                     <div className="room-actions-grid">
                         <div className="action-card-secondary">
                             <h4>Create Room</h4>
-                            <p className="card-desc">Create a private room and invite a friend.</p>
+                            <p className="card-desc">Get a code to share with a friend.</p>
                             <button 
+                                type="button"
                                 className="quest-btn-secondary" 
                                 onClick={() => { playClickSound(); onCreateRoom(); }}
                             >
@@ -116,16 +126,19 @@ export const Lobby: React.FC<LobbyProps> = ({
 
                         <div className="action-card-secondary">
                             <h4>Join Room</h4>
-                            <p className="card-desc">Enter 4-character ID</p>
+                            <p className="card-desc">Enter a four-character code.</p>
                             <input
                                 type="text"
                                 placeholder="Room ID"
                                 value={joinId}
-                                onChange={(e) => setJoinId(e.target.value)}
+                                onChange={(e) => setJoinId(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
                                 maxLength={4}
                                 className="room-id-input"
+                                autoComplete="off"
+                                inputMode="text"
                             />
                             <button
+                                type="button"
                                 className="quest-btn-secondary"
                                 onClick={() => { playClickSound(); onJoinRoom(joinId); }}
                                 disabled={joinId.length !== 4}
@@ -136,26 +149,26 @@ export const Lobby: React.FC<LobbyProps> = ({
                     </div>
                 ) : (
                     <div className="waiting-room-overlay">
-                        <h3>{playerRole === 'host' ? 'Host Room Created!' : 'Room Joined!'}</h3>
+                        <span className="status-pill">Room ready</span>
+                        <h3>{playerRole === 'host' ? 'Invite a player' : 'Connected'}</h3>
                         <div className="room-id-box">
-                            Room ID: <span className="id-num">{roomId}</span>
+                            <span className="room-id-label">Room code</span>
+                            <span className="id-num">{roomId}</span>
                             {playerRole === 'host' && (
                                 <button
+                                    type="button"
                                     className="copy-id-btn"
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(roomId);
-                                        alert('Room ID copied!');
-                                    }}
+                                    onClick={copyRoomId}
                                 >
-                                    📋 Copy
+                                    {copyStatus === 'copied' ? 'Copied' : copyStatus === 'failed' ? 'Try again' : 'Copy'}
                                 </button>
                             )}
                         </div>
-                        <p className="room-status-text">
+                        <p className="room-status-text" aria-live="polite">
                             {playerRole === 'host' ? 'Share this ID with a friend' : 'Connected! Waiting for host...'}
                         </p>
                         <div className="loading-spinner"></div>
-                        <button className="quest-btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
+                        <button type="button" className="quest-btn-cancel" onClick={() => { playClickSound(); onCancelMatchmaking(); }}>
                             Cancel
                         </button>
                     </div>

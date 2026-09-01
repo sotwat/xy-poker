@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     AVAILABLE_DICE_SKINS, AVAILABLE_CARD_SKINS, AVAILABLE_BOARD_SKINS,
     type DiceSkin, type CardSkin, type BoardSkin
@@ -8,7 +8,7 @@ import { playClickSound } from '../utils/sound';
 import './SkinStore.css';
 
 import { supabase } from '../supabase';
-import { DevBadge } from './DevBadge';
+import { PremiumBadge } from './PremiumBadge';
 import { socket } from '../logic/online';
 import { getBrowserId } from '../utils/identity';
 
@@ -41,6 +41,8 @@ import { GachaReveal } from './GachaReveal';
 
 type Tab = 'dice' | 'card' | 'board';
 type UnlockableItem = { type: 'dice' | 'card' | 'board', id: string };
+type PreviewProps = { id: string; color: string };
+type CoinDeductionResponse = { success: boolean; newBalance?: number; error?: string };
 
 const GACHA_COST_SINGLE = 100;
 const GACHA_COST_MULTI = 1000;
@@ -60,31 +62,31 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     const [showGachaReveal, setShowGachaReveal] = useState(false);
     const [isWatchingAd, setIsWatchingAd] = useState(false);
 
-    // Fetch coins on open
-    useEffect(() => {
-        if (isOpen) {
-            if (userId) {
-                fetchCoins();
-            } else {
-                const saved = localStorage.getItem('xypoker_guest_coins');
-                if (saved) setUserCoins(parseInt(saved, 10));
-            }
-        }
-    }, [isOpen, userId]);
-
-    const fetchCoins = async () => {
-        // setLoadingCoins(true);
+    const fetchCoins = useCallback(async () => {
+        if (!userId) return;
         const { data } = await supabase
             .from('players')
             .select('coins')
             .eq('id', userId)
-            // We need to resolve internal ID or query by user_id if that's what we have. 
-            // App passes user_id as 'userId' prop usually? No, let's allow it to fetch by user_id effectively.
             .single();
 
         if (data) setUserCoins(data.coins || 0);
-        // setLoadingCoins(false);
-    };
+    }, [userId]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        if (userId) {
+            const timer = window.setTimeout(() => void fetchCoins(), 0);
+            return () => window.clearTimeout(timer);
+        }
+
+        const saved = localStorage.getItem('xypoker_guest_coins');
+        const timer = window.setTimeout(() => {
+            setUserCoins(saved ? Number.parseInt(saved, 10) || 0 : 0);
+        }, 0);
+        return () => window.clearTimeout(timer);
+    }, [fetchCoins, isOpen, userId]);
 
     if (!isOpen) return null;
 
@@ -114,14 +116,15 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     const handleGacha = async (count: 1 | 10, isFree: boolean = false) => {
         // if (!userId) { ... }  <-- Removed check to allow guests
 
-        const cost = count === 1 ? GACHA_COST_SINGLE : GACHA_COST_MULTI;
+        const locked = getLockedItems();
+        const pullCount = Math.min(count, locked.length);
+        const cost = pullCount === 1 ? GACHA_COST_SINGLE : GACHA_COST_SINGLE * pullCount;
 
         if (!isFree && userCoins < cost) {
             alert(`Not enough coins! Need ${cost} coins.`);
             return;
         }
 
-        const locked = getLockedItems();
         if (locked.length === 0) {
             alert("All skins collected! You are amazing!");
             return;
@@ -132,12 +135,12 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         // Deduct Coins only if not free
         if (!isFree) {
             if (userId) {
-                const success = await new Promise((resolve) => {
-                    socket.emit('deduct_coins', { amount: cost, browserId: getBrowserId(), userId }, (res: any) => {
-                        resolve(res?.success);
+                const success = await new Promise<boolean>((resolve) => {
+                    const timeout = window.setTimeout(() => resolve(false), 5000);
+                    socket.emit('deduct_coins', { amount: cost, browserId: getBrowserId(), userId }, (res: CoinDeductionResponse) => {
+                        window.clearTimeout(timeout);
+                        resolve(res.success);
                     });
-                    // Fallback timeout in case server doesn't respond
-                    setTimeout(() => resolve(false), 5000);
                 });
                 if (!success) {
                     alert("Failed to deduct coins. Please try again or check connection.");
@@ -153,13 +156,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
             }
         }
 
-        // Pool ALL valid items (Excluding Defaults)
-        const defaults = ['white', 'classic', 'classic-green'];
-        let allItems: UnlockableItem[] = [
-            ...AVAILABLE_DICE_SKINS.filter(s => !defaults.includes(s.id)).map(s => ({ type: 'dice' as const, id: s.id })),
-            ...AVAILABLE_CARD_SKINS.filter(s => !defaults.includes(s.id)).map(s => ({ type: 'card' as const, id: s.id })),
-            ...AVAILABLE_BOARD_SKINS.filter(s => !defaults.includes(s.id)).map(s => ({ type: 'board' as const, id: s.id }))
-        ];
+        const allItems = [...locked];
 
         // Shuffle (Fisher-Yates) to ensure random unique selection
         for (let i = allItems.length - 1; i > 0; i--) {
@@ -171,7 +168,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         // If we want allow duplicates across user inventory but NOT in the single pull, 
         // we just take the first N from the shuffled list.
         // (Assuming pool size > 10, which it is: 12+12+12 = 36 - 3 = 33 items)
-        const results = allItems.slice(0, count);
+        const results = allItems.slice(0, pullCount);
 
         // Process Unlocks
         results.forEach(won => {
@@ -195,7 +192,8 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         }
 
         setIsWatchingAd(true);
-        window.open('https://otieu.com/4/10307496', '_blank'); // Ad Link
+        const adWindow = window.open('https://otieu.com/4/10307496', '_blank', 'noopener,noreferrer');
+        if (adWindow) adWindow.opener = null;
 
         setTimeout(async () => {
             setIsWatchingAd(false);
@@ -222,14 +220,14 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         let unlocked: string[] = [];
         let selected: string = '';
         let selectFn: (id: string) => void = () => { };
-        let PreviewComponent: any = null;
+        let PreviewComponent: React.ComponentType<PreviewProps>;
 
         if (activeTab === 'dice') {
             items = AVAILABLE_DICE_SKINS;
             unlocked = unlockedSkins;
             selected = selectedSkin;
             selectFn = onSelect as (id: string) => void;
-            PreviewComponent = ({ id }: { id: string }) => (
+            PreviewComponent = ({ id }: PreviewProps) => (
                 <Dice value={6} size="medium" skin={id as DiceSkin} />
             );
         } else if (activeTab === 'card') {
@@ -237,7 +235,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
             unlocked = unlockedCardSkins;
             selected = selectedCardSkin;
             selectFn = onSelectCard as (id: string) => void;
-            PreviewComponent = ({ id }: { id: string }) => (
+            PreviewComponent = ({ id }: PreviewProps) => (
                 <div className={`preview-card card-back-${id}`}>
                     <div className="card-back"></div>
                 </div>
@@ -247,7 +245,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
             unlocked = unlockedBoardSkins;
             selected = selectedBoardSkin;
             selectFn = onSelectBoard as (id: string) => void;
-            PreviewComponent = ({ id, color }: { id: string, color: string }) => (
+            PreviewComponent = ({ id, color }: PreviewProps) => (
                 <div className={`preview-board board-theme-${id}`} style={{ background: id === 'classic-green' ? undefined : color }}>
                     <div className="board-line"></div>
                 </div>
@@ -261,10 +259,13 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                     const isSelected = selected === item.id;
 
                     return (
-                        <div
+                        <button
+                            type="button"
                             key={item.id}
                             className={`skin-item ${isUnlocked ? 'unlocked' : 'locked'} ${isSelected ? 'selected' : ''}`}
                             onClick={() => handleSkinClick(item.id, isUnlocked, selectFn)}
+                            disabled={!isUnlocked}
+                            aria-pressed={isSelected}
                         >
                             <div className="skin-preview">
                                 <PreviewComponent id={item.id} color={item.color} />
@@ -272,7 +273,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                             <div className="skin-name">{item.name}</div>
                             {!isUnlocked && <div className="lock-icon">🔒</div>}
                             {isSelected && <div className="check-icon">✓</div>}
-                        </div>
+                        </button>
                     );
                 })}
             </div>
@@ -291,14 +292,14 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     return (
         <div className="skin-store-overlay">
             <div className="skin-store-modal">
-                <button className="btn-close-x" onClick={() => { playClickSound(); onClose(); }}>×</button>
+                <button type="button" className="btn-close-x" onClick={() => { playClickSound(); onClose(); }} aria-label="Close">×</button>
                 <div className="store-header">
                     <h2>Skin Shop</h2>
                     <div className="coin-balance">
                         <span className="coin-icon">🪙</span> {userCoins}
                         <div className="ad-box">
-                            <button className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
-                                {isWatchingAd ? "Watching..." : (isPremium ? <span><DevBadge /> Developer Free Gacha</span> : "📺 Watch Ad for Free Gacha")}
+                            <button type="button" className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
+                                {isWatchingAd ? "Watching..." : (isPremium ? <span><PremiumBadge /> Free draw</span> : "Watch ad for a free draw")}
                             </button>
                         </div>
                     </div>
@@ -309,25 +310,25 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
                 {/* Gacha Actions */}
                 <div className="gacha-actions">
-                    <div className="gacha-option" onClick={() => handleGacha(1)}>
+                    <button type="button" className="gacha-option" onClick={() => handleGacha(1)}>
                         <div className="gacha-label">Single Pull</div>
                         <div className="gacha-cost">🪙 {GACHA_COST_SINGLE}</div>
-                    </div>
-                    <div className="gacha-option special" onClick={() => handleGacha(10)}>
+                    </button>
+                    <button type="button" className="gacha-option special" onClick={() => handleGacha(10)}>
                         <div className="gacha-label">10x Pull</div>
                         <div className="gacha-cost">🪙 {GACHA_COST_MULTI}</div>
-                    </div>
+                    </button>
                 </div>
 
                 <div className="store-tabs">
-                    <button className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`} onClick={() => setActiveTab('dice')}>Dice</button>
-                    <button className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`} onClick={() => setActiveTab('card')}>Cards</button>
-                    <button className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>Boards</button>
+                    <button type="button" className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`} onClick={() => setActiveTab('dice')}>Dice</button>
+                    <button type="button" className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`} onClick={() => setActiveTab('card')}>Cards</button>
+                    <button type="button" className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>Boards</button>
                 </div>
 
                 {renderContent()}
 
-                <button className="btn-close" onClick={() => { playClickSound(); onClose(); }}>Close</button>
+                <button type="button" className="btn-close" onClick={() => { playClickSound(); onClose(); }}>Close</button>
             </div>
         </div>
     );

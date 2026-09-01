@@ -3,7 +3,6 @@ import './TurnTimer.css';
 
 interface TurnTimerProps {
     timeLeft: number;
-    totalTime: number;
     currentPlayerIndex: number; // 0 for P1 (Blue), 1 for P2 (Red)
     isMyTurn: boolean;
     onResync?: () => void;
@@ -18,10 +17,10 @@ export const TurnTimer: React.FC<TurnTimerProps> = ({ timeLeft, currentPlayerInd
                 {isMyTurn ? "Your Turn" : "Opponent's Turn"}
                 {!isMyTurn && onResync && (
                     <button
+                        type="button"
                         onClick={(e) => { e.stopPropagation(); onResync(); }}
                         className="resync-btn"
                         title="Sync Game State"
-                        style={{ marginLeft: '8px', padding: '2px 6px', fontSize: '0.7em', cursor: 'pointer', background: 'transparent', border: '1px solid currentColor', borderRadius: '4px', color: 'inherit' }}
                     >
                         ↻
                     </button>

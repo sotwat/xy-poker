@@ -1,49 +1,34 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Ensure script halts on error
-set -e
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$script_dir"
 
-echo "🚀 Starting Dual Deployment (Cloudflare & Render)..."
-
-# 0. 自動でバージョン番号を現在時刻（MMDDhhmm）に更新
-VERSION="v$(date '+%m%d%H%M')"
-echo "📌 Version: $VERSION"
-sed -i '' "s/v[0-9]\{8\}/$VERSION/g" src/App.tsx
-echo "✅ Version updated to $VERSION in src/App.tsx"
-
-# 1. 未コミットの変更をコミット（バージョン更新含む）
-if [[ -n $(git status -s) ]]; then
-    echo "⚠️  Uncommitted changes found."
-
-    # 引数 $1 をコミットメッセージとして使用。なければ自動生成
-    if [ -n "$1" ]; then
-        commit_msg="$VERSION $1"
-    else
-        commit_msg="$VERSION Deploy"
-    fi
-
-    git add .
-    git commit -m "$commit_msg"
-    echo "✅ Changes committed: $commit_msg"
-else
-    echo "ℹ️  No uncommitted changes. Proceeding with existing state."
+branch="$(git branch --show-current)"
+if [[ "$branch" != "main" ]]; then
+  echo "Deployment must run from main; current branch is ${branch:-detached}." >&2
+  exit 1
 fi
 
-# 2. Cloudflare Pages へデプロイ（Direct Upload）
-echo "-----------------------------------"
-echo "👉 Deploying to Cloudflare Pages..."
-echo "-----------------------------------"
-npm run build
-npx wrangler pages deploy dist --project-name xy-poker
+app_version="$(sed -nE 's/.*(v[0-9]{8}).*/\1/p' src/App.tsx | head -n 1)"
+readme_version="$(sed -nE 's/.*Current Version:.*`([0-9]{8})`.*/v\1/p' README.md | head -n 1)"
+if [[ -z "$app_version" || "$app_version" != "$readme_version" ]]; then
+  echo "App and README versions must match before deployment." >&2
+  exit 1
+fi
 
-# 3. Render へデプロイ（Git Push）
-echo "-----------------------------------"
-echo "👉 Deploying to Render (Triggering Git Push)..."
-echo "-----------------------------------"
+git diff --check
+npm run check
+
+if [[ -n "$(git status --short)" ]]; then
+  commit_message="$app_version ${1:-Release}"
+  git add --all
+  git commit -m "$commit_message"
+fi
+
+npx wrangler pages deploy dist --project-name xy-poker
 git push origin main
 
-echo "-----------------------------------"
-echo "✅ DUAL DEPLOYMENT COMPLETE! [$VERSION]"
-echo "Cloudflare: https://xy-poker.pages.dev (Instant)"
-echo "Render:     https://xy-poker.onrender.com (Wait ~2 mins)"
-echo "-----------------------------------"
+echo "Deployment complete: $app_version"
+echo "Cloudflare: https://xy-poker.pages.dev"
+echo "Render: https://xy-poker.onrender.com"

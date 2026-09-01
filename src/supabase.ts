@@ -1,37 +1,44 @@
 import { createClient } from '@supabase/supabase-js';
+import { socket } from './logic/online';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_KEY');
+}
 
-// ==========================================
-// Collaborative AI Learning Database APIs
-// ==========================================
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+    },
+});
 
 export interface GlobalAiParams {
+    id: number;
+    total_games: number;
+    ai_wins: number;
     trip_preference: number;
     flush_preference: number;
     straight_preference: number;
     x_hand_focus: number;
     bonus_aggression: number;
     defensive_awareness: number;
-    // strategy.md compliant heuristics
     pure_preference: number;
     trips_in_hand_focus: number;
     row3_delay_focus: number;
     showdown_delay_focus: number;
     low_card_avoidance: number;
     turn_order_flexibility: number;
-    // Weak hand avoidance scaler (auto-learned from global match outcomes)
     weak_hand_avoidance: number;
-    // Placement bonus scalers (auto-learned)
     pair_in_hand_scale: number;
     queen_first_scale: number;
     bluff_bonus_scale: number;
-    // Bluffing and rush tactics
     hiding_strategy: number;
     trash_bin_rush_scale: number;
+    updated_at: string;
 }
 
 export async function fetchGlobalAiParameters(): Promise<GlobalAiParams | null> {
@@ -41,143 +48,26 @@ export async function fetchGlobalAiParameters(): Promise<GlobalAiParams | null> 
             .select('*')
             .eq('id', 1)
             .single();
-        if (error) {
-            console.error('[Supabase] Error fetching global AI parameters:', error);
-            return null;
-        }
+        if (error) throw error;
         return data as GlobalAiParams;
-    } catch (e) {
-        console.error('[Supabase] Failed to fetch global AI parameters:', e);
+    } catch (error) {
+        console.error('Unable to fetch global AI parameters:', error);
         return null;
     }
 }
 
-export async function updateGlobalAiParameters(aiWon: boolean, isDraw: boolean = false): Promise<void> {
-    try {
-        const current = await fetchGlobalAiParameters();
-        if (!current) return;
-
-        const updated = { ...current } as any;
-        updated.total_games = (current as any).total_games + 1;
-
-        if (isDraw) {
-            // Draw: increment games played only
-        } else if (aiWon) {
-            updated.ai_wins = (current as any).ai_wins + 1;
-            // AI Won: Reinforce currently active tactics slightly
-            updated.trip_preference *= 1.015;
-            updated.flush_preference *= 1.015;
-            updated.straight_preference *= 1.015;
-            // x_hand_focus intentionally excluded: its effective value is dynamically
-            // computed per-game via inverse dice scaling (strategy.md §2), not win/loss
-            updated.bonus_aggression *= 1.015; // Now implemented: scales alignment boldness
-            updated.pure_preference *= 1.012;
-            updated.trips_in_hand_focus *= 1.012;
-            updated.row3_delay_focus *= 1.012;
-            updated.showdown_delay_focus *= 1.012;
-            updated.low_card_avoidance *= 1.012;
-            updated.turn_order_flexibility *= 1.012;
-            // AI won: slightly relax weak-hand avoidance (maybe being flexible helped)
-            updated.weak_hand_avoidance *= 0.988;
-            // Reinforce placement bonuses that helped win
-            updated.pair_in_hand_scale *= 1.012;
-            updated.queen_first_scale *= 1.012;
-            updated.bluff_bonus_scale *= 1.012;
-            // Reinforce rushing and hiding tactics
-            updated.hiding_strategy = Math.min(updated.hiding_strategy * 1.01, 0.6);
-            updated.trash_bin_rush_scale *= 1.015;
-        } else {
-            // AI Lost: Adjust heuristics. Shift away from weakest/strongest extremes
-            const strategies = [
-                { name: 'trip_preference', value: current.trip_preference },
-                { name: 'flush_preference', value: current.flush_preference },
-                { name: 'straight_preference', value: current.straight_preference },
-                // x_hand_focus excluded: governed by inverse dice scaling per game
-                { name: 'bonus_aggression', value: current.bonus_aggression },
-                { name: 'pure_preference', value: current.pure_preference },
-                { name: 'trips_in_hand_focus', value: current.trips_in_hand_focus },
-                { name: 'row3_delay_focus', value: current.row3_delay_focus },
-                { name: 'showdown_delay_focus', value: current.showdown_delay_focus },
-                { name: 'low_card_avoidance', value: current.low_card_avoidance },
-                { name: 'turn_order_flexibility', value: current.turn_order_flexibility },
-            ];
-            
-            strategies.sort((a, b) => a.value - b.value);
-            const weakest = strategies[0].name;
-            const strongest = strategies[strategies.length - 1].name;
-
-            updated[weakest] *= 1.04;      // Boost under-utilized tactics
-            updated[strongest] *= 0.985;   // Tone down over-relied extremes
-            
-            updated.defensive_awareness *= 1.02; // Boost defensive learning slightly on loss
-            updated.low_card_avoidance *= 1.02;   // Increase carefulness in placing cards
-            // AI lost: increase weak-hand avoidance (avoid bad hands more aggressively)
-            updated.weak_hand_avoidance *= 1.025;
-            // Adjust placement bonus scalers toward exploration
-            updated.pair_in_hand_scale *= 0.99;
-            updated.queen_first_scale *= 0.99;
-            updated.bluff_bonus_scale *= 1.015;
-            // Pull back hiding aggressiveness slightly; ease up on rush
-            updated.hiding_strategy = Math.max(updated.hiding_strategy * 0.99, 0.1);
-            updated.trash_bin_rush_scale *= 0.99;
-        }
-
-        // Clip parameters to safe ranges
-        updated.trip_preference = Math.min(Math.max(updated.trip_preference, 0.4), 2.0);
-        updated.flush_preference = Math.min(Math.max(updated.flush_preference, 0.4), 2.0);
-        updated.straight_preference = Math.min(Math.max(updated.straight_preference, 0.4), 2.0);
-        updated.x_hand_focus = Math.min(Math.max(updated.x_hand_focus, 0.4), 2.0);
-        updated.bonus_aggression = Math.min(Math.max(updated.bonus_aggression, 0.4), 2.5);
-        updated.defensive_awareness = Math.min(Math.max(updated.defensive_awareness, 0.4), 1.5);
-        
-        updated.pure_preference = Math.min(Math.max(updated.pure_preference, 0.3), 2.0);
-        updated.trips_in_hand_focus = Math.min(Math.max(updated.trips_in_hand_focus, 0.4), 2.0);
-        updated.row3_delay_focus = Math.min(Math.max(updated.row3_delay_focus, 0.4), 2.0);
-        updated.showdown_delay_focus = Math.min(Math.max(updated.showdown_delay_focus, 0.4), 2.0);
-        updated.low_card_avoidance = Math.min(Math.max(updated.low_card_avoidance, 0.4), 2.0);
-        updated.turn_order_flexibility = Math.min(Math.max(updated.turn_order_flexibility, 0.4), 2.0);
-        updated.weak_hand_avoidance = Math.min(Math.max(updated.weak_hand_avoidance, 0.5), 3.0);
-        updated.pair_in_hand_scale = Math.min(Math.max(updated.pair_in_hand_scale, 0.3), 2.5);
-        updated.queen_first_scale = Math.min(Math.max(updated.queen_first_scale, 0.3), 2.5);
-        updated.bluff_bonus_scale = Math.min(Math.max(updated.bluff_bonus_scale, 0.5), 3.0);
-        updated.hiding_strategy = Math.min(Math.max(updated.hiding_strategy, 0.1), 0.6);
-        updated.trash_bin_rush_scale = Math.min(Math.max(updated.trash_bin_rush_scale, 0.3), 3.0);
-
-        updated.updated_at = new Date().toISOString();
-
-        const { error } = await supabase
-            .from('ai_global_parameters')
-            .update({
-                total_games: updated.total_games,
-                ai_wins: updated.ai_wins,
-                trip_preference: updated.trip_preference,
-                flush_preference: updated.flush_preference,
-                straight_preference: updated.straight_preference,
-                x_hand_focus: updated.x_hand_focus,
-                bonus_aggression: updated.bonus_aggression,
-                defensive_awareness: updated.defensive_awareness,
-                pure_preference: updated.pure_preference,
-                trips_in_hand_focus: updated.trips_in_hand_focus,
-                row3_delay_focus: updated.row3_delay_focus,
-                showdown_delay_focus: updated.showdown_delay_focus,
-                low_card_avoidance: updated.low_card_avoidance,
-                turn_order_flexibility: updated.turn_order_flexibility,
-                weak_hand_avoidance: updated.weak_hand_avoidance,
-                pair_in_hand_scale: updated.pair_in_hand_scale,
-                queen_first_scale: updated.queen_first_scale,
-                bluff_bonus_scale: updated.bluff_bonus_scale,
-                hiding_strategy: updated.hiding_strategy,
-                trash_bin_rush_scale: updated.trash_bin_rush_scale,
-                updated_at: updated.updated_at
-            })
-            .eq('id', 1);
-
-        if (error) {
-            console.error('[Supabase] Error updating global AI parameters:', error);
-        } else {
-            console.log('[Supabase] Successfully contributed game outcome to the 12-parameter Global AI Learning pool!');
-        }
-    } catch (e) {
-        console.error('[Supabase] Failed to update global AI parameters:', e);
-    }
+export async function updateGlobalAiParameters(aiWon: boolean, isDraw = false, gameToken?: string): Promise<void> {
+    if (!socket.connected) return;
+    await new Promise<void>(resolve => {
+        socket.timeout(3_000).emit(
+            'update_ai_parameters',
+            { aiWon, isDraw, gameToken },
+            (error: Error | null, response?: { success: boolean }) => {
+                if (error || !response?.success) {
+                    console.error('Unable to contribute AI result:', error || 'Request rejected');
+                }
+                resolve();
+            },
+        );
+    });
 }

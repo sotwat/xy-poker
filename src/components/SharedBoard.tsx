@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { Card as CardType, DiceSkin, CardSkin, BoardSkin } from '../logic/types';
 import { Card } from './Card';
 import { Dice } from './Dice';
@@ -38,45 +38,42 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     showXHand = false
 }) => {
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
-    const [pressTimer, setPressTimer] = useState<number | null>(null);
+    const pressTimerRef = useRef<number | null>(null);
+    const longPressTriggeredRef = useRef(false);
 
-    const handleCardPressStart = (card: CardType | null, _colIndex: number, isPlayerCard: boolean) => {
-        if (!card) return;
-
-        // Clear any existing timer
-        if (pressTimer !== null) {
-            clearTimeout(pressTimer);
-            setPressTimer(null);
+    const clearPressTimer = () => {
+        if (pressTimerRef.current !== null) {
+            window.clearTimeout(pressTimerRef.current);
+            pressTimerRef.current = null;
         }
+    };
+
+    const handleCardPressStart = (card: CardType | null, isPlayerCard: boolean) => {
+        if (!card) return;
+        clearPressTimer();
+        longPressTriggeredRef.current = false;
 
         // If it's own hidden card, start long press timer
         if (isPlayerCard && card.isHidden && !revealAll) {
-            const timer = window.setTimeout(() => {
+            pressTimerRef.current = window.setTimeout(() => {
+                longPressTriggeredRef.current = true;
                 setPeekingCard(card.id);
+                pressTimerRef.current = null;
             }, 500); // 500ms long press
-            setPressTimer(timer);
         }
     };
 
-    const handleCardPressEnd = (card: CardType | null, colIndex: number, _isPlayerCard: boolean) => {
-        // Clear timer if released before long press completes
-        if (pressTimer !== null) {
-            clearTimeout(pressTimer);
-            setPressTimer(null);
-        }
-
-        // Hide peek when released
+    const handleCardPressEnd = () => {
+        clearPressTimer();
         setPeekingCard(null);
-
-        // If it was a quick press (not long press) and conditions are met, trigger column click
-        if (!card && isCurrentPlayer) {
-            onColumnClick(colIndex);
-        }
     };
 
-    const handleCardClick = (card: CardType | null, colIndex: number, isPlayerCard: boolean) => {
-        // For non-hidden cards or opponent cards, just handle column click
-        if (card && (!card.isHidden || !isPlayerCard) && isCurrentPlayer) {
+    const handlePlayerSlotClick = (card: CardType | null, colIndex: number) => {
+        if (longPressTriggeredRef.current) {
+            longPressTriggeredRef.current = false;
+            return;
+        }
+        if (isCurrentPlayer && (!card || !card.isHidden || revealAll)) {
             onColumnClick(colIndex);
         }
     };
@@ -121,6 +118,15 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
             <div
                 key={colIndex}
                 className={`shared-column ${isCurrentPlayer ? 'interactive' : ''} ${colWinningClass}`}
+                role={isCurrentPlayer ? 'button' : undefined}
+                tabIndex={isCurrentPlayer ? 0 : -1}
+                aria-label={isCurrentPlayer ? `Place selected card in column ${colIndex + 1}, dice ${dice[colIndex]}` : undefined}
+                onKeyDown={(event) => {
+                    if (isCurrentPlayer && (event.key === 'Enter' || event.key === ' ')) {
+                        event.preventDefault();
+                        onColumnClick(colIndex);
+                    }
+                }}
             >
                 {/* Opponent Side (Top) */}
                 <div className="opponent-slots">
@@ -128,15 +134,14 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                         <div
                             key={`opp-${idx}`}
                             className={`card-slot opponent-slot ${topWinningClass} ${isTopXWinner && idx === 0 ? 'winning-row-yellow' : ''}`}
+                            onClick={() => isCurrentPlayer && onColumnClick(colIndex)}
                         >
                             {card ? (
                                 <Card
                                     card={revealAll ? { ...card, isHidden: false } : card}
                                     skin={selectedCardSkin}
                                 />
-                            ) : (
-                                <div className="empty-slot" onClick={() => isCurrentPlayer && onColumnClick(colIndex)} />
-                            )}
+                            ) : <div className="empty-slot" />}
                         </div>
                     ))}
                 </div>
@@ -153,22 +158,19 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                             key={`pl-${idx}`}
                             className={`card-slot player-slot ${isBottomXWinner && idx === 2 ? 'winning-row-yellow' : ''
                                 } ${bottomWinningClass}`}
+                            onPointerDown={() => handleCardPressStart(card, true)}
+                            onPointerUp={handleCardPressEnd}
+                            onPointerLeave={handleCardPressEnd}
+                            onPointerCancel={handleCardPressEnd}
+                            onClick={() => handlePlayerSlotClick(card, colIndex)}
                         >
                             {card ? (
                                 <Card
                                     card={revealAll ? { ...card, isHidden: false } : card}
                                     isPeeking={peekingCard === card.id}
-                                    onClick={() => handleCardClick(card, colIndex, true)}
-                                    onMouseDown={() => handleCardPressStart(card, colIndex, true)}
-                                    onMouseUp={() => handleCardPressEnd(card, colIndex, true)}
-                                    onMouseLeave={() => handleCardPressEnd(card, colIndex, true)}
-                                    onTouchStart={() => handleCardPressStart(card, colIndex, true)}
-                                    onTouchEnd={() => handleCardPressEnd(card, colIndex, true)}
                                     skin={selectedCardSkin}
                                 />
-                            ) : (
-                                <div className="empty-slot" onClick={() => isCurrentPlayer && onColumnClick(colIndex)} />
-                            )}
+                            ) : <div className="empty-slot" />}
                         </div>
                     ))}
                 </div>

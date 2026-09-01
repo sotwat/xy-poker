@@ -3,11 +3,9 @@ import { io, Socket } from 'socket.io-client';
 // Connect to server
 // In production (built), use Render server
 // In dev, use localhost:3001
-const SERVER_URL = import.meta.env.PROD
+const SERVER_URL = (import.meta.env.VITE_SERVER_URL || (import.meta.env.PROD
     ? 'https://xy-poker.onrender.com'
-    : 'http://localhost:3001';
-
-console.log('[Socket.IO] Connecting to:', SERVER_URL);
+    : 'http://localhost:3001')).replace(/\/$/, '');
 
 export const socket: Socket = io(SERVER_URL, {
     autoConnect: false,
@@ -18,35 +16,16 @@ export const socket: Socket = io(SERVER_URL, {
     reconnectionDelay: 1000
 });
 
-// Debug logging
-socket.on('connect', () => console.log('[Socket.IO] Connected! ID:', socket.id));
-socket.on('disconnect', (reason) => console.log('[Socket.IO] Disconnected. Reason:', reason));
 socket.on('connect_error', (err) => console.error('[Socket.IO] Connection error:', err));
-socket.on('reconnect_attempt', () => console.log('[Socket.IO] Reconnecting...'));
 
-import { getBrowserId } from '../utils/identity';
-
-export const joinQuickMatch = () => {
-    if (socket) {
-        const browserId = getBrowserId();
-        socket.emit('join_quick_match', { browserId });
-    }
-};
 export const connectSocket = (accessToken?: string) => {
-    if (accessToken) {
-        socket.auth = { token: accessToken };
-    } else {
-        socket.auth = {};
-    }
-    if (!socket.connected) {
-        console.log('[Socket.IO] Initiating connection...');
-        socket.connect();
-    }
-};
+    const previousToken = typeof socket.auth === 'object' && socket.auth !== null
+        ? (socket.auth as { token?: string }).token
+        : undefined;
+    socket.auth = accessToken ? { token: accessToken } : {};
 
-export const disconnectSocket = () => {
-    if (socket.connected) {
-        console.log('[Socket.IO] Disconnecting...');
+    if (socket.connected && previousToken !== accessToken) {
         socket.disconnect();
     }
+    if (!socket.connected) socket.connect();
 };

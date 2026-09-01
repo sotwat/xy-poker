@@ -1,6 +1,6 @@
 import React from 'react';
 import type { GameState } from '../logic/types';
-import { DevBadge } from './DevBadge';
+import { PremiumBadge } from './PremiumBadge';
 import { AnimatedScore } from './AnimatedScore';
 import './GameInfo.css';
 
@@ -52,27 +52,15 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                             </div>
                             {isPremium && onToggleAuto && (
                                 <button
+                                    type="button"
                                     className={`auto-toggle-btn ${isAutoPlay ? 'active' : ''}`}
                                     onClick={onToggleAuto}
-                                    style={{
-                                        marginRight: '8px',
-                                        padding: '4px 10px',
-                                        fontSize: '0.75rem',
-                                        borderRadius: '8px',
-                                        background: isAutoPlay ? '#ff3366' : '#555',
-                                        color: '#fff',
-                                        border: isAutoPlay ? '1px solid #fff' : 'none',
-                                        fontWeight: 'bold',
-                                        cursor: 'pointer',
-                                        boxShadow: isAutoPlay ? '0 0 8px rgba(255, 51, 102, 0.4)' : 'none',
-                                        transition: 'all 0.2s'
-                                    }}
                                 >
                                     AUTO: {isAutoPlay ? 'ON' : 'OFF'}
                                 </button>
                             )}
                             {onSurrender && (
-                                <button className="surrender-btn" onClick={onSurrender}>
+                                <button type="button" className="surrender-btn" onClick={onSurrender}>
                                     Cancel
                                 </button>
                             )}
@@ -102,16 +90,15 @@ export const GameInfo: React.FC<GameInfoProps> = ({
             <div className="scores">
                 <div className="player-score-row player-1">
                     <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
-                        {/* Use isPremium prop for MYSELF (if I am p1), and p1.isDeveloper for others/state */}
-                        {p1Name} {((myIndex === 0 && isPremium) || p1.isDeveloper) && <DevBadge />}: <AnimatedScore value={p1.score} className="score-number" />
+                        {p1Name} {((myIndex === 0 && isPremium) || p1.isPremium) && <PremiumBadge />}: <AnimatedScore value={p1.score} className="score-number" />
                     </span>
-                    <span className="bonus-item">Bonuses: {p1.bonusesClaimed}</span>
+                    <span className="bonus-item">Bonus {p1.bonusesClaimed}</span>
                 </div>
                 <div className="player-score-row player-2">
                     <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
-                        {p2Name} {((myIndex === 1 && isPremium) || p2.isDeveloper) && <DevBadge />}: <AnimatedScore value={p2.score} className="score-number" />
+                        {p2Name} {((myIndex === 1 && isPremium) || p2.isPremium) && <PremiumBadge />}: <AnimatedScore value={p2.score} className="score-number" />
                     </span>
-                    <span className="bonus-item">Bonuses: {p2.bonusesClaimed}</span>
+                    <span className="bonus-item">Bonus {p2.bonusesClaimed}</span>
                 </div>
             </div>
         </div >

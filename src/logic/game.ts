@@ -32,76 +32,82 @@ export type GameAction =
             initialDeck?: Card[];
             startingPlayer?: number;
             playerConfig?: {
-                p1: { id: string; isDeveloper: boolean };
-                p2: { id: string; isDeveloper: boolean };
+                p1: { id: string; isPremium: boolean };
+                p2: { id: string; isPremium: boolean };
             }
         }
     }
     | { type: 'CHOOSE_TURN_ORDER'; payload: { startingPlayer: number } }
-    | { type: 'PLACE_CARD'; cardId: string; colIndex: number }
-    | { type: 'DRAW_CARD' }
-    | { type: 'TOGGLE_HIDDEN'; cardId: string } // Only for cards on board? Or during placement? "Hidden placement". Usually you decide when placing.
-    // Rules: "Can place hidden". "Max 3". "Joker cannot be hidden".
-    // Let's assume we toggle "isHidden" flag on the card in hand BEFORE placing, or we have a specific "PLACE_HIDDEN" action?
-    // Or we place it, then toggle?
-    // "Card placement rules: ... Hidden cards: ... can place up to 3".
-    // Probably best to have a UI toggle "Place Face Down" then click the slot.
-    // So PLACE_CARD can have `isHidden` param.
     | { type: 'PLACE_AND_DRAW'; payload: { cardId: string; colIndex: number; isHidden: boolean } }
     | { type: 'SYNC_STATE'; payload: GameState }
-    | { type: 'UNDO_LAST_ACTION' } // "Action cancellation: After placement, before draw".
-    | { type: 'END_TURN' }
     | { type: 'CALCULATE_SCORE' };
+
+const PHASES = new Set(['setup', 'turn_selection', 'playing', 'scoring', 'ended']);
+
+function isCard(value: unknown): value is Card {
+    if (!value || typeof value !== 'object') return false;
+    const card = value as Partial<Card>;
+    return typeof card.id === 'string'
+        && card.id.length <= 40
+        && ['hearts', 'diamonds', 'clubs', 'spades'].includes(card.suit || '')
+        && Number.isInteger(card.rank)
+        && Number(card.rank) >= 2
+        && Number(card.rank) <= 14
+        && (card.isHidden === undefined || typeof card.isHidden === 'boolean');
+}
+
+export function isValidGameState(value: unknown): value is GameState {
+    if (!value || typeof value !== 'object') return false;
+    const state = value as Partial<GameState>;
+    if (!Array.isArray(state.players) || state.players.length !== 2) return false;
+    if (state.currentPlayerIndex !== 0 && state.currentPlayerIndex !== 1) return false;
+    if (!state.phase || !PHASES.has(state.phase)) return false;
+    if (!Array.isArray(state.deck) || state.deck.length > 52 || !state.deck.every(isCard)) return false;
+    if (!Number.isInteger(state.turnCount) || Number(state.turnCount) < 0 || Number(state.turnCount) > 100) return false;
+    if (![null, 'p1', 'p2', 'draw'].includes(state.winner ?? null)) return false;
+
+    return state.players.every(player => {
+        if (!player || typeof player !== 'object') return false;
+        if (typeof player.id !== 'string' || player.id.length > 128) return false;
+        if (!Array.isArray(player.hand) || player.hand.length > 20 || !player.hand.every(isCard)) return false;
+        if (!Array.isArray(player.dice)) return false;
+        const validDiceLength = state.phase === 'setup' ? player.dice.length === 0 : player.dice.length === 5;
+        if (!validDiceLength
+            || !player.dice.every(die => Number.isInteger(die) && die >= 1 && die <= 6)) return false;
+        if (!Number.isFinite(player.score) || player.score < 0) return false;
+        if (!Number.isInteger(player.hiddenCardsCount) || player.hiddenCardsCount < 0 || player.hiddenCardsCount > 3) return false;
+        if (!Number.isInteger(player.bonusesClaimed) || player.bonusesClaimed < 0 || player.bonusesClaimed > 5) return false;
+        if (player.isPremium !== undefined && typeof player.isPremium !== 'boolean') return false;
+        if (!Array.isArray(player.board) || player.board.length !== 3) return false;
+        return player.board.every(row => Array.isArray(row)
+            && row.length === 5
+            && row.every(card => card === null || isCard(card)));
+    });
+}
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
     switch (action.type) {
         case 'START_GAME': {
             // Use provided deck (Synced Online) or create new shuffled one (Local/Fallback)
-            const deck = action.payload?.initialDeck
-                ? [...action.payload.initialDeck]
+            const suppliedDeck = action.payload?.initialDeck;
+            const deck = suppliedDeck?.length === 52 && suppliedDeck.every(isCard)
+                ? [...suppliedDeck]
                 : shuffleDeck(createDeck());
 
             const { drawn: p1Hand, remaining: deck1 } = drawCards(deck, 4);
             const { drawn: p2Hand, remaining: deck2 } = drawCards(deck1, 4);
 
-            // Roll dice for each player (5 dice each? Or shared? "Roll 5 dice, arrange on top of board".
-            // "Setup: 1. Roll 5 dice, arrange corresponding to each column".
-            // Usually in these games, the dice are shared or per-column.
-            // "Scoring: Compare Y hand ... acquire dice points".
-            // So there is ONE set of 5 dice for the board columns?
-            // "Setup: 1. Roll 5 dice...".
-            // "Scoring: ... acquire points of the dice assigned to that column".
-            // This implies 5 dice total, shared for the columns.
-            // Let's store dice in GameState, not PlayerState?
-            // Or maybe each player has dice?
-            // "Play number: 2". "Setup: 1. Roll 5 dice...".
-            // It sounds like 5 dice are rolled once and placed at the top of the board (shared).
-            // Let's assume SHARED dice.
-            // But I put `dice` in `PlayerState` in types.ts.
-            // I should move it to `GameState` or duplicate it.
-            // Let's put it in `GameState` for now, or just give both players the same dice values if they are shared.
-            // Actually, if it's "Arrange on top of board", and it's 1v1, maybe they face each other?
-            // "3x5 board".
-            // If they share the board, it's different.
-            // "Construct 3x5 board". "Each player constructs"?
-            // "Setup: ... distribute 4 cards to each player".
-            // "Turn: Place card ...".
-            // "Scoring: Compare Y hand ...".
-            // This implies each player has their OWN 3x5 board.
-            // And the dice are for the columns.
-            // Are the dice values the same for both players?
-            // "Roll 5 dice...".
-            // Usually yes, the dice values are the "stakes" for each column.
-            // So I will generate 5 dice values and give them to both players (or store in GameState).
-
-            // Use provided dice or generate random (Local/Fallback)
-            const dice = action.payload?.initialDice
-                ? action.payload.initialDice
+            // Both players use the same validated dice values.
+            const suppliedDice = action.payload?.initialDice;
+            const dice = suppliedDice?.length === 5
+                && suppliedDice.every(die => Number.isInteger(die) && die >= 1 && die <= 6)
+                ? [...suppliedDice]
                 : Array.from({ length: 5 }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
 
             // Randomize starting player (or use synced online)
-            const startingPlayer = (action.payload?.startingPlayer !== undefined)
-                ? action.payload.startingPlayer
+            const suppliedStartingPlayer = action.payload?.startingPlayer;
+            const startingPlayer = (suppliedStartingPlayer === 0 || suppliedStartingPlayer === 1)
+                ? suppliedStartingPlayer
                 : Math.floor(Math.random() * 2);
 
             return {
@@ -115,14 +121,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
                         id: action.payload?.playerConfig?.p1.id || 'p1',
                         hand: p1Hand,
                         dice,
-                        isDeveloper: action.payload?.playerConfig?.p1.isDeveloper
+                        isPremium: action.payload?.playerConfig?.p1.isPremium
                     },
                     {
                         ...INITIAL_PLAYER_STATE,
                         id: action.payload?.playerConfig?.p2.id || 'p2',
                         hand: p2Hand,
                         dice,
-                        isDeveloper: action.payload?.playerConfig?.p2.isDeveloper
+                        isPremium: action.payload?.playerConfig?.p2.isPremium
                     },
                 ],
                 turnCount: 1,
@@ -130,6 +136,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         }
         
         case 'CHOOSE_TURN_ORDER': {
+            if (state.phase !== 'turn_selection') return state;
+            if (action.payload.startingPlayer !== 0 && action.payload.startingPlayer !== 1) return state;
             return {
                 ...state,
                 phase: 'playing',
@@ -139,6 +147,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
         case 'PLACE_AND_DRAW': {
             const { cardId, colIndex, isHidden } = action.payload;
+            if (state.phase !== 'playing') return state;
+            if (!Number.isInteger(colIndex) || colIndex < 0 || colIndex >= 5) return state;
             const playerIdx = state.currentPlayerIndex;
             const player = state.players[playerIdx];
 
@@ -245,7 +255,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             const p1Full = newPlayers[0].board.every(row => row.every(c => c !== null));
             const p2Full = newPlayers[1].board.every(row => row.every(c => c !== null));
 
-            let nextPhase = state.phase;
+            let nextPhase: GameState['phase'] = state.phase;
             if (p1Full && p2Full) {
                 nextPhase = 'scoring';
             }
@@ -268,48 +278,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             };
         }
 
-        case 'DRAW_CARD': {
-            // This action is now deprecated as PLACE_AND_DRAW handles the draw.
-            // It's kept here for now but should ideally be removed if PLACE_AND_DRAW is the only way to end a turn.
-            // Draw 1 card
-            const playerIdx = state.currentPlayerIndex;
-            const player = state.players[playerIdx];
-            const { drawn, remaining } = drawCards(state.deck, 1);
-
-            const newPlayers = [...state.players] as [PlayerState, PlayerState];
-            newPlayers[playerIdx] = {
-                ...player,
-                hand: [...player.hand, ...drawn],
-            };
-
-            // End Turn
-            const nextPlayerIdx = playerIdx === 0 ? 1 : 0;
-
-            // Check Game End
-            // "Game ends when both players have filled 15 cards".
-            const p1Full = newPlayers[0].board.every(row => row.every(c => c !== null));
-            const p2Full = newPlayers[1].board.every(row => row.every(c => c !== null));
-
-            let nextPhase = state.phase;
-            if (p1Full && p2Full) {
-                nextPhase = 'scoring';
-            }
-
-            return {
-                ...state,
-                players: newPlayers,
-                deck: remaining,
-                currentPlayerIndex: nextPlayerIdx,
-                phase: nextPhase,
-                turnCount: state.turnCount + 1,
-            };
-        }
-
         case 'CALCULATE_SCORE': {
+            if (state.phase !== 'scoring') return state;
+            if (!state.players.every(player => player.board.every(row => row.every(card => card !== null)))) return state;
             // 1. Reveal Hidden Cards (already done visually by phase change, but logic needs to know)
             // 2. Evaluate Y Hands
-            let p1Score = state.players[0].score;
-            let p2Score = state.players[1].score;
+            let p1Score = 0;
+            let p2Score = 0;
 
             const p1Board = state.players[0].board;
             const p2Board = state.players[1].board;
@@ -376,7 +351,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         }
 
         case 'SYNC_STATE':
-            return action.payload;
+            return isValidGameState(action.payload) ? action.payload : state;
         default:
             return state;
     }

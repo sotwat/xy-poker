@@ -51,8 +51,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 onSuccess();
             }
             onClose();
-        } catch (err: any) {
-            setError(err.message || 'An error occurred');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
         } finally {
             setLoading(false);
         }
@@ -61,7 +61,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     return (
         <div className="auth-overlay">
             <div className="auth-content">
-                <button className="close-btn" onClick={onClose}>&times;</button>
+                <button type="button" className="close-btn" onClick={onClose} aria-label="Close">&times;</button>
                 <h2>{isSignUp ? 'Create Account' : 'Sign In'}</h2>
                 <p className="auth-description">
                     {isSignUp
@@ -93,7 +93,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 </form>
 
                 <div className="auth-toggle">
-                    <button onClick={() => setIsSignUp(!isSignUp)}>
+                    <button type="button" onClick={() => setIsSignUp(!isSignUp)}>
                         {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
                     </button>
                 </div>

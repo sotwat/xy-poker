@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import type { Card as CardType, CardSkin, GameState } from '../logic/types';
 import { Card } from './Card';
 import './ScoringOverlay.css';
@@ -71,18 +70,11 @@ export const ScoringOverlay: React.FC<ScoringOverlayProps> = ({
     const winnerLabel = isMeWinner ? 'YOU WIN' : (isOppWinner ? (isOnlineGame ? 'OPPONENT WINS' : 'AI WINS') : 'DRAW');
     const winnerColor = isMeWinner ? '#4caf50' : (isOppWinner ? '#f44336' : '#999');
 
-    const [animateIn, setAnimateIn] = useState(false);
-
-    useEffect(() => {
-        setAnimateIn(false);
-        requestAnimationFrame(() => requestAnimationFrame(() => setAnimateIn(true)));
-    }, [step]);
-
     return (
         <div className="scoring-overlay">
             <div className="scoring-backdrop" />
 
-            <div className={`scoring-content ${animateIn ? 'animate-in' : ''}`}>
+            <div className="scoring-content animate-in" key={step}>
                 <h2 className="scoring-title">{title}</h2>
 
                 <div className="battle-stage">

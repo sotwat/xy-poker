@@ -1,5 +1,7 @@
-import { INITIAL_GAME_STATE, gameReducer, GameState } from '../src/logic/game';
-import { getBestMove, getBestTurnOrder, AiParams, DEFAULT_AI_PARAMS } from '../src/logic/ai';
+import { INITIAL_GAME_STATE, gameReducer } from '../src/logic/game';
+import type { GameState } from '../src/logic/types';
+import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS } from '../src/logic/ai';
+import type { AiParams } from '../src/logic/ai';
 
 // Mutate parameters slightly for genetic algorithm
 function mutateParams(params: AiParams, mutationRate: number = 0.1): AiParams {
@@ -54,8 +56,6 @@ function runHeadlessMatch(paramsA: AiParams, paramsB: AiParams): { winner: 0 | 1
             payload: { cardId: move.cardId, colIndex: move.colIndex, isHidden: move.isHidden } 
         });
 
-        // End turn
-        state = gameReducer(state, { type: 'END_TURN' });
     }
 
     if (state.phase !== 'ended') {
@@ -112,7 +112,7 @@ async function continuousTraining() {
 
     while (consecutiveDefenses < maxDefenses) {
         console.log(`\n--- Generation ${generation} (Defenses: ${consecutiveDefenses}) ---`);
-        let challengerParams = mutateParams(champParams, 0.4);
+        const challengerParams = mutateParams(champParams, 0.4);
         challengerParams.mcSimulations = 5;
 
         const result = await runTrainingSession(gamesPerGen, champParams, challengerParams);

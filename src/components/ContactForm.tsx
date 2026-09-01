@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from '../supabase';
+import { socket } from '../logic/online';
 import './ContactForm.css';
 
 interface ContactFormProps {
@@ -25,26 +25,27 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
         setSubmitStatus('idle');
 
         try {
-            const { error } = await supabase
-                .from('contact_messages')
-                .insert([
-                    {
-                        category,
-                        user_contact: contactInfo || `Player:${playerId || 'Unknown'}`,
-                        message: `[Device: ${deviceInfo}]\n\n${message.trim()}`,
-                    }
-                ]);
-
-            if (error) throw error;
+            const result = await new Promise<{ success: boolean; error?: string }>((resolve, reject) => {
+                socket.timeout(5_000).emit('submit_contact', {
+                    category,
+                    contactInfo: contactInfo || (playerId ? `Player:${playerId}` : ''),
+                    deviceInfo,
+                    message: message.trim(),
+                }, (error: Error | null, response?: { success: boolean; error?: string }) => {
+                    if (error) reject(error);
+                    else resolve(response ?? { success: false, error: 'No response' });
+                });
+            });
+            if (!result.success) throw new Error(result.error || 'Submission rejected');
 
             setSubmitStatus('success');
             setTimeout(() => {
                 onClose();
             }, 2000); // Auto close after 2s
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Contact submit error:', err);
             setSubmitStatus('error');
-            setErrorMessage(err.message || 'Failed to submit. Please try again.');
+            setErrorMessage(err instanceof Error ? err.message : 'Failed to submit. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -54,7 +55,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
         return (
             <div className="modal-overlay">
                 <div className="contact-modal success">
-                    <div className="success-icon">✅</div>
+                    <div className="success-icon">Sent</div>
                     <h3>Message Sent!</h3>
                     <p>Thank you for your feedback.</p>
                 </div>
@@ -66,8 +67,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
         <div className="modal-overlay">
             <div className="contact-modal">
                 <div className="modal-header">
-                    <h2>📬 Contact / Report</h2>
-                    <button className="close-btn" onClick={onClose}>×</button>
+                    <h2>Contact / Report</h2>
+                    <button type="button" className="close-btn" onClick={onClose} aria-label="Close">×</button>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -79,21 +80,21 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
                                 className={`cat-btn ${category === 'request' ? 'active' : ''}`}
                                 onClick={() => setCategory('request')}
                             >
-                                ✨ Request
+                                Request
                             </button>
                             <button
                                 type="button"
                                 className={`cat-btn ${category === 'bug' ? 'active' : ''}`}
                                 onClick={() => setCategory('bug')}
                             >
-                                🐛 Bug
+                                Bug
                             </button>
                             <button
                                 type="button"
                                 className={`cat-btn ${category === 'other' ? 'active' : ''}`}
                                 onClick={() => setCategory('other')}
                             >
-                                📝 Other
+                                Other
                             </button>
                         </div>
                     </div>

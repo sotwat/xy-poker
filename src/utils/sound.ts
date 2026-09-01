@@ -25,7 +25,6 @@ export const unlockAudioContext = () => {
                 src.buffer = ctx.createBuffer(1, 1, 22050);
                 src.connect(ctx.destination);
                 src.start(0);
-                console.log('Audio unlocked via interaction');
             }).catch(e => console.warn('Unlock failed:', e));
         }
         // Cleanup listener once triggered
@@ -355,4 +354,3 @@ export const playTickSound = () => {
     console.warn('Audio playback not supported:', error);
   }
 };
-

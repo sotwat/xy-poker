@@ -1,18 +1,17 @@
-// Utility to get or create a persistent Browser ID
-import { v4 as uuidv4 } from 'uuid';
+const STORAGE_KEY = 'xy_poker_browser_id';
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+let fallbackBrowserId: string | null = null;
 
 export const getBrowserId = (): string => {
-    const STORAGE_KEY = 'xy_poker_browser_id';
+    try {
+        const storedId = localStorage.getItem(STORAGE_KEY);
+        if (storedId && UUID_PATTERN.test(storedId)) return storedId;
 
-    // Check local storage
-    const id: string | null = localStorage.getItem(STORAGE_KEY);
-
-    // Check if valid UUID (simple check)
-    if (!id || id.length < 10) {
-        const newId = uuidv4();
+        const newId = crypto.randomUUID();
         localStorage.setItem(STORAGE_KEY, newId);
         return newId;
+    } catch {
+        fallbackBrowserId ??= crypto.randomUUID();
+        return fallbackBrowserId;
     }
-
-    return id;
 };
