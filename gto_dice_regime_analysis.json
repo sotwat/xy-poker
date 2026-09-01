@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-01T21:09:35.679Z",
+  "method": "paired seat-and-initial-hand swaps with fixed dice regimes and the production reducer",
+  "utility": "+1 win, 0 draw, -1 loss",
+  "seed": 1146241842,
+  "regimes": [
+    {
+      "id": "polarized_high",
+      "dice": [
+        6,
+        6,
+        6,
+        1,
+        1
+      ],
+      "metrics": {
+        "total": 20,
+        "mean": 4,
+        "variance": 6,
+        "standardDeviation": 2.44949,
+        "range": 5,
+        "normalizedVariance": 1,
+        "bonusRaceIndex": 0.91,
+        "xValueMultiplier": 0.86
+      },
+      "adaptiveA2VsA1": {
+        "pairedDeals": 1000,
+        "meanUtility": 0.105,
+        "standardError": 0.02196,
+        "lower95": 0.061959,
+        "upper95": 0.148041,
+        "winRate": 0.54,
+        "drawRate": 0.025,
+        "averageScoreDifference": 0.82,
+        "averageBonuses": 3.2435,
+        "averageCheapColumnBonuses": 1.633,
+        "chooserFirstRate": 0.993814
+      },
+      "forcedLowRushVsA2": {
+        "pairedDeals": 1000,
+        "meanUtility": 0.011,
+        "standardError": 0.021981,
+        "lower95": -0.032084,
+        "upper95": 0.054084,
+        "winRate": 0.4885,
+        "drawRate": 0.034,
+        "averageScoreDifference": 0.0695,
+        "averageBonuses": 2.0795,
+        "averageCheapColumnBonuses": 1.9985,
+        "chooserFirstRate": 1
+      }
+    },
+    {
+      "id": "flat_same_mean",
+      "dice": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "metrics": {
+        "total": 20,
+        "mean": 4,
+        "variance": 0,
+        "standardDeviation": 0,
+        "range": 0,
+        "normalizedVariance": 0,
+        "bonusRaceIndex": 0.02,
+        "xValueMultiplier": 0.86
+      },
+      "adaptiveA2VsA1": {
+        "pairedDeals": 1000,
+        "meanUtility": 0.022,
+        "standardError": 0.021552,
+        "lower95": -0.020242,
+        "upper95": 0.064242,
+        "winRate": 0.4755,
+        "drawRate": 0.071,
+        "averageScoreDifference": 0.283,
+        "averageBonuses": 2.483,
+        "averageCheapColumnBonuses": 2.483,
+        "chooserFirstRate": 0.136634
+      },
+      "forcedLowRushVsA2": {
+        "pairedDeals": 1000,
+        "meanUtility": -0.239,
+        "standardError": 0.020968,
+        "lower95": -0.280097,
+        "upper95": -0.197903,
+        "winRate": 0.3485,
+        "drawRate": 0.064,
+        "averageScoreDifference": -2.4395,
+        "averageBonuses": 2.9345,
+        "averageCheapColumnBonuses": 2.9345,
+        "chooserFirstRate": 0.101167
+      }
+    },
+    {
+      "id": "ordinary_spread",
+      "dice": [
+        6,
+        5,
+        4,
+        2,
+        1
+      ],
+      "metrics": {
+        "total": 18,
+        "mean": 3.6,
+        "variance": 3.44,
+        "standardDeviation": 1.854724,
+        "range": 5,
+        "normalizedVariance": 0.573333,
+        "bonusRaceIndex": 0.634533,
+        "xValueMultiplier": 0.972
+      },
+      "adaptiveA2VsA1": {
+        "pairedDeals": 1000,
+        "meanUtility": 0.0485,
+        "standardError": 0.021721,
+        "lower95": 0.005926,
+        "upper95": 0.091074,
+        "winRate": 0.497,
+        "drawRate": 0.0545,
+        "averageScoreDifference": 0.36,
+        "averageBonuses": 2.6915,
+        "averageCheapColumnBonuses": 0.688,
+        "chooserFirstRate": 0.456863
+      },
+      "forcedLowRushVsA2": {
+        "pairedDeals": 1000,
+        "meanUtility": -0.043,
+        "standardError": 0.021767,
+        "lower95": -0.085664,
+        "upper95": -0.000336,
+        "winRate": 0.453,
+        "drawRate": 0.051,
+        "averageScoreDifference": -0.5245,
+        "averageBonuses": 1.695,
+        "averageCheapColumnBonuses": 1,
+        "chooserFirstRate": 0.472656
+      }
+    },
+    {
+      "id": "low_compressed",
+      "dice": [
+        2,
+        2,
+        2,
+        1,
+        1
+      ],
+      "metrics": {
+        "total": 8,
+        "mean": 1.6,
+        "variance": 0.24,
+        "standardDeviation": 0.489898,
+        "range": 1,
+        "normalizedVariance": 0.04,
+        "bonusRaceIndex": 0.0852,
+        "xValueMultiplier": 1.532
+      },
+      "adaptiveA2VsA1": {
+        "pairedDeals": 1000,
+        "meanUtility": -0.035,
+        "standardError": 0.02105,
+        "lower95": -0.076258,
+        "upper95": 0.006258,
+        "winRate": 0.426,
+        "drawRate": 0.113,
+        "averageScoreDifference": -0.175,
+        "averageBonuses": 2.5645,
+        "averageCheapColumnBonuses": 1.248,
+        "chooserFirstRate": 0.13035
+      },
+      "forcedLowRushVsA2": {
+        "pairedDeals": 1000,
+        "meanUtility": -0.105,
+        "standardError": 0.020921,
+        "lower95": -0.146006,
+        "upper95": -0.063994,
+        "winRate": 0.3905,
+        "drawRate": 0.114,
+        "averageScoreDifference": -0.761,
+        "averageBonuses": 2.6785,
+        "averageCheapColumnBonuses": 1.962,
+        "chooserFirstRate": 0.147475
+      }
+    }
+  ],
+  "limitations": [
+    "This is a policy comparison, not full-game exploitability or a proof of exact Nash equilibrium.",
+    "The forced-low-rush probe deliberately commits to one cheapest column and is more rigid than A2.",
+    "Policies use no opponent hidden-card identities."
+  ]
+}

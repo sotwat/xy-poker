@@ -9,7 +9,13 @@ import {
 } from './ai';
 import { createDeck } from './deck';
 import { gameReducer, INITIAL_GAME_STATE } from './game';
-import { getGtoHideProbability, getGtoTurnOrderScore, scoreGtoMove } from './gtoPolicy';
+import {
+    analyzeDiceBoard,
+    getGtoHideProbability,
+    getGtoTurnOrderScore,
+    scoreGtoMove,
+    XY_GTO_A1,
+} from './gtoPolicy';
 import type { Card, GameState } from './types';
 
 function startedState(dice = [6, 5, 4, 2, 1]): GameState {
@@ -35,10 +41,68 @@ test('GTO turn selection prefers second except with a sufficiently structured ha
     assert.ok(getGtoTurnOrderScore(paired) > 0);
 });
 
+test('dice-board metrics distinguish equal-mean flat and polarized regimes', () => {
+    const flat = analyzeDiceBoard([4, 4, 4, 4, 4]);
+    const polarized = analyzeDiceBoard([6, 6, 6, 1, 1]);
+
+    assert.equal(flat.mean, polarized.mean);
+    assert.equal(flat.variance, 0);
+    assert.equal(polarized.variance, 6);
+    assert.ok(polarized.bonusRaceIndex > 0.9);
+    assert.equal(polarized.xValueMultiplier, 0.86);
+});
+
+test('66611 changes first-mover and trash-column incentives without wasting premium cards', () => {
+    const polarState = startedState([6, 6, 6, 1, 1]);
+    const flatState = startedState([4, 4, 4, 4, 4]);
+    const hand = [
+        { id: 'trash', rank: 2, suit: 'hearts' },
+        { id: 'middle', rank: 7, suit: 'clubs' },
+        { id: 'queen', rank: 12, suit: 'spades' },
+        { id: 'ace', rank: 14, suit: 'diamonds' },
+    ] as Card[];
+    const polarPlayer = { ...polarState.players[0], hand };
+    const flatPlayer = { ...flatState.players[0], hand };
+    const state = {
+        ...polarState,
+        players: [polarPlayer, polarState.players[1]],
+    } as GameState;
+
+    assert.ok(getGtoTurnOrderScore(polarPlayer) > 0);
+    assert.ok(getGtoTurnOrderScore(flatPlayer) < 0);
+    assert.ok(getGtoTurnOrderScore(polarPlayer, XY_GTO_A1) < 0);
+    assert.ok(scoreGtoMove(state, 0, hand[0], 3) > scoreGtoMove(state, 0, hand[0], 0));
+    assert.ok(scoreGtoMove(state, 0, hand[2], 0) > scoreGtoMove(state, 0, hand[2], 3));
+    assert.ok(scoreGtoMove(state, 0, hand[0], 0, XY_GTO_A1)
+        > scoreGtoMove(state, 0, hand[0], 3, XY_GTO_A1));
+});
+
+test('66611 rewards completing a cheap bonus column early while A1 still delays it', () => {
+    const base = startedState([6, 6, 6, 1, 1]);
+    const board = base.players[0].board.map(row => [...row]);
+    board[0][3] = { id: 'low-a', rank: 3, suit: 'hearts' };
+    board[1][3] = { id: 'low-b', rank: 4, suit: 'clubs' };
+    const trash = { id: 'low-c', rank: 2, suit: 'spades' } as Card;
+    const state = {
+        ...base,
+        phase: 'playing',
+        turnCount: 4,
+        players: [
+            { ...base.players[0], board, hand: [trash, ...base.players[0].hand] },
+            base.players[1],
+        ],
+    } as GameState;
+
+    assert.ok(scoreGtoMove(state, 0, trash, 3) > scoreGtoMove(state, 0, trash, 4));
+    assert.ok(scoreGtoMove(state, 0, trash, 3, XY_GTO_A1)
+        < scoreGtoMove(state, 0, trash, 4, XY_GTO_A1));
+});
+
 test('GTO move score reacts to dice and delays an early third row commitment', () => {
     const state = startedState();
     const card = state.players[0].hand[0];
-    assert.ok(scoreGtoMove(state, 0, card, 0) > scoreGtoMove(state, 0, card, 4));
+    const premiumCard = { id: 'premium', rank: 12, suit: 'hearts' } as Card;
+    assert.ok(scoreGtoMove(state, 0, premiumCard, 0) > scoreGtoMove(state, 0, premiumCard, 4));
 
     const board = state.players[0].board.map(row => [...row]);
     board[0][0] = state.players[0].hand[1];

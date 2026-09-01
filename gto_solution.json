@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-09-01T13:39:10.216Z",
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-01T21:10:32.897Z",
   "solver": {
     "method": "PSRO-style response expansion + paired self-play payoff matrix + regret-matching+",
     "utility": "+1 win, 0 draw, -1 loss",
@@ -11,7 +11,7 @@
     "candidateDeals": 180,
     "searchRoundsRequested": 4,
     "regretIterations": 300000,
-    "runtimeSeconds": 28.019
+    "runtimeSeconds": 38.271
   },
   "strategies": [
     {
@@ -27,11 +27,12 @@
         "row3Delay": 1,
         "concealment": 0.15,
         "firstBias": 0,
+        "boardAdaptation": 0,
         "temperature": 0.025
       },
       "equilibriumProbability": 0,
-      "bestResponseValueAgainstMixture": -0.114167,
-      "responseStandardError": 0.033525
+      "bestResponseValueAgainstMixture": -0.135833,
+      "responseStandardError": 0.033721
     },
     {
       "id": "y_pressure",
@@ -46,11 +47,12 @@
         "row3Delay": 0.55,
         "concealment": -0.2,
         "firstBias": 0.2,
+        "boardAdaptation": 0,
         "temperature": 0.02
       },
       "equilibriumProbability": 0,
-      "bestResponseValueAgainstMixture": -0.114167,
-      "responseStandardError": 0.03406
+      "bestResponseValueAgainstMixture": -0.124167,
+      "responseStandardError": 0.033278
     },
     {
       "id": "x_architect",
@@ -65,11 +67,12 @@
         "row3Delay": 1.25,
         "concealment": 0,
         "firstBias": -0.15,
+        "boardAdaptation": 0,
         "temperature": 0.02
       },
       "equilibriumProbability": 0,
-      "bestResponseValueAgainstMixture": -0.310833,
-      "responseStandardError": 0.031924
+      "bestResponseValueAgainstMixture": -0.27,
+      "responseStandardError": 0.031704
     },
     {
       "id": "tempo_draw",
@@ -84,11 +87,12 @@
         "row3Delay": 0.2,
         "concealment": -0.25,
         "firstBias": 0.75,
+        "boardAdaptation": 0,
         "temperature": 0.03
       },
       "equilibriumProbability": 0,
-      "bestResponseValueAgainstMixture": -0.2625,
-      "responseStandardError": 0.032853
+      "bestResponseValueAgainstMixture": -0.235,
+      "responseStandardError": 0.03266
     },
     {
       "id": "high_dice_control",
@@ -103,11 +107,12 @@
         "row3Delay": 0.85,
         "concealment": 0.1,
         "firstBias": 0.1,
+        "boardAdaptation": 0,
         "temperature": 0.02
       },
       "equilibriumProbability": 0,
-      "bestResponseValueAgainstMixture": -0.071667,
-      "responseStandardError": 0.033566
+      "bestResponseValueAgainstMixture": -0.155,
+      "responseStandardError": 0.034046
     },
     {
       "id": "concealment",
@@ -122,11 +127,12 @@
         "row3Delay": 1.05,
         "concealment": 1.45,
         "firstBias": -0.1,
+        "boardAdaptation": 0,
         "temperature": 0.04
       },
       "equilibriumProbability": 0,
-      "bestResponseValueAgainstMixture": -0.161667,
-      "responseStandardError": 0.033333
+      "bestResponseValueAgainstMixture": -0.201667,
+      "responseStandardError": 0.0338
     },
     {
       "id": "option_value",
@@ -141,6 +147,27 @@
         "row3Delay": 1.9,
         "concealment": 0.25,
         "firstBias": -0.55,
+        "boardAdaptation": 0,
+        "temperature": 0.025
+      },
+      "equilibriumProbability": 0,
+      "bestResponseValueAgainstMixture": -0.018333,
+      "responseStandardError": 0.031662
+    },
+    {
+      "id": "regime_adaptive",
+      "name": "盤面レジーム適応型",
+      "description": "出目全体の平均・分散・レンジから、低出目列のボーナス競争、Y/X配分、先後を動的に変える。",
+      "parameters": {
+        "yWeight": 0.9,
+        "xWeight": 1.15,
+        "tempoWeight": 0.5,
+        "diceWeight": 0.9,
+        "flexibilityWeight": 1.75,
+        "row3Delay": 1.9,
+        "concealment": 0.25,
+        "firstBias": -0.55,
+        "boardAdaptation": 1,
         "temperature": 0.025
       },
       "equilibriumProbability": 1,
@@ -160,196 +187,235 @@
         "row3Delay": 1.35,
         "concealment": -0.05,
         "firstBias": -1.1,
+        "boardAdaptation": 0,
         "temperature": 0.02
       },
       "equilibriumProbability": 0,
-      "bestResponseValueAgainstMixture": -0.043333,
-      "responseStandardError": 0.033377
+      "bestResponseValueAgainstMixture": -0.075,
+      "responseStandardError": 0.03265
     }
   ],
   "payoffMatrix": [
     [
       0,
-      -0.100833,
+      -0.094167,
       0.136667,
-      0.210833,
-      -0.025,
-      -0.009167,
-      -0.114167,
-      -0.148333
+      0.181667,
+      0.001667,
+      -0.005,
+      -0.126667,
+      -0.135833,
+      -0.081667
     ],
     [
-      0.100833,
+      0.094167,
       0,
-      0.231667,
-      0.239167,
-      0.020833,
-      -0.018333,
+      0.233333,
+      0.245,
+      0.014167,
+      -0.006667,
       -0.114167,
-      -0.0575
+      -0.124167,
+      -0.043333
     ],
     [
       -0.136667,
-      -0.231667,
+      -0.233333,
       0,
-      0.0125,
-      -0.2075,
+      0.0025,
+      -0.216667,
+      -0.100833,
+      -0.3225,
+      -0.27,
+      -0.278333
+    ],
+    [
+      -0.181667,
+      -0.245,
+      -0.0025,
+      0,
       -0.1375,
-      -0.310833,
-      -0.215833
+      -0.148333,
+      -0.269167,
+      -0.235,
+      -0.253333
     ],
     [
-      -0.210833,
-      -0.239167,
-      -0.0125,
-      0,
-      -0.1875,
-      -0.1475,
-      -0.2625,
-      -0.2125
-    ],
-    [
-      0.025,
-      -0.020833,
-      0.2075,
-      0.1875,
-      0,
-      -0.030833,
-      -0.071667,
-      -0.073333
-    ],
-    [
-      0.009167,
-      0.018333,
+      -0.001667,
+      -0.014167,
+      0.216667,
       0.1375,
-      0.1475,
-      0.030833,
       0,
-      -0.161667,
-      -0.19
+      -0.016667,
+      -0.075833,
+      -0.155,
+      -0.081667
     ],
     [
-      0.114167,
-      0.114167,
-      0.310833,
-      0.2625,
-      0.071667,
-      0.161667,
-      0,
-      0.043333
-    ],
-    [
+      0.005,
+      0.006667,
+      0.100833,
       0.148333,
-      0.0575,
-      0.215833,
-      0.2125,
-      0.073333,
-      0.19,
-      -0.043333,
+      0.016667,
+      0,
+      -0.205833,
+      -0.201667,
+      -0.1775
+    ],
+    [
+      0.126667,
+      0.114167,
+      0.3225,
+      0.269167,
+      0.075833,
+      0.205833,
+      0,
+      -0.018333,
+      0.041667
+    ],
+    [
+      0.135833,
+      0.124167,
+      0.27,
+      0.235,
+      0.155,
+      0.201667,
+      0.018333,
+      0,
+      0.075
+    ],
+    [
+      0.081667,
+      0.043333,
+      0.278333,
+      0.253333,
+      0.081667,
+      0.1775,
+      -0.041667,
+      -0.075,
       0
     ]
   ],
   "payoffStandardErrors": [
     [
       0,
-      0.035587,
-      0.033164,
-      0.034209,
-      0.034994,
-      0.035097,
-      0.033525,
-      0.034177
+      0.035559,
+      0.033415,
+      0.034274,
+      0.034529,
+      0.034829,
+      0.033356,
+      0.033721,
+      0.034144
     ],
     [
-      0.035587,
+      0.035559,
       0,
-      0.033353,
-      0.033773,
-      0.035009,
-      0.035514,
-      0.03406,
-      0.03464
-    ],
-    [
-      0.033164,
-      0.033353,
-      0,
-      0.034776,
-      0.033316,
-      0.034706,
-      0.031924,
-      0.03287
-    ],
-    [
-      0.034209,
-      0.033773,
-      0.034776,
-      0,
-      0.034796,
-      0.034577,
-      0.032853,
-      0.0337
-    ],
-    [
-      0.034994,
-      0.035009,
-      0.033316,
-      0.034796,
-      0,
-      0.035195,
-      0.033566,
-      0.03389
-    ],
-    [
-      0.035097,
-      0.035514,
-      0.034706,
-      0.034577,
-      0.035195,
-      0,
-      0.033333,
-      0.033748
-    ],
-    [
-      0.033525,
-      0.03406,
-      0.031924,
-      0.032853,
-      0.033566,
-      0.033333,
-      0,
-      0.033377
-    ],
-    [
-      0.034177,
-      0.03464,
-      0.03287,
-      0.0337,
-      0.03389,
       0.033748,
-      0.033377,
+      0.033939,
+      0.035311,
+      0.035852,
+      0.033379,
+      0.033278,
+      0.033231
+    ],
+    [
+      0.033415,
+      0.033748,
+      0,
+      0.0348,
+      0.033229,
+      0.034896,
+      0.031949,
+      0.031704,
+      0.032281
+    ],
+    [
+      0.034274,
+      0.033939,
+      0.0348,
+      0,
+      0.034926,
+      0.034034,
+      0.032528,
+      0.03266,
+      0.033569
+    ],
+    [
+      0.034529,
+      0.035311,
+      0.033229,
+      0.034926,
+      0,
+      0.035003,
+      0.0344,
+      0.034046,
+      0.035168
+    ],
+    [
+      0.034829,
+      0.035852,
+      0.034896,
+      0.034034,
+      0.035003,
+      0,
+      0.033912,
+      0.0338,
+      0.034983
+    ],
+    [
+      0.033356,
+      0.033379,
+      0.031949,
+      0.032528,
+      0.0344,
+      0.033912,
+      0,
+      0.031662,
+      0.033087
+    ],
+    [
+      0.033721,
+      0.033278,
+      0.031704,
+      0.03266,
+      0.034046,
+      0.0338,
+      0.031662,
+      0,
+      0.03265
+    ],
+    [
+      0.034144,
+      0.033231,
+      0.032281,
+      0.033569,
+      0.035168,
+      0.034983,
+      0.033087,
+      0.03265,
       0
     ]
   ],
   "populationExploitability": 0,
-  "populationExploitabilityUpper95": 0.022085,
-  "bestResponse": "option_value",
+  "populationExploitabilityUpper95": 0.043725,
+  "bestResponse": "regime_adaptive",
   "responseSearch": [
     {
       "round": 1,
       "testedCandidates": 40,
       "candidateId": "response_r1_15",
       "exploration": {
-        "mean": 0.166667,
-        "standardError": 0.058827,
+        "mean": 0.169444,
+        "standardError": 0.059634,
         "pairedDeals": 180
       },
       "confirmation": {
-        "mean": -0.000667,
-        "standardError": 0.020829,
+        "mean": -0.015333,
+        "standardError": 0.02099,
         "pairedDeals": 1500
       },
-      "lower95": -0.041491,
+      "lower95": -0.056474,
       "accepted": false
     }
   ],
@@ -357,38 +423,46 @@
     {
       "id": "probe_y_extreme",
       "name": "検証用・極端Y型",
-      "mean": -0.102333,
-      "standardError": 0.021377,
+      "mean": -0.083667,
+      "standardError": 0.0214,
       "pairedDeals": 1500,
-      "upper95": -0.060434
+      "upper95": -0.041722
     },
     {
       "id": "probe_x_extreme",
       "name": "検証用・極端X型",
-      "mean": -0.529,
-      "standardError": 0.017243,
+      "mean": -0.511333,
+      "standardError": 0.01724,
       "pairedDeals": 1500,
-      "upper95": -0.495205
+      "upper95": -0.477543
     },
     {
       "id": "probe_all_hidden",
       "name": "検証用・最大隠蔽型",
-      "mean": -0.212667,
-      "standardError": 0.02237,
+      "mean": -0.234333,
+      "standardError": 0.021757,
       "pairedDeals": 1500,
-      "upper95": -0.168822
+      "upper95": -0.191689
+    },
+    {
+      "id": "probe_polarized_rush",
+      "name": "検証用・極端レジーム適応型",
+      "mean": -0.123667,
+      "standardError": 0.020341,
+      "pairedDeals": 1500,
+      "upper95": -0.083799
     }
   ],
   "equilibriumPlayStudy": {
     "games": 1500,
-    "firstPlayerUtility": 0.002667,
-    "firstPlayerUtilityStandardError": 0.025219,
-    "firstWinRate": 0.478,
-    "secondWinRate": 0.475333,
-    "drawRate": 0.046667,
-    "chooserChoseFirstRate": 0.147333,
-    "averageScore": 11.925,
-    "averageHiddenCards": 2.962333,
+    "firstPlayerUtility": -0.048667,
+    "firstPlayerUtilityStandardError": 0.025249,
+    "firstWinRate": 0.454667,
+    "secondWinRate": 0.503333,
+    "drawRate": 0.042,
+    "chooserChoseFirstRate": 0.374,
+    "averageScore": 11.658667,
+    "averageHiddenCards": 2.997333,
     "averageBonusDraws": 2.5
   },
   "limitations": [

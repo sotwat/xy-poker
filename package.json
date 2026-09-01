@@ -18,6 +18,7 @@
     "dev:all": "concurrently \"npm run start\" \"npm run dev\"",
     "train": "tsx scripts/train.ts",
     "solve:gto": "tsx scripts/solve_gto.ts",
+    "analyze:gto-dice": "tsx scripts/analyze_dice_regimes.ts",
     "benchmark:ai": "tsx scripts/benchmark_ai.ts"
   },
   "dependencies": {

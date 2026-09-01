@@ -10,9 +10,11 @@ export interface GtoPolicyWeights {
     row3Delay: number;
     concealment: number;
     firstBias: number;
+    /** 0 preserves A1; 1 enables full-board dice-regime adaptation. */
+    boardAdaptation?: number;
 }
 
-/** The policy-space equilibrium found by scripts/solve_gto.ts. */
+/** The original policy-space equilibrium retained as a reproducible baseline. */
 export const XY_GTO_A1: Readonly<GtoPolicyWeights> = Object.freeze({
     yWeight: 0.9,
     xWeight: 1.15,
@@ -22,7 +24,25 @@ export const XY_GTO_A1: Readonly<GtoPolicyWeights> = Object.freeze({
     row3Delay: 1.9,
     concealment: 0.25,
     firstBias: -0.55,
+    boardAdaptation: 0,
 });
+
+/** Regime-aware policy. Re-solved and validated by scripts/solve_gto.ts. */
+export const XY_GTO_A2: Readonly<GtoPolicyWeights> = Object.freeze({
+    ...XY_GTO_A1,
+    boardAdaptation: 1,
+});
+
+export interface DiceBoardMetrics {
+    total: number;
+    mean: number;
+    variance: number;
+    standardDeviation: number;
+    range: number;
+    normalizedVariance: number;
+    bonusRaceIndex: number;
+    xValueMultiplier: number;
+}
 
 const Y_STRAIGHT_WINDOWS: Rank[][] = [
     [14, 2, 3],
@@ -34,6 +54,54 @@ const X_STRAIGHT_WINDOWS: Rank[][] = [
         Array.from({ length: 5 }, (__, offset) => index + offset + 2) as Rank[]
     )),
 ];
+
+function clamp(value: number, minimum: number, maximum: number): number {
+    return Math.max(minimum, Math.min(maximum, value));
+}
+
+/**
+ * Summarizes the public chance state. Population variance is normalized by 6,
+ * the variance of the maximally polarized five-die boards 66611 / 66111.
+ */
+export function analyzeDiceBoard(dice: number[]): DiceBoardMetrics {
+    const validDice = dice.length === 5 && dice.every(value => Number.isFinite(value) && value >= 1 && value <= 6)
+        ? dice
+        : [3.5, 3.5, 3.5, 3.5, 3.5];
+    const total = validDice.reduce((sum, value) => sum + value, 0);
+    const mean = total / validDice.length;
+    const variance = validDice.reduce((sum, value) => sum + (value - mean) ** 2, 0) / validDice.length;
+    const maximum = Math.max(...validDice);
+    const minimum = Math.min(...validDice);
+    const range = maximum - minimum;
+    const normalizedVariance = clamp(variance / 6, 0, 1);
+    const normalizedRange = clamp(range / 5, 0, 1);
+    const lowColumnGap = clamp((mean - minimum) / 5, 0, 1);
+    const highMean = clamp((mean - 3.5) / 2.5, 0, 1);
+
+    // A bonus draw is most attractive when a clearly cheap column can fund
+    // optionality for materially more valuable columns. Mean, dispersion and
+    // the gap to the cheapest die are deliberately separate features.
+    const bonusRaceIndex = clamp(
+        normalizedVariance * 0.58
+        + normalizedRange * 0.22
+        + lowColumnGap * 0.15
+        + highMean * 0.10,
+        0,
+        1,
+    );
+    const xValueMultiplier = clamp(1 + (3.5 - mean) * 0.28, 0.45, 1.7);
+
+    return {
+        total,
+        mean,
+        variance,
+        standardDeviation: Math.sqrt(variance),
+        range,
+        normalizedVariance,
+        bonusRaceIndex,
+        xValueMultiplier,
+    };
+}
 
 export function firstEmptyRow(player: PlayerState, column: number): number {
     return player.board.findIndex(row => row[column] === null);
@@ -107,11 +175,18 @@ function compareCompletedY(ownCards: Card[], opponentCards: Card[]): number {
     return 0;
 }
 
-export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A1): number {
+export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A2): number {
     const ranks = player.hand.map(card => card.rank);
     const duplicateCards = ranks.length - new Set(ranks).size;
     const highCards = ranks.filter(rank => rank >= 11).length;
-    return weights.firstBias + duplicateCards * 0.7 + highCards * 0.16 - 0.45;
+    const disposableCards = ranks.filter(rank => rank <= 7).length / Math.max(1, ranks.length);
+    const metrics = analyzeDiceBoard(player.dice);
+    const adaptation = clamp(weights.boardAdaptation ?? 0, 0, 1.5);
+    const polarizedFirstMoverValue = adaptation
+        * metrics.bonusRaceIndex
+        * (0.95 + disposableCards * 0.35);
+    return weights.firstBias + duplicateCards * 0.7 + highCards * 0.16
+        + polarizedFirstMoverValue - 0.45;
 }
 
 export function scoreGtoMove(
@@ -119,7 +194,7 @@ export function scoreGtoMove(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A1,
+    weights = XY_GTO_A2,
 ): number {
     const player = state.players[playerIndex];
     const opponent = state.players[1 - playerIndex];
@@ -131,19 +206,39 @@ export function scoreGtoMove(
         .filter((value): value is Card => value !== null);
     const projectedColumn = [...ownColumn, card];
     const dice = player.dice[column];
+    const metrics = analyzeDiceBoard(player.dice);
+    const adaptation = clamp(weights.boardAdaptation ?? 0, 0, 1.5);
+    const rangeScale = Math.max(1, metrics.range);
+    const relativeCheapness = clamp((metrics.mean - dice) / rangeScale, 0, 1);
+    const relativeStake = clamp((dice - metrics.mean) / rangeScale, -1, 1);
+    const rushPotential = adaptation * metrics.bonusRaceIndex * relativeCheapness;
     const diceScale = 0.45 + (dice / 6) * weights.diceWeight;
     const yValue = partialYValue(projectedColumn) * diceScale * weights.yWeight * 8;
 
     const bottomCards = player.board[2].filter((value): value is Card => value !== null);
-    const xValue = row === 2 ? partialXValue([...bottomCards, card]) * weights.xWeight * 10 : 0;
+    const xValue = row === 2
+        ? partialXValue([...bottomCards, card]) * weights.xWeight * 10
+            * (1 + adaptation * (metrics.xValueMultiplier - 1))
+        : 0;
     const opponentComplete = opponent.board[2][column] !== null;
-    const tempoValue = row === 2 && !opponentComplete ? 4.5 * weights.tempoWeight : 0;
+    const opponentProgress = opponent.board.reduce(
+        (count, boardRow) => count + (boardRow[column] !== null ? 1 : 0),
+        0,
+    );
+    const tempoValue = row === 2 && !opponentComplete
+        ? 4.5 * weights.tempoWeight + rushPotential * (5.5 + opponentProgress * 0.45)
+        : 0;
     const progressValue = (row + 1) * 0.25 * weights.tempoWeight;
+    const rushPlanValue = opponentComplete ? 0 : rushPotential * projectedColumn.length * 1.35;
     const flexibilityValue = columnFlexibility(projectedColumn) * weights.flexibilityWeight * 3;
 
     const turnProgress = Math.min(1, state.turnCount / 30);
-    const row3Penalty = row === 2 ? weights.row3Delay * (1 - turnProgress) * 3.5 : 0;
+    const row3Penalty = row === 2
+        ? weights.row3Delay * (1 - turnProgress) * 3.5 * (1 - Math.min(0.8, rushPotential * 0.8))
+        : 0;
     const lowDiceHighCardCost = card.rank >= 11 ? (7 - dice) * 0.16 * weights.diceWeight : 0;
+    const cardQuality = (card.rank - 2) / 12;
+    const resourceAlignmentValue = adaptation * (cardQuality - 0.5) * relativeStake * 3.2;
 
     const opponentVisible = getVisibleOpponentCards(opponent, column);
     const showdownValue = compareCompletedY(projectedColumn, opponentVisible) * dice * weights.yWeight;
@@ -151,8 +246,9 @@ export function scoreGtoMove(
         ? opponentVisible.length * partialYValue(opponentVisible) * dice * 0.22 * weights.flexibilityWeight
         : 0;
 
-    return yValue + xValue + tempoValue + progressValue + flexibilityValue
-        + showdownValue + responseValue - row3Penalty - lowDiceHighCardCost;
+    return yValue + xValue + tempoValue + progressValue + rushPlanValue + flexibilityValue
+        + showdownValue + responseValue + resourceAlignmentValue
+        - row3Penalty - lowDiceHighCardCost;
 }
 
 export function getGtoHideProbability(
@@ -160,7 +256,7 @@ export function getGtoHideProbability(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A1,
+    weights = XY_GTO_A2,
 ): number {
     const player = state.players[playerIndex];
     if (player.hiddenCardsCount >= 3) return 0;

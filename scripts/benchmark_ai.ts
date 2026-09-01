@@ -7,7 +7,12 @@ import {
 } from '../src/logic/ai';
 import { createDeck } from '../src/logic/deck';
 import { gameReducer, INITIAL_GAME_STATE } from '../src/logic/game';
-import { getGtoHideProbability, scoreGtoMove } from '../src/logic/gtoPolicy';
+import {
+    getGtoHideProbability,
+    getGtoTurnOrderScore,
+    scoreGtoMove,
+    XY_GTO_A1,
+} from '../src/logic/gtoPolicy';
 import type { Card, GameState } from '../src/logic/types';
 
 interface MatchResult {
@@ -23,6 +28,16 @@ function readPositiveFlag(name: string, fallback: number): number {
     const parsed = Number.parseInt(argument.slice(name.length + 1), 10);
     if (!Number.isInteger(parsed) || parsed <= 0) throw new Error(`${name} must be positive.`);
     return parsed;
+}
+
+function readDiceFlag(): number[] | null {
+    const argument = process.argv.find(value => value.startsWith('--dice='));
+    if (!argument) return null;
+    const dice = argument.slice('--dice='.length).split(',').map(Number);
+    if (dice.length !== 5 || dice.some(value => !Number.isInteger(value) || value < 1 || value > 6)) {
+        throw new Error('--dice must contain five comma-separated integers from 1 to 6.');
+    }
+    return dice.sort((a, b) => b - a);
 }
 
 function seededRandom(seed: number): () => number {
@@ -65,13 +80,13 @@ function policyMove(state: GameState, playerIndex: 0 | 1, random: () => number) 
     for (const card of player.hand) {
         for (let column = 0; column < 5; column++) {
             if (player.board[2][column] !== null) continue;
-            const score = scoreGtoMove(state, playerIndex, card, column);
+            const score = scoreGtoMove(state, playerIndex, card, column, XY_GTO_A1);
             if (score > bestScore) {
                 bestScore = score;
                 best = {
                     cardId: card.id,
                     colIndex: column,
-                    isHidden: random() < getGtoHideProbability(state, playerIndex, card, column),
+                    isHidden: random() < getGtoHideProbability(state, playerIndex, card, column, XY_GTO_A1),
                 };
             }
         }
@@ -96,7 +111,9 @@ function playMatch(
             type: 'START_GAME',
             payload: { initialDeck: deck, initialDice: dice, startingPlayer: selector },
         });
-        const chooserGoesFirst = getBestTurnOrder(state, selector);
+        const chooserGoesFirst = selector === rolloutSeat
+            ? getBestTurnOrder(state, selector)
+            : getGtoTurnOrderScore(state.players[selector], XY_GTO_A1) > 0;
         state = gameReducer(state, {
             type: 'CHOOSE_TURN_ORDER',
             payload: { startingPlayer: chooserGoesFirst ? selector : 1 - selector },
@@ -139,13 +156,16 @@ function playMatch(
 const deals = readPositiveFlag('--deals', 20);
 const timeBudgetMs = readPositiveFlag('--time-ms', 400);
 const beliefSamples = readPositiveFlag('--samples', 20);
+const fixedDice = readDiceFlag();
 const results: MatchResult[] = [];
 const startedAt = performance.now();
 
 for (let deal = 0; deal < deals; deal++) {
     const chance = seededRandom(mixSeed(0x58594232, deal));
     const deck = shuffledDeck(chance);
-    const dice = Array.from({ length: 5 }, () => Math.floor(chance() * 6) + 1).sort((a, b) => b - a);
+    const dice = fixedDice
+        ? [...fixedDice]
+        : Array.from({ length: 5 }, () => Math.floor(chance() * 6) + 1).sort((a, b) => b - a);
     const selector = (chance() < 0.5 ? 0 : 1) as 0 | 1;
     results.push(playMatch(
         deck,
@@ -173,7 +193,8 @@ const wins = results.filter(result => result.utility === 1).length;
 const losses = results.filter(result => result.utility === -1).length;
 const draws = results.length - wins - losses;
 console.log(JSON.stringify({
-    opponent: 'XY-GTO-A1 one-step policy (the previous runtime fallback)',
+    opponent: 'XY-GTO-A1 one-step policy (non-adaptive baseline)',
+    dice: fixedDice ?? 'random',
     pairedDeals: deals,
     games: results.length,
     rolloutWins: wins,

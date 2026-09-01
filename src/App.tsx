@@ -1720,7 +1720,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09020039</div>
+                          <div className="home-version">v09020623</div>
                         </div>
                       </div>
                     )}
