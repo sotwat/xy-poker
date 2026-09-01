@@ -451,6 +451,7 @@ function App() {
       setIsTossingCoin(false);
       setTossResult(null);
       setTurnSelectionTimeLeft(null);
+      processedGameRef.current = null;
 
       // Robustly set Role and Opponent Name from server authoritative data
       if (socket.id === p1Id) {
@@ -1374,7 +1375,7 @@ function App() {
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
           <h1>XY Poker</h1>
-          {showVersion && <span className="version">v09012027</span>}
+          {showVersion && <span className="version">v09012036</span>}
         </div>
 
         <button
@@ -1633,7 +1634,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09012027</div>
+                          <div className="home-version">v09012036</div>
                         </div>
                       </div>
                     )}
