@@ -789,7 +789,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 4px 58px;
+  padding: 4px 76px 4px 58px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -819,13 +819,19 @@ body {
 }
 
 .auto-toggle-btn {
+  position: absolute !important;
+  right: 7px !important;
+  inset-block: auto !important;
+  z-index: 2;
   min-height: 26px !important;
+  min-width: 62px;
   margin: 0 !important;
   padding: 4px 7px !important;
   border-color: var(--border) !important;
   color: var(--text-muted) !important;
   background: transparent !important;
   font-size: 0.6rem !important;
+  letter-spacing: 0.03em;
 }
 
 .auto-toggle-btn.active {

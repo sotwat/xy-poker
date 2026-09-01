@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09020022` (2026-09-02 00:22)
+- **Current Version:** `09020039` (2026-09-02 00:39)
 - **Status:** **Full local quality gate and production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ 320×568, 390×844, 768×1024, and landscape layouts checked
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 25 passing
-    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~280 kB
+    - Automated tests: ✅ 28 passing
+    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~278 kB
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09020022` live on Cloudflare Pages; Render health endpoint responding normally
+    - Deployment: ✅ `v09020039` live on Cloudflare Pages; Render health endpoint responding normally
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09020039** (2026-09-02): **PRO AI Auto Play** - Added a persistent PRO-only AUTO control for local and online matches. When enabled, the same information-set-safe strategic AI now chooses lead/follow after a coin-toss win and performs every card, column, and face-down decision for the signed-in PRO player while manual match controls are locked. Opponent turns remain client-isolated, AUTO can be stopped at any time, and the 60-second safety action now uses the strategic AI instead of a random, partially invalid column picker.
 1. **v09020022** (2026-09-02): **Full-Rule Belief Rollout AI** - Replaced the timeout-prone pseudo-Expectimax path with information-set-safe, full-match rollouts driven by the real game reducer. Every completed rollout now includes standard draws, column-completion bonus draws, turn passing, Y/X scoring, and terminal wins; true opponent hands, hidden identities, and deck order remain inaccessible. Fixed production policy weights are no longer overwritten by crowd telemetry. A reproducible paired benchmark over 60 games beat the former one-step runtime fallback 43-16-1 while completing all 20 belief samples in an average 91 ms per decision.
 2. **v09012358** (2026-09-01): **Hand-Aware Game Record Replay** - Added backward-compatible record schema v2 with both initial hands and per-move draw data, deterministic hand reconstruction at every replay position, strict client/server hand-evolution validation under the existing 25 kB database limit, a legacy-record notice, and a compact responsive replay stage that shows both players' current hands around the board.
 2. **v09012337** (2026-09-01): **Always-Visible Hand Layout** - Replaced the fixed-width, centered overflow strip with evenly shrinking, aspect-ratio-preserving hand cards so every card remains visible and selectable as bonus draws increase the hand size on phone, tablet, and desktop layouts. Made the unified release script work in restored environments that provide Node.js without globally installed npm/npx shims.

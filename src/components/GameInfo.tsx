@@ -46,30 +46,31 @@ export const GameInfo: React.FC<GameInfoProps> = ({
 
                 {phase === 'playing' && (
                     currentPlayerIndex === (isOnlineMode ? myIndex : 0) ? (
-                        <>
-                            <div className="turn-indicator your-turn">
-                                YOUR TURN
-                            </div>
-                            {isPremium && onToggleAuto && (
-                                <button
-                                    type="button"
-                                    className={`auto-toggle-btn ${isAutoPlay ? 'active' : ''}`}
-                                    onClick={onToggleAuto}
-                                >
-                                    AUTO: {isAutoPlay ? 'ON' : 'OFF'}
-                                </button>
-                            )}
-                            {onSurrender && (
-                                <button type="button" className="surrender-btn" onClick={onSurrender}>
-                                    Cancel
-                                </button>
-                            )}
-                        </>
+                        <div className="turn-indicator your-turn">
+                            {isAutoPlay ? 'AI IS PLAYING' : 'YOUR TURN'}
+                        </div>
                     ) : (
                         <div className="turn-indicator opponent-turn">
                             {isOnlineMode ? `${oppDisplayName}'s Turn` : `${p2Name}'s Turn`}
                         </div>
                     )
+                )}
+                {isPremium && onToggleAuto && (phase === 'turn_selection' || phase === 'playing') && (
+                    <button
+                        type="button"
+                        className={`auto-toggle-btn ${isAutoPlay ? 'active' : ''}`}
+                        onClick={onToggleAuto}
+                        aria-pressed={isAutoPlay}
+                        aria-label={`AI auto play ${isAutoPlay ? 'on' : 'off'}`}
+                        title="PRO: let the game AI choose every action"
+                    >
+                        AUTO {isAutoPlay ? 'ON' : 'OFF'}
+                    </button>
+                )}
+                {phase === 'playing' && onSurrender && (
+                    <button type="button" className="surrender-btn" onClick={onSurrender}>
+                        Cancel
+                    </button>
                 )}
                 {phase === 'ended' && (
                     <div className="winner-banner">

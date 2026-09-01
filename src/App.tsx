@@ -25,6 +25,11 @@ import {
 } from './logic/gameRecord';
 import { supabase, updateGlobalAiParameters } from './supabase';
 import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS } from './logic/ai';
+import {
+  getControlledPlayerIndex,
+  shouldProAutoChooseTurn,
+  shouldProAutoPlace,
+} from './logic/proAuto';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, playCoinTossSound, playShowdownStinger, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
@@ -265,6 +270,7 @@ function App() {
         if (!cancelled) {
           setDbPlayerId(null);
           setIsPremium(false);
+          setIsAutoPlay(false);
         }
         return;
       }
@@ -276,8 +282,10 @@ function App() {
         .single();
 
       if (cancelled) return;
+      const profileIsPremium = Boolean(data?.is_premium);
       setDbPlayerId(data?.id ?? null);
-      setIsPremium(Boolean(data?.is_premium));
+      setIsPremium(profileIsPremium);
+      if (!profileIsPremium) setIsAutoPlay(false);
       if (data?.username) {
         setPlayerName(data.username);
         localStorage.setItem('xypoker_playerName_v2', data.username);
@@ -370,6 +378,7 @@ function App() {
   const quickMatchRequestRef = useRef(0);
   const lastActionTimeRef = useRef<number>(0);
   const isAIActingRef = useRef<boolean>(false); // Guard against double AI moves
+  const isProAutoActingRef = useRef<boolean>(false);
   const localGameTokenRef = useRef<string | null>(null);
 
   const beginTrackedLocalGame = useCallback(() => {
@@ -592,6 +601,8 @@ function App() {
 
   const { currentPlayerIndex, players } = gameState;
   const currentPlayer = players[currentPlayerIndex];
+  const myPlayerIndex = getControlledPlayerIndex(isOnlineGame, playerRole);
+  const isProAutoActive = isPremium && isAutoPlay;
 
   // Auto-Finish Logic
   useEffect(() => {
@@ -649,6 +660,26 @@ function App() {
     }
   }, [currentPlayerIndex, gameState, handleChooseTurnOrder, isOnlineGame, isTossingCoin, phase, tossResult]);
 
+  // PRO AUTO also makes the strategic lead/follow decision when this player wins the toss.
+  useEffect(() => {
+    if (!shouldProAutoChooseTurn({
+      isPremium,
+      isAutoPlay,
+      phase,
+      chooserIndex: tossResult,
+      controlledPlayerIndex: myPlayerIndex,
+      showDiceAnimation,
+      isTossingCoin,
+    })) return;
+
+    const timer = window.setTimeout(() => {
+      const shouldGoFirst = getBestTurnOrder(gameState, myPlayerIndex, DEFAULT_AI_PARAMS);
+      handleChooseTurnOrder(shouldGoFirst ? myPlayerIndex : (1 - myPlayerIndex));
+    }, 650);
+
+    return () => window.clearTimeout(timer);
+  }, [gameState, handleChooseTurnOrder, isAutoPlay, isPremium, isTossingCoin, myPlayerIndex, phase, showDiceAnimation, tossResult]);
+
   // Turn Selection Timer Tick
   useEffect(() => {
     if (turnSelectionTimeLeft !== null && turnSelectionTimeLeft > 0) {
@@ -658,13 +689,12 @@ function App() {
       return () => clearTimeout(timer);
     } else if (turnSelectionTimeLeft === 0) {
       const timer = window.setTimeout(() => {
-        const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
-        const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
-        handleChooseTurnOrder(Math.random() > 0.5 ? myIndex : opIndex);
+        const shouldGoFirst = getBestTurnOrder(gameState, myPlayerIndex, DEFAULT_AI_PARAMS);
+        handleChooseTurnOrder(shouldGoFirst ? myPlayerIndex : (1 - myPlayerIndex));
       }, 0);
       return () => window.clearTimeout(timer);
     }
-  }, [handleChooseTurnOrder, mode, playerRole, turnSelectionTimeLeft]);
+  }, [gameState, handleChooseTurnOrder, myPlayerIndex, turnSelectionTimeLeft]);
 
   // Determine if we are in the Lobby view (where version and title inputs are shown)
   // Lobby view is:
@@ -777,41 +807,43 @@ function App() {
 
   // User Auto-Play Logic (Both Local P1 and Online Self)
   useEffect(() => {
-    if (turnAnnounce !== null) return; // Wait until lead/follow banner announcement completes
+    if (!shouldProAutoPlace({
+      isPremium,
+      isAutoPlay,
+      phase,
+      currentPlayerIndex,
+      controlledPlayerIndex: myPlayerIndex,
+      showDiceAnimation,
+      isTurnAnnouncementVisible: turnAnnounce !== null,
+    })) return;
+    if (isProAutoActingRef.current) return;
 
-    // Check if Auto is ON, game is playing, and it's MY turn
-    const isMyTurn = (mode === 'local' && currentPlayerIndex === 0) ||
-      (isOnlineGame && playerRole === 'host' && currentPlayerIndex === 0) ||
-      (isOnlineGame && playerRole === 'guest' && currentPlayerIndex === 1);
+    isProAutoActingRef.current = true;
+    setSelectedCardId(null);
+    setPlaceHidden(false);
 
-    if (isAutoPlay && phase === 'playing' && isMyTurn && !showDiceAnimation) {
-      const delay = 800; // Slightly faster than bot? Or standard.
+    const timer = window.setTimeout(() => {
+      const move = getBestMove(gameState, myPlayerIndex);
+      const action: GameAction = {
+        type: 'PLACE_AND_DRAW',
+        payload: {
+          cardId: move.cardId,
+          colIndex: move.colIndex,
+          isHidden: move.isHidden,
+        },
+      };
 
-      const timer = setTimeout(() => {
-        // Use AI to find best move for ME
-        const myIndex = currentPlayerIndex;
-        const move = getBestMove(gameState, myIndex);
+      playClickSound();
+      dispatch(action);
+      if (isOnlineGame && roomId) socket.emit('game_action', { roomId, action });
+      isProAutoActingRef.current = false;
+    }, 650);
 
-        const action: GameAction = {
-          type: 'PLACE_AND_DRAW',
-          payload: {
-            cardId: move.cardId,
-            colIndex: move.colIndex,
-            isHidden: move.isHidden
-          }
-        };
-
-        playClickSound(); // Feedback
-        dispatch(action);
-
-        if (isOnlineGame && roomId) {
-          socket.emit('game_action', { roomId, action });
-        }
-      }, delay);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isAutoPlay, phase, currentPlayerIndex, mode, isOnlineGame, playerRole, roomId, gameState, showDiceAnimation, turnAnnounce]);
+    return () => {
+      window.clearTimeout(timer);
+      isProAutoActingRef.current = false;
+    };
+  }, [currentPlayerIndex, gameState, isAutoPlay, isOnlineGame, isPremium, myPlayerIndex, phase, roomId, showDiceAnimation, turnAnnounce]);
 
   // Showdown sequence runner (Re-usable for Replay Showdown)
   useEffect(() => {
@@ -987,15 +1019,6 @@ function App() {
   const handleAutoPlay = useCallback(() => {
     if (phase !== 'playing') return;
 
-    // Check if it's "MY" turn to act.
-    // In Local: App handles both.
-    // In Online: Only handle if it is MY turn.
-
-    let myPlayerIndex = 0;
-    if (isOnlineGame) {
-      myPlayerIndex = playerRole === 'host' ? 0 : 1;
-    }
-
     // Safety: If online and not my turn, DO NOT auto-play for opponent (they handle their own)
     if (isOnlineGame && currentPlayerIndex !== myPlayerIndex) {
       return;
@@ -1003,37 +1026,15 @@ function App() {
 
     const currentPlayer = gameState.players[currentPlayerIndex];
     if (currentPlayer.hand.length === 0) return; // Should not happen in playing phase
-
-    // Pick random card
-    const randomCardIndex = Math.floor(Math.random() * currentPlayer.hand.length);
-    const card = currentPlayer.hand[randomCardIndex];
-
-    // Find valid columns
-    const validCols: number[] = [];
-    for (let c = 0; c < 5; c++) {
-      if (!currentPlayer.board[0][c] || !currentPlayer.board[1][c] || !currentPlayer.board[2][c]) {
-        // Check specific row availability is complex with current structure?
-        // Actually board is [row][col].
-        // Logic: We place in column. Game logic finds first empty row from bottom (2->0) or top?
-        // Game logic `placeCard(player, card, colIndex)` handles row placement.
-        // We just need to check if column is full.
-        if (!currentPlayer.board[0][c]) { // If top row is empty, column has space
-          validCols.push(c);
-        }
-      }
-    }
-
-    if (validCols.length === 0) return; // Board full?
-
-    const randomCol = validCols[Math.floor(Math.random() * validCols.length)];
+    const move = getBestMove(gameState, currentPlayerIndex);
 
     const action: GameAction = {
       type: 'PLACE_AND_DRAW',
       payload: {
-        cardId: card.id,
-        colIndex: randomCol,
-        isHidden: false // Random placement is public
-      }
+        cardId: move.cardId,
+        colIndex: move.colIndex,
+        isHidden: move.isHidden,
+      },
     };
 
     dispatch(action);
@@ -1042,7 +1043,7 @@ function App() {
     if (isOnlineGame && roomId) {
       socket.emit('game_action', { roomId, action });
     }
-  }, [currentPlayerIndex, gameState, isOnlineGame, phase, playerRole, roomId]);
+  }, [currentPlayerIndex, gameState, isOnlineGame, myPlayerIndex, phase, roomId]);
 
   useEffect(() => {
     if (phase !== 'playing' || showDiceAnimation) return;
@@ -1333,12 +1334,16 @@ function App() {
     }
   };
 
-  const handleCardSelect = (cardId: string) => {
-    let myPlayerIndex = 0;
-    if (isOnlineGame) {
-      myPlayerIndex = playerRole === 'host' ? 0 : 1;
-    }
+  const handleToggleAuto = useCallback(() => {
+    if (!isPremium) return;
+    playClickSound();
+    setSelectedCardId(null);
+    setPlaceHidden(false);
+    setIsAutoPlay(current => !current);
+  }, [isPremium]);
 
+  const handleCardSelect = (cardId: string) => {
+    if (isProAutoActive) return;
     if (currentPlayerIndex !== myPlayerIndex) return;
     if (selectedCardId === cardId) {
       setSelectedCardId(null);
@@ -1348,6 +1353,7 @@ function App() {
   };
 
   const handleColumnClick = (colIndex: number) => {
+    if (isProAutoActive) return;
     // Determine if it is valid to click
     const now = Date.now();
     if (now - lastActionTimeRef.current < 400) return; // Prevent double click multi-placements
@@ -1358,11 +1364,6 @@ function App() {
 
     if (phase !== 'playing') return;
     if (!selectedCardId) return;
-
-    let myPlayerIndex = 0;
-    if (isOnlineGame) {
-      myPlayerIndex = playerRole === 'host' ? 0 : 1;
-    }
 
     if (currentPlayerIndex !== myPlayerIndex) return;
 
@@ -1535,7 +1536,7 @@ function App() {
           onSurrender={handleSurrender}
           isPremium={isPremium}
           isAutoPlay={isAutoPlay}
-          onToggleAuto={() => setIsAutoPlay(!isAutoPlay)}
+          onToggleAuto={handleToggleAuto}
         />
       )}
 
@@ -1719,7 +1720,7 @@ function App() {
                             <span>開発者を支援</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09020022</div>
+                          <div className="home-version">v09020039</div>
                         </div>
                       </div>
                     )}
@@ -1756,7 +1757,9 @@ function App() {
                         {/* If it's my turn to choose (I won the toss) */}
                         {((mode === 'local' && tossResult === 0) || (mode === 'online' && ((playerRole === 'host' && tossResult === 0) || (playerRole === 'guest' && tossResult === 1)))) ? (
                           <div className="turn-choice-container">
-                            {turnSelectionTimeLeft !== null && (
+                            {isProAutoActive ? (
+                              <div className="turn-choice-timer">AUTO is choosing…</div>
+                            ) : turnSelectionTimeLeft !== null && (
                               <div className="turn-choice-timer">
                                 Choose in {turnSelectionTimeLeft}s
                               </div>
@@ -1764,16 +1767,14 @@ function App() {
                             <div className="turn-choice-buttons">
                               <button type="button" onClick={() => {
                                 playClickSound();
-                                const myIndex = mode === 'online' && playerRole === 'guest' ? 1 : 0;
-                                handleChooseTurnOrder(myIndex);
-                              }}>
+                                handleChooseTurnOrder(myPlayerIndex);
+                              }} disabled={isProAutoActive}>
                                 Go first
                               </button>
                               <button type="button" onClick={() => {
                                 playClickSound();
-                                const opIndex = mode === 'online' && playerRole === 'guest' ? 0 : 1;
-                                handleChooseTurnOrder(opIndex);
-                              }}>
+                                handleChooseTurnOrder(1 - myPlayerIndex);
+                              }} disabled={isProAutoActive}>
                                 Go second
                               </button>
                             </div>
@@ -1796,7 +1797,7 @@ function App() {
                       opponentBoard={players[isOnlineGame && playerRole === 'guest' ? 0 : 1].board}
                       dice={players[currentPlayerIndex].dice}
                       onColumnClick={handleColumnClick}
-                      isCurrentPlayer={currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)}
+                      isCurrentPlayer={currentPlayerIndex === myPlayerIndex && !isProAutoActive}
                       revealAll={phase === 'ended'}
                       winningColumns={phase === 'ended' ? calculateWinningColumns() : undefined}
                       xWinner={phase === 'ended' ? calculateXWinner() : undefined}
@@ -1822,20 +1823,21 @@ function App() {
                           selectedCardId={selectedCardId}
                           onCardSelect={phase === 'playing' ? handleCardSelect : () => {}} // Disable selection in turn_selection
                           isHidden={false}
-                          isCurrentPlayer={phase === 'playing' ? (currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)) : false}
+                          isCurrentPlayer={phase === 'playing' ? (currentPlayerIndex === myPlayerIndex && !isProAutoActive) : false}
                         />
                       </div>
                       {/* Always render the action controls during playing phase to prevent layout height shifting */}
                       {phase === 'playing' && (
                         <div className="action-bar" style={{ minHeight: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                           <div className="place-controls">
-                            <div className="toggle-hidden" style={{ opacity: (currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)) ? 1 : 0.5, pointerEvents: (currentPlayerIndex === (isOnlineGame && playerRole === 'guest' ? 1 : 0)) ? 'auto' : 'none', transition: 'opacity 0.2s' }}>
+                            <div className="toggle-hidden" style={{ opacity: (currentPlayerIndex === myPlayerIndex && !isProAutoActive) ? 1 : 0.5, pointerEvents: (currentPlayerIndex === myPlayerIndex && !isProAutoActive) ? 'auto' : 'none', transition: 'opacity 0.2s' }}>
                               <input
                                 type="checkbox"
                                 checked={placeHidden}
                                 onChange={(e) => setPlaceHidden(e.target.checked)}
                                 disabled={
-                                  currentPlayerIndex !== (isOnlineGame && playerRole === 'guest' ? 1 : 0) ||
+                                  currentPlayerIndex !== myPlayerIndex ||
+                                  isProAutoActive ||
                                   !selectedCardId || 
                                   currentPlayer.hiddenCardsCount >= 3
                                 }
