@@ -70,7 +70,7 @@ graph TD
 ## ✅ Handover Status
 
 - **Current Version:** `09030047` (2026-09-03 00:47)
-- **Status:** **Local quality gate in progress; production deployment pending**
+- **Status:** **Production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 48 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~319 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ⏳ `v09030047` deployment pending
+    - Deployment: ✅ `v09030047` live on Cloudflare Pages; Render API health normal
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
