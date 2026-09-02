@@ -37,10 +37,26 @@ import {
   canUseProThoughtJournal,
   shouldPauseTurnTimerForProThought,
 } from './logic/proThought';
+import {
+  createRandomShowdownVoiceAssignment,
+  normalizeShowdownVoiceAssignment,
+  type ShowdownHandType,
+  type ShowdownVoiceAssignment,
+} from './logic/showdownVoice';
 import { generateRandomPlayerName } from './logic/nameGenerator';
-import { playClickSound, playSuccessSound, playCoinTossSound, playShowdownStinger, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
+import {
+  playClickSound,
+  playSuccessSound,
+  playCoinTossSound,
+  playShowdownStinger,
+  playShowdownVoice,
+  preloadShowdownVoices,
+  stopShowdownVoice,
+  warmupAudio,
+  unlockAudioContext,
+} from './utils/sound';
 import { getBrowserId } from './utils/identity';
-import { useI18n } from './i18n';
+import { formatHandName, translate, useI18n } from './i18n';
 import './App.css';
 
 const GameResult = lazy(() => import('./components/GameResult').then(module => ({ default: module.GameResult })));
@@ -74,6 +90,7 @@ interface GameStartPayload {
   p1IsPremium?: boolean;
   p2IsPremium?: boolean;
   startingPlayer: 0 | 1;
+  showdownVoices?: unknown;
 }
 
 interface RoomResponse {
@@ -171,7 +188,7 @@ function unlockSkinGeneric<T extends string>(
 }
 
 function App() {
-  const { language, setLanguage, t, handName } = useI18n();
+  const { language, setLanguage, t } = useI18n();
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
   const phase = gameState.phase;
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -212,6 +229,7 @@ function App() {
   const [isBotDisguise, setIsBotDisguise] = useState(false);
   const processedGameRef = useRef<string | null>(null); // Guard for scoring animation
   const showdownRunRef = useRef(0);
+  const showdownVoicesRef = useRef<ShowdownVoiceAssignment | null>(null);
   const gameStateRef = useRef(gameState); // Ref to access state in listeners
   const gameRecordingRef = useRef<ActiveGameRecording | null>(null);
   const pendingGameThoughtRef = useRef<PendingGameRecordThought | null>(null);
@@ -226,6 +244,13 @@ function App() {
   // Audio Unlock for iOS PWA
   useEffect(() => {
     unlockAudioContext();
+  }, []);
+
+  const beginShowdownVoiceMatch = useCallback((assignment?: ShowdownVoiceAssignment) => {
+    const nextAssignment = assignment ?? createRandomShowdownVoiceAssignment();
+    stopShowdownVoice();
+    showdownVoicesRef.current = nextAssignment;
+    preloadShowdownVoices(nextAssignment);
   }, []);
 
   // Supabase Session
@@ -467,7 +492,7 @@ function App() {
     socket.on('game_start', (data: GameStartPayload) => {
       const {
         roomId, initialDice, initialDeck, p1Name, p2Name, p1Id, p2Id,
-        isRanked, p1IsPremium, p2IsPremium, startingPlayer
+        isRanked, p1IsPremium, p2IsPremium, startingPlayer, showdownVoices
       } = data;
 
       quickMatchRequestRef.current += 1;
@@ -486,6 +511,7 @@ function App() {
       setTossResult(null);
       setTurnSelectionTimeLeft(null);
       processedGameRef.current = null;
+      beginShowdownVoiceMatch(normalizeShowdownVoiceAssignment(showdownVoices) ?? undefined);
 
       // Robustly set Role and Opponent Name from server authoritative data
       if (socket.id === p1Id) {
@@ -598,7 +624,7 @@ function App() {
       socket.off('player_left');
       // Don't disconnect on cleanup - only when component unmounts
     };
-  }, [session?.access_token]);
+  }, [beginShowdownVoiceMatch, session?.access_token]);
 
   // Rating: Handle Game End Report (Host only)
   useEffect(() => {
@@ -888,26 +914,35 @@ function App() {
 
   // Showdown sequence runner (Re-usable for Replay Showdown)
   useEffect(() => {
-    if (phase !== 'ended') showdownRunRef.current += 1;
+    if (phase !== 'ended') {
+      showdownRunRef.current += 1;
+      stopShowdownVoice();
+    }
   }, [phase]);
 
   const triggerShowdownSequence = useCallback(async () => {
     const runId = ++showdownRunRef.current;
     const isCurrentRun = () => showdownRunRef.current === runId;
     const wait = (duration: number) => new Promise<void>(resolve => window.setTimeout(resolve, duration));
-    const presentShowdown = async (handName: string | null, isFinalHand: boolean) => {
+    const presentShowdown = async (
+      handType: ShowdownHandType | null,
+      winner: 'p1' | 'p2' | 'draw',
+      isFinalHand: boolean,
+    ) => {
       playShowdownStinger(isFinalHand);
       const minimumDuration = isFinalHand ? 2600 : 2200;
 
-      if (!handName) {
+      if (!handType || winner === 'draw') {
         await wait(minimumDuration);
         return;
       }
 
+      const assignment = showdownVoicesRef.current ?? createRandomShowdownVoiceAssignment();
+      showdownVoicesRef.current = assignment;
       await Promise.all([
         (async () => {
           await wait(isFinalHand ? 720 : 620);
-          if (isCurrentRun()) await speakText(handName);
+          if (isCurrentRun()) await playShowdownVoice(assignment[winner], handType);
         })(),
         wait(minimumDuration),
       ]);
@@ -917,6 +952,7 @@ function App() {
     setShowXHand(false);
     setCurrentShowdownPopup(null);
     setShowResultsModal(false);
+    stopShowdownVoice();
 
     const { players } = gameState;
     const p1 = players[0];
@@ -953,7 +989,7 @@ function App() {
     const p1XRes = evaluateXHand(p1.board[2] as Card[]);
     const p2XRes = evaluateXHand(p2.board[2] as Card[]);
     const { p1Score: p1X, p2Score: p2X } = calculateXHandScores(p1XRes, p2XRes);
-    let rowResult: { winner: 'p1' | 'p2' | 'draw'; type: string | null; cards: Card[] } = { winner: 'draw', type: null, cards: [] };
+    let rowResult: { winner: 'p1' | 'p2' | 'draw'; type: ShowdownHandType | null; cards: Card[] } = { winner: 'draw', type: null, cards: [] };
     if (p1X > p2X) rowResult = { winner: 'p1', type: p1XRes.type, cards: p1.board[2] as Card[] };
     else if (p2X > p1X) rowResult = { winner: 'p2', type: p2XRes.type, cards: p2.board[2] as Card[] };
 
@@ -965,26 +1001,26 @@ function App() {
         const res = colResults[currentCol];
         setCurrentShowdownPopup({
           id: `col-${currentStep}-${Date.now()}`,
-          text: res.type ? handName(res.type) : t('common.draw'),
+          text: res.type ? formatHandName(res.type, 'en') : translate('en', 'common.draw'),
           winner: res.winner,
           diceValue: dice[currentCol],
           isXHand: false,
           cards: res.cards
         });
 
-        await presentShowdown(res.winner !== 'draw' && res.type ? handName(res.type) : null, false);
+        await presentShowdown(res.type, res.winner, false);
       } else if (currentStep === 5) {
         setShowXHand(true);
         
         setCurrentShowdownPopup({
           id: `row-${currentStep}-${Date.now()}`,
-          text: rowResult.type ? handName(rowResult.type) : t('common.draw'),
+          text: rowResult.type ? formatHandName(rowResult.type, 'en') : translate('en', 'common.draw'),
           winner: rowResult.winner,
           isXHand: true,
           cards: rowResult.cards
         });
 
-        await presentShowdown(rowResult.winner !== 'draw' && rowResult.type ? handName(rowResult.type) : null, true);
+        await presentShowdown(rowResult.type, rowResult.winner, true);
       }
 
       if (!isCurrentRun()) return;
@@ -996,7 +1032,7 @@ function App() {
     if (!isCurrentRun()) return;
     setCurrentShowdownPopup(null);
     setShowResultsModal(true);
-  }, [gameState, handName, t]);
+  }, [gameState]);
 
   useEffect(() => {
     if (phase === 'ended') {
@@ -1110,7 +1146,7 @@ function App() {
   const handleStartGame = () => {
     playClickSound();
     warmupAudio(); // Resume AudioContext
-    initSpeech();  // Unlock SpeechSynthesis
+    beginShowdownVoiceMatch();
 
     // Explicitly reset disguise for manual local starts (e.g. from Setup screen)
     if (mode === 'local') {
@@ -1139,6 +1175,7 @@ function App() {
       quickMatchTimeoutRef.current = null;
     }
     beginTrackedLocalGame();
+    beginShowdownVoiceMatch();
 
     // Get current roomId using ref
     const currentRoomId = roomIdRef.current;
@@ -1405,7 +1442,6 @@ function App() {
 
     // Resume Audio on interaction just in case
     warmupAudio();
-    initSpeech();
 
     if (phase !== 'playing') return;
     if (!selectedCardId) return;
@@ -1790,7 +1826,7 @@ function App() {
                             <span>{t('home.support')}</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09030253</div>
+                          <div className="home-version">v09030347</div>
                         </div>
                       </div>
                     )}

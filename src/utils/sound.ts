@@ -1,3 +1,11 @@
+import {
+    getShowdownVoiceAssetPath,
+    SHOWDOWN_HAND_TYPES,
+    type ShowdownHandType,
+    type ShowdownVoiceAssignment,
+    type ShowdownVoiceCharacter,
+} from '../logic/showdownVoice';
+
 // Simple sound utility using Web Audio API
 // Shared AudioContext to prevent "limit reached" errors
 let sharedAudioContext: AudioContext | null = null;
@@ -241,6 +249,83 @@ export const playShowdownStinger = (isFinalHand = false) => {
         console.warn('Showdown sound playback failed:', error);
     }
 };
+
+const showdownVoiceBuffers = new Map<string, Promise<AudioBuffer>>();
+let activeShowdownVoice: AudioBufferSourceNode | null = null;
+
+function loadShowdownVoice(character: ShowdownVoiceCharacter, handType: ShowdownHandType): Promise<AudioBuffer> {
+    const path = getShowdownVoiceAssetPath(character, handType);
+    const cached = showdownVoiceBuffers.get(path);
+    if (cached) return cached;
+
+    const loading = fetch(path)
+        .then(response => {
+            if (!response.ok) throw new Error(`Unable to load ${path}: ${response.status}`);
+            return response.arrayBuffer();
+        })
+        .then(buffer => getAudioContext().decodeAudioData(buffer))
+        .catch(error => {
+            showdownVoiceBuffers.delete(path);
+            throw error;
+        });
+    showdownVoiceBuffers.set(path, loading);
+    return loading;
+}
+
+export function preloadShowdownVoices(assignment: ShowdownVoiceAssignment): void {
+    const selectedCharacters = [assignment.p1, assignment.p2];
+    for (const character of selectedCharacters) {
+        for (const handType of SHOWDOWN_HAND_TYPES) {
+            void loadShowdownVoice(character, handType).catch(error => {
+                console.warn('Showdown voice preload failed:', error);
+            });
+        }
+    }
+}
+
+export function stopShowdownVoice(): void {
+    if (!activeShowdownVoice) return;
+    try {
+        activeShowdownVoice.stop();
+    } catch {
+        // The source may already have completed naturally.
+    }
+    activeShowdownVoice = null;
+}
+
+export async function playShowdownVoice(
+    character: ShowdownVoiceCharacter,
+    handType: ShowdownHandType,
+): Promise<void> {
+    try {
+        const buffer = await loadShowdownVoice(character, handType);
+        const context = getAudioContext();
+        await context.resume();
+        stopShowdownVoice();
+
+        await new Promise<void>(resolve => {
+            const source = context.createBufferSource();
+            const gain = context.createGain();
+            let resolved = false;
+            const finish = () => {
+                if (resolved) return;
+                resolved = true;
+                if (activeShowdownVoice === source) activeShowdownVoice = null;
+                resolve();
+            };
+
+            source.buffer = buffer;
+            gain.gain.value = 0.9;
+            source.connect(gain).connect(context.destination);
+            source.onended = finish;
+            activeShowdownVoice = source;
+            source.start();
+            window.setTimeout(finish, Math.ceil(buffer.duration * 1000) + 500);
+        });
+    } catch (error) {
+        console.warn('Showdown voice playback failed:', error);
+    }
+}
 
 // Helper to get voices robustly
 let cachedVoices: SpeechSynthesisVoice[] = [];

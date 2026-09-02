@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09030253` (2026-09-03 02:53)
+- **Current Version:** `09030347` (2026-09-03 03:47)
 - **Status:** **Production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ Japanese/English home and rules checked at 320×568, 390×844, and 1440×900
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 48 passing
+    - Automated tests: ✅ 51 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~319 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09030253` live on Cloudflare Pages; Render API health normal
+    - Deployment: ⏳ `v09030347` release validation in progress
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09030347** (2026-09-03): **Three-Character Showdown Voice Cast** - Standardized the full showdown cut-in to its English presentation in both Japanese and English UI modes. Imported and optimized all 39 supplied announcements (13 hands each for MANA, Tsukuyomi-chan, and Kurowa-chan), replacing system speech with the authored clips. Every match selects exactly two distinct characters, fixes one to blue/P1 and one to red/P2, and leaves the third unused; online matches receive one server-authoritative assignment so both devices hear the same cast. Only the selected pair is preloaded, audio buffers are cached and interrupted safely between reveals, and the supplied WAV assets were compressed to approximately 740 kB of browser-compatible AAC. Verified the Japanese-mode `Dice / Pure Straight / Red wins` cut-in and voice playback path in a real browser with no console warnings.
 1. **v09030253** (2026-09-03): **Gameplay-Derived Record Quality** - Removed current rating, match count, and account win rate from human-record training because the present ladder is not a meaningful skill signal. New server metadata proves record provenance and runtime AI version only; corpus preparation reconstructs every hand and scores each human choice against all legal card-column alternatives, concealment timing, and bot-match score/result evidence. Legacy rating metadata remains readable but is explicitly ignored. Per-move quality and bounded weights allow successful human deviations from the current AI to survive instead of treating policy agreement as ground truth.
 1. **v09030047** (2026-09-03): **Legacy Rating-Weighted Corpus (superseded by v09030253)** - Introduced server-verified record provenance and AI runtime metadata. Its rating-derived weighting was subsequently removed because the current ladder does not provide a meaningful skill signal; existing metadata remains backward compatible but is ignored by training.
 1. **v09022111** (2026-09-02): **AI-Only PRO Thought Pause** - Restricted the PRO reasoning journal to local AI matches in both the client and record validator. Opening it on the PRO player's turn now freezes the 60-second action timer at its current value, visibly marks the timer as paused, and resumes from the same value when the editor closes; online matches never expose or accept journal notes.

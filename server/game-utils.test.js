@@ -13,6 +13,7 @@ import {
     normalizeRoomId,
     randomPlayerIndex,
     sanitizePlayerName,
+    selectShowdownVoiceAssignment,
     shuffleDeck,
 } from './game-utils.js';
 
@@ -27,6 +28,17 @@ test('creates and shuffles a complete deck without changing its cards', () => {
 test('returns only valid player indexes', () => {
     for (let index = 0; index < 100; index += 1) {
         assert.ok([0, 1].includes(randomPlayerIndex()));
+    }
+});
+
+test('assigns two different showdown voices and leaves one character unused', () => {
+    assert.deepEqual(selectShowdownVoiceAssignment(() => 0), { p1: 'mana', p2: 'tsukuyomi' });
+    assert.deepEqual(selectShowdownVoiceAssignment(maximum => maximum - 1), { p1: 'kurowa', p2: 'tsukuyomi' });
+    for (let index = 0; index < 100; index += 1) {
+        const assignment = selectShowdownVoiceAssignment();
+        assert.notEqual(assignment.p1, assignment.p2);
+        assert.ok(['mana', 'tsukuyomi', 'kurowa'].includes(assignment.p1));
+        assert.ok(['mana', 'tsukuyomi', 'kurowa'].includes(assignment.p2));
     }
 });
 

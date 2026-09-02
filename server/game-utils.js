@@ -50,6 +50,13 @@ export function randomPlayerIndex() {
     return crypto.randomInt(2);
 }
 
+export function selectShowdownVoiceAssignment(randomIndex = maximum => crypto.randomInt(maximum)) {
+    const available = ['mana', 'tsukuyomi', 'kurowa'];
+    const p1 = available.splice(randomIndex(available.length), 1)[0];
+    const p2 = available[randomIndex(available.length)];
+    return { p1, p2 };
+}
+
 export function generateSessionToken() {
     return crypto.randomBytes(24).toString('base64url');
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from './Card';
 import type { Card as CardType } from '../logic/types';
 import './ShowdownPopup.css';
-import { useI18n } from '../i18n';
+import { translate } from '../i18n';
 
 export interface PopupData {
     id: string;
@@ -18,18 +18,19 @@ interface ShowdownPopupProps {
 }
 
 export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
-    const { t } = useI18n();
     if (!data) return null;
 
     const revealedCards = data.cards?.map(card => ({ ...card, isHidden: false })) ?? [];
     const accentClass = `showdown-${data.winner}`;
     const handKindClass = data.isXHand ? 'showdown-x-hand' : 'showdown-y-hand';
     const winnerLabel = data.winner === 'draw'
-        ? t('common.draw')
+        ? translate('en', 'common.draw')
         : data.winner === 'p1'
-            ? t('showdown.blueWins')
-            : t('showdown.redWins');
-    const contextLabel = data.isXHand ? t('showdown.finalX') : t('showdown.dice', { value: data.diceValue ?? '—' });
+            ? translate('en', 'showdown.blueWins')
+            : translate('en', 'showdown.redWins');
+    const contextLabel = data.isXHand
+        ? translate('en', 'showdown.finalX')
+        : translate('en', 'showdown.dice', { value: data.diceValue ?? '—' });
     const announcement = `${contextLabel}. ${data.text}. ${winnerLabel}.`;
 
     return (
@@ -81,7 +82,7 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
                 </div>
 
                 {revealedCards.length > 0 && (
-                    <div className="showdown-cards-container" aria-label={t('showdown.winningCards')}>
+                    <div className="showdown-cards-container" aria-label={translate('en', 'showdown.winningCards')}>
                         {revealedCards.map((card, index) => (
                             <div
                                 className="showdown-card-wrapper"

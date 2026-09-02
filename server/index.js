@@ -17,6 +17,7 @@ import {
     randomPlayerIndex,
     rollDice,
     sanitizePlayerName,
+    selectShowdownVoiceAssignment,
     shuffleDeck,
 } from './game-utils.js';
 
@@ -172,6 +173,7 @@ function startGame(roomId, room) {
     const isRanked = Boolean(room.isQuickMatch);
     const startingPlayer = randomPlayerIndex();
     const initialDeck = shuffleDeck(createDeck());
+    const showdownVoices = selectShowdownVoiceAssignment();
 
     games.set(roomId, {
         isRanked,
@@ -208,6 +210,7 @@ function startGame(roomId, room) {
         p1IsPremium: p1.isPremium,
         p2IsPremium: p2.isPremium,
         isRanked,
+        showdownVoices,
     });
 }
 
