@@ -70,16 +70,16 @@ graph TD
 ## ✅ Handover Status
 
 - **Current Version:** `09021321` (2026-09-02 13:21)
-- **Status:** **Local quality gate verified; production deployment in progress**
+- **Status:** **Full local quality gate and production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ Japanese/English home and rules checked at 320×568, 390×844, and 1440×900
     - Repository lint: ✅ 0 errors / 0 warnings
     - Automated tests: ✅ 44 passing
-    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~307 kB, no 500 kB warning
+    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~313 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ⏳ `v09021321` deployment in progress
+    - Deployment: ✅ `v09021321` live on Cloudflare Pages; Render `/api/health` responding normally
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
