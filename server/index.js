@@ -356,7 +356,7 @@ io.on('connection', socket => {
             const hasProThoughts = record.schemaVersion === 3 && record.moves.some(move => Boolean(move.thought));
             const { data: player, error: playerError } = await supabase
                 .from('players')
-                .select('is_premium, rating, games_played, wins')
+                .select('is_premium')
                 .eq('id', userId)
                 .single();
             if (playerError || !player) throw new Error('Player profile unavailable');
@@ -364,7 +364,7 @@ io.on('connection', socket => {
 
             const storedRecord = {
                 ...record,
-                trainingMetadata: createGameRecordTrainingMetadata(player, record.mode === 'bot' ? {
+                trainingMetadata: createGameRecordTrainingMetadata(record.mode === 'bot' ? {
                     aiPolicyId: RUNTIME_AI_POLICY_ID,
                     aiThinkTimeMs: RUNTIME_AI_THINK_TIME_MS,
                 } : {}),

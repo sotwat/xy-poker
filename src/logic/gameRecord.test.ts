@@ -149,12 +149,23 @@ test('finalizes and validates a complete thirty-move game', () => {
         aiThinkTimeMs: 1000,
     };
     assert.equal(isGameRecordData(weightedRecord), true);
-    assert.match(serializeGameRecordText(weightedRecord, 'ja'), /学習品質: expert \/ 実効レート 1997 \/ 重み 2\.373/);
+    assert.match(serializeGameRecordText(weightedRecord, 'ja'), /旧レート情報は学習評価に不使用/);
     assert.equal(mergeGameRecords([weightedRecord], [record])[0].trainingMetadata?.source, 'server');
 
     const forgedWeight = structuredClone(weightedRecord);
     forgedWeight.trainingMetadata.sampleWeight = 8;
     assert.equal(isGameRecordData(forgedWeight), false);
+
+    const gameplayRecord = structuredClone(record);
+    gameplayRecord.trainingMetadata = {
+        schemaVersion: 2,
+        source: 'server',
+        assessmentBasis: 'gameplay',
+        aiPolicyId: 'xy-gto-a7',
+        aiThinkTimeMs: 1000,
+    };
+    assert.equal(isGameRecordData(gameplayRecord), true);
+    assert.match(serializeGameRecordText(gameplayRecord, 'ja'), /評価基準 対局内容/);
 
     const replayBoards = buildReplayBoards(record, 30);
     assert.deepEqual(replayBoards, state.players.map(player => player.board.map(row => row.map(card => card ? { ...card, isHidden: false } : null))));

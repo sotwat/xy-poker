@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09030047` (2026-09-03 00:47)
+- **Current Version:** `09030253` (2026-09-03 02:53)
 - **Status:** **Production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 48 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~319 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09030047` live on Cloudflare Pages; Render API health normal
+    - Deployment: ⏳ `v09030253` release validation in progress
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,7 +89,8 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
-1. **v09030047** (2026-09-03): **Skill-Weighted Human Record Corpus** - Server-enriched every newly saved authenticated record with a tamper-resistant training label derived from rating and experience. Ratings are shrunk toward 1500 when evidence is sparse, then mapped to bounded 0.25–4.0 sample weights and weak/developing/strong/expert tiers, so established strong-player decisions outweigh weak-player decisions without letting one account dominate. Added a trusted corpus builder that includes only the authenticated viewer's own moves, records the AI policy/time used, preserves the server-enriched cloud copy during local/cloud merging, and rejects forged metadata. Re-audited 1,000 ms/64-sample versus 2,000 ms/96-sample A7 search: the longer candidate increased completed samples but scored 6-9-1 in a two-seed direct check, so it was correctly rejected instead of increasing latency without evidence of strength.
+1. **v09030253** (2026-09-03): **Gameplay-Derived Record Quality** - Removed current rating, match count, and account win rate from human-record training because the present ladder is not a meaningful skill signal. New server metadata proves record provenance and runtime AI version only; corpus preparation reconstructs every hand and scores each human choice against all legal card-column alternatives, concealment timing, and bot-match score/result evidence. Legacy rating metadata remains readable but is explicitly ignored. Per-move quality and bounded weights allow successful human deviations from the current AI to survive instead of treating policy agreement as ground truth.
+1. **v09030047** (2026-09-03): **Legacy Rating-Weighted Corpus (superseded by v09030253)** - Introduced server-verified record provenance and AI runtime metadata. Its rating-derived weighting was subsequently removed because the current ladder does not provide a meaningful skill signal; existing metadata remains backward compatible but is ignored by training.
 1. **v09022111** (2026-09-02): **AI-Only PRO Thought Pause** - Restricted the PRO reasoning journal to local AI matches in both the client and record validator. Opening it on the PRO player's turn now freezes the 60-second action timer at its current value, visibly marks the timer as paused, and resumes from the same value when the editor closes; online matches never expose or accept journal notes.
 1. **v09021343** (2026-09-02): **PRO Move-Reasoning Journal** - Added an in-match PRO-only thought editor that attaches up to 280 characters of strategic reasoning to the player’s next manual move. Notes are stored with the exact card, column, row, visibility, and draw in game-record schema v3; shown at the matching replay position; and included in localized TXT exports. Client and server validators reject notes on opponent moves, malformed text, legacy-schema injection, and oversized records, while cloud saves containing notes require a server-verified PRO profile. AUTO and timeout moves cannot inherit stale human notes.
 1. **v09021321** (2026-09-02): **Balanced Replay Dice & Text Export** - Reduced replay-only dice from 40–72 px to a compact responsive 28–36 px so the board’s cards and placements remain visually dominant without changing live-match dice. Added localized UTF-8 TXT exports containing match metadata, all five dice, both initial hands when available, every placement and draw, face-up/face-down history, bonuses, scores, and final boards. Legacy records remain exportable with unavailable hand data identified explicitly.

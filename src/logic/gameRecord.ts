@@ -6,7 +6,7 @@ export type GameRecordBoard = (Card | null)[][];
 export type GameRecordHands = [Card[], Card[]];
 export type GameRecordSkillTier = 'weak' | 'developing' | 'strong' | 'expert';
 
-export interface GameRecordTrainingMetadata {
+export interface LegacyRatingTrainingMetadata {
     schemaVersion: 1;
     source: 'server';
     playerRating: number;
@@ -20,6 +20,16 @@ export interface GameRecordTrainingMetadata {
     aiPolicyId: string | null;
     aiThinkTimeMs: number | null;
 }
+
+export interface GameplayTrainingMetadata {
+    schemaVersion: 2;
+    source: 'server';
+    assessmentBasis: 'gameplay';
+    aiPolicyId: string | null;
+    aiThinkTimeMs: number | null;
+}
+
+export type GameRecordTrainingMetadata = LegacyRatingTrainingMetadata | GameplayTrainingMetadata;
 
 export interface GameRecordMove {
     ply: number;
@@ -319,9 +329,13 @@ export function serializeGameRecordText(record: GameRecordData, language: GameRe
     if (record.trainingMetadata) {
         const metadata = record.trainingMetadata;
         lines.splice(lines.length - 3, 0,
-            japanese
-                ? `学習品質: ${metadata.skillTier} / 実効レート ${metadata.effectiveRating} / 重み ${metadata.sampleWeight}`
-                : `Training quality: ${metadata.skillTier} / effective rating ${metadata.effectiveRating} / weight ${metadata.sampleWeight}`,
+            metadata.schemaVersion === 2
+                ? japanese
+                    ? '学習検証: サーバー検証済み / 評価基準 対局内容'
+                    : 'Training verification: server verified / assessed from gameplay'
+                : japanese
+                    ? '学習検証: サーバー検証済み / 旧レート情報は学習評価に不使用'
+                    : 'Training verification: server verified / legacy rating is ignored for training',
         );
     }
 
@@ -399,8 +413,13 @@ function isRecordCard(value: unknown, requireHidden = false): value is Card {
 function isGameRecordTrainingMetadata(value: unknown): value is GameRecordTrainingMetadata {
     if (!value || typeof value !== 'object') return false;
     const metadata = value as Partial<GameRecordTrainingMetadata>;
+    if (metadata.source !== 'server') return false;
+    const validRuntime = (metadata.aiPolicyId === null || (typeof metadata.aiPolicyId === 'string' && /^[a-z0-9-]{1,40}$/.test(metadata.aiPolicyId)))
+        && (metadata.aiThinkTimeMs === null || (Number.isInteger(metadata.aiThinkTimeMs) && metadata.aiThinkTimeMs! >= 1 && metadata.aiThinkTimeMs! <= 10_000));
+    if (metadata.schemaVersion === 2) {
+        return metadata.assessmentBasis === 'gameplay' && validRuntime;
+    }
     return metadata.schemaVersion === 1
-        && metadata.source === 'server'
         && Number.isInteger(metadata.playerRating) && metadata.playerRating! >= 600 && metadata.playerRating! <= 3000
         && Number.isInteger(metadata.playerGamesPlayed) && metadata.playerGamesPlayed! >= 0
         && Number.isInteger(metadata.playerWins) && metadata.playerWins! >= 0 && metadata.playerWins! <= metadata.playerGamesPlayed!
@@ -409,8 +428,7 @@ function isGameRecordTrainingMetadata(value: unknown): value is GameRecordTraini
         && Number.isInteger(metadata.effectiveRating) && metadata.effectiveRating! >= 600 && metadata.effectiveRating! <= 3000
         && Number.isFinite(metadata.sampleWeight) && metadata.sampleWeight! >= 0.25 && metadata.sampleWeight! <= 4
         && ['weak', 'developing', 'strong', 'expert'].includes(metadata.skillTier || '')
-        && (metadata.aiPolicyId === null || (typeof metadata.aiPolicyId === 'string' && /^[a-z0-9-]{1,40}$/.test(metadata.aiPolicyId)))
-        && (metadata.aiThinkTimeMs === null || (Number.isInteger(metadata.aiThinkTimeMs) && metadata.aiThinkTimeMs! >= 1 && metadata.aiThinkTimeMs! <= 10_000));
+        && validRuntime;
 }
 
 export function isGameRecordData(value: unknown): value is GameRecordData {

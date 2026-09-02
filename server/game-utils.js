@@ -8,41 +8,13 @@ const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
 const RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 const ALLOWED_ACTIONS = new Set(['CHOOSE_TURN_ORDER', 'PLACE_AND_DRAW']);
 export const MAX_GAME_RECORD_THOUGHT_LENGTH = 280;
-export const GAME_RECORD_TRAINING_METADATA_VERSION = 1;
+export const GAME_RECORD_TRAINING_METADATA_VERSION = 2;
 
-export function createGameRecordTrainingMetadata(player, options = {}) {
-    const rawRating = Number(player?.rating);
-    const playerRating = Math.round(clamp(Number.isFinite(rawRating) ? rawRating : 1500, 600, 3000));
-    const rawGames = Number(player?.games_played);
-    const playerGamesPlayed = Math.round(clamp(Number.isFinite(rawGames) ? rawGames : 0, 0, 1_000_000));
-    const rawWins = Number(player?.wins);
-    const playerWins = Math.round(clamp(Number.isFinite(rawWins) ? rawWins : 0, 0, playerGamesPlayed));
-
-    // Ratings with little evidence are shrunk towards the 1500 population prior.
-    // Established ratings then scale each human move exponentially by one octave
-    // per 400 Elo, bounded so one player cannot dominate the corpus.
-    const ratingConfidence = 1 - Math.exp(-playerGamesPlayed / 40);
-    const effectiveRating = 1500 + (playerRating - 1500) * ratingConfidence;
-    const sampleWeight = clamp(2 ** ((effectiveRating - 1500) / 400), 0.25, 4);
-    const skillTier = effectiveRating >= 1900
-        ? 'expert'
-        : effectiveRating >= 1650
-            ? 'strong'
-            : effectiveRating >= 1350
-                ? 'developing'
-                : 'weak';
-
+export function createGameRecordTrainingMetadata(options = {}) {
     return {
         schemaVersion: GAME_RECORD_TRAINING_METADATA_VERSION,
         source: 'server',
-        playerRating,
-        playerGamesPlayed,
-        playerWins,
-        playerWinRate: playerGamesPlayed > 0 ? Number((playerWins / playerGamesPlayed).toFixed(4)) : 0,
-        ratingConfidence: Number(ratingConfidence.toFixed(4)),
-        effectiveRating: Math.round(effectiveRating),
-        sampleWeight: Number(sampleWeight.toFixed(4)),
-        skillTier,
+        assessmentBasis: 'gameplay',
         aiPolicyId: options.aiPolicyId ?? null,
         aiThinkTimeMs: Number.isInteger(options.aiThinkTimeMs) ? options.aiThinkTimeMs : null,
     };

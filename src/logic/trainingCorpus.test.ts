@@ -4,7 +4,12 @@ import { createDeck } from './deck';
 import type { GameRecordDataV3, GameRecordSkillTier } from './gameRecord';
 import { buildWeightedHumanMoveCorpus } from './trainingCorpus';
 
-function createRecord(id: string, skillTier: GameRecordSkillTier, sampleWeight: number): GameRecordDataV3 {
+function createRecord(
+    id: string,
+    skillTier: GameRecordSkillTier,
+    sampleWeight: number,
+    result: 'win' | 'loss' = 'win',
+): GameRecordDataV3 {
     const deck = createDeck();
     const initialHands = [deck.slice(0, 4), deck.slice(4, 8)] as [typeof deck, typeof deck];
     const hands = initialHands.map(hand => hand.map(card => ({ ...card })));
@@ -19,8 +24,8 @@ function createRecord(id: string, skillTier: GameRecordSkillTier, sampleWeight: 
         viewerPlayerIndex: 0,
         playerNames: ['Human', 'AI'],
         dice: [6, 5, 4, 3, 2],
-        winner: 'p1',
-        scores: [10, 5],
+        winner: result === 'win' ? 'p1' : 'p2',
+        scores: result === 'win' ? [18, 4] : [4, 18],
         bonuses: [2, 1],
         initialHands,
         moves: Array.from({ length: 30 }, (_, index) => {
@@ -55,15 +60,23 @@ function createRecord(id: string, skillTier: GameRecordSkillTier, sampleWeight: 
     };
 }
 
-test('builds a trusted corpus where strong human moves outweigh weak human moves', () => {
-    const strong = createRecord('00000000-0000-4000-8000-000000000011', 'expert', 2.37);
-    const weak = createRecord('00000000-0000-4000-8000-000000000012', 'weak', 0.42);
-    const samples = buildWeightedHumanMoveCorpus([strong, weak, { forged: true }]);
+test('derives corpus weights from gameplay and ignores legacy ratings', () => {
+    const highLegacyRating = createRecord('00000000-0000-4000-8000-000000000011', 'expert', 4, 'loss');
+    const lowLegacyRating = createRecord('00000000-0000-4000-8000-000000000012', 'weak', 0.25, 'loss');
+    const winningRecord = createRecord('00000000-0000-4000-8000-000000000013', 'weak', 0.25, 'win');
+    const samples = buildWeightedHumanMoveCorpus([highLegacyRating, lowLegacyRating, winningRecord, { forged: true }]);
 
-    assert.equal(samples.length, 30);
-    assert.equal(samples.filter(sample => sample.recordId === strong.id).length, 15);
-    assert.equal(samples.filter(sample => sample.recordId === weak.id).length, 15);
-    assert.ok(samples.find(sample => sample.recordId === strong.id)!.sampleWeight
-        > samples.find(sample => sample.recordId === weak.id)!.sampleWeight);
+    assert.equal(samples.length, 45);
+    const highLegacySamples = samples.filter(sample => sample.recordId === highLegacyRating.id);
+    const lowLegacySamples = samples.filter(sample => sample.recordId === lowLegacyRating.id);
+    const winningSamples = samples.filter(sample => sample.recordId === winningRecord.id);
+    assert.equal(highLegacySamples.length, 15);
+    assert.deepEqual(
+        highLegacySamples.map(sample => sample.sampleWeight),
+        lowLegacySamples.map(sample => sample.sampleWeight),
+    );
+    assert.ok(winningSamples[0].sampleWeight > highLegacySamples[0].sampleWeight);
+    assert.ok(samples.every(sample => sample.qualityScore >= 0 && sample.qualityScore <= 1));
+    assert.ok(samples.every(sample => sample.policyAgreement >= 0 && sample.policyAgreement <= 1));
     assert.ok(samples.every(sample => sample.playerIndex === 0));
 });
