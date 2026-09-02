@@ -51,6 +51,7 @@ import {
   playShowdownStinger,
   playShowdownVoice,
   preloadShowdownVoices,
+  stopShowdownStinger,
   stopShowdownVoice,
   warmupAudio,
   unlockAudioContext,
@@ -916,6 +917,7 @@ function App() {
   useEffect(() => {
     if (phase !== 'ended') {
       showdownRunRef.current += 1;
+      stopShowdownStinger();
       stopShowdownVoice();
     }
   }, [phase]);
@@ -928,8 +930,9 @@ function App() {
       handType: ShowdownHandType | null,
       winner: 'p1' | 'p2' | 'draw',
       isFinalHand: boolean,
+      cardCount: number,
     ) => {
-      playShowdownStinger(isFinalHand);
+      const soundTimeline = playShowdownStinger({ isFinalHand, winner, cardCount });
       const minimumDuration = isFinalHand ? 2600 : 2200;
 
       if (!handType || winner === 'draw') {
@@ -941,7 +944,7 @@ function App() {
       showdownVoicesRef.current = assignment;
       await Promise.all([
         (async () => {
-          await wait(isFinalHand ? 720 : 620);
+          await wait((soundTimeline?.voiceStart ?? (isFinalHand ? 1.2 : 1.08)) * 1000);
           if (isCurrentRun()) await playShowdownVoice(assignment[winner], handType);
         })(),
         wait(minimumDuration),
@@ -952,6 +955,7 @@ function App() {
     setShowXHand(false);
     setCurrentShowdownPopup(null);
     setShowResultsModal(false);
+    stopShowdownStinger();
     stopShowdownVoice();
 
     const { players } = gameState;
@@ -1008,7 +1012,7 @@ function App() {
           cards: res.cards
         });
 
-        await presentShowdown(res.type, res.winner, false);
+        await presentShowdown(res.type, res.winner, false, res.cards.length);
       } else if (currentStep === 5) {
         setShowXHand(true);
         
@@ -1020,7 +1024,7 @@ function App() {
           cards: rowResult.cards
         });
 
-        await presentShowdown(rowResult.type, rowResult.winner, true);
+        await presentShowdown(rowResult.type, rowResult.winner, true, rowResult.cards.length);
       }
 
       if (!isCurrentRun()) return;
@@ -1826,7 +1830,7 @@ function App() {
                             <span>{t('home.support')}</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09030400</div>
+                          <div className="home-version">v09030412</div>
                         </div>
                       </div>
                     )}

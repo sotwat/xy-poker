@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09030400` (2026-09-03 04:00)
+- **Current Version:** `09030412` (2026-09-03 04:12)
 - **Status:** **Production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ Japanese/English home and rules checked at 320×568, 390×844, and 1440×900
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 51 passing
-    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~319 kB, no 500 kB warning
+    - Automated tests: ✅ 54 passing
+    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~322 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09030400` live on Cloudflare Pages; dynamic showdown CSS verified; Render API health normal
+    - Deployment: ⏳ `v09030412` pending Cloudflare Pages verification
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09030412** (2026-09-03): **Cinematic Showdown Soundscape** - Replaced the sparse generic stinger with a synchronized Web Audio sequence: a stereo arena riser, sub rumble, individual left-to-center card whooshes, three-layer landing snaps for every winning card, electrical cracks for the expanding rings and lightning, a compressed role-title slam, and distinct blue/red/draw confirmation chords. The five-card X-hand receives an additional bass hit, sweep, octave shimmer, and longer tail. A shared dynamics compressor prevents clipping, all scheduled sources are stopped and disconnected on replay or phase changes, and authored character voices now enter just after the sound-effect peak for intelligibility. Added pure timing tests that lock sound entries and impacts to the CSS card stagger; verified a complete six-stage replay in-browser with no audio warnings.
 1. **v09030400** (2026-09-03): **Kinetic Showdown Impact** - Rebuilt the winning-card entrance as a deeper left-to-right 3D launch with alternating vertical trajectories, perspective rotation, aggressive overshoot, recoil, settling bounce, and per-card light trails. Added three expanding energy rings, an arena-wide moving light cut, eight radial lightning strikes, synchronized camera and card-row impacts, a card-core burst, title glint, pulse, and split glitch accents. All motion is finite, dominated by compositor-friendly transforms and opacity, responsive to compact containers, and fully disabled by `prefers-reduced-motion`. Completed a real AI match in-browser and visually verified the animated cut-in without losing card, role, or winner-color legibility.
 1. **v09030347** (2026-09-03): **Three-Character Showdown Voice Cast** - Standardized the full showdown cut-in to its English presentation in both Japanese and English UI modes. Imported and optimized all 39 supplied announcements (13 hands each for MANA, Tsukuyomi-chan, and Kurowa-chan), replacing system speech with the authored clips. Every match selects exactly two distinct characters, fixes one to blue/P1 and one to red/P2, and leaves the third unused; online matches receive one server-authoritative assignment so both devices hear the same cast. Only the selected pair is preloaded, audio buffers are cached and interrupted safely between reveals, and the supplied WAV assets were compressed to approximately 740 kB of browser-compatible AAC. Verified the Japanese-mode `Dice / Pure Straight / Red wins` cut-in and voice playback path in a real browser with no console warnings.
 1. **v09030253** (2026-09-03): **Gameplay-Derived Record Quality** - Removed current rating, match count, and account win rate from human-record training because the present ladder is not a meaningful skill signal. New server metadata proves record provenance and runtime AI version only; corpus preparation reconstructs every hand and scores each human choice against all legal card-column alternatives, concealment timing, and bot-match score/result evidence. Legacy rating metadata remains readable but is explicitly ignored. Per-move quality and bounded weights allow successful human deviations from the current AI to survive instead of treating policy agreement as ground truth.

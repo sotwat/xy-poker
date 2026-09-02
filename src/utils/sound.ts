@@ -5,6 +5,11 @@ import {
     type ShowdownVoiceAssignment,
     type ShowdownVoiceCharacter,
 } from '../logic/showdownVoice';
+import {
+    getShowdownSoundTimeline,
+    getShowdownWinnerChord,
+    type ShowdownSoundWinner,
+} from '../logic/showdownSound';
 
 // Simple sound utility using Web Audio API
 // Shared AudioContext to prevent "limit reached" errors
@@ -185,68 +190,193 @@ export const playSuccessSound = () => {
     }
 };
 
-export const playShowdownStinger = (isFinalHand = false) => {
+const activeShowdownSources = new Set<AudioScheduledSourceNode>();
+let activeShowdownMaster: GainNode | null = null;
+let activeShowdownOutput: AudioNode | null = null;
+let activeShowdownCleanupTimer: number | null = null;
+
+export const stopShowdownStinger = () => {
+    if (activeShowdownCleanupTimer !== null) {
+        window.clearTimeout(activeShowdownCleanupTimer);
+        activeShowdownCleanupTimer = null;
+    }
+    for (const source of activeShowdownSources) {
+        try {
+            source.stop();
+        } catch {
+            // A scheduled source may already have completed naturally.
+        }
+    }
+    activeShowdownSources.clear();
+    activeShowdownMaster?.disconnect();
+    activeShowdownOutput?.disconnect();
+    activeShowdownMaster = null;
+    activeShowdownOutput = null;
+};
+
+interface ShowdownStingerOptions {
+    isFinalHand?: boolean;
+    winner?: ShowdownSoundWinner;
+    cardCount?: number;
+}
+
+export const playShowdownStinger = ({
+    isFinalHand = false,
+    winner = 'draw',
+    cardCount = 3,
+}: ShowdownStingerOptions = {}) => {
     try {
         const ctx = getAudioContext();
         const now = ctx.currentTime;
+        const timeline = getShowdownSoundTimeline(cardCount, isFinalHand);
+        stopShowdownStinger();
+
         const master = ctx.createGain();
-        master.gain.setValueAtTime(0.22, now);
-        master.connect(ctx.destination);
+        const highPass = ctx.createBiquadFilter();
+        const compressor = ctx.createDynamicsCompressor();
+        master.gain.setValueAtTime(isFinalHand ? 0.52 : 0.46, now);
+        highPass.type = 'highpass';
+        highPass.frequency.value = 28;
+        compressor.threshold.value = -18;
+        compressor.knee.value = 14;
+        compressor.ratio.value = 6;
+        compressor.attack.value = 0.003;
+        compressor.release.value = 0.2;
+        master.connect(highPass).connect(compressor).connect(ctx.destination);
+        activeShowdownMaster = master;
+        activeShowdownOutput = compressor;
 
-        // A short upward sweep supplies the cut-in motion without loading audio assets.
-        const sweep = ctx.createOscillator();
-        const sweepFilter = ctx.createBiquadFilter();
-        const sweepGain = ctx.createGain();
-        sweep.type = 'sawtooth';
-        sweep.frequency.setValueAtTime(110, now);
-        sweep.frequency.exponentialRampToValueAtTime(isFinalHand ? 2100 : 1450, now + 0.28);
-        sweepFilter.type = 'bandpass';
-        sweepFilter.frequency.setValueAtTime(520, now);
-        sweepFilter.frequency.exponentialRampToValueAtTime(2600, now + 0.28);
-        sweepFilter.Q.value = 1.4;
-        sweepGain.gain.setValueAtTime(0.0001, now);
-        sweepGain.gain.exponentialRampToValueAtTime(0.3, now + 0.05);
-        sweepGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.34);
-        sweep.connect(sweepFilter).connect(sweepGain).connect(master);
-        sweep.start(now);
-        sweep.stop(now + 0.36);
+        const noiseBuffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * 0.8), ctx.sampleRate);
+        const noiseSamples = noiseBuffer.getChannelData(0);
+        for (let index = 0; index < noiseSamples.length; index++) {
+            noiseSamples[index] = Math.random() * 2 - 1;
+        }
 
-        // A compact sub hit gives the title cut-in weight.
-        const impact = ctx.createOscillator();
-        const impactGain = ctx.createGain();
-        impact.type = 'sine';
-        impact.frequency.setValueAtTime(isFinalHand ? 145 : 118, now + 0.28);
-        impact.frequency.exponentialRampToValueAtTime(42, now + 0.64);
-        impactGain.gain.setValueAtTime(0.0001, now);
-        impactGain.gain.setValueAtTime(0.72, now + 0.28);
-        impactGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
-        impact.connect(impactGain).connect(master);
-        impact.start(now + 0.28);
-        impact.stop(now + 0.72);
+        const trackSource = (source: AudioScheduledSourceNode, start: number, stop: number) => {
+            activeShowdownSources.add(source);
+            source.addEventListener('ended', () => activeShowdownSources.delete(source), { once: true });
+            source.start(start);
+            source.stop(stop);
+        };
 
-        // Pachinko-like metallic pings; finite oscillators keep CPU use predictable.
-        const chimeFrequencies = isFinalHand
-            ? [880, 1174.66, 1567.98, 2093]
-            : [784, 1046.5, 1567.98];
+        const playNoise = (
+            offset: number,
+            duration: number,
+            fromFrequency: number,
+            toFrequency: number,
+            volume: number,
+            filterType: BiquadFilterType = 'bandpass',
+            fromPan = 0,
+            toPan = fromPan,
+        ) => {
+            const start = now + offset;
+            const source = ctx.createBufferSource();
+            const filter = ctx.createBiquadFilter();
+            const gain = ctx.createGain();
+            const pan = ctx.createStereoPanner();
+            source.buffer = noiseBuffer;
+            filter.type = filterType;
+            filter.Q.value = filterType === 'bandpass' ? 0.9 : 0.65;
+            filter.frequency.setValueAtTime(fromFrequency, start);
+            filter.frequency.exponentialRampToValueAtTime(toFrequency, start + duration);
+            gain.gain.setValueAtTime(0.0001, start);
+            gain.gain.exponentialRampToValueAtTime(volume, start + Math.min(0.045, duration * 0.25));
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+            pan.pan.setValueAtTime(fromPan, start);
+            pan.pan.linearRampToValueAtTime(toPan, start + duration);
+            source.connect(filter).connect(gain).connect(pan).connect(master);
+            trackSource(source, start, start + duration);
+        };
 
-        chimeFrequencies.forEach((frequency, index) => {
-            const chime = ctx.createOscillator();
-            const chimeGain = ctx.createGain();
-            const start = now + 0.34 + index * 0.055;
-            chime.type = index % 2 === 0 ? 'triangle' : 'sine';
-            chime.frequency.setValueAtTime(frequency, start);
-            chime.frequency.exponentialRampToValueAtTime(frequency * 1.04, start + 0.22);
-            chimeGain.gain.setValueAtTime(0.0001, start);
-            chimeGain.gain.exponentialRampToValueAtTime(0.22, start + 0.015);
-            chimeGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.52);
-            chime.connect(chimeGain).connect(master);
-            chime.start(start);
-            chime.stop(start + 0.54);
+        const playTone = (
+            offset: number,
+            duration: number,
+            fromFrequency: number,
+            toFrequency: number,
+            volume: number,
+            type: OscillatorType,
+            fromPan = 0,
+            toPan = fromPan,
+        ) => {
+            const start = now + offset;
+            const oscillator = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const pan = ctx.createStereoPanner();
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(fromFrequency, start);
+            oscillator.frequency.exponentialRampToValueAtTime(toFrequency, start + duration);
+            gain.gain.setValueAtTime(0.0001, start);
+            gain.gain.exponentialRampToValueAtTime(volume, start + Math.min(0.012, duration * 0.2));
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+            pan.pan.setValueAtTime(fromPan, start);
+            pan.pan.linearRampToValueAtTime(toPan, start + duration);
+            oscillator.connect(gain).connect(pan).connect(master);
+            trackSource(oscillator, start, start + duration + 0.01);
+        };
+
+        // The arena opens with a wide riser and a restrained sub rumble.
+        playNoise(0, 0.44, 260, 4_200, 0.24, 'bandpass', -0.9, 0.72);
+        playTone(0.01, 0.4, 74, isFinalHand ? 1_300 : 980, 0.1, 'sawtooth', -0.75, 0.55);
+        playTone(0, 0.74, 78, 36, 0.2, 'sine');
+
+        // Each visible card gets its own travelling whoosh and a three-layer landing snap.
+        timeline.cardEntries.forEach((entry, index) => {
+            const destinationPan = cardCount > 1
+                ? -0.48 + (index / (Math.min(cardCount, 5) - 1)) * 0.96
+                : 0;
+            playNoise(entry, 0.31, 380 + index * 55, 3_200 + index * 180, 0.19, 'bandpass', -0.92, destinationPan);
+            playTone(entry + 0.015, 0.25, 135 + index * 9, 980 + index * 115, 0.045, 'sawtooth', -0.82, destinationPan);
+
+            const impact = timeline.cardImpacts[index];
+            playNoise(impact, 0.13, 2_800, 620, 0.25, 'bandpass', destinationPan);
+            playTone(impact, 0.23, isFinalHand ? 168 : 142, 47, 0.3, 'sine', destinationPan);
+            playTone(impact, 0.085, 1_550 + index * 125, 680, 0.095, 'triangle', destinationPan);
         });
 
-        window.setTimeout(() => master.disconnect(), 1_200);
+        // Lightning and expanding rings receive a brittle electrical crack.
+        playNoise(timeline.energyBurst, 0.34, 5_200, 880, 0.24, 'highpass', -0.25, 0.35);
+        [92, 184, 368].forEach((frequency, index) => {
+            playTone(
+                timeline.energyBurst + index * 0.014,
+                0.32,
+                frequency * (isFinalHand ? 1.15 : 1),
+                frequency * 0.72,
+                0.1 - index * 0.018,
+                index === 1 ? 'square' : 'sawtooth',
+            );
+        });
+
+        // The role-title hit is a compressed cinematic slam, stronger on the final X hand.
+        playTone(timeline.titleImpact, 0.58, isFinalHand ? 178 : 152, 35, 0.5, 'sine');
+        playNoise(timeline.titleImpact, 0.3, 1_100, 120, isFinalHand ? 0.34 : 0.28, 'lowpass');
+        if (isFinalHand) {
+            playNoise(timeline.titleImpact + 0.16, 0.38, 4_500, 540, 0.22, 'bandpass', -0.6, 0.6);
+            playTone(timeline.titleImpact + 0.16, 0.42, 112, 31, 0.34, 'sine');
+        }
+
+        // Blue is bright and high, red is warmer and lower, and draws remain neutral.
+        const winnerChord = getShowdownWinnerChord(winner);
+        winnerChord.forEach((frequency, index) => {
+            const offset = timeline.winnerConfirm + index * 0.045;
+            const pan = (index - 1) * 0.38;
+            playTone(offset, 0.72, frequency, frequency * 1.018, 0.13, index === 1 ? 'sine' : 'triangle', pan);
+            if (isFinalHand) {
+                playTone(offset + 0.035, 0.78, frequency * 2, frequency * 2.025, 0.052, 'sine', -pan);
+            }
+        });
+
+        activeShowdownCleanupTimer = window.setTimeout(() => {
+            activeShowdownSources.clear();
+            master.disconnect();
+            compressor.disconnect();
+            if (activeShowdownMaster === master) activeShowdownMaster = null;
+            if (activeShowdownOutput === compressor) activeShowdownOutput = null;
+            activeShowdownCleanupTimer = null;
+        }, Math.ceil(timeline.cleanup * 1000));
+        return timeline;
     } catch (error) {
         console.warn('Showdown sound playback failed:', error);
+        return undefined;
     }
 };
 
