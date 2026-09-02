@@ -4,6 +4,7 @@ import { evaluateYHand, evaluateXHand } from '../logic/evaluation';
 import { calculateXHandScores } from '../logic/scoring';
 import { playClickSound, playTickSound } from '../utils/sound';
 import './GameResult.css';
+import { useI18n } from '../i18n';
 
 interface GameResultProps {
     gameState: GameState;
@@ -27,6 +28,7 @@ export const GameResult: React.FC<GameResultProps> = ({
     p2Name = 'Player 2',
     ratingUpdates
 }) => {
+    const { language, t, handName } = useI18n();
     const { players, winner } = gameState;
     const p1 = players[0];
     const p2 = players[1];
@@ -86,11 +88,6 @@ export const GameResult: React.FC<GameResultProps> = ({
     }, [p1.score, p2.score]);
 
 
-    // Helper to get readable hand name
-    const getHandName = (type: string) => {
-        return type.replace(/([A-Z])/g, ' $1').trim();
-    };
-
     // Evaluate Columns (Y-Hands)
     const columnResults = Array.from({ length: 5 }).map((_, colIndex) => {
         const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
@@ -117,8 +114,8 @@ export const GameResult: React.FC<GameResultProps> = ({
 
         return {
             dice: dice[colIndex],
-            p1Hand: getHandName(p1Res.type),
-            p2Hand: getHandName(p2Res.type),
+            p1Hand: handName(p1Res.type),
+            p2Hand: handName(p2Res.type),
             winner: colWinner
         };
     });
@@ -139,19 +136,19 @@ export const GameResult: React.FC<GameResultProps> = ({
             <div className="game-result-modal">
                 <div className="winner-announcement">
                     {winner === 'draw' ? (
-                        <span className="draw-text">Draw - Tie Game!</span>
+                        <span className="draw-text">{t('result.tie')}</span>
                     ) : (
                         <>
-                            Winner: <span className={winner === 'p1' ? 'p1-text' : 'p2-text'}>
+                            {language === 'ja' ? '勝者：' : 'Winner: '}<span className={winner === 'p1' ? 'p1-text' : 'p2-text'}>
                                 {winner === 'p1' ? p1Name : p2Name}
-                            </span>!
+                            </span>{language === 'ja' ? '！' : '!'}
                         </>
                     )}
                 </div>
 
                 <div className="results-table">
                     <div className="table-header">
-                        <div>Dice</div>
+                        <div>{t('result.dice')}</div>
                         <div>{p1Name}</div>
                         <div>{p2Name}</div>
                     </div>
@@ -168,14 +165,14 @@ export const GameResult: React.FC<GameResultProps> = ({
                     <div
                         className="table-row x-hand-row"
                         role="row"
-                        aria-label={`X Hand: ${p1Name} ${getHandName(p1XRes.type)} ${p1XScore} points; ${p2Name} ${getHandName(p2XRes.type)} ${p2XScore} points`}
+                        aria-label={`${t('result.xHand')}: ${p1Name} ${handName(p1XRes.type)} ${t('result.points', { points: p1XScore })}; ${p2Name} ${handName(p2XRes.type)} ${t('result.points', { points: p2XScore })}`}
                     >
-                        <div className="x-hand-label">X Hand</div>
+                        <div className="x-hand-label">{t('result.xHand')}</div>
                         <div className={`hand-name ${xWinner === 'p1' ? 'p1-text' : ''}`}>
-                            {getHandName(p1XRes.type)} <span className="score-detail">({p1XScore})</span>
+                            {handName(p1XRes.type)} <span className="score-detail">({p1XScore})</span>
                         </div>
                         <div className={`hand-name ${xWinner === 'p2' ? 'p2-text' : ''}`}>
-                            {getHandName(p2XRes.type)} <span className="score-detail">({p2XScore})</span>
+                            {handName(p2XRes.type)} <span className="score-detail">({p2XScore})</span>
                         </div>
                     </div>
                 </div>
@@ -184,10 +181,10 @@ export const GameResult: React.FC<GameResultProps> = ({
                     <div className={`score-box p1 ${winner === 'p1' ? 'winner-box' : ''}`}>
                         <h3>{p1Name}</h3>
                         <div className="score-val">{p1DisplayScore}</div>
-                        <div className="bonus-val">Bonuses: {p1.bonusesClaimed}</div>
+                        <div className="bonus-val">{t('result.bonuses', { count: p1.bonusesClaimed })}</div>
                         {ratingUpdates && ratingUpdates.p1 && (
                             <div className="rating-update">
-                                <div>Rating</div>
+                                <div>{t('common.rating')}</div>
                                 <div className="rating-values">
                                     {ratingUpdates.p1.old} → <span className="rating-new">{ratingUpdates.p1.new}</span>
                                 </div>
@@ -200,10 +197,10 @@ export const GameResult: React.FC<GameResultProps> = ({
                     <div className={`score-box p2 ${winner === 'p2' ? 'winner-box' : ''}`}>
                         <h3>{p2Name}</h3>
                         <div className="score-val">{p2DisplayScore}</div>
-                        <div className="bonus-val">Bonuses: {p2.bonusesClaimed}</div>
+                        <div className="bonus-val">{t('result.bonuses', { count: p2.bonusesClaimed })}</div>
                         {ratingUpdates && ratingUpdates.p2 && (
                             <div className="rating-update">
-                                <div>Rating</div>
+                                <div>{t('common.rating')}</div>
                                 <div className="rating-values">
                                     {ratingUpdates.p2.old} → <span className="rating-new">{ratingUpdates.p2.new}</span>
                                 </div>
@@ -217,13 +214,13 @@ export const GameResult: React.FC<GameResultProps> = ({
 
                 <div className="button-group">
                     <button className="btn-secondary view-board-btn" onClick={() => { playClickSound(); onViewBoard(); }}>
-                        View Board
+                        {t('result.viewBoard')}
                     </button>
                     <button className="btn-secondary quit-btn" onClick={() => { playClickSound(); onClose(); }}>
-                        Back to Lobby
+                        {t('game.backLobby')}
                     </button>
                     <button className="btn-primary restart-btn" onClick={() => { playClickSound(); onRestart(); }}>
-                        Play Again
+                        {t('result.playAgain')}
                     </button>
                 </div>
             </div>

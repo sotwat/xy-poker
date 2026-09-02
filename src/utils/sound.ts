@@ -274,18 +274,21 @@ export const speakText = (text: string): Promise<void> => {
                 cachedVoices = window.speechSynthesis.getVoices();
             }
 
-            // Try to pick a universally appealing voice (e.g. Google, Samantha, or natural sounding defaults)
-            const voice = cachedVoices.find(v => v.name === 'Google US English') ||
-                cachedVoices.find(v => v.name === 'Samantha') ||
-                cachedVoices.find(v => v.lang === 'en-US' && v.name.includes('Female')) ||
-                cachedVoices.find(v => v.lang === 'en-US') ||
-                cachedVoices.find(v => v.lang.startsWith('en'));
+            const isJapanese = /[\u3040-\u30ff\u3400-\u9fff]/u.test(text);
+            const speechLanguage = isJapanese ? 'ja-JP' : 'en-US';
+            const voice = isJapanese
+                ? cachedVoices.find(v => v.lang === 'ja-JP') || cachedVoices.find(v => v.lang.startsWith('ja'))
+                : cachedVoices.find(v => v.name === 'Google US English') ||
+                    cachedVoices.find(v => v.name === 'Samantha') ||
+                    cachedVoices.find(v => v.lang === 'en-US' && v.name.includes('Female')) ||
+                    cachedVoices.find(v => v.lang === 'en-US') ||
+                    cachedVoices.find(v => v.lang.startsWith('en'));
 
             if (voice) {
                 utterance.voice = voice;
             }
 
-            utterance.lang = 'en-US';
+            utterance.lang = speechLanguage;
             // Natural, clear pacing
             utterance.rate = 1.0;
             utterance.pitch = 1.0;

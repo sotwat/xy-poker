@@ -1,6 +1,7 @@
 import type { Card as CardType, CardSkin, GameState } from '../logic/types';
 import { Card } from './Card';
 import './ScoringOverlay.css';
+import { useI18n } from '../i18n';
 
 interface ScoringOverlayProps {
     gameState: GameState;
@@ -21,6 +22,7 @@ export const ScoringOverlay: React.FC<ScoringOverlayProps> = ({
     isOnlineGame,
     playerRole
 }) => {
+    const { t, handName } = useI18n();
     // Helper to get cards for current step
     const getCards = () => {
         const { players } = gameState;
@@ -31,12 +33,12 @@ export const ScoringOverlay: React.FC<ScoringOverlayProps> = ({
             const colIndex = 4 - step; // 4, 3, 2, 1, 0
             const p1Cards = [p1.board[0][colIndex]!, p1.board[1][colIndex]!, p1.board[2][colIndex]!];
             const p2Cards = [p2.board[0][colIndex]!, p2.board[1][colIndex]!, p2.board[2][colIndex]!];
-            return { p1Cards, p2Cards, result: results[step], title: `COLUMN ${colIndex + 1}` };
+            return { p1Cards, p2Cards, result: results[step], title: t('scoring.column', { column: colIndex + 1 }) };
         } else {
             // Row 2 (X Hand)
             const p1Cards = p1.board[2] as CardType[];
             const p2Cards = p2.board[2] as CardType[];
-            return { p1Cards, p2Cards, result: rowResult, title: 'EXTRA HAND (ROW 3)' };
+            return { p1Cards, p2Cards, result: rowResult, title: t('scoring.extra') };
         }
     };
 
@@ -66,8 +68,8 @@ export const ScoringOverlay: React.FC<ScoringOverlayProps> = ({
     // const isDraw = result.winner === 'draw';
 
     const winnerCards = isMeWinner ? myCards : (isOppWinner ? oppCards : []);
-    const winningHandName = result.type ? result.type.replace(/([A-Z])/g, ' $1').trim() : '';
-    const winnerLabel = isMeWinner ? 'YOU WIN' : (isOppWinner ? (isOnlineGame ? 'OPPONENT WINS' : 'AI WINS') : 'DRAW');
+    const winningHandName = result.type ? handName(result.type) : '';
+    const winnerLabel = isMeWinner ? t('scoring.youWin') : (isOppWinner ? (isOnlineGame ? t('scoring.opponentWins') : t('scoring.aiWins')) : t('common.draw'));
     const winnerColor = isMeWinner ? '#4caf50' : (isOppWinner ? '#f44336' : '#999');
 
     return (
@@ -94,12 +96,12 @@ export const ScoringOverlay: React.FC<ScoringOverlayProps> = ({
                             </div>
                             <div className="hand-label">
                                 <span className="hand-name">{winningHandName}</span>
-                                <span className="hand-score">WIN!!</span>
+                                <span className="hand-score">{t('scoring.win')}</span>
                             </div>
                         </div>
                     ) : (
                         <div className="draw-showcase">
-                            <h1>DRAW</h1>
+                            <h1>{t('common.draw')}</h1>
                         </div>
                     )}
                 </div>

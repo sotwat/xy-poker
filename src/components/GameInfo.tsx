@@ -3,6 +3,7 @@ import type { GameState } from '../logic/types';
 import { PremiumBadge } from './PremiumBadge';
 import { AnimatedScore } from './AnimatedScore';
 import './GameInfo.css';
+import { useI18n } from '../i18n';
 
 interface GameInfoProps {
     gameState: GameState;
@@ -27,6 +28,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({
     isAutoPlay = false,
     onToggleAuto
 }) => {
+    const { t } = useI18n();
     const { phase, currentPlayerIndex, players, winner } = gameState; // Added turnCount/deck if needed or just use what's there
 
     // Determine display names based on player role in online mode
@@ -47,11 +49,11 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                 {phase === 'playing' && (
                     currentPlayerIndex === (isOnlineMode ? myIndex : 0) ? (
                         <div className="turn-indicator your-turn">
-                            {isAutoPlay ? 'AI IS PLAYING' : 'YOUR TURN'}
+                            {isAutoPlay ? t('gameInfo.aiPlaying') : t('gameInfo.yourTurn')}
                         </div>
                     ) : (
                         <div className="turn-indicator opponent-turn">
-                            {isOnlineMode ? `${oppDisplayName}'s Turn` : `${p2Name}'s Turn`}
+                            {t('gameInfo.opponentTurn', { name: isOnlineMode ? oppDisplayName : p2Name })}
                         </div>
                     )
                 )}
@@ -61,29 +63,29 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                         className={`auto-toggle-btn ${isAutoPlay ? 'active' : ''}`}
                         onClick={onToggleAuto}
                         aria-pressed={isAutoPlay}
-                        aria-label={`AI auto play ${isAutoPlay ? 'on' : 'off'}`}
-                        title="PRO: let the game AI choose every action"
+                        aria-label={t('gameInfo.autoAria', { state: isAutoPlay ? t('gameInfo.on') : t('gameInfo.off') })}
+                        title={t('gameInfo.autoTitle')}
                     >
-                        AUTO {isAutoPlay ? 'ON' : 'OFF'}
+                        AUTO {isAutoPlay ? t('gameInfo.on').toUpperCase() : t('gameInfo.off').toUpperCase()}
                     </button>
                 )}
                 {phase === 'playing' && onSurrender && (
                     <button type="button" className="surrender-btn" onClick={onSurrender}>
-                        Cancel
+                        {t('gameInfo.surrender')}
                     </button>
                 )}
                 {phase === 'ended' && (
                     <div className="winner-banner">
                         {winner === 'draw' ? (
-                            'Draw - Tie Game!'
+                            t('gameInfo.tie')
                         ) : (
-                            `Winner: ${winner === 'p1' ? p1Name : p2Name}!`
+                            t('gameInfo.winner', { name: winner === 'p1' ? p1Name : p2Name })
                         )}
                     </div>
                 )}
                 {phase === 'scoring' && (
                     <div className="scoring-banner">
-                        Scoring Phase...
+                        {t('gameInfo.scoring')}
                     </div>
                 )}
             </div>
@@ -93,13 +95,13 @@ export const GameInfo: React.FC<GameInfoProps> = ({
                     <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
                         {p1Name} {((myIndex === 0 && isPremium) || p1.isPremium) && <PremiumBadge />}: <AnimatedScore value={p1.score} className="score-number" />
                     </span>
-                    <span className="bonus-item">Bonus {p1.bonusesClaimed}</span>
+                    <span className="bonus-item">{t('gameInfo.bonus', { count: p1.bonusesClaimed })}</span>
                 </div>
                 <div className="player-score-row player-2">
                     <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
                         {p2Name} {((myIndex === 1 && isPremium) || p2.isPremium) && <PremiumBadge />}: <AnimatedScore value={p2.score} className="score-number" />
                     </span>
-                    <span className="bonus-item">Bonus {p2.bonusesClaimed}</span>
+                    <span className="bonus-item">{t('gameInfo.bonus', { count: p2.bonusesClaimed })}</span>
                 </div>
             </div>
         </div >

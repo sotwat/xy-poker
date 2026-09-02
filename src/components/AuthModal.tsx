@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabase';
+import { useI18n } from '../i18n';
 import './AuthModal.css';
 
 interface AuthModalProps {
@@ -9,6 +10,7 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
+    const { language, t } = useI18n();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isSignUp, setIsSignUp] = useState(false);
@@ -35,12 +37,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
                 // If user is created but no session, email confirmation is likely required
                 if (data.user && !data.session) {
-                    alert('Registration successful! Please check your email to confirm your account before logging in.');
+                    alert(t('auth.confirmEmail'));
                     onClose();
                     return;
                 }
 
-                alert('Account created! You are now logged in.');
+                alert(t('auth.created'));
                 onSuccess();
             } else {
                 const { error } = await supabase.auth.signInWithPassword({
@@ -52,7 +54,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             }
             onClose();
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'An error occurred');
+            setError(language === 'ja' ? t('auth.error') : (err instanceof Error ? err.message : t('auth.error')));
         } finally {
             setLoading(false);
         }
@@ -61,12 +63,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     return (
         <div className="auth-overlay">
             <div className="auth-content">
-                <button type="button" className="close-btn" onClick={onClose} aria-label="Close">&times;</button>
-                <h2>{isSignUp ? 'Create Account' : 'Sign In'}</h2>
+                <button type="button" className="close-btn" onClick={onClose} aria-label={t('common.close')}>&times;</button>
+                <h2>{isSignUp ? t('auth.create') : t('auth.signIn')}</h2>
                 <p className="auth-description">
                     {isSignUp
-                        ? 'Create an account to save your rating permanently.'
-                        : 'Sign in to sync your rating across devices.'}
+                        ? t('auth.createDescription')
+                        : t('auth.signInDescription')}
                 </p>
 
                 {error && <div className="auth-error">{error}</div>}
@@ -74,27 +76,29 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 <form onSubmit={handleSubmit}>
                     <input
                         type="email"
-                        placeholder="Email"
+                        placeholder={t('auth.email')}
+                        aria-label={t('auth.email')}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                     <input
                         type="password"
-                        placeholder="Password"
+                        placeholder={t('auth.password')}
+                        aria-label={t('auth.password')}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         minLength={6}
                     />
                     <button type="submit" className="auth-submit-btn" disabled={loading}>
-                        {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+                        {loading ? t('auth.processing') : (isSignUp ? t('auth.signUp') : t('auth.signIn'))}
                     </button>
                 </form>
 
                 <div className="auth-toggle">
                     <button type="button" onClick={() => setIsSignUp(!isSignUp)}>
-                        {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+                        {isSignUp ? t('auth.hasAccount') : t('auth.noAccount')}
                     </button>
                 </div>
             </div>

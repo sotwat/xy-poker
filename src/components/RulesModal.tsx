@@ -2,6 +2,7 @@ import React from 'react';
 import './RulesModal.css';
 import { Card } from './Card';
 import type { Suit, Rank } from '../logic/types';
+import { useI18n } from '../i18n';
 
 interface RulesModalProps {
     onClose: () => void;
@@ -33,86 +34,87 @@ const HandExample: React.FC<{ title: string; note?: string; cards: ReturnType<ty
 );
 
 export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
+    const { t, handName } = useI18n();
     return (
         <div className="rules-overlay" onClick={onClose}>
             <div className="rules-content" onClick={e => e.stopPropagation()}>
-                <button type="button" className="close-btn" onClick={onClose} aria-label="Close">×</button>
-                <h2>How to play</h2>
+                <button type="button" className="close-btn" onClick={onClose} aria-label={t('common.close')}>×</button>
+                <h2>{t('rules.title')}</h2>
 
                 <div className="rules-scroll-area">
                     <section>
-                        <h3>Goal</h3>
-                        <p>Build the strongest <strong>Poker Hands (Rows)</strong> and match <strong>Dice Values (Columns)</strong> to score points.</p>
+                        <h3>{t('rules.goal')}</h3>
+                        <p>{t('rules.goalText')}</p>
                     </section>
 
                     <section>
-                        <h3>Game flow</h3>
+                        <h3>{t('rules.flow')}</h3>
                         <ul>
-                            <li><strong>Turns:</strong> Players take turns placing <strong>1 Card</strong> from their hand onto the <strong>5x3 Grid</strong>.</li>
-                            <li><strong>X-Axis (Rows):</strong> The bottom row (Row 3, 5 cards) forms a standard Poker Hand. Stronger hand wins bonus points.</li>
-                            <li><strong>Y-Axis (Columns):</strong> Each of the 5 columns (3 cards vertical) forms a "3-Card Hand". The strength is multiplied by the column's <strong>Dice Value</strong>.</li>
+                            <li>{t('rules.turns')}</li>
+                            <li>{t('rules.xAxis')}</li>
+                            <li>{t('rules.yAxis')}</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h3>Pure vs normal</h3>
-                        <p>There are two types of 3-card hands in the Y-Axis:</p>
+                        <h3>{t('rules.pureNormal')}</h3>
+                        <p>{t('rules.pureIntro')}</p>
                         <ul>
-                            <li><strong>Pure (Stronger):</strong>
+                            <li>
                                 <ul>
-                                    <li><strong>Straight:</strong> Ranks must be ordered (e.g., 3-4-5).</li>
-                                    <li><strong>Pair:</strong> Cards must be adjacent (e.g., 5-5-9 or 9-5-5, but NOT 5-9-5).</li>
+                                    <li>{t('rules.pureStraight')}</li>
+                                    <li>{t('rules.purePair')}</li>
                                 </ul>
                             </li>
-                            <li><strong>Normal (Weaker):</strong> Any other valid combination (e.g., 3-5-4 Straight, or 5-9-5 Split Pair).</li>
+                            <li>{t('rules.normal')}</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h3>Hand rankings</h3>
+                        <h3>{t('rules.rankings')}</h3>
                         <div className="rankings-grid">
                             {/* X-AXIS HANDS */}
                             <div className="ranking-column">
-                                <h4>X-Axis (Horizontal - 5 Cards)</h4>
+                                <h4>{t('rules.xHeading')}</h4>
                                 <div className="hand-list-visual">
                                     <HandExample
-                                        title="Royal Flush"
+                                        title={handName('RoyalFlush')}
                                         cards={[c(10, 'spades'), c(11, 'spades'), c(12, 'spades'), c(13, 'spades'), c(14, 'spades')]}
                                     />
                                     <HandExample
-                                        title="Straight Flush"
+                                        title={handName('StraightFlush')}
                                         cards={[c(5, 'hearts'), c(6, 'hearts'), c(7, 'hearts'), c(8, 'hearts'), c(9, 'hearts')]}
                                     />
                                     <HandExample
-                                        title="Four of a Kind"
+                                        title={handName('FourOfAKind')}
                                         cards={[c(8, 'clubs'), c(8, 'diamonds'), c(8, 'hearts'), c(8, 'spades'), c(13, 'clubs')]}
                                     />
                                     <HandExample
-                                        title="Full House"
+                                        title={handName('FullHouse')}
                                         cards={[c(12, 'diamonds'), c(12, 'clubs'), c(12, 'hearts'), c(9, 'spades'), c(9, 'clubs')]}
                                     />
                                     <HandExample
-                                        title="Flush"
+                                        title={handName('Flush')}
                                         cards={[c(2, 'diamonds'), c(5, 'diamonds'), c(8, 'diamonds'), c(11, 'diamonds'), c(13, 'diamonds')]}
                                     />
                                     <HandExample
-                                        title="Straight"
+                                        title={handName('Straight')}
                                         cards={[c(3, 'clubs'), c(4, 'diamonds'), c(5, 'hearts'), c(6, 'spades'), c(7, 'clubs')]}
                                     />
                                     <HandExample
-                                        title="Three of a Kind"
+                                        title={handName('ThreeOfAKind')}
                                         cards={[c(7, 'spades'), c(7, 'hearts'), c(7, 'clubs'), c(2, 'diamonds'), c(12, 'clubs')]}
                                     />
                                     <HandExample
-                                        title="Two Pair"
+                                        title={handName('TwoPair')}
                                         cards={[c(11, 'hearts'), c(11, 'clubs'), c(4, 'diamonds'), c(4, 'spades'), c(14, 'clubs')]}
                                     />
                                     <HandExample
-                                        title="One Pair"
+                                        title={handName('OnePair')}
                                         cards={[c(9, 'clubs'), c(9, 'spades'), c(2, 'hearts'), c(5, 'diamonds'), c(13, 'clubs')]}
                                     />
                                     <HandExample
-                                        title="High Card"
+                                        title={handName('HighCard')}
                                         cards={[c(14, 'spades'), c(11, 'hearts'), c(8, 'clubs'), c(5, 'diamonds'), c(2, 'spades')]}
                                     />
                                 </div>
@@ -120,51 +122,51 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
 
                             {/* Y-AXIS HANDS */}
                             <div className="ranking-column">
-                                <h4>Y-Axis (Vertical - 3 Cards)</h4>
+                                <h4>{t('rules.yHeading')}</h4>
                                 <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>
-                                    Cards shown Left to Right = Top to Bottom (Row 1, 2, 3)
+                                    {t('rules.orderNote')}
                                 </p>
                                 <div className="hand-list-visual">
                                     <HandExample
-                                        title="Pure Straight Flush"
-                                        note="Ordered"
+                                        title={handName('PureStraightFlush')}
+                                        note={t('rules.ordered')}
                                         cards={[c(5, 'hearts'), c(6, 'hearts'), c(7, 'hearts')]}
                                     />
                                     <HandExample
-                                        title="Three of a Kind"
+                                        title={handName('ThreeOfAKind')}
                                         cards={[c(8, 'clubs'), c(8, 'diamonds'), c(8, 'spades')]}
                                     />
                                     <HandExample
-                                        title="Straight Flush"
-                                        note="Unordered"
+                                        title={handName('StraightFlush')}
+                                        note={t('rules.unordered')}
                                         cards={[c(7, 'spades'), c(9, 'spades'), c(8, 'spades')]}
                                     />
                                     <HandExample
-                                        title="Pure Straight"
-                                        note="Ordered"
+                                        title={handName('PureStraight')}
+                                        note={t('rules.ordered')}
                                         cards={[c(3, 'clubs'), c(4, 'hearts'), c(5, 'diamonds')]}
                                     />
                                     <HandExample
-                                        title="Flush"
+                                        title={handName('Flush')}
                                         cards={[c(2, 'clubs'), c(9, 'clubs'), c(11, 'clubs')]}
                                     />
                                     <HandExample
-                                        title="Pure One Pair"
-                                        note="Adjacent"
+                                        title={handName('PureOnePair')}
+                                        note={t('rules.adjacent')}
                                         cards={[c(5, 'hearts'), c(5, 'clubs'), c(9, 'diamonds')]}
                                     />
                                     <HandExample
-                                        title="Straight"
-                                        note="Unordered"
+                                        title={handName('Straight')}
+                                        note={t('rules.unordered')}
                                         cards={[c(4, 'diamonds'), c(6, 'spades'), c(5, 'clubs')]}
                                     />
                                     <HandExample
-                                        title="One Pair"
-                                        note="Split"
+                                        title={handName('OnePair')}
+                                        note={t('rules.split')}
                                         cards={[c(8, 'clubs'), c(12, 'diamonds'), c(8, 'spades')]}
                                     />
                                     <HandExample
-                                        title="High Card"
+                                        title={handName('HighCard')}
                                         cards={[c(13, 'hearts'), c(5, 'clubs'), c(2, 'diamonds')]}
                                     />
                                 </div>
@@ -172,7 +174,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                         </div>
                     </section>
                 </div>
-                <button type="button" className="rules-close-btn" onClick={onClose}>Close</button>
+                <button type="button" className="rules-close-btn" onClick={onClose}>{t('common.close')}</button>
             </div>
         </div >
     );

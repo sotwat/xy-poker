@@ -3,6 +3,7 @@ import type { Card as CardType, DiceSkin, CardSkin, BoardSkin } from '../logic/t
 import { Card } from './Card';
 import { Dice } from './Dice';
 import './SharedBoard.css';
+import { useI18n } from '../i18n';
 
 interface SharedBoardProps {
     playerBoard: (CardType | null)[][];
@@ -37,6 +38,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     revealedCols = [],
     showXHand = false
 }) => {
+    const { t } = useI18n();
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const pressTimerRef = useRef<number | null>(null);
     const longPressTriggeredRef = useRef(false);
@@ -122,7 +124,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                 className={`shared-column ${isCurrentPlayer ? 'interactive' : ''} ${colWinningClass}`}
                 role={isCurrentPlayer ? 'button' : undefined}
                 tabIndex={isCurrentPlayer ? 0 : -1}
-                aria-label={isCurrentPlayer ? `Place selected card in column ${colIndex + 1}, dice ${dice[colIndex]}` : undefined}
+                aria-label={isCurrentPlayer ? t('board.place', { column: colIndex + 1, dice: dice[colIndex] }) : undefined}
                 onClick={(event) => {
                     if (!isCurrentPlayer) return;
 

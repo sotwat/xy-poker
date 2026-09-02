@@ -11,6 +11,7 @@ import { supabase } from '../supabase';
 import { PremiumBadge } from './PremiumBadge';
 import { socket } from '../logic/online';
 import { getBrowserId } from '../utils/identity';
+import { useI18n } from '../i18n';
 
 interface SkinStoreProps {
     isOpen: boolean;
@@ -53,6 +54,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     unlockedCardSkins, selectedCardSkin, onUnlockCard, onSelectCard,
     unlockedBoardSkins, selectedBoardSkin, onUnlockBoard, onSelectBoard
 }) => {
+    const { t } = useI18n();
     const [activeTab, setActiveTab] = useState<Tab>('dice');
     const [userCoins, setUserCoins] = useState<number>(0);
     // const [loadingCoins, setLoadingCoins] = useState(false);
@@ -121,12 +123,12 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         const cost = pullCount === 1 ? GACHA_COST_SINGLE : GACHA_COST_SINGLE * pullCount;
 
         if (!isFree && userCoins < cost) {
-            alert(`Not enough coins! Need ${cost} coins.`);
+            alert(t('store.notEnough', { cost }));
             return;
         }
 
         if (locked.length === 0) {
-            alert("All skins collected! You are amazing!");
+            alert(t('store.complete'));
             return;
         }
 
@@ -143,7 +145,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                     });
                 });
                 if (!success) {
-                    alert("Failed to deduct coins. Please try again or check connection.");
+                    alert(t('store.deductFailed'));
                     return; // Abort
                 }
             }
@@ -292,43 +294,43 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     return (
         <div className="skin-store-overlay">
             <div className="skin-store-modal">
-                <button type="button" className="btn-close-x" onClick={() => { playClickSound(); onClose(); }} aria-label="Close">×</button>
+                <button type="button" className="btn-close-x" onClick={() => { playClickSound(); onClose(); }} aria-label={t('common.close')}>×</button>
                 <div className="store-header">
-                    <h2>Skin Shop</h2>
+                    <h2>{t('store.title')}</h2>
                     <div className="coin-balance">
                         <span className="coin-icon">🪙</span> {userCoins}
                         <div className="ad-box">
                             <button type="button" className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
-                                {isWatchingAd ? "Watching..." : (isPremium ? <span><PremiumBadge /> Free draw</span> : "Watch ad for a free draw")}
+                                {isWatchingAd ? t('store.watching') : (isPremium ? <span><PremiumBadge /> {t('store.freePremium')}</span> : t('store.watchFree'))}
                             </button>
                         </div>
                     </div>
                 </div>
                 <div className="expiry-notice">
-                    ⚠️ Discovered items expire in 3 hours.
+                    ⚠️ {t('store.expiry')}
                 </div>
 
                 {/* Gacha Actions */}
                 <div className="gacha-actions">
                     <button type="button" className="gacha-option" onClick={() => handleGacha(1)}>
-                        <div className="gacha-label">Single Pull</div>
+                        <div className="gacha-label">{t('store.single')}</div>
                         <div className="gacha-cost">🪙 {GACHA_COST_SINGLE}</div>
                     </button>
                     <button type="button" className="gacha-option special" onClick={() => handleGacha(10)}>
-                        <div className="gacha-label">10x Pull</div>
+                        <div className="gacha-label">{t('store.multi')}</div>
                         <div className="gacha-cost">🪙 {GACHA_COST_MULTI}</div>
                     </button>
                 </div>
 
                 <div className="store-tabs">
-                    <button type="button" className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`} onClick={() => setActiveTab('dice')}>Dice</button>
-                    <button type="button" className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`} onClick={() => setActiveTab('card')}>Cards</button>
-                    <button type="button" className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>Boards</button>
+                    <button type="button" className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`} onClick={() => setActiveTab('dice')}>{t('store.dice')}</button>
+                    <button type="button" className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`} onClick={() => setActiveTab('card')}>{t('store.cards')}</button>
+                    <button type="button" className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>{t('store.boards')}</button>
                 </div>
 
                 {renderContent()}
 
-                <button type="button" className="btn-close" onClick={() => { playClickSound(); onClose(); }}>Close</button>
+                <button type="button" className="btn-close" onClick={() => { playClickSound(); onClose(); }}>{t('common.close')}</button>
             </div>
         </div>
     );

@@ -3,6 +3,7 @@ import { playGachaSoundSequence, playClickSound } from '../utils/sound';
 import { Dice } from './Dice';
 import { AVAILABLE_DICE_SKINS, AVAILABLE_CARD_SKINS, AVAILABLE_BOARD_SKINS, type DiceSkin } from '../logic/types';
 import './GachaReveal.css';
+import { useI18n } from '../i18n';
 
 interface GachaRevealProps {
     results: { type: string, id: string }[];
@@ -10,8 +11,7 @@ interface GachaRevealProps {
 }
 
 export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) => {
-
-
+    const { t } = useI18n();
 
     const [stage, setStage] = useState<'summon' | 'charging' | 'explosion' | 'reveal'>('summon');
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -86,7 +86,7 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
                 )
             };
         }
-        return { name: 'Unknown', color: '#fff', component: null };
+        return { name: t('gacha.unknown'), color: '#fff', component: null };
     };
 
     const currentItemDetails = results.length > 0 ? getItemDetails(results[currentIndex].type, results[currentIndex].id) : null;
@@ -116,12 +116,12 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
                         <div key={currentIndex} className="reveal-container animate-pop">
                             {/* Key added to force re-render/animation for each item */}
                             <div className="god-rays"></div>
-                            <h2 className="gacha-title">UNLOCKED!</h2>
+                            <h2 className="gacha-title">{t('gacha.unlocked')}</h2>
                             <div className="item-showcase" style={{ '--item-color': currentItemDetails.color } as React.CSSProperties}>
                                 {currentItemDetails.component}
                             </div>
                             <div className="item-name">{currentItemDetails.name}</div>
-                            {!isMulti && <button className="btn-collect" onClick={onClose}>Collect</button>}
+                            {!isMulti && <button className="btn-collect" onClick={onClose}>{t('gacha.collect')}</button>}
                             {isMulti && <div className="multi-counter">{currentIndex + 1} / {results.length}</div>}
                         </div>
                     )}
@@ -129,7 +129,7 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
                     {/* MULTI ITEM SUMMARY */}
                     {isMulti && showSummary && (
                         <>
-                            <h2>Gacha Results!</h2>
+                            <h2>{t('gacha.results')}</h2>
                             <div className="results-grid">
                                 {results.map((item, idx) => {
                                     const details = getItemDetails(item.type, item.id);
@@ -143,7 +143,7 @@ export const GachaReveal: React.FC<GachaRevealProps> = ({ results, onClose }) =>
                                     );
                                 })}
                             </div>
-                            <button className="btn-collect" onClick={onClose}>Collect All</button>
+                            <button className="btn-collect" onClick={onClose}>{t('gacha.collectAll')}</button>
                         </>
                     )}
 

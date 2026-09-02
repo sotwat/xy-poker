@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { socket } from '../logic/online';
+import { useI18n } from '../i18n';
 import './ContactForm.css';
 
 interface ContactFormProps {
@@ -9,6 +10,7 @@ interface ContactFormProps {
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCategory = 'request' }) => {
+    const { language, t } = useI18n();
     const [category, setCategory] = useState<'request' | 'bug' | 'other'>(initialCategory);
     const [contactInfo, setContactInfo] = useState('');
     const [deviceInfo, setDeviceInfo] = useState(''); // No auto-fill
@@ -33,10 +35,10 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
                     message: message.trim(),
                 }, (error: Error | null, response?: { success: boolean; error?: string }) => {
                     if (error) reject(error);
-                    else resolve(response ?? { success: false, error: 'No response' });
+                    else resolve(response ?? { success: false, error: t('contact.failed') });
                 });
             });
-            if (!result.success) throw new Error(result.error || 'Submission rejected');
+            if (!result.success) throw new Error(result.error || t('contact.failed'));
 
             setSubmitStatus('success');
             setTimeout(() => {
@@ -45,7 +47,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
         } catch (err: unknown) {
             console.error('Contact submit error:', err);
             setSubmitStatus('error');
-            setErrorMessage(err instanceof Error ? err.message : 'Failed to submit. Please try again.');
+            setErrorMessage(language === 'ja' ? t('contact.failed') : (err instanceof Error ? err.message : t('contact.failed')));
         } finally {
             setIsSubmitting(false);
         }
@@ -55,9 +57,9 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
         return (
             <div className="modal-overlay">
                 <div className="contact-modal success">
-                    <div className="success-icon">Sent</div>
-                    <h3>Message Sent!</h3>
-                    <p>Thank you for your feedback.</p>
+                    <div className="success-icon">{t('contact.sent')}</div>
+                    <h3>{t('contact.sentTitle')}</h3>
+                    <p>{t('contact.thanks')}</p>
                 </div>
             </div>
         );
@@ -67,63 +69,63 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
         <div className="modal-overlay">
             <div className="contact-modal">
                 <div className="modal-header">
-                    <h2>Contact / Report</h2>
-                    <button type="button" className="close-btn" onClick={onClose} aria-label="Close">×</button>
+                    <h2>{t('contact.title')}</h2>
+                    <button type="button" className="close-btn" onClick={onClose} aria-label={t('common.close')}>×</button>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Category</label>
+                        <label>{t('contact.category')}</label>
                         <div className="category-options">
                             <button
                                 type="button"
                                 className={`cat-btn ${category === 'request' ? 'active' : ''}`}
                                 onClick={() => setCategory('request')}
                             >
-                                Request
+                                {t('contact.request')}
                             </button>
                             <button
                                 type="button"
                                 className={`cat-btn ${category === 'bug' ? 'active' : ''}`}
                                 onClick={() => setCategory('bug')}
                             >
-                                Bug
+                                {t('contact.bug')}
                             </button>
                             <button
                                 type="button"
                                 className={`cat-btn ${category === 'other' ? 'active' : ''}`}
                                 onClick={() => setCategory('other')}
                             >
-                                Other
+                                {t('contact.other')}
                             </button>
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label>Contact (Optional)</label>
+                        <label>{t('contact.optional')}</label>
                         <input
                             type="text"
-                            placeholder="Email or User ID"
+                            placeholder={t('contact.contactPlaceholder')}
                             value={contactInfo}
                             onChange={e => setContactInfo(e.target.value)}
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>Device / OS</label>
+                        <label>{t('contact.device')}</label>
                         <input
                             type="text"
                             value={deviceInfo}
                             onChange={e => setDeviceInfo(e.target.value)}
-                            placeholder="e.g. iPhone, Chrome on Windows"
+                            placeholder={t('contact.devicePlaceholder')}
                             style={{ fontSize: '0.8rem', color: '#aaa' }}
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>Message <span className="required">*</span></label>
+                        <label>{t('contact.message')} <span className="required">*</span></label>
                         <textarea
-                            placeholder="Describe your request or issue..."
+                            placeholder={t('contact.messagePlaceholder')}
                             value={message}
                             onChange={e => setMessage(e.target.value)}
                             required
@@ -139,14 +141,14 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
 
                     <div className="modal-actions">
                         <button type="button" className="btn-secondary" onClick={onClose}>
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
                             className="btn-primary"
                             disabled={isSubmitting || !message.trim()}
                         >
-                            {isSubmitting ? 'Sending...' : 'Send Message'}
+                            {isSubmitting ? t('contact.sending') : t('contact.send')}
                         </button>
                     </div>
                 </form>

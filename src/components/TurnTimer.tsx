@@ -1,5 +1,6 @@
 import React from 'react';
 import './TurnTimer.css';
+import { useI18n } from '../i18n';
 
 interface TurnTimerProps {
     timeLeft: number;
@@ -9,18 +10,19 @@ interface TurnTimerProps {
 }
 
 export const TurnTimer: React.FC<TurnTimerProps> = ({ timeLeft, currentPlayerIndex, isMyTurn, onResync }) => {
+    const { t } = useI18n();
     const borderColor = currentPlayerIndex === 0 ? '#4da8da' : '#ff4d4d'; // Blue : Red
 
     return (
         <div className={`turn-timer ${timeLeft <= 10 ? 'warning' : ''}`} style={{ borderColor }}>
             <div className="timer-label">
-                {isMyTurn ? "Your Turn" : "Opponent's Turn"}
+                {isMyTurn ? t('timer.yourTurn') : t('timer.opponentTurn')}
                 {!isMyTurn && onResync && (
                     <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); onResync(); }}
                         className="resync-btn"
-                        title="Sync Game State"
+                        title={t('timer.sync')}
                     >
                         ↻
                     </button>

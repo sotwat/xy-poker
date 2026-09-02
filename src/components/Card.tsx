@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Card as CardType, CardSkin } from '../logic/types';
 import './Card.css';
+import { useI18n } from '../i18n';
 
 interface CardProps {
     card: CardType;
@@ -24,13 +25,6 @@ const RANK_LABELS: Record<number, string> = {
     13: 'K',
     14: 'A',
     15: 'JOKER', // For Joker rank
-};
-
-const SUIT_LABELS: Record<CardType['suit'], string> = {
-    hearts: 'ハート',
-    diamonds: 'ダイヤ',
-    clubs: 'クラブ',
-    spades: 'スペード',
 };
 
 interface SuitMarkProps {
@@ -123,6 +117,7 @@ export const Card: React.FC<CardProps> = ({
     skin = 'classic',
     size = 'normal'
 }) => {
+    const { t } = useI18n();
 
     // If hidden but peeking, show card face with overlay
     const shouldHide = (card.isHidden || isHidden) && !isPeeking;
@@ -156,7 +151,7 @@ export const Card: React.FC<CardProps> = ({
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
             data-suit={card.suit}
-            aria-label={`${label} ${SUIT_LABELS[card.suit]}`}
+            aria-label={`${label} ${t(`card.${card.suit}`)}`}
         >
             {isPeeking && <div className="peek-overlay"></div>}
             <div className="card-index">

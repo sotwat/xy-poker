@@ -1,8 +1,11 @@
+import { useI18n } from '../i18n';
+
 export function PremiumBadge() {
+    const { t } = useI18n();
     return (
         <span
-            title="Premium member"
-            aria-label="Premium member"
+            title={t('premium.member')}
+            aria-label={t('premium.member')}
             style={{
                 display: 'inline-flex',
                 alignItems: 'center',

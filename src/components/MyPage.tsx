@@ -12,6 +12,7 @@ import {
 import { PremiumBadge } from './PremiumBadge';
 import { GameRecordViewer } from './GameRecordViewer';
 import './MyPage.css';
+import { useI18n, type Translate } from '../i18n';
 
 interface MyPageProps {
     isOpen: boolean;
@@ -56,6 +57,7 @@ export const MyPage: React.FC<MyPageProps> = ({
     selectedCardSkin,
     selectedBoardSkin,
 }) => {
+    const { language, t, locale } = useI18n();
     const [activeTab, setActiveTab] = useState<'stats' | 'records' | 'ranking' | 'achievements'>('stats');
     const [profile, setProfile] = useState<Profile | null>(null);
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -102,7 +104,7 @@ export const MyPage: React.FC<MyPageProps> = ({
                     if (!cancelled) {
                         setLeaderboard(entries.map(entry => ({
                             ...entry,
-                            username: entry.username || `User ${entry.id.slice(0, 4)}`,
+                            username: entry.username || `${language === 'ja' ? 'ユーザー' : 'User'} ${entry.id.slice(0, 4)}`,
                         })));
                     }
                 }
@@ -154,12 +156,12 @@ export const MyPage: React.FC<MyPageProps> = ({
         return () => {
             cancelled = true;
         };
-    }, [activeTab, isOpen, userId]);
+    }, [activeTab, isOpen, language, userId]);
 
     const handleUpdateName = async () => {
         if (!profile || !editNameValue.trim()) return;
         if (editNameValue.length > 15) {
-            alert("Name must be 15 characters or less.");
+            alert(t('mypage.nameTooLong'));
             return;
         }
 
@@ -177,7 +179,7 @@ export const MyPage: React.FC<MyPageProps> = ({
             onNameChange?.(response.username);
         } catch (err) {
             console.error("Error updating name:", err);
-            alert("Failed to update name.");
+            alert(t('mypage.nameFailed'));
         }
     };
 
@@ -194,13 +196,13 @@ export const MyPage: React.FC<MyPageProps> = ({
     return (
         <div className="mypage-overlay">
             <div className={`mypage-content ${selectedRecord ? 'record-open' : ''}`}>
-                <button type="button" className="close-btn" onClick={onClose} aria-label="Close">&times;</button>
+                <button type="button" className="close-btn" onClick={onClose} aria-label={t('common.close')}>&times;</button>
 
                 {!selectedRecord && (
                     <>
                         <div className="mypage-header">
                             <div className="header-left">
-                                <h2>My Page</h2>
+                                <h2>{t('mypage.title')}</h2>
                                 {profile && (
                                     <div className="user-identity">
                                         {isEditingName ? (
@@ -209,18 +211,18 @@ export const MyPage: React.FC<MyPageProps> = ({
                                                     className="name-input"
                                                     value={editNameValue}
                                                     onChange={(e) => setEditNameValue(e.target.value)}
-                                                    placeholder="Enter Name"
+                                                    placeholder={t('mypage.enterName')}
                                                 />
-                                                <button type="button" onClick={handleUpdateName} className="save-btn">Save</button>
-                                                <button type="button" onClick={() => setIsEditingName(false)} className="cancel-btn">Cancel</button>
+                                                <button type="button" onClick={handleUpdateName} className="save-btn">{t('mypage.save')}</button>
+                                                <button type="button" onClick={() => setIsEditingName(false)} className="cancel-btn">{t('common.cancel')}</button>
                                             </div>
                                         ) : (
                                             <div className="name-display-row">
                                                 <span className="username">
                                                     {isPremium && <PremiumBadge />}
-                                                    {profile.username || 'No Name'}
+                                                    {profile.username || t('mypage.noName')}
                                                 </span>
-                                                <button type="button" onClick={() => setIsEditingName(true)} className="edit-icon-btn" aria-label="Edit name">Edit</button>
+                                                <button type="button" onClick={() => setIsEditingName(true)} className="edit-icon-btn" aria-label={t('mypage.editName')}>{t('mypage.edit')}</button>
                                             </div>
                                         )}
                                     </div>
@@ -234,34 +236,34 @@ export const MyPage: React.FC<MyPageProps> = ({
                         </div>
 
                         <div className="mypage-tabs">
-                            <button type="button" className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>Stats & Progress</button>
-                            <button type="button" className={activeTab === 'records' ? 'active' : ''} onClick={() => { setSelectedRecord(null); setActiveTab('records'); }}>Game Records</button>
-                            <button type="button" className={activeTab === 'ranking' ? 'active' : ''} onClick={() => setActiveTab('ranking')}>World Ranking</button>
-                            <button type="button" className={activeTab === 'achievements' ? 'active' : ''} onClick={() => setActiveTab('achievements')}>Achievements</button>
+                            <button type="button" className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>{t('mypage.stats')}</button>
+                            <button type="button" className={activeTab === 'records' ? 'active' : ''} onClick={() => { setSelectedRecord(null); setActiveTab('records'); }}>{t('mypage.records')}</button>
+                            <button type="button" className={activeTab === 'ranking' ? 'active' : ''} onClick={() => setActiveTab('ranking')}>{t('mypage.ranking')}</button>
+                            <button type="button" className={activeTab === 'achievements' ? 'active' : ''} onClick={() => setActiveTab('achievements')}>{t('mypage.achievements')}</button>
                         </div>
                     </>
                 )}
 
                 <div className="mypage-body">
-                    {loading && <div className="loading">Loading...</div>}
+                    {loading && <div className="loading">{t('common.loading')}</div>}
 
                     {!loading && activeTab === 'stats' && profile && (
                         <div className="stats-view">
                             <div className="stat-card">
-                                <label>Rating</label>
+                                <label>{t('common.rating')}</label>
                                 <div className="value">{profile.rating}</div>
                             </div>
                             <div className="stat-card">
-                                <label>Games</label>
+                                <label>{t('mypage.games')}</label>
                                 <div className="value">{totalGames}</div>
                             </div>
                             <div className="stat-card">
-                                <label>Win Rate</label>
+                                <label>{t('mypage.winRate')}</label>
                                 <div className="value highlight">{winRate}%</div>
                             </div>
                             <div className="xp-section">
                                 <div className="xp-labels">
-                                    <span>XP Progress</span>
+                                    <span>{t('mypage.xp')}</span>
                                     <span>{profile.xp} / {nextLevelXp}</span>
                                 </div>
                                 <div className="xp-bar-bg">
@@ -277,8 +279,8 @@ export const MyPage: React.FC<MyPageProps> = ({
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Player</th>
-                                        <th>Rating</th>
+                                        <th>{t('mypage.player')}</th>
+                                        <th>{t('common.rating')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -307,21 +309,22 @@ export const MyPage: React.FC<MyPageProps> = ({
                             <div className="records-view">
                                 <div className="records-heading">
                                     <div>
-                                        <span>MATCH ARCHIVE</span>
-                                        <h3>Game Records / 棋譜</h3>
+                                        <span>{t('mypage.archive')}</span>
+                                        <h3>{t('mypage.recordsTitle')}</h3>
                                     </div>
                                     <strong>{gameRecords.length}</strong>
                                 </div>
                                 {gameRecords.length === 0 ? (
                                     <div className="empty-state records-empty">
-                                        <strong>No game records yet</strong>
-                                        <span>Completed matches will appear here automatically.</span>
+                                        <strong>{t('mypage.noRecords')}</strong>
+                                        <span>{t('mypage.recordsHint')}</span>
                                     </div>
                                 ) : (
                                     <div className="records-list">
                                         {gameRecords.map(record => {
                                             const result = getGameRecordResult(record);
                                             const opponentIndex = record.viewerPlayerIndex === 0 ? 1 : 0;
+                                            const resultMark = result === 'win' ? t('record.win')[0] : result === 'loss' ? t('record.loss')[0] : t('record.draw')[0];
                                             return (
                                                 <button
                                                     type="button"
@@ -329,14 +332,14 @@ export const MyPage: React.FC<MyPageProps> = ({
                                                     key={record.id}
                                                     onClick={() => setSelectedRecord(record)}
                                                 >
-                                                    <span className={`record-list-result record-list-result-${result}`}>{result[0].toUpperCase()}</span>
+                                                    <span className={`record-list-result record-list-result-${result}`}>{resultMark.toUpperCase()}</span>
                                                     <span className="record-list-main">
-                                                        <strong>vs {record.playerNames[opponentIndex]}</strong>
-                                                        <span>{new Date(record.completedAt).toLocaleString()}</span>
+                                                        <strong>{t('common.vs')} {record.playerNames[opponentIndex]}</strong>
+                                                        <span>{new Date(record.completedAt).toLocaleString(locale)}</span>
                                                     </span>
                                                     <span className="record-list-meta">
                                                         <strong>{record.scores[record.viewerPlayerIndex]} – {record.scores[opponentIndex]}</strong>
-                                                        <span>{record.mode === 'bot' ? 'BOT' : record.mode === 'ranked' ? 'RANKED' : 'PRIVATE'}</span>
+                                                        <span>{record.mode === 'bot' ? t('mypage.bot') : record.mode === 'ranked' ? t('lobby.ranked') : t('mypage.private')}</span>
                                                     </span>
                                                     <span className="record-list-arrow" aria-hidden="true">→</span>
                                                 </button>
@@ -351,14 +354,14 @@ export const MyPage: React.FC<MyPageProps> = ({
                     {!loading && activeTab === 'achievements' && (
                         <div className="achievements-view">
                             {achievements.length === 0 ? (
-                                <div className="empty-state">No achievements yet. Keep playing!</div>
+                                <div className="empty-state">{t('mypage.noAchievements')}</div>
                             ) : (
                                 achievements.map(a => (
                                     <div className="achievement-item" key={a.id}>
-                                        <div className="icon">Award</div>
+                                        <div className="icon">{t('mypage.award')}</div>
                                         <div className="info">
-                                            <div className="title">{getReadableAchievement(a.achievement_type)}</div>
-                                            <div className="date">{new Date(a.unlocked_at).toLocaleDateString()}</div>
+                                            <div className="title">{getReadableAchievement(a.achievement_type, t)}</div>
+                                            <div className="date">{new Date(a.unlocked_at).toLocaleDateString(locale)}</div>
                                         </div>
                                     </div>
                                 ))
@@ -387,9 +390,9 @@ export const MyPage: React.FC<MyPageProps> = ({
                             fontSize: '0.85rem'
                         }}
                     >
-                        Sign Out
+                        {t('common.signOut')}
                     </button>
-                    <button type="button" className="btn-close" onClick={onClose} style={{ flex: 1, margin: 0 }}>Close</button>
+                    <button type="button" className="btn-close" onClick={onClose} style={{ flex: 1, margin: 0 }}>{t('common.close')}</button>
                 </div>
             </div>
         </div>
@@ -397,12 +400,12 @@ export const MyPage: React.FC<MyPageProps> = ({
 };
 
 // Helper
-const getReadableAchievement = (type: string) => {
+const getReadableAchievement = (type: string, t: Translate) => {
     switch (type) {
-        case 'first_win': return 'First Victory';
-        case 'win_streak_3': return 'Winning Streak (3)';
-        case 'straight_flush_x': return 'Master of X (Straight Flush)';
-        case 'perfect_game': return 'Perfect Game';
+        case 'first_win': return t('achievement.first_win');
+        case 'win_streak_3': return t('achievement.win_streak_3');
+        case 'straight_flush_x': return t('achievement.straight_flush_x');
+        case 'perfect_game': return t('achievement.perfect_game');
         default: return type.replace(/_/g, ' ');
     }
 };

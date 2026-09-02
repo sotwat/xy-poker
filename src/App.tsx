@@ -33,6 +33,7 @@ import {
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, playCoinTossSound, playShowdownStinger, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
+import { useI18n } from './i18n';
 import './App.css';
 
 const GameResult = lazy(() => import('./components/GameResult').then(module => ({ default: module.GameResult })));
@@ -163,6 +164,7 @@ function unlockSkinGeneric<T extends string>(
 }
 
 function App() {
+  const { language, setLanguage, t, handName } = useI18n();
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
   const phase = gameState.phase;
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -882,11 +884,6 @@ function App() {
     const p2 = players[1];
     const dice = p1.dice; // Shared dice values
 
-    // Helper to map type ID to readable string
-    const getReadableHandName = (typeId: string): string => {
-      return typeId.replace(/([A-Z])/g, ' $1').trim().replace(/ Of /g, ' of ').replace(/ A /g, ' a ');
-    };
-
     // 出目の低い順（画面右→左）で表示。同じ値の場合は右の列（高いインデックス）を優先
     const orderedColIndices = [0, 1, 2, 3, 4].sort((a, b) => {
       const diceDiff = dice[a] - dice[b];
@@ -929,26 +926,26 @@ function App() {
         const res = colResults[currentCol];
         setCurrentShowdownPopup({
           id: `col-${currentStep}-${Date.now()}`,
-          text: res.type ? getReadableHandName(res.type) : 'DRAW',
+          text: res.type ? handName(res.type) : t('common.draw'),
           winner: res.winner,
           diceValue: dice[currentCol],
           isXHand: false,
           cards: res.cards
         });
 
-        await presentShowdown(res.winner !== 'draw' && res.type ? getReadableHandName(res.type) : null, false);
+        await presentShowdown(res.winner !== 'draw' && res.type ? handName(res.type) : null, false);
       } else if (currentStep === 5) {
         setShowXHand(true);
         
         setCurrentShowdownPopup({
           id: `row-${currentStep}-${Date.now()}`,
-          text: rowResult.type ? getReadableHandName(rowResult.type) : 'DRAW',
+          text: rowResult.type ? handName(rowResult.type) : t('common.draw'),
           winner: rowResult.winner,
           isXHand: true,
           cards: rowResult.cards
         });
 
-        await presentShowdown(rowResult.winner !== 'draw' && rowResult.type ? getReadableHandName(rowResult.type) : null, true);
+        await presentShowdown(rowResult.winner !== 'draw' && rowResult.type ? handName(rowResult.type) : null, true);
       }
 
       if (!isCurrentRun()) return;
@@ -960,7 +957,7 @@ function App() {
     if (!isCurrentRun()) return;
     setCurrentShowdownPopup(null);
     setShowResultsModal(true);
-  }, [gameState]);
+  }, [gameState, handName, t]);
 
   useEffect(() => {
     if (phase === 'ended') {
@@ -993,14 +990,14 @@ function App() {
 
           updatePlayerStats(dbPlayerId, resultStr, gameToken).then(res => {
             if (res?.leveledUp) {
-              alert(`Level Up! You are now Level ${res.newLevel}`);
+              alert(t('game.levelUp', { level: res.newLevel ?? '' }));
             }
           });
         }
         localGameTokenRef.current = null;
       }
     }
-  }, [dbPlayerId, gameState, isBotDisguise, mode, opponentName, phase, roomId, triggerShowdownSequence]);
+  }, [dbPlayerId, gameState, isBotDisguise, mode, opponentName, phase, roomId, t, triggerShowdownSequence]);
 
   useEffect(() => {
     localStorage.setItem('xypoker_playerName_v2', playerName);
@@ -1152,7 +1149,7 @@ function App() {
           setOpponentName(response.opponentName);
         }
       } else {
-        alert(response.message ?? 'Unable to join this room.');
+        alert(language === 'ja' ? t('game.joinFailed') : (response.message ?? t('game.joinFailed')));
       }
     });
   };
@@ -1323,7 +1320,7 @@ function App() {
 
   const handleSurrender = () => {
     playClickSound();
-    if (!window.confirm('Surrender? This will end the game.')) {
+    if (!window.confirm(t('game.surrenderConfirm'))) {
       return;
     }
 
@@ -1423,7 +1420,7 @@ function App() {
           await fullscreenElement.webkitRequestFullscreen();
         } else {
           // Fallback for iOS Safari which usually doesn't support DOM fullscreen API
-          alert("Fullscreen API not supported on this device/browser.\nTry 'Add to Home Screen' for fullscreen experience.");
+          alert(t('game.fullscreenUnsupported'));
         }
       } else {
         if (document.exitFullscreen) {
@@ -1446,12 +1443,12 @@ function App() {
         <div className="turn-announce-overlay">
           <div className="turn-announce-content">
             <div className="turn-announce-row first">
-              <span className="turn-announce-badge first-badge">先攻</span>
+              <span className="turn-announce-badge first-badge">{t('game.first')}</span>
               <span className="turn-announce-name">{turnAnnounce.firstName}</span>
             </div>
             <div className="turn-announce-divider">VS</div>
             <div className="turn-announce-row second">
-              <span className="turn-announce-badge second-badge">後攻</span>
+              <span className="turn-announce-badge second-badge">{t('game.second')}</span>
               <span className="turn-announce-name">{turnAnnounce.secondName}</span>
             </div>
           </div>
@@ -1466,7 +1463,7 @@ function App() {
           type="button"
           className="btn-fullscreen"
           onClick={toggleFullscreen}
-          aria-label="Toggle Fullscreen"
+          aria-label={t('home.fullscreen')}
         >
           {isFullscreen ? '⊠' : '⛶'}
         </button>
@@ -1480,9 +1477,9 @@ function App() {
                   type="button"
                   onClick={() => setShowMyPage(true)}
                   className="btn-account"
-                  aria-label={`Account: ${session.user.email ?? session.user.id}`}
+                  aria-label={`${t('common.account')}: ${session.user.email ?? session.user.id}`}
                 >
-                  Account
+                  {t('common.account')}
                 </button>
               </div>
             ) : (
@@ -1491,7 +1488,7 @@ function App() {
                 className="btn-auth"
                 onClick={() => setShowAuthModal(true)}
               >
-                Sign in
+                {t('common.signIn')}
               </button>
             )}
           </div>
@@ -1513,14 +1510,14 @@ function App() {
                 dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
               }}
             >
-              Local (vs AI)
+              {t('home.localMode')}
             </button>
             <button
               type="button"
               className={mode === 'online' ? 'active' : ''}
               onClick={() => { playClickSound(); setMode('online'); }}
             >
-              Online
+              {t('home.onlineMode')}
             </button>
           </div>
         )}
@@ -1546,12 +1543,12 @@ function App() {
           {mode === 'online' && isQuickMatch ? (
             <div className="setup-screen">
               <div className="waiting-message">
-                <h3>Quick Match</h3>
-                <h2>Waiting for opponent...</h2>
+                <h3>{t('match.quick')}</h3>
+                <h2>{t('match.waiting')}</h2>
                 <div className="loading-spinner"></div>
-                <p>If no player joins within {QUICK_MATCH_BOT_FALLBACK_SECONDS} seconds, a bot match starts automatically.</p>
+                <p>{t('match.botFallback', { seconds: QUICK_MATCH_BOT_FALLBACK_SECONDS })}</p>
                 <button type="button" className="btn-cancel" onClick={handleCancelMatchmaking}>
-                  Cancel
+                  {t('common.cancel')}
                 </button>
               </div>
             </div>
@@ -1603,43 +1600,43 @@ function App() {
                   <div className="setup-screen">
                     {isQuickMatch ? (
                       <div className="waiting-message">
-                        <h3>Quick Match</h3>
-                        <h2>Waiting for opponent...</h2>
+                        <h3>{t('match.quick')}</h3>
+                        <h2>{t('match.waiting')}</h2>
                         <div className="loading-spinner"></div>
-                        <p>If no player joins within {QUICK_MATCH_BOT_FALLBACK_SECONDS} seconds, a bot match starts automatically.</p>
+                        <p>{t('match.botFallback', { seconds: QUICK_MATCH_BOT_FALLBACK_SECONDS })}</p>
                         <button type="button" className="btn-cancel" onClick={handleCancelMatchmaking}>
-                          Cancel
+                          {t('common.cancel')}
                         </button>
                       </div>
                     ) : (
                       <div className="lobby-home">
                         <div className="home-player-bar">
                           <div className="home-player-copy">
-                            <span className="home-eyebrow">PLAYER</span>
-                            <strong>{playerName || 'Guest'}</strong>
+                            <span className="home-eyebrow">{t('home.playerLabel')}</span>
+                            <strong>{playerName || t('common.guest')}</strong>
                             {session?.user.email && (
                               <span className="home-player-email" title={session.user.email}>
                                 {session.user.email}
                               </span>
                             )}
                             <span className="home-player-id">
-                              {session ? `ID ${session.user.id.slice(0, 8)}` : 'Local guest'}
+                              {session ? `ID ${session.user.id.slice(0, 8)}` : t('common.localGuest')}
                             </span>
                           </div>
-                          <div className="home-rating" aria-label={`Rating ${myRating || 1500}`}>
-                            <span>RATING</span>
+                          <div className="home-rating" aria-label={`${t('common.rating')} ${myRating || 1500}`}>
+                            <span>{t('common.rating')}</span>
                             <strong>{myRating || 1500}</strong>
                           </div>
                         </div>
 
                         <section className="home-intro" aria-labelledby="home-title">
-                          <span className="home-kicker">CARD + DICE STRATEGY</span>
+                          <span className="home-kicker">{t('home.cardDiceStrategy')}</span>
                           <h2 id="home-title">XY Poker</h2>
-                          <p>Build five poker hands across a shared line of dice. Every placement matters.</p>
-                          <div className="home-meta" aria-label="Game overview">
-                            <span>2 players</span>
-                            <span>5 columns</span>
-                            <span>Quick matches</span>
+                          <p>{t('home.description')}</p>
+                          <div className="home-meta" aria-label={t('home.overview')}>
+                            <span>{t('home.twoPlayers')}</span>
+                            <span>{t('home.fiveColumns')}</span>
+                            <span>{t('home.quickMatches')}</span>
                           </div>
                         </section>
 
@@ -1653,8 +1650,8 @@ function App() {
                               handleStartGame();
                             }}
                           >
-                            <span className="quest-tag">PLAY NOW</span>
-                            <span className="quest-title">Play against AI</span>
+                            <span className="quest-tag">{t('home.playNow')}</span>
+                            <span className="quest-title">{t('home.playAi')}</span>
                             <span className="quest-arrow" aria-hidden="true">→</span>
                           </button>
 
@@ -1669,27 +1666,27 @@ function App() {
                             }}
                           >
                             <span>
-                              <small>PLAY WITH OTHERS</small>
-                              Online match
+                              <small>{t('home.playWithOthers')}</small>
+                              {t('home.onlineMatch')}
                             </span>
                             <span aria-hidden="true">→</span>
                           </button>
                         </div>
 
-                        <nav className="lobby-footer-tabs" aria-label="Home menu">
+                        <nav className="lobby-footer-tabs" aria-label={t('home.menu')}>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             setShowSkinStore(true);
                           }}>
                             <span className="tab-index">01</span>
-                            <span className="tab-label">Skins</span>
+                            <span className="tab-label">{t('home.skins')}</span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             setShowRules(true);
                           }}>
                             <span className="tab-index">02</span>
-                            <span className="tab-label">Rules</span>
+                            <span className="tab-label">{t('home.rules')}</span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
@@ -1697,30 +1694,44 @@ function App() {
                             else setShowAuthModal(true);
                           }}>
                             <span className="tab-index">03</span>
-                            <span className="tab-label">Account</span>
+                            <span className="tab-label">{t('common.account')}</span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             setShowContactModal(true);
                           }}>
                             <span className="tab-index">04</span>
-                            <span className="tab-label">Feedback</span>
+                            <span className="tab-label">{t('home.feedback')}</span>
                           </button>
                         </nav>
 
                         <div className="home-support-row">
+                          <label className="home-language-select">
+                            <span>{t('language.label')}</span>
+                            <select
+                              value={language}
+                              onChange={(event) => {
+                                playClickSound();
+                                setLanguage(event.target.value === 'en' ? 'en' : 'ja');
+                              }}
+                              aria-label={t('language.label')}
+                            >
+                              <option value="ja">{t('language.japanese')}</option>
+                              <option value="en">{t('language.english')}</option>
+                            </select>
+                          </label>
                           <a
                             className="home-support-link"
                             href="https://ofuse.me/c1b70795"
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label="開発者を支援（新しいタブで開く）"
+                            aria-label={t('home.supportAria')}
                             onClick={playClickSound}
                           >
-                            <span>開発者を支援</span>
+                            <span>{t('home.support')}</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09020904</div>
+                          <div className="home-version">v09021003</div>
                         </div>
                       </div>
                     )}
@@ -1728,7 +1739,7 @@ function App() {
                 )}
                 {phase === 'turn_selection' && (isTossingCoin || tossResult !== null) && (
                   <div className="turn-selection-overlay">
-                    <h2>Coin toss</h2>
+                    <h2>{t('game.coinToss')}</h2>
                     {isTossingCoin ? (
                       <div className="coin-toss-motion">
                         <div className="coin-container">
@@ -1737,7 +1748,7 @@ function App() {
                             <div className="coin-back" />
                           </div>
                         </div>
-                        <p className="coin-toss-status">Choosing at random…</p>
+                        <p className="coin-toss-status">{t('game.choosingRandom')}</p>
                       </div>
                     ) : (
                       <div className="coin-container">
@@ -1751,17 +1762,17 @@ function App() {
                     {!isTossingCoin && tossResult !== null && (
                       <div className="toss-result-area">
                         <div className="toss-winner-text">
-                          {tossResult === 0 ? (mode === 'online' && playerRole === 'guest' ? opponentName : playerName) : (mode === 'online' && playerRole === 'guest' ? playerName : opponentName)} won the toss
+                          {t('game.wonToss', { name: tossResult === 0 ? (mode === 'online' && playerRole === 'guest' ? opponentName : playerName) : (mode === 'online' && playerRole === 'guest' ? playerName : opponentName) })}
                         </div>
                         
                         {/* If it's my turn to choose (I won the toss) */}
                         {((mode === 'local' && tossResult === 0) || (mode === 'online' && ((playerRole === 'host' && tossResult === 0) || (playerRole === 'guest' && tossResult === 1)))) ? (
                           <div className="turn-choice-container">
                             {isProAutoActive ? (
-                              <div className="turn-choice-timer">AUTO is choosing…</div>
+                              <div className="turn-choice-timer">{t('game.autoChoosing')}</div>
                             ) : turnSelectionTimeLeft !== null && (
                               <div className="turn-choice-timer">
-                                Choose in {turnSelectionTimeLeft}s
+                                {t('game.chooseIn', { seconds: turnSelectionTimeLeft })}
                               </div>
                             )}
                             <div className="turn-choice-buttons">
@@ -1769,19 +1780,19 @@ function App() {
                                 playClickSound();
                                 handleChooseTurnOrder(myPlayerIndex);
                               }} disabled={isProAutoActive}>
-                                Go first
+                                {t('game.goFirst')}
                               </button>
                               <button type="button" onClick={() => {
                                 playClickSound();
                                 handleChooseTurnOrder(1 - myPlayerIndex);
                               }} disabled={isProAutoActive}>
-                                Go second
+                                {t('game.goSecond')}
                               </button>
                             </div>
                           </div>
                         ) : (
                           <div className="waiting-turn-text">
-                            Waiting for opponent to choose...
+                            {t('game.waitChoice')}
                           </div>
                         )}
                       </div>
@@ -1842,7 +1853,7 @@ function App() {
                                   currentPlayer.hiddenCardsCount >= 3
                                 }
                               />
-                              <span style={{ marginLeft: '4px' }}>Face Down ({3 - currentPlayer.hiddenCardsCount} left)</span>
+                              <span style={{ marginLeft: '4px' }}>{t('game.faceDown', { count: 3 - currentPlayer.hiddenCardsCount })}</span>
                             </div>
                           </div>
                         </div>
@@ -1857,7 +1868,7 @@ function App() {
 
                   {phase === 'scoring' && (
                     <div className="status-message">
-                      Calculating Scores...
+                      {t('game.calculating')}
                     </div>
                   )}
 
@@ -1867,18 +1878,18 @@ function App() {
                         playClickSound();
                         triggerShowdownSequence();
                       }}>
-                        Replay Showdown
+                        {t('game.replayShowdown')}
                       </button>
                       <button type="button" className="btn-primary" onClick={() => {
                         playClickSound();
                         setShowResultsModal(true);
                       }}>
-                        Show Details
+                        {t('game.showDetails')}
                       </button>
                       <button type="button" className="btn-secondary" onClick={() => {
                         returnToLobby();
                       }}>
-                        Back to Lobby
+                        {t('game.backLobby')}
                       </button>
                     </div>
                   )}
@@ -1910,16 +1921,16 @@ function App() {
       {rematchInvited && (
         <div className="modal-overlay rematch-modal-overlay">
           <div className="modal-content">
-            <h3>Rematch Request</h3>
-            <p>Opponent wants to play again.</p>
+            <h3>{t('game.rematchRequest')}</h3>
+            <p>{t('game.rematchMessage')}</p>
             <div className="modal-actions">
               <button type="button" className="btn-secondary" onClick={() => {
                 setRematchInvited(false);
-              }}>Cancel</button>
+              }}>{t('common.cancel')}</button>
               <button type="button" className="btn-primary" onClick={() => {
                 setRematchInvited(false);
                 socket.emit('accept_rematch', { roomId });
-              }}>OK</button>
+              }}>{t('common.ok')}</button>
             </div>
           </div>
         </div>
@@ -1937,7 +1948,7 @@ function App() {
           color: 'white',
           zIndex: 3000
         }}>
-          Waiting for opponent...
+          {t('game.waitOpponent')}
         </div>
       )}
 
@@ -2004,7 +2015,7 @@ function App() {
       {/* Finish Animation Overlay - only during scoring */}
       {phase === 'scoring' && (
         <div className="finish-overlay">
-          <h1 className="finish-text">FINISH!!</h1>
+          <h1 className="finish-text">{t('game.finish')}</h1>
         </div>
       )}
 

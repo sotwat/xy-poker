@@ -3,6 +3,7 @@ import { Dice } from './Dice';
 import './DiceRollOverlay.css';
 import { playClickSound } from '../utils/sound';
 import type { DiceSkin } from '../logic/types';
+import { useI18n } from '../i18n';
 
 interface DiceRollOverlayProps {
     targetValues: number[];
@@ -11,6 +12,7 @@ interface DiceRollOverlayProps {
 }
 
 export const DiceRollOverlay: React.FC<DiceRollOverlayProps> = ({ targetValues, onComplete, selectedSkin }) => {
+    const { t } = useI18n();
     const targetsRef = useRef(targetValues.slice(0, 5));
     const onCompleteRef = useRef(onComplete);
     const [reduceMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -80,7 +82,7 @@ export const DiceRollOverlay: React.FC<DiceRollOverlayProps> = ({ targetValues, 
         <div className="dice-roll-overlay">
             <div className="dice-roll-content">
                 <h2 className="dice-roll-title">
-                    {stage === 'rolling' ? 'Rolling dice' : 'Ready'}
+                    {stage === 'rolling' ? t('dice.rolling') : t('dice.ready')}
                 </h2>
                 <div className="dice-container-large">
                     {displayValues.map((val, idx) => (
