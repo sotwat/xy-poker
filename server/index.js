@@ -347,6 +347,15 @@ io.on('connection', socket => {
             const userId = socket.data.userId;
             if (!userId) throw new Error('Authentication required');
             if (!isValidGameRecord(record)) throw new Error('Invalid game record');
+            const hasProThoughts = record.schemaVersion === 3 && record.moves.some(move => Boolean(move.thought));
+            if (hasProThoughts) {
+                const { data: player, error: playerError } = await supabase
+                    .from('players')
+                    .select('is_premium')
+                    .eq('id', userId)
+                    .single();
+                if (playerError || !player?.is_premium) throw new Error('PRO membership required for thought notes');
+            }
 
             const viewerWinner = record.winner === 'draw'
                 ? 'draw'

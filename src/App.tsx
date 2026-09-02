@@ -16,12 +16,15 @@ import { updatePlayerStats } from './logic/gamification';
 import { socket, connectSocket } from './logic/online';
 import { QUICK_MATCH_BOT_FALLBACK_MS, QUICK_MATCH_BOT_FALLBACK_SECONDS } from './logic/matchmaking';
 import {
+  attachGameRecordThought,
   beginGameRecording,
   captureGameRecordMoves,
   finalizeGameRecord,
+  MAX_GAME_RECORD_THOUGHT_LENGTH,
   saveLocalGameRecord,
   type ActiveGameRecording,
   type GameRecordMode,
+  type PendingGameRecordThought,
 } from './logic/gameRecord';
 import { supabase, updateGlobalAiParameters } from './supabase';
 import { getBestMove, getBestTurnOrder, DEFAULT_AI_PARAMS } from './logic/ai';
@@ -207,6 +210,9 @@ function App() {
   const showdownRunRef = useRef(0);
   const gameStateRef = useRef(gameState); // Ref to access state in listeners
   const gameRecordingRef = useRef<ActiveGameRecording | null>(null);
+  const pendingGameThoughtRef = useRef<PendingGameRecordThought | null>(null);
+  const [proThoughtDraft, setProThoughtDraft] = useState('');
+  const [isProThoughtEditorOpen, setIsProThoughtEditorOpen] = useState(false);
 
   // Keep Ref updated
   useEffect(() => {
@@ -712,6 +718,11 @@ function App() {
   useEffect(() => {
     if (phase === 'setup') {
       gameRecordingRef.current = null;
+      pendingGameThoughtRef.current = null;
+      window.setTimeout(() => {
+        setProThoughtDraft('');
+        setIsProThoughtEditorOpen(false);
+      }, 0);
       return;
     }
 
@@ -728,7 +739,19 @@ function App() {
 
     const activeRecording = gameRecordingRef.current;
     if (!activeRecording) return;
-    const capturedRecording = captureGameRecordMoves(activeRecording, gameState);
+    let capturedRecording = captureGameRecordMoves(activeRecording, gameState);
+    const pendingThought = pendingGameThoughtRef.current;
+    if (pendingThought) {
+      const annotatedRecording = attachGameRecordThought(capturedRecording, pendingThought);
+      if (annotatedRecording !== capturedRecording) {
+        capturedRecording = annotatedRecording;
+        pendingGameThoughtRef.current = null;
+        window.setTimeout(() => {
+          setProThoughtDraft('');
+          setIsProThoughtEditorOpen(false);
+        }, 0);
+      }
+    }
     gameRecordingRef.current = capturedRecording;
 
     if (phase !== 'ended') return;
@@ -1034,13 +1057,18 @@ function App() {
       },
     };
 
+    if (currentPlayerIndex === myPlayerIndex && isPremium) {
+      pendingGameThoughtRef.current = null;
+      setProThoughtDraft('');
+      setIsProThoughtEditorOpen(false);
+    }
     dispatch(action);
     playClickSound();
 
     if (isOnlineGame && roomId) {
       socket.emit('game_action', { roomId, action });
     }
-  }, [currentPlayerIndex, gameState, isOnlineGame, myPlayerIndex, phase, roomId]);
+  }, [currentPlayerIndex, gameState, isOnlineGame, isPremium, myPlayerIndex, phase, roomId]);
 
   useEffect(() => {
     if (phase !== 'playing' || showDiceAnimation) return;
@@ -1336,6 +1364,9 @@ function App() {
     playClickSound();
     setSelectedCardId(null);
     setPlaceHidden(false);
+    pendingGameThoughtRef.current = null;
+    setProThoughtDraft('');
+    setIsProThoughtEditorOpen(false);
     setIsAutoPlay(current => !current);
   }, [isPremium]);
 
@@ -1363,6 +1394,16 @@ function App() {
     if (!selectedCardId) return;
 
     if (currentPlayerIndex !== myPlayerIndex) return;
+    if (currentPlayer.board[2][colIndex] !== null) return;
+
+    if (isPremium && proThoughtDraft.trim()) {
+      pendingGameThoughtRef.current = {
+        playerIndex: myPlayerIndex,
+        cardId: selectedCardId,
+        column: colIndex,
+        text: proThoughtDraft,
+      };
+    }
 
     const action: GameAction = {
       type: 'PLACE_AND_DRAW',
@@ -1731,7 +1772,7 @@ function App() {
                             <span>{t('home.support')}</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09021321</div>
+                          <div className="home-version">v09021343</div>
                         </div>
                       </div>
                     )}
@@ -1839,7 +1880,7 @@ function App() {
                       </div>
                       {/* Always render the action controls during playing phase to prevent layout height shifting */}
                       {phase === 'playing' && (
-                        <div className="action-bar" style={{ minHeight: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <div className="action-bar">
                           <div className="place-controls">
                             <div className="toggle-hidden" style={{ opacity: (currentPlayerIndex === myPlayerIndex && !isProAutoActive) ? 1 : 0.5, pointerEvents: (currentPlayerIndex === myPlayerIndex && !isProAutoActive) ? 'auto' : 'none', transition: 'opacity 0.2s' }}>
                               <input
@@ -1856,6 +1897,22 @@ function App() {
                               <span style={{ marginLeft: '4px' }}>{t('game.faceDown', { count: 3 - currentPlayer.hiddenCardsCount })}</span>
                             </div>
                           </div>
+                          {isPremium && (
+                            <button
+                              type="button"
+                              className={`pro-thought-trigger ${proThoughtDraft ? 'has-draft' : ''}`}
+                              onClick={() => {
+                                playClickSound();
+                                setIsProThoughtEditorOpen(true);
+                              }}
+                              disabled={isProAutoActive}
+                              aria-label={t('proThought.openAria')}
+                            >
+                              <span>PRO</span>
+                              {t('proThought.button')}
+                              {proThoughtDraft && <i aria-hidden="true" />}
+                            </button>
+                          )}
                         </div>
                       )}
 
@@ -1900,6 +1957,36 @@ function App() {
             </>
           )}
         </>
+      )}
+
+      {isPremium && isProThoughtEditorOpen && phase === 'playing' && (
+        <div className="pro-thought-overlay" role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setIsProThoughtEditorOpen(false);
+        }}>
+          <div className="pro-thought-editor" role="dialog" aria-modal="true" aria-labelledby="pro-thought-title">
+            <div className="pro-thought-heading">
+              <div>
+                <span>PRO</span>
+                <strong id="pro-thought-title">{t('proThought.title')}</strong>
+              </div>
+              <button type="button" onClick={() => setIsProThoughtEditorOpen(false)} aria-label={t('common.close')}>&times;</button>
+            </div>
+            <p>{t('proThought.description')}</p>
+            <textarea
+              autoFocus
+              value={proThoughtDraft}
+              maxLength={MAX_GAME_RECORD_THOUGHT_LENGTH}
+              onChange={(event) => setProThoughtDraft(event.target.value.slice(0, MAX_GAME_RECORD_THOUGHT_LENGTH))}
+              placeholder={t('proThought.placeholder')}
+              aria-label={t('proThought.inputAria')}
+            />
+            <div className="pro-thought-footer">
+              <span>{proThoughtDraft.length} / {MAX_GAME_RECORD_THOUGHT_LENGTH}</span>
+              <button type="button" onClick={() => setProThoughtDraft('')} disabled={!proThoughtDraft}>{t('proThought.clear')}</button>
+              <button type="button" className="btn-primary" onClick={() => setIsProThoughtEditorOpen(false)}>{t('proThought.done')}</button>
+            </div>
+          </div>
+        </div>
       )}
 
       {showDiceAnimation && (

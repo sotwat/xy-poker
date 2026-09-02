@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createDeck } from './deck';
 import { gameReducer, INITIAL_GAME_STATE } from './game';
 import {
+    attachGameRecordThought,
     beginGameRecording,
     buildReplayBoards,
     buildReplayHands,
@@ -11,6 +12,8 @@ import {
     getGameRecordExportFilename,
     getGameRecordResult,
     isGameRecordData,
+    MAX_GAME_RECORD_THOUGHT_LENGTH,
+    normalizeGameRecordThought,
     serializeGameRecordText,
 } from './gameRecord';
 
@@ -104,6 +107,15 @@ test('finalizes and validates a complete thirty-move game', () => {
             payload: { cardId: player.hand[0].id, colIndex: column, isHidden: false },
         });
         recording = captureGameRecordMoves(recording, state);
+        if (recording.moves.length === 1) {
+            const firstMove = recording.moves[0];
+            recording = attachGameRecordThought(recording, {
+                playerIndex: firstMove.playerIndex,
+                cardId: firstMove.card.id,
+                column: firstMove.column,
+                text: '  出目6の列より、Qの純正ストレート2経路を優先する。\r\nAIの資源配分と比較する。  ',
+            });
+        }
     }
     state = gameReducer(state, { type: 'CALCULATE_SCORE' });
 
@@ -114,8 +126,9 @@ test('finalizes and validates a complete thirty-move game', () => {
         playerNames: ['Player', 'AI'],
     });
     assert.ok(record);
-    assert.equal(record.schemaVersion, 2);
+    assert.equal(record.schemaVersion, 3);
     assert.equal(record.moves.length, 30);
+    assert.equal(record.moves[0].thought, '出目6の列より、Qの純正ストレート2経路を優先する。\nAIの資源配分と比較する。');
     assert.equal(isGameRecordData(record), true);
     assert.ok(JSON.stringify(record).length < 25_000);
 
@@ -131,6 +144,7 @@ test('finalizes and validates a complete thirty-move game', () => {
     assert.match(japaneseExport, /手順（1段目はサイコロ側）/);
     assert.match(japaneseExport, /30\. /);
     assert.match(japaneseExport, /最終盤面/);
+    assert.match(japaneseExport, /PRO思考メモ: 出目6の列より/);
 
     const englishExport = serializeGameRecordText(record, 'en');
     assert.match(englishExport, /^XY Poker Game Record/m);
@@ -140,4 +154,18 @@ test('finalizes and validates a complete thirty-move game', () => {
     const invalidRecord = structuredClone(record);
     invalidRecord.moves[0].drawnCards = [{ ...invalidRecord.initialHands[1][0] }];
     assert.equal(isGameRecordData(invalidRecord), false);
+
+    const opponentThought = structuredClone(record);
+    opponentThought.moves.find(move => move.playerIndex === 1)!.thought = '相手の思考は記録できない';
+    assert.equal(isGameRecordData(opponentThought), false);
+
+    const maximumNotes = structuredClone(record);
+    for (const move of maximumNotes.moves.filter(move => move.playerIndex === maximumNotes.viewerPlayerIndex)) {
+        move.thought = '戦'.repeat(MAX_GAME_RECORD_THOUGHT_LENGTH);
+    }
+    assert.equal(isGameRecordData(maximumNotes), true);
+    assert.ok(JSON.stringify(maximumNotes).length < 25_000);
+
+    assert.equal(normalizeGameRecordThought('  A\r\n B\u0000  '), 'A\nB');
+    assert.equal(normalizeGameRecordThought('思'.repeat(400)).length, MAX_GAME_RECORD_THOUGHT_LENGTH);
 });

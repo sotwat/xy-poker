@@ -17,6 +17,10 @@ export interface GameRecordMoveV2 extends GameRecordMove {
     drawnCards: Card[];
 }
 
+export interface GameRecordMoveV3 extends GameRecordMoveV2 {
+    thought?: string;
+}
+
 interface GameRecordBase {
     schemaVersion: 1;
     id: string;
@@ -42,15 +46,28 @@ export interface GameRecordDataV2 extends Omit<GameRecordBase, 'schemaVersion'> 
     moves: GameRecordMoveV2[];
 }
 
-export type GameRecordData = LegacyGameRecordData | GameRecordDataV2;
+export interface GameRecordDataV3 extends Omit<GameRecordBase, 'schemaVersion'> {
+    schemaVersion: 3;
+    initialHands: GameRecordHands;
+    moves: GameRecordMoveV3[];
+}
+
+export type GameRecordData = LegacyGameRecordData | GameRecordDataV2 | GameRecordDataV3;
 export type GameRecordTextLanguage = 'ja' | 'en';
+
+export interface PendingGameRecordThought {
+    playerIndex: 0 | 1;
+    cardId: string;
+    column: number;
+    text: string;
+}
 
 export interface ActiveGameRecording {
     id: string;
     startedAt: string;
     dice: number[];
     initialHands: GameRecordHands;
-    moves: GameRecordMoveV2[];
+    moves: GameRecordMoveV3[];
     lastBoards: [GameRecordBoard, GameRecordBoard];
     lastHands: GameRecordHands;
     lastTurnCount: number;
@@ -58,6 +75,7 @@ export interface ActiveGameRecording {
 
 const LOCAL_RECORDS_KEY = 'xypoker_game_records_v1';
 const MAX_LOCAL_RECORDS = 30;
+export const MAX_GAME_RECORD_THOUGHT_LENGTH = 280;
 
 function createEmptyBoard(): GameRecordBoard {
     return Array.from({ length: 3 }, () => Array<Card | null>(5).fill(null));
@@ -134,6 +152,41 @@ export function captureGameRecordMoves(recording: ActiveGameRecording, gameState
     };
 }
 
+export function normalizeGameRecordThought(value: string): string {
+    return value
+        .replace(/\r\n?/g, '\n')
+        .split('\n')
+        .map(line => line.replace(/[\p{Cc}\p{Cf}]/gu, ' ').trim())
+        .join('\n')
+        .trim()
+        .slice(0, MAX_GAME_RECORD_THOUGHT_LENGTH);
+}
+
+/** Attaches a private PRO note only to the matching move that was just recorded. */
+export function attachGameRecordThought(
+    recording: ActiveGameRecording,
+    pending: PendingGameRecordThought,
+): ActiveGameRecording {
+    const text = normalizeGameRecordThought(pending.text);
+    if (!text) return recording;
+
+    let moveIndex = -1;
+    for (let index = recording.moves.length - 1; index >= 0; index -= 1) {
+        const move = recording.moves[index];
+        if (move.playerIndex === pending.playerIndex
+            && move.card.id === pending.cardId
+            && move.column === pending.column
+            && move.thought === undefined) {
+            moveIndex = index;
+            break;
+        }
+    }
+    if (moveIndex < 0) return recording;
+
+    const moves = recording.moves.map((move, index) => index === moveIndex ? { ...move, thought: text } : move);
+    return { ...recording, moves };
+}
+
 export function finalizeGameRecord(
     recording: ActiveGameRecording,
     gameState: GameState,
@@ -143,13 +196,13 @@ export function finalizeGameRecord(
         viewerPlayerIndex: 0 | 1;
         playerNames: [string, string];
     },
-): GameRecordDataV2 | null {
+): GameRecordDataV3 | null {
     if (gameState.phase !== 'ended' || !gameState.winner) return null;
     const captured = captureGameRecordMoves(recording, gameState);
     if (captured.moves.length !== 30) return null;
 
     return {
-        schemaVersion: 2,
+        schemaVersion: 3,
         id: captured.id,
         startedAt: captured.startedAt,
         completedAt: metadata.completedAt,
@@ -176,7 +229,7 @@ export function buildReplayBoards(record: GameRecordData, moveCount: number): [G
 }
 
 export function buildReplayHands(record: GameRecordData, moveCount: number): GameRecordHands | null {
-    if (record.schemaVersion !== 2) return null;
+    if (record.schemaVersion === 1) return null;
 
     const hands = record.initialHands.map(cloneHand) as GameRecordHands;
     const clampedMoveCount = Math.max(0, Math.min(record.moves.length, Math.trunc(moveCount)));
@@ -246,7 +299,7 @@ export function serializeGameRecordText(record: GameRecordData, language: GameRe
             '-------------',
         ];
 
-    if (record.schemaVersion === 2) {
+    if (record.schemaVersion !== 1) {
         lines.push(`P1 ${names[0]}: ${record.initialHands[0].map(formatExportCard).join(' ')}`);
         lines.push(`P2 ${names[1]}: ${record.initialHands[1].map(formatExportCard).join(' ')}`);
     } else {
@@ -259,7 +312,7 @@ export function serializeGameRecordText(record: GameRecordData, language: GameRe
         const visibility = move.card.isHidden
             ? (japanese ? '伏せ札' : 'face down')
             : (japanese ? '表向き' : 'face up');
-        const draw = record.schemaVersion === 2
+        const draw = record.schemaVersion !== 1
             ? record.moves[move.ply - 1].drawnCards.map(formatExportCard)
             : [];
         const placement = japanese
@@ -269,6 +322,11 @@ export function serializeGameRecordText(record: GameRecordData, language: GameRe
             ? `${japanese ? ' / ドロー' : ' / Draw'}: ${draw.join(' ')}`
             : '';
         lines.push(`${placement}${drawText}`);
+        if (record.schemaVersion === 3 && record.moves[move.ply - 1].thought) {
+            const thoughtLines = record.moves[move.ply - 1].thought!.split('\n');
+            lines.push(`${japanese ? '    PRO思考メモ' : '    PRO thought'}: ${thoughtLines[0]}`);
+            for (const continuation of thoughtLines.slice(1)) lines.push(`      ${continuation}`);
+        }
     }
 
     lines.push('', japanese ? '最終盤面（各行は左から1〜5列）' : 'Final board (each row is Columns 1–5)', '------------------------------');
@@ -316,7 +374,7 @@ export function isGameRecordData(value: unknown): value is GameRecordData {
     if (!value || typeof value !== 'object') return false;
     if (JSON.stringify(value).length > 25_000) return false;
     const record = value as Partial<GameRecordData> & { schemaVersion?: number };
-    if ((record.schemaVersion !== 1 && record.schemaVersion !== 2) || typeof record.id !== 'string') return false;
+    if (![1, 2, 3].includes(record.schemaVersion ?? 0) || typeof record.id !== 'string') return false;
     if (!record.startedAt || !Number.isFinite(Date.parse(record.startedAt))) return false;
     if (!record.completedAt || !Number.isFinite(Date.parse(record.completedAt))) return false;
     if (!['bot', 'ranked', 'private'].includes(record.mode || '')) return false;
@@ -335,7 +393,7 @@ export function isGameRecordData(value: unknown): value is GameRecordData {
     const occupiedSlots = new Set<string>();
     const usedCards = new Set<string>();
     const playerMoveCounts = [0, 0];
-    const hands: GameRecordHands | null = record.schemaVersion === 2
+    const hands: GameRecordHands | null = record.schemaVersion !== 1
         && 'initialHands' in record
         && Array.isArray(record.initialHands)
         && record.initialHands.length === 2
@@ -343,7 +401,7 @@ export function isGameRecordData(value: unknown): value is GameRecordData {
         ? record.initialHands.map(hand => hand.map(card => ({ ...card }))) as GameRecordHands
         : null;
 
-    if (record.schemaVersion === 2 && !hands) return false;
+    if (record.schemaVersion !== 1 && !hands) return false;
     const introducedCards = new Set<string>();
     if (hands) {
         for (const card of hands.flat()) {
@@ -366,7 +424,7 @@ export function isGameRecordData(value: unknown): value is GameRecordData {
         usedCards.add(move.card.id);
         playerMoveCounts[move.playerIndex] += 1;
 
-        if (record.schemaVersion === 2 && hands) {
+        if (record.schemaVersion !== 1 && hands) {
             const moveV2 = move as GameRecordMoveV2;
             const cardIndex = hands[move.playerIndex].findIndex(card => card.id === move.card.id);
             if (cardIndex < 0 || !Array.isArray(moveV2.drawnCards) || moveV2.drawnCards.length > 2) return false;
@@ -376,6 +434,16 @@ export function isGameRecordData(value: unknown): value is GameRecordData {
                 introducedCards.add(drawnCard.id);
                 hands[move.playerIndex].push({ ...drawnCard });
             }
+        }
+
+        const thought = 'thought' in move ? move.thought : undefined;
+        if ((record.schemaVersion ?? 0) < 3 && thought !== undefined) return false;
+        if (record.schemaVersion === 3 && thought !== undefined) {
+            if (move.playerIndex !== record.viewerPlayerIndex
+                || typeof thought !== 'string'
+                || thought !== normalizeGameRecordThought(thought)
+                || thought.length < 1
+                || thought.length > MAX_GAME_RECORD_THOUGHT_LENGTH) return false;
         }
 
         return true;

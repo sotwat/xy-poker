@@ -7,6 +7,7 @@ const ROOM_ID_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
 const RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 const ALLOWED_ACTIONS = new Set(['CHOOSE_TURN_ORDER', 'PLACE_AND_DRAW']);
+export const MAX_GAME_RECORD_THOUGHT_LENGTH = 280;
 
 export function calculateEloChange(playerRating, opponentRating, actualScore, kFactor = 32) {
     const expectedScore = 1 / (1 + 10 ** ((opponentRating - playerRating) / 400));
@@ -90,8 +91,18 @@ function isValidRecordCard(card, requireHidden = false) {
         && validHidden;
 }
 
+function normalizeRecordThought(value) {
+    return value
+        .replace(/\r\n?/g, '\n')
+        .split('\n')
+        .map(line => line.replace(/[\p{Cc}\p{Cf}]/gu, ' ').trim())
+        .join('\n')
+        .trim()
+        .slice(0, MAX_GAME_RECORD_THOUGHT_LENGTH);
+}
+
 export function isValidGameRecord(record) {
-    if (!record || typeof record !== 'object' || ![1, 2].includes(record.schemaVersion)) return false;
+    if (!record || typeof record !== 'object' || ![1, 2, 3].includes(record.schemaVersion)) return false;
     if (typeof record.id !== 'string'
         || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(record.id)) return false;
     const startedAt = Date.parse(record.startedAt);
@@ -117,7 +128,7 @@ export function isValidGameRecord(record) {
     let replayHands = null;
     const introducedCards = new Set();
 
-    if (record.schemaVersion === 2) {
+    if (record.schemaVersion !== 1) {
         if (!Array.isArray(record.initialHands) || record.initialHands.length !== 2
             || !record.initialHands.every(hand => Array.isArray(hand)
                 && hand.length === 4
@@ -143,7 +154,7 @@ export function isValidGameRecord(record) {
         usedCards.add(move.card.id);
         playerMoveCounts[move.playerIndex] += 1;
 
-        if (record.schemaVersion === 2) {
+        if (record.schemaVersion !== 1) {
             const cardIndex = replayHands[move.playerIndex].findIndex(card => card.id === move.card.id);
             if (cardIndex < 0 || !Array.isArray(move.drawnCards) || move.drawnCards.length > 2) return false;
             replayHands[move.playerIndex].splice(cardIndex, 1);
@@ -152,6 +163,16 @@ export function isValidGameRecord(record) {
                 introducedCards.add(drawnCard.id);
                 replayHands[move.playerIndex].push({ ...drawnCard });
             }
+        }
+
+        const thought = 'thought' in move ? move.thought : undefined;
+        if (record.schemaVersion < 3 && thought !== undefined) return false;
+        if (record.schemaVersion === 3 && thought !== undefined) {
+            if (move.playerIndex !== record.viewerPlayerIndex
+                || typeof thought !== 'string'
+                || thought !== normalizeRecordThought(thought)
+                || thought.length < 1
+                || thought.length > MAX_GAME_RECORD_THOUGHT_LENGTH) return false;
         }
     }
 

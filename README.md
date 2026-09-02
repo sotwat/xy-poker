@@ -69,8 +69,8 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09021321` (2026-09-02 13:21)
-- **Status:** **Full local quality gate and production deployment verified**
+- **Current Version:** `09021343` (2026-09-02 13:43)
+- **Status:** **Local quality gate in progress; production deployment pending**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 44 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~313 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09021321` live on Cloudflare Pages; Render `/api/health` responding normally
+    - Deployment: ⏳ `v09021343` deployment pending
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09021343** (2026-09-02): **PRO Move-Reasoning Journal** - Added an in-match PRO-only thought editor that attaches up to 280 characters of strategic reasoning to the player’s next manual move. Notes are stored with the exact card, column, row, visibility, and draw in game-record schema v3; shown at the matching replay position; and included in localized TXT exports. Client and server validators reject notes on opponent moves, malformed text, legacy-schema injection, and oversized records, while cloud saves containing notes require a server-verified PRO profile. AUTO and timeout moves cannot inherit stale human notes.
 1. **v09021321** (2026-09-02): **Balanced Replay Dice & Text Export** - Reduced replay-only dice from 40–72 px to a compact responsive 28–36 px so the board’s cards and placements remain visually dominant without changing live-match dice. Added localized UTF-8 TXT exports containing match metadata, all five dice, both initial hands when available, every placement and draw, face-up/face-down history, bonuses, scores, and final boards. Legacy records remain exportable with unavailable hand data identified explicitly.
 1. **v09021311** (2026-09-02): **Column-Triage GTO A7** - Fixed a strategic inversion where stronger visible opponent columns received a larger unconditional contest bonus, causing the AI to feed scarce cards into likely-lost lanes. A7 applies a validated negative response pressure so it sacrifices bad matchups and concentrates cards on winnable dice. Independent 3,000-pair tests beat A6 on random, 66611, and 65421 boards with positive 95% lower bounds; a separate 10,000-pair audit measured +0.0505 utility and reduced 15-point blowout losses by about 19.6%. Two-seed, 1,000 ms search-versus-search regression finished 8-7-1 while maintaining 61.28/64 belief samples. Added reproducible A6/A7 generation selection and search-opponent benchmarking.
 1. **v09021205** (2026-09-02): **Cross-Column GTO A6** - Added an exact hand-resource shadow price across all two-card Y columns so the AI preserves uniquely valuable completion cards for Pure Straights, trips, flushes, and other roles instead of only protecting queens. The opportunity cost is dice-weighted and attenuated on polarized cheap-column bonus races. Across 8,000 paired deals spanning random, 66611, 65421, and 44444 boards, the equal-regime descriptive improvement over A4 was +0.0205 utility with an approximate 95% interval of [+0.0017, +0.0393]. Tested and rejected public-showdown overreaction and secured-opening first-mover bonuses, then integrated A6 into both the 20% prior and 1,000 ms information-set rollout policy. Cached per-state best/second-best completions restored runtime density to 61.14/64 belief samples on the final audit.

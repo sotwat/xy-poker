@@ -74,7 +74,10 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
     const viewerIndex = record.viewerPlayerIndex;
     const opponentIndex = viewerIndex === 0 ? 1 : 0;
     const currentMove = moveCount > 0 ? record.moves[moveCount - 1] : null;
-    const currentMoveV2 = record.schemaVersion === 2 && moveCount > 0 ? record.moves[moveCount - 1] : null;
+    const currentMoveV2 = record.schemaVersion !== 1 && moveCount > 0 ? record.moves[moveCount - 1] : null;
+    const currentThought = record.schemaVersion === 3 && moveCount > 0
+        ? record.moves[moveCount - 1].thought
+        : undefined;
     const result = getGameRecordResult(record);
     const viewerName = record.playerNames[viewerIndex];
     const opponentName = record.playerNames[opponentIndex];
@@ -177,6 +180,16 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
                 <span>{t('record.position', { current: moveCount, total: record.moves.length })}</span>
                 <strong>{moveDescription}</strong>
             </div>
+
+            {currentThought && (
+                <div className="record-thought-note">
+                    <span>PRO</span>
+                    <div>
+                        <strong>{t('record.thought')}</strong>
+                        <p>{currentThought}</p>
+                    </div>
+                </div>
+            )}
 
             <input
                 className="record-scrubber"

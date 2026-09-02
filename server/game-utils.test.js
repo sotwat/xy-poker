@@ -130,6 +130,23 @@ test('validates hand-aware version 2 game records', () => {
     const duplicatedDraw = structuredClone(record);
     duplicatedDraw.moves[0].drawnCards = [{ ...initialHands[1][0] }];
     assert.equal(isValidGameRecord(duplicatedDraw), false);
+
+    const proRecord = structuredClone(record);
+    proRecord.schemaVersion = 3;
+    proRecord.moves[0].thought = '出目6を守りつつ、Qのストレート2経路を残す。';
+    assert.equal(isValidGameRecord(proRecord), true);
+
+    const opponentThought = structuredClone(proRecord);
+    opponentThought.moves[1].thought = '相手の思考を偽装';
+    assert.equal(isValidGameRecord(opponentThought), false);
+
+    const oversizedThought = structuredClone(proRecord);
+    oversizedThought.moves[0].thought = '戦'.repeat(281);
+    assert.equal(isValidGameRecord(oversizedThought), false);
+
+    const legacyThought = structuredClone(record);
+    legacyThought.moves[0].thought = 'v2では許可しない';
+    assert.equal(isValidGameRecord(legacyThought), false);
 });
 
 test('calculates symmetric Elo changes', () => {
