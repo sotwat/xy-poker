@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09020645` (2026-09-02 06:45)
+- **Current Version:** `09020901` (2026-09-02 09:01)
 - **Status:** **Full local quality gate and production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ 320×568, 390×844, 768×1024, and landscape layouts checked
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 33 passing
-    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~278 kB
+    - Automated tests: ✅ 37 passing
+    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~283 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09020645` live on Cloudflare Pages; Render health endpoint responding normally
+    - Deployment: ⏳ `v09020901` ready for unified Cloudflare Pages + Render deployment
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09020901** (2026-09-02): **Generalized Information-Set GTO A5** - Rebalanced the complete A4 policy with a confirmed PSRO response, added exact first-row route/kicker economics and cross-column Q opportunity cost, and re-solved a 12-policy population over 396,000 terminal games. A4 received 100% population support and beat A3 across random, 66611, 65421, and 22211 dice regimes in separate 5,000-pair tests. Replaced the 400 ms / 20-sample runtime with a 1,000 ms / 64-sample A5 search that broadly evaluates up to 60 card-column-face actions, progressively narrows to 16, samples only information-set-consistent worlds, and plays every candidate through all draws, Y/X scoring, bonuses, and opponent responses. A rotating-policy regression scored 28-10-2; a tempting multi-opponent rollout variant was measured at 21-16-3 and deliberately rejected.
 1. **v09020645** (2026-09-02): **Hand-Efficiency GTO A3** - Corrected a structural role-value error where the completed evaluator knew Pure Straight was Rank 6 but the construction prior valued a two-card pair far above an ordered straight prefix, causing its own rollouts to reinforce the mistake. Added exact enumeration of all 132,600 ordered Y hands, actionable Pure Straight prefix/held-card analysis, 4,000-game paired policy studies, role-frequency reporting, half/double strength sensitivity tests, and a ten-policy re-solve. A3 increased Pure Straights from 0.581 to 2.396 per game and beat A2 by +0.3680 utility on random dice; the hand-efficiency policy received 100% equilibrium support and no independently confirmed mutation improved it.
 1. **v09020623** (2026-09-02): **Dice-Regime GTO A2** - Re-audited the strategy after finding that A1 turn-order selection ignored dice entirely and its placement prior could not distinguish equal-mean `66611` from `44444`. Added public-board mean, variance, standard deviation, range, cheap-column opportunity cost, dynamic Y/X allocation, card-to-stake alignment, and conditional completion-race value to both turn selection and every rollout. Re-solved the nine-policy meta-game over 43,200 paired-seat games, where the regime-adaptive policy received 100% population support. A separate fixed-dice study over 2,000 games per regime found A2 beat A1 on `66611` by +0.105 utility with a 95% interval of [+0.062, +0.148], while proving that unconditional low-column rushing is exploitable outside polarized boards. Production belief rollout beat A1 28-11-1 on a 40-game `66611` audit at 95 ms average decision time.
 1. **v09020039** (2026-09-02): **PRO AI Auto Play** - Added a persistent PRO-only AUTO control for local and online matches. When enabled, the same information-set-safe strategic AI now chooses lead/follow after a coin-toss win and performs every card, column, and face-down decision for the signed-in PRO player while manual match controls are locked. Opponent turns remain client-isolated, AUTO can be stopped at any time, and the 60-second safety action now uses the strategic AI instead of a random, partially invalid column picker.

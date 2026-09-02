@@ -10,6 +10,8 @@ import {
     XY_GTO_A1,
     XY_GTO_A2,
     XY_GTO_A3,
+    XY_GTO_A4,
+    XY_GTO_A4_SOLVER_BASE,
     type GtoPolicyWeights,
 } from '../src/logic/gtoPolicy';
 import type { Card, GameState } from '../src/logic/types';
@@ -43,6 +45,7 @@ const DEFAULT_PROBE_DEALS = 1_500;
 const DEFAULT_SEARCH_DEALS = 220;
 const DEFAULT_CANDIDATE_DEALS = 180;
 const DEFAULT_SEARCH_ROUNDS = 4;
+const DEFAULT_RESPONSE_CANDIDATES = 40;
 const DEFAULT_SEED = 0x5859504f;
 const OUTPUT_PATH = 'gto_solution.json';
 
@@ -153,6 +156,20 @@ const STRATEGIES: StrategyProfile[] = [
         temperature: 0.042839,
     },
     {
+        id: 'psro_rebalanced',
+        name: 'PSRO再均衡型',
+        description: '独立5,000組の確認を通過した、Y/X・テンポ・純正ストレート配分の再均衡基礎方策。',
+        ...XY_GTO_A4_SOLVER_BASE,
+        temperature: 0.024119,
+    },
+    {
+        id: 'opening_efficiency',
+        name: '初手効率適応型',
+        description: '1行目の純正ストレート経路数とキッカー上限を評価し、Qを別列の初手資源として温存する。',
+        ...XY_GTO_A4,
+        temperature: 0.024119,
+    },
+    {
         id: 'reactive',
         name: '後攻対応型',
         description: '後攻を選びやすくし、相手の公開済み列に応じて資源配分を変える。',
@@ -211,6 +228,22 @@ const PROBE_STRATEGIES: StrategyProfile[] = [
         name: '検証用・純正ストレート過剰型',
         description: '他の役やX役を犠牲にしてでも純正ストレートを追う母集団外方策。',
         pureStraightEfficiency: 20,
+    },
+    {
+        ...STRATEGIES.find(strategy => strategy.id === 'opening_efficiency')!,
+        id: 'probe_q_anchor_extreme',
+        name: '検証用・Q初手過剰型',
+        description: 'Q初手とQ温存を母集団外の極端な強さで評価する方策。',
+        openingAnchorEfficiency: 5,
+        queenConservation: 4,
+    },
+    {
+        ...STRATEGIES.find(strategy => strategy.id === 'opening_efficiency')!,
+        id: 'probe_q_expendable',
+        name: '検証用・Q消費型',
+        description: '初手ランクの経路価値を使わず、Qの横断的な機会費用も無視する方策。',
+        openingAnchorEfficiency: 0,
+        queenConservation: 0,
     },
 ];
 
@@ -454,6 +487,18 @@ function mutateProfile(anchor: StrategyProfile, round: number, candidate: number
         pureStraightEfficiency: randomRestart
             ? rng() * 20
             : clamp((anchor.pureStraightEfficiency ?? 0) * Math.exp((rng() - 0.5) * 1.5), 0, 20),
+        openingAnchorEfficiency: randomRestart
+            ? rng() * 6
+            : clamp((anchor.openingAnchorEfficiency ?? 0) * Math.exp((rng() - 0.5) * 1.5)
+                + (rng() - 0.5) * 0.25, 0, 6),
+        pureStraightKickerEfficiency: randomRestart
+            ? rng() * 2
+            : clamp((anchor.pureStraightKickerEfficiency ?? 0) * Math.exp((rng() - 0.5) * 1.2)
+                + (rng() - 0.5) * 0.15, 0, 2),
+        queenConservation: randomRestart
+            ? rng() * 5
+            : clamp((anchor.queenConservation ?? 0) * Math.exp((rng() - 0.5) * 1.5)
+                + (rng() - 0.5) * 0.2, 0, 5),
         temperature: 0.01 + rng() * 0.04,
     };
 }
@@ -478,6 +523,7 @@ function discoverBestResponses(
     searchDeals: number,
     candidateDeals: number,
     confirmationDeals: number,
+    candidatesPerRound: number,
     seed: number,
 ): Array<{
     round: number;
@@ -489,7 +535,6 @@ function discoverBestResponses(
     accepted: boolean;
 }> {
     const searchLog = [];
-    const candidatesPerRound = 40;
 
     for (let round = 1; round <= rounds; round++) {
         const searchGame = solvePayoffMatrix(searchDeals, mixSeed(seed, 0x53454152, round));
@@ -647,6 +692,7 @@ function main(): void {
     const searchDeals = parsePositiveInteger('--search-deals', DEFAULT_SEARCH_DEALS);
     const candidateDeals = parsePositiveInteger('--candidate-deals', DEFAULT_CANDIDATE_DEALS);
     const searchRounds = parsePositiveInteger('--search-rounds', DEFAULT_SEARCH_ROUNDS);
+    const responseCandidates = parsePositiveInteger('--response-candidates', DEFAULT_RESPONSE_CANDIDATES);
     const seed = parsePositiveInteger('--seed', DEFAULT_SEED);
     const startedAt = Date.now();
     console.log(`Searching for best responses (${searchRounds} rounds, ${STRATEGIES.length} base strategies)...`);
@@ -655,6 +701,7 @@ function main(): void {
         searchDeals,
         candidateDeals,
         probeDeals,
+        responseCandidates,
         seed,
     );
     responseSearch.forEach(entry => {
@@ -670,7 +717,7 @@ function main(): void {
     const equilibriumPlay = estimateEquilibriumPlay(equilibrium.averageStrategy, probeDeals, seed);
 
     const result = {
-        schemaVersion: 3,
+        schemaVersion: 4,
         generatedAt: new Date().toISOString(),
         solver: {
             method: 'PSRO-style response expansion + paired self-play payoff matrix + regret-matching+',
@@ -681,6 +728,7 @@ function main(): void {
             searchDealsPerCell: searchDeals,
             candidateDeals,
             searchRoundsRequested: searchRounds,
+            responseCandidatesPerRound: responseCandidates,
             regretIterations: equilibrium.iterations,
             runtimeSeconds: round((Date.now() - startedAt) / 1000, 3),
         },
@@ -699,6 +747,9 @@ function main(): void {
                 firstBias: round(profile.firstBias),
                 boardAdaptation: round(profile.boardAdaptation ?? 0),
                 pureStraightEfficiency: round(profile.pureStraightEfficiency ?? 0),
+                openingAnchorEfficiency: round(profile.openingAnchorEfficiency ?? 0),
+                pureStraightKickerEfficiency: round(profile.pureStraightKickerEfficiency ?? 0),
+                queenConservation: round(profile.queenConservation ?? 0),
                 temperature: round(profile.temperature),
             },
             equilibriumProbability: round(equilibrium.averageStrategy[index]),

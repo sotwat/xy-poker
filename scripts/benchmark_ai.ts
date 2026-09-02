@@ -12,6 +12,10 @@ import {
     getGtoTurnOrderScore,
     scoreGtoMove,
     XY_GTO_A2,
+    XY_GTO_A3,
+    XY_GTO_A4,
+    XY_GTO_A4_SOLVER_BASE,
+    type GtoPolicyWeights,
 } from '../src/logic/gtoPolicy';
 import type { Card, GameState } from '../src/logic/types';
 
@@ -38,6 +42,44 @@ function readDiceFlag(): number[] | null {
         throw new Error('--dice must contain five comma-separated integers from 1 to 6.');
     }
     return dice.sort((a, b) => b - a);
+}
+
+function readOpponent(): { name: string; weights: readonly Readonly<GtoPolicyWeights>[] } {
+    const argument = process.argv.find(value => value.startsWith('--opponent='));
+    const id = argument?.slice('--opponent='.length) ?? 'a2';
+    if (id === 'a2') return { name: 'XY-GTO-A2 one-step policy', weights: [XY_GTO_A2] };
+    if (id === 'a3') return { name: 'XY-GTO-A3 one-step policy', weights: [XY_GTO_A3] };
+    if (id === 'a4') return { name: 'XY-GTO-A4 one-step policy', weights: [XY_GTO_A4] };
+    if (id === 'solver-base') return {
+        name: 'XY-GTO-A4 solver-base one-step policy',
+        weights: [XY_GTO_A4_SOLVER_BASE],
+    };
+    if (id === 'ensemble') return {
+        name: 'A4 / solver-base / A3 / A2 rotating one-step ensemble',
+        weights: [XY_GTO_A4, XY_GTO_A4_SOLVER_BASE, XY_GTO_A3, XY_GTO_A2],
+    };
+    throw new Error('--opponent must be a2, a3, a4, solver-base, or ensemble.');
+}
+
+function readSearchMode(): { generalizedSearch: boolean; multiPolicyRollouts: boolean; name: string } {
+    const argument = process.argv.find(value => value.startsWith('--search='));
+    const mode = argument?.slice('--search='.length) ?? 'generalized';
+    if (mode === 'generalized') return {
+        generalizedSearch: true,
+        multiPolicyRollouts: true,
+        name: 'A5 generalized multi-policy search',
+    };
+    if (mode === 'broad') return {
+        generalizedSearch: true,
+        multiPolicyRollouts: false,
+        name: 'A5 broad-action single-policy search',
+    };
+    if (mode === 'single') return {
+        generalizedSearch: false,
+        multiPolicyRollouts: false,
+        name: 'A4 single-policy search',
+    };
+    throw new Error('--search must be generalized, broad, or single.');
 }
 
 function seededRandom(seed: number): () => number {
@@ -73,20 +115,31 @@ function swapInitialHands(deck: Card[]): Card[] {
     return [...deck.slice(4, 8), ...deck.slice(0, 4), ...deck.slice(8)];
 }
 
-function policyMove(state: GameState, playerIndex: 0 | 1, random: () => number) {
+function policyMove(
+    state: GameState,
+    playerIndex: 0 | 1,
+    random: () => number,
+    opponentWeights: Readonly<GtoPolicyWeights>,
+) {
     const player = state.players[playerIndex];
     let best = { cardId: player.hand[0].id, colIndex: 0, isHidden: false };
     let bestScore = Number.NEGATIVE_INFINITY;
     for (const card of player.hand) {
         for (let column = 0; column < 5; column++) {
             if (player.board[2][column] !== null) continue;
-            const score = scoreGtoMove(state, playerIndex, card, column, XY_GTO_A2);
+            const score = scoreGtoMove(state, playerIndex, card, column, opponentWeights);
             if (score > bestScore) {
                 bestScore = score;
                 best = {
                     cardId: card.id,
                     colIndex: column,
-                    isHidden: random() < getGtoHideProbability(state, playerIndex, card, column, XY_GTO_A2),
+                    isHidden: random() < getGtoHideProbability(
+                        state,
+                        playerIndex,
+                        card,
+                        column,
+                        opponentWeights,
+                    ),
                 };
             }
         }
@@ -102,6 +155,8 @@ function playMatch(
     seed: number,
     timeBudgetMs: number,
     beliefSamples: number,
+    opponentWeights: Readonly<GtoPolicyWeights>,
+    searchMode: ReturnType<typeof readSearchMode>,
 ): MatchResult {
     const random = seededRandom(seed);
     const originalRandom = Math.random;
@@ -113,7 +168,7 @@ function playMatch(
         });
         const chooserGoesFirst = selector === rolloutSeat
             ? getBestTurnOrder(state, selector)
-            : getGtoTurnOrderScore(state.players[selector], XY_GTO_A2) > 0;
+            : getGtoTurnOrderScore(state.players[selector], opponentWeights) > 0;
         state = gameReducer(state, {
             type: 'CHOOSE_TURN_ORDER',
             payload: { startingPlayer: chooserGoesFirst ? selector : 1 - selector },
@@ -128,8 +183,10 @@ function playMatch(
                     ...DEFAULT_AI_PARAMS,
                     timeBudgetMs,
                     mcSimulations: beliefSamples,
+                    generalizedSearch: searchMode.generalizedSearch,
+                    multiPolicyRollouts: searchMode.multiPolicyRollouts,
                 })
-                : policyMove(state, actor, random);
+                : policyMove(state, actor, random, opponentWeights);
             if (actor === rolloutSeat) {
                 const diagnostics = getLastAiDecisionDiagnostics();
                 decisionMs.push(diagnostics.elapsedMs);
@@ -154,9 +211,11 @@ function playMatch(
 }
 
 const deals = readPositiveFlag('--deals', 20);
-const timeBudgetMs = readPositiveFlag('--time-ms', 400);
-const beliefSamples = readPositiveFlag('--samples', 20);
+const timeBudgetMs = readPositiveFlag('--time-ms', DEFAULT_AI_PARAMS.timeBudgetMs);
+const beliefSamples = readPositiveFlag('--samples', DEFAULT_AI_PARAMS.mcSimulations);
 const fixedDice = readDiceFlag();
+const opponent = readOpponent();
+const searchMode = readSearchMode();
 const results: MatchResult[] = [];
 const startedAt = performance.now();
 
@@ -167,6 +226,7 @@ for (let deal = 0; deal < deals; deal++) {
         ? [...fixedDice]
         : Array.from({ length: 5 }, () => Math.floor(chance() * 6) + 1).sort((a, b) => b - a);
     const selector = (chance() < 0.5 ? 0 : 1) as 0 | 1;
+    const opponentWeights = opponent.weights[deal % opponent.weights.length];
     results.push(playMatch(
         deck,
         dice,
@@ -175,6 +235,8 @@ for (let deal = 0; deal < deals; deal++) {
         mixSeed(deal, 1),
         timeBudgetMs,
         beliefSamples,
+        opponentWeights,
+        searchMode,
     ));
     results.push(playMatch(
         swapInitialHands(deck),
@@ -184,6 +246,8 @@ for (let deal = 0; deal < deals; deal++) {
         mixSeed(deal, 2),
         timeBudgetMs,
         beliefSamples,
+        opponentWeights,
+        searchMode,
     ));
 }
 
@@ -193,7 +257,8 @@ const wins = results.filter(result => result.utility === 1).length;
 const losses = results.filter(result => result.utility === -1).length;
 const draws = results.length - wins - losses;
 console.log(JSON.stringify({
-    opponent: 'XY-GTO-A2 one-step policy (dice-regime baseline)',
+    opponent: opponent.name,
+    search: searchMode.name,
     dice: fixedDice ?? 'random',
     pairedDeals: deals,
     games: results.length,

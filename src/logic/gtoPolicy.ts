@@ -14,6 +14,12 @@ export interface GtoPolicyWeights {
     boardAdaptation?: number;
     /** Values an ordered straight by strength per scarce rank, not rank alone. */
     pureStraightEfficiency?: number;
+    /** Values first-row ranks by route breadth and Pure Straight kicker equity. */
+    openingAnchorEfficiency?: number;
+    /** Distinguishes A-high Pure Straight plans from weak A-2-3 plans. */
+    pureStraightKickerEfficiency?: number;
+    /** Opportunity cost of spending a queen away from an available first-row anchor. */
+    queenConservation?: number;
 }
 
 /** The original policy-space equilibrium retained as a reproducible baseline. */
@@ -48,6 +54,31 @@ export const XY_GTO_A3: Readonly<GtoPolicyWeights> = Object.freeze({
     firstBias: -0.344567,
     boardAdaptation: 0.751132,
     pureStraightEfficiency: 5,
+});
+
+/** Independently confirmed PSRO response used as A4's rebalanced foundation. */
+export const XY_GTO_A4_SOLVER_BASE: Readonly<GtoPolicyWeights> = Object.freeze({
+    yWeight: 0.617969,
+    xWeight: 0.779668,
+    tempoWeight: 0.170743,
+    diceWeight: 0.3,
+    flexibilityWeight: 1.262349,
+    row3Delay: 2.20999,
+    concealment: -0.143771,
+    firstBias: 0.040349,
+    boardAdaptation: 0.655002,
+    pureStraightEfficiency: 9.109659,
+    openingAnchorEfficiency: 0,
+    pureStraightKickerEfficiency: 0.005868,
+    queenConservation: 0.085263,
+});
+
+/** Opening-efficiency policy. A3 remains frozen as the pre-anchor baseline. */
+export const XY_GTO_A4: Readonly<GtoPolicyWeights> = Object.freeze({
+    ...XY_GTO_A4_SOLVER_BASE,
+    openingAnchorEfficiency: 0.45,
+    pureStraightKickerEfficiency: 1,
+    queenConservation: 3,
 });
 
 export interface DiceBoardMetrics {
@@ -101,7 +132,61 @@ export interface PureStraightPlan {
     completionHeld: boolean;
     secured: boolean;
     completed: boolean;
+    bestRouteHigh: number;
+    bestRouteEquity: number;
+    bestHeldRouteHigh: number;
+    bestSecuredRouteHigh: number;
+    /** A3-compatible route value before within-category kicker strength. */
+    baseValue: number;
     value: number;
+}
+
+export interface OpeningRankMetrics {
+    rank: Rank;
+    routeCount: number;
+    routeHighs: number[];
+    bestHigh: number;
+    /** Sum of heads-up equity within the Pure Straight category for every route. */
+    routeEquitySum: number;
+    /** Centered feature used by A4. Positive means a better first-row anchor. */
+    anchorIndex: number;
+}
+
+function straightHighForSequence(sequence: Rank[]): number {
+    return sequence.includes(14) && sequence.includes(2) && sequence.includes(3)
+        ? 3
+        : Math.max(...sequence);
+}
+
+/**
+ * There are twelve Pure Straight kicker classes (3-high through A-high). Against
+ * a uniformly distributed kicker inside that category, a class has half credit
+ * for ties and full credit for every lower class.
+ */
+export function pureStraightKickerEquity(high: number): number {
+    return clamp((high - 3 + 0.5) / 12, 0, 1);
+}
+
+export function analyzeOpeningRank(rank: Rank): OpeningRankMetrics {
+    const routeHighs = PURE_STRAIGHT_SEQUENCES
+        .filter(sequence => sequence[0] === rank)
+        .map(straightHighForSequence)
+        .sort((a, b) => b - a);
+    const routeEquitySum = routeHighs.reduce(
+        (total, high) => total + pureStraightKickerEquity(high),
+        0,
+    );
+    // Two routes are the flexible baseline. This makes K and 2 genuine edge
+    // anchors rather than letting their raw high-card value mask one-way draws.
+    const anchorIndex = routeEquitySum - 1 + (routeHighs.length - 2) * 0.3;
+    return {
+        rank,
+        routeCount: routeHighs.length,
+        routeHighs,
+        bestHigh: Math.max(0, ...routeHighs),
+        routeEquitySum,
+        anchorIndex,
+    };
 }
 
 function handCanSupplyRanks(hand: Card[], ranks: Rank[]): boolean {
@@ -123,8 +208,9 @@ function handCanSupplyRanks(hand: Card[], ranks: Rank[]): boolean {
  */
 export function analyzePureStraightPlan(columnCards: Card[], hand: Card[]): PureStraightPlan {
     if (columnCards.length >= 3) {
-        const type = evaluateYHand(columnCards.slice(0, 3), 1).type;
-        const completed = type === 'PureStraight' || type === 'PureStraightFlush';
+        const result = evaluateYHand(columnCards.slice(0, 3), 1);
+        const completed = result.type === 'PureStraight' || result.type === 'PureStraightFlush';
+        const bestRouteHigh = completed ? (result.kickers[0] ?? 0) : 0;
         return {
             viableSequences: completed ? 1 : 0,
             bestHeldSuffix: 0,
@@ -132,7 +218,12 @@ export function analyzePureStraightPlan(columnCards: Card[], hand: Card[]): Pure
             completionHeld: false,
             secured: completed,
             completed,
-            value: completed ? 1 : 0,
+            bestRouteHigh,
+            bestRouteEquity: pureStraightKickerEquity(bestRouteHigh),
+            bestHeldRouteHigh: 0,
+            bestSecuredRouteHigh: bestRouteHigh,
+            baseValue: completed ? 1 : 0,
+            value: completed ? 0.45 + pureStraightKickerEquity(bestRouteHigh) * 0.85 : 0,
         };
     }
 
@@ -148,13 +239,21 @@ export function analyzePureStraightPlan(columnCards: Card[], hand: Card[]): Pure
             completionHeld: false,
             secured: false,
             completed: false,
+            bestRouteHigh: 0,
+            bestRouteEquity: 0,
+            bestHeldRouteHigh: 0,
+            bestSecuredRouteHigh: 0,
+            baseValue: 0,
             value: 0,
         };
     }
 
     let bestHeldSuffix = 0;
     let secured = false;
+    let bestHeldRouteHigh = 0;
+    let bestSecuredRouteHigh = 0;
     for (const sequence of viable) {
+        const routeHigh = straightHighForSequence(sequence);
         const suffix = sequence.slice(prefix.length);
         let heldPrefix = 0;
         for (let length = 1; length <= suffix.length; length++) {
@@ -162,18 +261,28 @@ export function analyzePureStraightPlan(columnCards: Card[], hand: Card[]): Pure
             else break;
         }
         bestHeldSuffix = Math.max(bestHeldSuffix, heldPrefix);
-        if (handCanSupplyRanks(hand, suffix)) secured = true;
+        if (heldPrefix > 0) bestHeldRouteHigh = Math.max(bestHeldRouteHigh, routeHigh);
+        if (handCanSupplyRanks(hand, suffix)) {
+            secured = true;
+            bestSecuredRouteHigh = Math.max(bestSecuredRouteHigh, routeHigh);
+        }
     }
 
     const completionHeld = columnCards.length === 2 && bestHeldSuffix === 1;
     const completionOuts = columnCards.length === 2 ? 4 : 0;
-    const value = columnCards.length === 2
+    const baseValue = columnCards.length === 2
         ? (completionHeld ? 1.35 : 0.42)
         : secured
             ? 1
             : bestHeldSuffix >= 1
                 ? 0.5
                 : 0.02 + Math.min(2, viable.length) * 0.01;
+    const bestRouteHigh = Math.max(...viable.map(straightHighForSequence));
+    const actionableHigh = secured
+        ? bestSecuredRouteHigh
+        : bestHeldRouteHigh || bestRouteHigh;
+    const bestRouteEquity = pureStraightKickerEquity(actionableHigh);
+    const value = baseValue * (0.45 + bestRouteEquity * 0.85);
 
     return {
         viableSequences: viable.length,
@@ -182,6 +291,11 @@ export function analyzePureStraightPlan(columnCards: Card[], hand: Card[]): Pure
         completionHeld,
         secured,
         completed: false,
+        bestRouteHigh,
+        bestRouteEquity,
+        bestHeldRouteHigh,
+        bestSecuredRouteHigh,
+        baseValue,
         value,
     };
 }
@@ -302,7 +416,7 @@ function compareCompletedY(ownCards: Card[], opponentCards: Card[]): number {
     return 0;
 }
 
-export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A3): number {
+export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A4): number {
     const ranks = player.hand.map(card => card.rank);
     const duplicateCards = ranks.length - new Set(ranks).size;
     const highCards = ranks.filter(rank => rank >= 11).length;
@@ -312,8 +426,13 @@ export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A3): 
     const polarizedFirstMoverValue = adaptation
         * metrics.bonusRaceIndex
         * (0.95 + disposableCards * 0.35);
+    const bestOpeningAnchor = Math.max(
+        ...player.hand.map(card => analyzeOpeningRank(card.rank).anchorIndex),
+        0,
+    );
+    const openingInitiative = (weights.openingAnchorEfficiency ?? 0) * bestOpeningAnchor * 0.22;
     return weights.firstBias + duplicateCards * 0.7 + highCards * 0.16
-        + polarizedFirstMoverValue - 0.45;
+        + polarizedFirstMoverValue + openingInitiative - 0.45;
 }
 
 export function scoreGtoMove(
@@ -321,7 +440,7 @@ export function scoreGtoMove(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A3,
+    weights = XY_GTO_A4,
 ): number {
     const player = state.players[playerIndex];
     const opponent = state.players[1 - playerIndex];
@@ -343,10 +462,28 @@ export function scoreGtoMove(
     const diceScale = 0.45 + (dice / 6) * weights.diceWeight;
     const yValue = partialYValue(projectedColumn) * diceScale * weights.yWeight * 8;
     const pureStraightPlan = analyzePureStraightPlan(projectedColumn, remainingHand);
-    const pureStraightValue = pureStraightPlan.value
+    const kickerEfficiency = clamp(weights.pureStraightKickerEfficiency ?? 0, 0, 2);
+    const strengthAwarePureStraightValue = pureStraightPlan.baseValue
+        + (pureStraightPlan.value - pureStraightPlan.baseValue) * kickerEfficiency;
+    const pureStraightValue = strengthAwarePureStraightValue
         * (weights.pureStraightEfficiency ?? 0)
         * weights.yWeight
         * (1.4 + dice / 6 * 3);
+    const openingMetrics = analyzeOpeningRank(card.rank);
+    const openingAnchorValue = row === 0
+        ? openingMetrics.anchorIndex
+            * (weights.openingAnchorEfficiency ?? 0)
+            * (3 + dice / 2)
+        : 0;
+    const openTopSlots = player.board[0].filter(value => value === null).length;
+    const queensAlreadyInColumn = ownColumn.filter(value => value.rank === 12).length;
+    const pureRouteUse = pureStraightPlan.viableSequences > 0;
+    const queenOpportunityCost = card.rank === 12 && row > 0 && openTopSlots > 0
+        ? (weights.queenConservation ?? 0)
+            * (openTopSlots / 5)
+            * (1 + queensAlreadyInColumn * 0.7)
+            * (pureRouteUse ? 1.1 : 4)
+        : 0;
 
     const bottomCards = player.board[2].filter((value): value is Card => value !== null);
     const xValue = row === 2
@@ -381,9 +518,10 @@ export function scoreGtoMove(
         ? opponentVisible.length * partialYValue(opponentVisible) * dice * 0.22 * weights.flexibilityWeight
         : 0;
 
-    return yValue + pureStraightValue + xValue + tempoValue + progressValue + rushPlanValue + flexibilityValue
+    return yValue + pureStraightValue + openingAnchorValue + xValue + tempoValue + progressValue
+        + rushPlanValue + flexibilityValue
         + showdownValue + responseValue + resourceAlignmentValue
-        - row3Penalty - lowDiceHighCardCost;
+        - row3Penalty - lowDiceHighCardCost - queenOpportunityCost;
 }
 
 export function getGtoHideProbability(
@@ -391,7 +529,7 @@ export function getGtoHideProbability(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A3,
+    weights = XY_GTO_A4,
 ): number {
     const player = state.players[playerIndex];
     if (player.hiddenCardsCount >= 3) return 0;

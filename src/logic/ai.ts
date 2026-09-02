@@ -1,6 +1,14 @@
 import { createDeck } from './deck';
 import { gameReducer } from './game';
-import { getGtoHideProbability, getGtoTurnOrderScore, scoreGtoMove } from './gtoPolicy';
+import {
+    getGtoHideProbability,
+    getGtoTurnOrderScore,
+    scoreGtoMove,
+    XY_GTO_A3,
+    XY_GTO_A4,
+    XY_GTO_A4_SOLVER_BASE,
+    type GtoPolicyWeights,
+} from './gtoPolicy';
 import type { Card, GameState } from './types';
 
 export interface AiParams {
@@ -20,6 +28,10 @@ export interface AiParams {
     turnOrderHighCardBonus: number;
     gtoPriorWeight: number;
     timeBudgetMs: number;
+    /** False retains the A4-only rollout as an auditable runtime baseline. */
+    generalizedSearch?: boolean;
+    /** False isolates broad root actions from multi-policy opponent modeling. */
+    multiPolicyRollouts?: boolean;
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
@@ -30,12 +42,14 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     showdownDelayPenalty: 450,
     row3DelayPenalty: 600,
     bluffBonus: 2,
-    mcSimulations: 20,
+    mcSimulations: 64,
     turnOrderBaseFirstValue: 0,
     turnOrderPairBonus: 2,
     turnOrderHighCardBonus: 2,
     gtoPriorWeight: 0.2,
-    timeBudgetMs: 400,
+    timeBudgetMs: 1_000,
+    generalizedSearch: true,
+    multiPolicyRollouts: false,
 };
 
 export interface AiDecisionDiagnostics {
@@ -51,6 +65,22 @@ interface ScoredMove {
     colIndex: number;
     gtoScore: number;
 }
+
+interface RootAction extends ScoredMove {
+    isHidden: boolean;
+}
+
+interface RolloutProfile {
+    opponentWeights: Readonly<GtoPolicyWeights>;
+    opponentTemperature: number;
+}
+
+const ROLLOUT_PROFILES: readonly RolloutProfile[] = [
+    { opponentWeights: XY_GTO_A4, opponentTemperature: 0 },
+    { opponentWeights: XY_GTO_A4_SOLVER_BASE, opponentTemperature: 0 },
+    { opponentWeights: XY_GTO_A3, opponentTemperature: 0 },
+    { opponentWeights: XY_GTO_A4, opponentTemperature: 0.22 },
+];
 
 let lastDecisionDiagnostics: AiDecisionDiagnostics = {
     elapsedMs: 0,
@@ -87,7 +117,13 @@ export function getBestMove(
 ): { cardId: string; colIndex: number; isHidden: boolean } {
     const startedAt = now();
     const player = gameState.players[playerIndex];
-    const legalMoves = enumeratePlacements(gameState, playerIndex as 0 | 1);
+    const generalizedSearch = params.generalizedSearch !== false;
+    const profiles = generalizedSearch && params.multiPolicyRollouts !== false
+        ? ROLLOUT_PROFILES
+        : ROLLOUT_PROFILES.slice(0, 1);
+    const legalMoves = generalizedSearch
+        ? enumerateRootActions(gameState, playerIndex as 0 | 1)
+        : enumeratePlacements(gameState, playerIndex as 0 | 1).map(move => ({ ...move, isHidden: false }));
 
     if (legalMoves.length === 0) {
         const fallback = { cardId: player.hand[0]?.id ?? '', colIndex: 0, isHidden: false };
@@ -95,19 +131,23 @@ export function getBestMove(
         return fallback;
     }
 
-    const candidates = selectRootCandidates(legalMoves);
+    const candidates = selectRootCandidates(legalMoves, generalizedSearch ? 60 : 20);
     const fallback = candidates[0];
     const timeoutMs = clampFinite(params.timeBudgetMs, 1, 2_000, DEFAULT_AI_PARAMS.timeBudgetMs);
     const deadline = startedAt + Math.max(0, timeoutMs - 4);
     const requestedSamples = Math.round(clampFinite(
         params.mcSimulations,
         1,
-        48,
+        96,
         DEFAULT_AI_PARAMS.mcSimulations,
     ));
     const totals = candidates.map(() => 0);
     const squaredTotals = candidates.map(() => 0);
+    const sampleCounts = candidates.map(() => 0);
+    const profileTotals = candidates.map(() => profiles.map(() => 0));
+    const profileCounts = candidates.map(() => profiles.map(() => 0));
     const informationSeed = hashInformationState(gameState, playerIndex as 0 | 1);
+    let activeIndices = candidates.map((_, index) => index);
     let completedSamples = 0;
     let previousSampleMs = 0;
 
@@ -117,10 +157,12 @@ export function getBestMove(
 
         const beliefSeed = mixSeed(informationSeed, sampleIndex, 0x42454c49);
         const beliefState = sampleInformationSet(gameState, playerIndex as 0 | 1, beliefSeed);
-        const sampleScores: number[] = [];
+        const profileIndex = sampleIndex % profiles.length;
+        const profile = profiles[profileIndex];
+        const sampleScores = new Map<number, number>();
         let complete = true;
 
-        for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex++) {
+        for (const candidateIndex of activeIndices) {
             if (now() >= deadline) {
                 complete = false;
                 break;
@@ -135,42 +177,74 @@ export function getBestMove(
                 complete = false;
                 break;
             }
-            const isHidden = rolloutRandom() < getGtoHideProbability(
-                beliefState,
-                playerIndex as 0 | 1,
-                selectedCard,
-                candidate.colIndex,
-            );
             const afterMove = gameReducer(beliefState, {
                 type: 'PLACE_AND_DRAW',
-                payload: { cardId: candidate.cardId, colIndex: candidate.colIndex, isHidden },
+                payload: {
+                    cardId: candidate.cardId,
+                    colIndex: candidate.colIndex,
+                    isHidden: candidate.isHidden,
+                },
             });
-            const result = rolloutToEnd(afterMove, playerIndex as 0 | 1, rolloutRandom, deadline);
+            const result = rolloutToEnd(
+                afterMove,
+                playerIndex as 0 | 1,
+                rolloutRandom,
+                deadline,
+                profile,
+            );
             if (result === null) {
                 complete = false;
                 break;
             }
-            sampleScores.push(result);
+            sampleScores.set(candidateIndex, result);
         }
 
-        if (!complete || sampleScores.length !== candidates.length) break;
-        for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex++) {
-            totals[candidateIndex] += sampleScores[candidateIndex];
-            squaredTotals[candidateIndex] += sampleScores[candidateIndex] ** 2;
+        if (!complete || sampleScores.size !== activeIndices.length) break;
+        for (const [candidateIndex, score] of sampleScores) {
+            totals[candidateIndex] += score;
+            squaredTotals[candidateIndex] += score ** 2;
+            sampleCounts[candidateIndex]++;
+            profileTotals[candidateIndex][profileIndex] += score;
+            profileCounts[candidateIndex][profileIndex]++;
         }
         completedSamples++;
         previousSampleMs = now() - sampleStartedAt;
+
+        // Evaluate every plausible placement and face-up/face-down action first,
+        // then spend the remaining budget on the strongest diverse finalists.
+        if (generalizedSearch
+            && completedSamples === Math.min(8, requestedSamples)
+            && activeIndices.length > 16) {
+            activeIndices = [...activeIndices]
+                .sort((left, right) => candidateRolloutObjective(
+                    right,
+                    totals,
+                    squaredTotals,
+                    sampleCounts,
+                    profileTotals,
+                    profileCounts,
+                ) - candidateRolloutObjective(
+                    left,
+                    totals,
+                    squaredTotals,
+                    sampleCounts,
+                    profileTotals,
+                    profileCounts,
+                ))
+                .slice(0, 16);
+        }
     }
 
     let selected = fallback;
     if (completedSamples > 0) {
-        const robustOutcomes = totals.map((total, index) => {
-            const mean = total / completedSamples;
-            if (completedSamples === 1) return mean;
-            const variance = Math.max(0, squaredTotals[index] / completedSamples - mean ** 2);
-            // A small confidence penalty avoids chasing a lucky determinization.
-            return mean - Math.sqrt(variance / completedSamples) * 0.08;
-        });
+        const robustOutcomes = candidates.map((_, index) => candidateRolloutObjective(
+            index,
+            totals,
+            squaredTotals,
+            sampleCounts,
+            profileTotals,
+            profileCounts,
+        ));
         const normalizedOutcomes = normalizeScores(robustOutcomes);
         const normalizedPriors = normalizeScores(candidates.map(candidate => candidate.gtoScore));
         const priorWeight = clampFinite(
@@ -179,9 +253,9 @@ export function getBestMove(
             0.65,
             DEFAULT_AI_PARAMS.gtoPriorWeight,
         );
-        let bestIndex = 0;
+        let bestIndex = activeIndices[0] ?? 0;
         let bestScore = Number.NEGATIVE_INFINITY;
-        for (let index = 0; index < candidates.length; index++) {
+        for (const index of activeIndices) {
             const blendedScore = normalizedOutcomes[index] * (1 - priorWeight)
                 + normalizedPriors[index] * priorWeight;
             if (blendedScore > bestScore) {
@@ -192,24 +266,55 @@ export function getBestMove(
         selected = candidates[bestIndex];
     }
 
-    const selectedCard = player.hand.find(card => card.id === selected.cardId) ?? player.hand[0];
-    const hideProbability = selectedCard
-        ? getGtoHideProbability(
+    const selectedCard = player.hand.find(card => card.id === selected.cardId);
+    const selectedHidden = generalizedSearch
+        ? selected.isHidden
+        : Boolean(selectedCard && Math.random() < getGtoHideProbability(
             gameState,
             playerIndex as 0 | 1,
             selectedCard,
             selected.colIndex,
-        )
-        : 0;
+        ));
     setDiagnostics(startedAt, legalMoves.length, candidates.length, completedSamples);
     return {
         cardId: selected.cardId,
         colIndex: selected.colIndex,
-        isHidden: Math.random() < hideProbability,
+        isHidden: selectedHidden,
     };
 }
 
-function enumeratePlacements(state: GameState, playerIndex: 0 | 1): ScoredMove[] {
+function candidateRolloutObjective(
+    index: number,
+    totals: number[],
+    squaredTotals: number[],
+    sampleCounts: number[],
+    profileTotals: number[][],
+    profileCounts: number[][],
+): number {
+    const count = sampleCounts[index];
+    if (count === 0) return Number.NEGATIVE_INFINITY;
+    const mean = totals[index] / count;
+    const variance = count > 1
+        ? Math.max(0, squaredTotals[index] / count - mean ** 2)
+        : 0;
+    const standardError = Math.sqrt(variance / count);
+    const profileMeans = profileTotals[index]
+        .map((total, profileIndex) => {
+            const profileCount = profileCounts[index][profileIndex];
+            return profileCount > 0 ? total / profileCount : null;
+        })
+        .filter((value): value is number => value !== null);
+    const worstProfile = profileMeans.length > 0 ? Math.min(...profileMeans) : mean;
+    // A small maximin component makes a move robust to opponent policy shifts;
+    // the confidence term prevents a lucky determinization from winning.
+    return mean * 0.8 + worstProfile * 0.2 - standardError * 0.08;
+}
+
+function enumeratePlacements(
+    state: GameState,
+    playerIndex: 0 | 1,
+    weights: Readonly<GtoPolicyWeights> = XY_GTO_A4,
+): ScoredMove[] {
     const player = state.players[playerIndex];
     const moves: ScoredMove[] = [];
     for (const card of player.hand) {
@@ -218,31 +323,67 @@ function enumeratePlacements(state: GameState, playerIndex: 0 | 1): ScoredMove[]
             moves.push({
                 cardId: card.id,
                 colIndex: column,
-                gtoScore: scoreGtoMove(state, playerIndex, card, column),
+                gtoScore: scoreGtoMove(state, playerIndex, card, column, weights),
             });
         }
     }
     return moves.sort((a, b) => b.gtoScore - a.gtoScore);
 }
 
-function selectRootCandidates(moves: ScoredMove[]): ScoredMove[] {
-    const limit = 20;
+function enumerateRootActions(state: GameState, playerIndex: 0 | 1): RootAction[] {
+    const player = state.players[playerIndex];
+    const placements = enumeratePlacements(state, playerIndex);
+    const actions: RootAction[] = [];
+    for (const placement of placements) {
+        const card = player.hand.find(candidate => candidate.id === placement.cardId);
+        if (!card) continue;
+        const hideProbability = getGtoHideProbability(
+            state,
+            playerIndex,
+            card,
+            placement.colIndex,
+        );
+        actions.push({
+            ...placement,
+            isHidden: false,
+            gtoScore: placement.gtoScore + (0.5 - hideProbability) * 0.04,
+        });
+        const hiddenInColumn = player.board.reduce(
+            (count, row) => count + (row[placement.colIndex]?.isHidden ? 1 : 0),
+            0,
+        );
+        if (player.hiddenCardsCount < 3 && hiddenInColumn < 2) {
+            actions.push({
+                ...placement,
+                isHidden: true,
+                gtoScore: placement.gtoScore + (hideProbability - 0.5) * 0.04,
+            });
+        }
+    }
+    return actions.sort((left, right) => right.gtoScore - left.gtoScore);
+}
+
+function selectRootCandidates(moves: RootAction[], limit: number): RootAction[] {
     if (moves.length <= limit) return moves;
 
-    const selected: ScoredMove[] = [];
+    const selected: RootAction[] = [];
     const selectedKeys = new Set<string>();
-    const add = (move: ScoredMove | undefined) => {
+    const add = (move: RootAction | undefined) => {
         if (!move) return;
-        const key = `${move.cardId}:${move.colIndex}`;
+        const key = `${move.cardId}:${move.colIndex}:${move.isHidden ? 1 : 0}`;
         if (selectedKeys.has(key) || selected.length >= limit) return;
         selectedKeys.add(key);
         selected.push(move);
     };
 
-    // Preserve card and column diversity before filling from the overall prior.
-    for (let column = 0; column < 5; column++) add(moves.find(move => move.colIndex === column));
+    // Preserve card, column and information-action diversity before filling by prior.
+    for (let column = 0; column < 5; column++) {
+        add(moves.find(move => move.colIndex === column && !move.isHidden));
+        add(moves.find(move => move.colIndex === column && move.isHidden));
+    }
     for (const cardId of new Set(moves.map(move => move.cardId))) {
-        add(moves.find(move => move.cardId === cardId));
+        add(moves.find(move => move.cardId === cardId && !move.isHidden));
+        add(moves.find(move => move.cardId === cardId && move.isHidden));
     }
     for (const move of moves) add(move);
     return selected.sort((a, b) => b.gtoScore - a.gtoScore);
@@ -253,13 +394,14 @@ function rolloutToEnd(
     rootPlayerIndex: 0 | 1,
     random: () => number,
     deadline: number,
+    profile: RolloutProfile,
 ): number | null {
     let state = initialState;
     let safety = 0;
     while (state.phase === 'playing' && safety < 40) {
         if ((safety & 3) === 0 && now() >= deadline) return null;
         const actor = state.currentPlayerIndex as 0 | 1;
-        const move = selectRolloutMove(state, actor, random);
+        const move = selectRolloutMove(state, actor, rootPlayerIndex, profile, random);
         const nextState = gameReducer(state, { type: 'PLACE_AND_DRAW', payload: move });
         if (nextState === state) return null;
         state = nextState;
@@ -278,16 +420,39 @@ function rolloutToEnd(
 function selectRolloutMove(
     state: GameState,
     playerIndex: 0 | 1,
+    rootPlayerIndex: 0 | 1,
+    profile: RolloutProfile,
     random: () => number,
 ): { cardId: string; colIndex: number; isHidden: boolean } {
-    const placements = enumeratePlacements(state, playerIndex);
-    const selected = placements[0];
+    const isRootPlayer = playerIndex === rootPlayerIndex;
+    const weights = isRootPlayer ? XY_GTO_A4 : profile.opponentWeights;
+    const temperature = isRootPlayer ? 0.08 : profile.opponentTemperature;
+    const placements = enumeratePlacements(state, playerIndex, weights);
+    const shortlist = placements.slice(0, 4);
+    let selected = shortlist[0];
+    if (temperature > 0 && shortlist.length > 1) {
+        const best = shortlist[0].gtoScore;
+        const worst = shortlist[shortlist.length - 1].gtoScore;
+        const scale = Math.max(0.25, best - worst);
+        const probabilities = shortlist.map(move => Math.exp(
+            (move.gtoScore - best) / (scale * temperature),
+        ));
+        const total = probabilities.reduce((sum, value) => sum + value, 0);
+        let target = random() * total;
+        for (let index = 0; index < shortlist.length; index++) {
+            target -= probabilities[index];
+            if (target <= 0) {
+                selected = shortlist[index];
+                break;
+            }
+        }
+    }
     const card = state.players[playerIndex].hand.find(candidate => candidate.id === selected.cardId);
     return {
         cardId: selected.cardId,
         colIndex: selected.colIndex,
         isHidden: card
-            ? random() < getGtoHideProbability(state, playerIndex, card, selected.colIndex)
+            ? random() < getGtoHideProbability(state, playerIndex, card, selected.colIndex, weights)
             : false,
     };
 }

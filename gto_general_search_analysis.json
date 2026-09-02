@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-01T23:59:26Z",
+  "runtimePolicy": "XY-GTO-A5 generalized information-set search",
+  "configuration": {
+    "timeBudgetMs": 1000,
+    "requestedBeliefSamples": 64,
+    "maximumBeliefSamples": 96,
+    "maximumRootActions": 60,
+    "warmupBeliefSamples": 8,
+    "finalistRootActions": 16,
+    "rootActionsIncludeFaceUpAndFaceDown": true,
+    "rolloutPolicy": "XY-GTO-A4",
+    "informationSafety": "opponent hand, hidden identities, and deck order are sampled only from the acting player's information set"
+  },
+  "nonLocalCoverage": [
+    "every retained card-column-face action is played through the real reducer to terminal scoring",
+    "standard draws and column-completion bonus draws",
+    "all five Y columns and the shared third-row X hand",
+    "opponent responses, turn passing, hidden-card limits, and showdown scoring",
+    "multiple hidden-card and opponent-hand worlds consistent with public information",
+    "progressive widening from broad root coverage to deeply sampled finalists"
+  ],
+  "pairedRotatingOpponentBenchmark": {
+    "opponents": [
+      "XY-GTO-A4 one-step",
+      "XY-GTO-A4 solver-base one-step",
+      "XY-GTO-A3 one-step",
+      "XY-GTO-A2 one-step"
+    ],
+    "pairedDeals": 20,
+    "gamesPerConfiguration": 40,
+    "generalizedBroadRoot": {
+      "wins": 28,
+      "losses": 10,
+      "draws": 2,
+      "scoreRate": 0.725,
+      "meanUtility": 0.45,
+      "averageScoreDifference": 5,
+      "averageDecisionMs": 524.757436,
+      "p90DecisionMs": 985.487666,
+      "averageCompletedBeliefSamples": 62.566667,
+      "minimumCompletedBeliefSamples": 41
+    },
+    "a4SinglePolicyBaseline": {
+      "wins": 27,
+      "losses": 10,
+      "draws": 3,
+      "scoreRate": 0.7125,
+      "meanUtility": 0.425,
+      "averageScoreDifference": 4.175,
+      "averageDecisionMs": 557.984424,
+      "p90DecisionMs": 987.885083,
+      "averageCompletedBeliefSamples": 62.003333,
+      "minimumCompletedBeliefSamples": 42
+    },
+    "rejectedMultiPolicyVariant": {
+      "wins": 21,
+      "losses": 16,
+      "draws": 3,
+      "scoreRate": 0.5625,
+      "meanUtility": 0.125,
+      "averageScoreDifference": 2,
+      "averageDecisionMs": 558.632131,
+      "p90DecisionMs": 987.79025,
+      "averageCompletedBeliefSamples": 61.126667,
+      "minimumCompletedBeliefSamples": 36,
+      "reasonRejected": "splitting the fixed budget across A4, solver-base, A3, and mixed opponent models reduced sample efficiency and lost clearly to the single-policy baseline"
+    }
+  },
+  "limitations": [
+    "This is an online information-set search around the validated A4 rollout policy, not an exact solution of the full extensive-form game.",
+    "The runtime comparison contains 40 games per configuration and is a performance regression test, not a narrow confidence interval proof.",
+    "Rotating benchmark opponents are one-step policies; a full-search-versus-full-search tournament would require substantially more computation.",
+    "The rejected multi-policy result is retained to prevent the unsupported assumption that more opponent models automatically produce a stronger general strategy."
+  ]
+}
