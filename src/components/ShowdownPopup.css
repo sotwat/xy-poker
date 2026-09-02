@@ -62,12 +62,87 @@
 .showdown-flash,
 .showdown-cut-panel,
 .showdown-speed-field,
+.showdown-energy-rings,
+.showdown-light-sweep,
+.showdown-bolts,
 .showdown-impact-label,
 .showdown-streaks,
 .showdown-shards {
     position: absolute;
     inset: 0;
     pointer-events: none;
+}
+
+.showdown-energy-rings {
+    z-index: 0;
+    display: grid;
+    place-items: center;
+}
+
+.showdown-energy-ring {
+    --ring-delay: 300ms;
+
+    grid-area: 1 / 1;
+    width: min(92cqw, 560px);
+    aspect-ratio: 1;
+    border: clamp(1px, 0.5cqw, 3px) solid var(--showdown-accent);
+    border-radius: 50%;
+    box-shadow:
+        inset 0 0 24px var(--showdown-accent-soft),
+        0 0 26px var(--showdown-accent-soft);
+    opacity: 0;
+    transform: scale(0.08) rotate(-18deg);
+    animation: showdown-energy-ring 980ms cubic-bezier(0.14, 0.74, 0.24, 1) var(--ring-delay) both;
+}
+
+.showdown-energy-ring:nth-child(2) {
+    width: min(70cqw, 430px);
+    border-style: dashed;
+}
+
+.showdown-energy-ring:nth-child(3) {
+    width: min(50cqw, 310px);
+    border-width: 1px;
+}
+
+.showdown-light-sweep {
+    z-index: 1;
+    inset: -30%;
+    width: 38%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--showdown-accent-faint) 28%,
+        rgb(255 255 255 / 72%) 50%,
+        var(--showdown-accent-faint) 72%,
+        transparent
+    );
+    opacity: 0;
+    transform: translate3d(-220%, 0, 0) skewX(-17deg);
+    will-change: transform, opacity;
+    animation: showdown-light-cut 820ms cubic-bezier(0.12, 0.76, 0.18, 1) 390ms both;
+}
+
+.showdown-bolts {
+    z-index: 1;
+    display: grid;
+    place-items: center;
+}
+
+.showdown-bolt {
+    --bolt-angle: 0deg;
+    --bolt-delay: 480ms;
+
+    grid-area: 1 / 1;
+    width: clamp(78px, 29cqw, 150px);
+    height: clamp(2px, 0.7cqw, 4px);
+    background: linear-gradient(90deg, rgb(255 255 255 / 95%), var(--showdown-accent), transparent);
+    clip-path: polygon(0 35%, 56% 0, 42% 45%, 100% 62%, 48% 70%, 8% 100%);
+    filter: drop-shadow(0 0 5px var(--showdown-accent));
+    opacity: 0;
+    transform: rotate(var(--bolt-angle)) translate3d(22px, 0, 0) scaleX(0.08);
+    transform-origin: left center;
+    animation: showdown-bolt-strike 620ms cubic-bezier(0.12, 0.68, 0.22, 1) var(--bolt-delay) both;
 }
 
 .showdown-flash {
@@ -195,6 +270,7 @@
     gap: clamp(10px, 2cqh, 16px);
     color: #fff;
     text-align: center;
+    animation: showdown-camera-impact 520ms ease-out 680ms both;
 }
 
 .showdown-context-line {
@@ -226,26 +302,44 @@
 }
 
 .showdown-cards-container {
+    position: relative;
     width: 100%;
     min-height: clamp(84px, 20cqh, 132px);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1.4cqw, 8px);
-    perspective: 700px;
+    perspective: 950px;
+    transform-style: preserve-3d;
+    isolation: isolate;
+    animation: showdown-card-row-impact 520ms ease-out 780ms both;
+}
+
+.showdown-cards-container::before {
+    content: '';
+    position: absolute;
+    inset: 8% 4%;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, var(--showdown-accent-soft), transparent 68%);
+    opacity: 0;
+    transform: scaleX(0.15) scaleY(0.45);
+    animation: showdown-card-core 850ms ease-out 470ms both;
 }
 
 .showdown-card-wrapper {
     --card-delay: 220ms;
     --card-edge-delay: 600ms;
+    --card-entry-y: 22px;
 
     position: relative;
     width: clamp(54px, 18cqw, 76px);
     aspect-ratio: 5 / 7;
     opacity: 0;
-    transform: translate3d(-170px, 16px, 0) rotate(-11deg) scale(0.86);
+    transform: translate3d(-120cqw, var(--card-entry-y), -240px) rotateY(-68deg) rotateZ(-17deg) scale(0.58);
+    transform-style: preserve-3d;
     will-change: transform, opacity;
-    animation: showdown-card-slide 610ms cubic-bezier(0.16, 0.88, 0.25, 1.15) var(--card-delay) both;
+    animation: showdown-card-slide 780ms cubic-bezier(0.12, 0.82, 0.18, 1.12) var(--card-delay) both;
 }
 
 .showdown-x-hand .showdown-card-wrapper {
@@ -261,6 +355,20 @@
     box-shadow: 0 0 14px var(--showdown-accent-soft);
     opacity: 0;
     animation: showdown-card-edge 500ms ease-out var(--card-edge-delay) both;
+}
+
+.showdown-card-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 13% 78% 13% auto;
+    z-index: -1;
+    width: 210%;
+    border-radius: 999px 0 0 999px;
+    background: linear-gradient(90deg, transparent, var(--showdown-accent-faint) 38%, var(--showdown-accent));
+    opacity: 0;
+    transform: scaleX(0.35);
+    transform-origin: right center;
+    animation: showdown-card-trail 650ms ease-out var(--card-delay) both;
 }
 
 .showdown-card-wrapper .card {
@@ -288,6 +396,16 @@
     animation: showdown-title-slam 560ms cubic-bezier(0.12, 0.86, 0.2, 1.18) 720ms both;
 }
 
+.showdown-title-cut::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 88%) 48%, transparent 66%);
+    opacity: 0;
+    transform: translate3d(-120%, 0, 0) skewX(-15deg);
+    animation: showdown-title-glint 620ms ease-out 870ms both;
+}
+
 .showdown-title-kicker {
     position: absolute;
     top: 5px;
@@ -311,6 +429,31 @@
         0 2px 0 rgb(0 0 0 / 85%),
         0 0 10px var(--showdown-accent-soft);
     transform: skewX(8deg);
+    isolation: isolate;
+    animation: showdown-title-pulse 520ms ease-out 850ms both;
+}
+
+.popup-title::before,
+.popup-title::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    color: var(--showdown-accent);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.popup-title::before {
+    transform: translate3d(-7px, 0, 0);
+    clip-path: inset(8% 0 52% 0);
+    animation: showdown-title-glitch-left 360ms steps(2, end) 860ms both;
+}
+
+.popup-title::after {
+    transform: translate3d(7px, 0, 0);
+    clip-path: inset(57% 0 7% 0);
+    animation: showdown-title-glitch-right 360ms steps(2, end) 900ms both;
 }
 
 .showdown-x-hand .popup-title {
@@ -423,6 +566,46 @@
     100% { opacity: 0.18; transform: translate3d(8%, 0, 0); }
 }
 
+@keyframes showdown-energy-ring {
+    0% { opacity: 0; transform: scale(0.08) rotate(-18deg); }
+    24% { opacity: 0.95; }
+    70% { opacity: 0.28; }
+    100% { opacity: 0; transform: scale(1.12) rotate(24deg); }
+}
+
+@keyframes showdown-light-cut {
+    0% { opacity: 0; transform: translate3d(-220%, 0, 0) skewX(-17deg); }
+    24% { opacity: 0.92; }
+    100% { opacity: 0; transform: translate3d(430%, 0, 0) skewX(-17deg); }
+}
+
+@keyframes showdown-bolt-strike {
+    0% { opacity: 0; transform: rotate(var(--bolt-angle)) translate3d(22px, 0, 0) scaleX(0.08); }
+    22% { opacity: 1; }
+    54% { opacity: 0.72; transform: rotate(var(--bolt-angle)) translate3d(clamp(68px, 22cqw, 120px), 0, 0) scaleX(1); }
+    100% { opacity: 0; transform: rotate(var(--bolt-angle)) translate3d(clamp(120px, 42cqw, 230px), 0, 0) scaleX(0.28); }
+}
+
+@keyframes showdown-camera-impact {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    18% { transform: translate3d(-4px, 2px, 0) rotate(-0.35deg); }
+    34% { transform: translate3d(5px, -2px, 0) rotate(0.3deg); }
+    51% { transform: translate3d(-3px, -1px, 0); }
+    70% { transform: translate3d(2px, 1px, 0); }
+}
+
+@keyframes showdown-card-row-impact {
+    0%, 42%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    55% { transform: translate3d(3px, 0, 0) scale(1.025); }
+    68% { transform: translate3d(-2px, 0, 0) scale(0.992); }
+}
+
+@keyframes showdown-card-core {
+    0% { opacity: 0; transform: scaleX(0.15) scaleY(0.45); }
+    36% { opacity: 1; }
+    100% { opacity: 0.18; transform: scaleX(1.18) scaleY(1); }
+}
+
 @keyframes showdown-impact-label {
     0% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(2.4) skewX(-13deg); }
     24% { opacity: 0.75; }
@@ -456,16 +639,34 @@
 @keyframes showdown-card-slide {
     0% {
         opacity: 0;
-        transform: translate3d(-170px, 16px, 0) rotate(-11deg) scale(0.86);
+        transform: translate3d(-120cqw, var(--card-entry-y), -240px) rotateY(-68deg) rotateZ(-17deg) scale(0.58);
     }
-    62% {
+    18% {
         opacity: 1;
-        transform: translate3d(7px, -2px, 0) rotate(1.5deg) scale(1.04);
+    }
+    52% {
+        opacity: 1;
+        transform: translate3d(22px, -10px, 34px) rotateY(13deg) rotateZ(3.5deg) scale(1.14);
+    }
+    68% {
+        opacity: 1;
+        transform: translate3d(-9px, 5px, 0) rotateY(-5deg) rotateZ(-1.8deg) scale(0.97);
+    }
+    84% {
+        opacity: 1;
+        transform: translate3d(4px, -2px, 0) rotateY(2deg) rotateZ(0.7deg) scale(1.025);
     }
     100% {
         opacity: 1;
-        transform: translate3d(0, 0, 0) rotate(0) scale(1);
+        transform: translate3d(0, 0, 0) rotateY(0) rotateZ(0) scale(1);
     }
+}
+
+@keyframes showdown-card-trail {
+    0% { opacity: 0; transform: scaleX(0.35); }
+    20% { opacity: 0.9; }
+    76% { opacity: 0.35; transform: scaleX(1); }
+    100% { opacity: 0; transform: scaleX(0.15); }
 }
 
 @keyframes showdown-card-edge {
@@ -478,6 +679,29 @@
     0% { opacity: 0; transform: translate3d(42%, 0, 0) skewX(-8deg) scaleX(0.55); }
     65% { opacity: 1; transform: translate3d(-2%, 0, 0) skewX(-8deg) scaleX(1.04); }
     100% { opacity: 1; transform: translate3d(0, 0, 0) skewX(-8deg) scaleX(1); }
+}
+
+@keyframes showdown-title-glint {
+    0% { opacity: 0; transform: translate3d(-120%, 0, 0) skewX(-15deg); }
+    30% { opacity: 0.85; }
+    100% { opacity: 0; transform: translate3d(130%, 0, 0) skewX(-15deg); }
+}
+
+@keyframes showdown-title-pulse {
+    0%, 100% { letter-spacing: -0.045em; text-shadow: 0 2px 0 rgb(0 0 0 / 85%), 0 0 10px var(--showdown-accent-soft); }
+    34% { letter-spacing: 0.025em; text-shadow: 0 2px 0 rgb(0 0 0 / 85%), 0 0 24px var(--showdown-accent); }
+}
+
+@keyframes showdown-title-glitch-left {
+    0%, 100% { opacity: 0; transform: translate3d(-7px, 0, 0); }
+    22%, 58% { opacity: 0.72; transform: translate3d(-10px, -2px, 0); }
+    38%, 74% { opacity: 0.25; transform: translate3d(5px, 1px, 0); }
+}
+
+@keyframes showdown-title-glitch-right {
+    0%, 100% { opacity: 0; transform: translate3d(7px, 0, 0); }
+    18%, 62% { opacity: 0.68; transform: translate3d(11px, 2px, 0); }
+    42%, 78% { opacity: 0.2; transform: translate3d(-4px, -1px, 0); }
 }
 
 @keyframes showdown-winner-in {
@@ -521,19 +745,33 @@
     .showdown-flash,
     .showdown-cut-panel,
     .showdown-speed-field,
+    .showdown-energy-ring,
+    .showdown-light-sweep,
+    .showdown-bolt,
     .showdown-impact-label,
     .showdown-streak,
     .showdown-shard,
+    .showdown-popup-content,
     .showdown-context-line,
     .showdown-card-wrapper,
+    .showdown-card-wrapper::before,
     .showdown-card-wrapper::after,
+    .showdown-cards-container,
+    .showdown-cards-container::before,
     .showdown-title-cut,
+    .showdown-title-cut::before,
+    .popup-title,
+    .popup-title::before,
+    .popup-title::after,
     .popup-winner {
         animation: none !important;
     }
 
     .showdown-flash,
     .showdown-impact-label,
+    .showdown-energy-rings,
+    .showdown-light-sweep,
+    .showdown-bolts,
     .showdown-streaks,
     .showdown-shards {
         display: none;
@@ -542,6 +780,7 @@
     .panel-back,
     .panel-front,
     .showdown-speed-field,
+    .showdown-popup-content,
     .showdown-context-line,
     .showdown-card-wrapper,
     .showdown-title-cut,

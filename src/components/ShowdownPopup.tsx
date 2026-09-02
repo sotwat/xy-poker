@@ -46,6 +46,28 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
             <div className="showdown-cut-panel panel-back" aria-hidden="true" />
             <div className="showdown-cut-panel panel-front" aria-hidden="true" />
             <div className="showdown-speed-field" aria-hidden="true" />
+            <div className="showdown-energy-rings" aria-hidden="true">
+                {Array.from({ length: 3 }, (_, index) => (
+                    <span
+                        className="showdown-energy-ring"
+                        key={index}
+                        style={{ '--ring-delay': `${300 + index * 105}ms` } as React.CSSProperties}
+                    />
+                ))}
+            </div>
+            <div className="showdown-light-sweep" aria-hidden="true" />
+            <div className="showdown-bolts" aria-hidden="true">
+                {Array.from({ length: 8 }, (_, index) => (
+                    <span
+                        className="showdown-bolt"
+                        key={index}
+                        style={{
+                            '--bolt-angle': `${index * 45 + 18}deg`,
+                            '--bolt-delay': `${480 + index * 18}ms`,
+                        } as React.CSSProperties}
+                    />
+                ))}
+            </div>
             <div className="showdown-impact-label" aria-hidden="true">SHOWDOWN</div>
 
             <div className="showdown-streaks" aria-hidden="true">
@@ -88,8 +110,9 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
                                 className="showdown-card-wrapper"
                                 key={card.id || index}
                                 style={{
-                                    '--card-delay': `${220 + index * 105}ms`,
-                                    '--card-edge-delay': `${600 + index * 105}ms`,
+                                    '--card-delay': `${150 + index * 110}ms`,
+                                    '--card-edge-delay': `${610 + index * 110}ms`,
+                                    '--card-entry-y': `${(index % 2 === 0 ? 1 : -1) * (22 + index * 3)}px`,
                                 } as React.CSSProperties}
                             >
                                 <Card card={card} size="normal" isHidden={false} />
@@ -100,7 +123,7 @@ export const ShowdownPopup: React.FC<ShowdownPopupProps> = ({ data }) => {
 
                 <div className="showdown-title-cut">
                     <span className="showdown-title-kicker" aria-hidden="true">SHOWDOWN</span>
-                    <strong className="popup-title">{data.text}</strong>
+                    <strong className="popup-title" data-text={data.text}>{data.text}</strong>
                 </div>
 
                 <span className="popup-winner">{winnerLabel}</span>

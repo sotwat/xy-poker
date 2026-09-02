@@ -1826,7 +1826,7 @@ function App() {
                             <span>{t('home.support')}</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09030347</div>
+                          <div className="home-version">v09030400</div>
                         </div>
                       </div>
                     )}
