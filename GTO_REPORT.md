@@ -1,7 +1,7 @@
 # XYポーカー 近似GTO計算レポート
 
 - 計算日: 2026-09-02
-- 対象バージョン: v09020901 / `XY-GTO-A5`（汎用情報集合探索）
+- 対象バージョン: v09020904 / `XY-GTO-A5`（汎用情報集合探索）
 - 乱数シード: `1482252368`
 - 計算結果: [`gto_solution.json`](./gto_solution.json)
 - 出目別検証: [`gto_dice_regime_analysis.json`](./gto_dice_regime_analysis.json)
