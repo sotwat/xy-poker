@@ -12,8 +12,10 @@ import { gameReducer, INITIAL_GAME_STATE } from './game';
 import {
     analyzeOpeningRank,
     analyzePureStraightPlan,
+    analyzePureStraightPortfolio,
     analyzeDiceBoard,
     completionResourceOpportunityCost,
+    pureStraightPortfolioDelta,
     getGtoHideProbability,
     getGtoTurnOrderScore,
     scoreGtoMove,
@@ -22,6 +24,7 @@ import {
     XY_GTO_A3,
     XY_GTO_A4,
     XY_GTO_A6,
+    XY_GTO_A7,
 } from './gtoPolicy';
 import type { Card, GameState } from './types';
 
@@ -230,6 +233,50 @@ test('A6 preserves a uniquely strong completion card for another Y column', () =
     assert.equal(XY_GTO_A6.completionResourceConservation, 2);
 });
 
+test('Pure Straight portfolio assigns each physical card to only one secured column', () => {
+    const base = startedState([6, 5, 4, 3, 2]);
+    const board = base.players[0].board.map(row => [...row]);
+    board[0][0] = { id: 'five-a', rank: 5, suit: 'hearts' };
+    board[0][1] = { id: 'five-b', rank: 5, suit: 'clubs' };
+    const six = { id: 'six', rank: 6, suit: 'spades' } as Card;
+    const seven = { id: 'seven', rank: 7, suit: 'diamonds' } as Card;
+    const player = {
+        ...base.players[0],
+        board,
+        hand: [
+            six,
+            seven,
+            { id: 'king', rank: 13, suit: 'hearts' },
+            { id: 'ace', rank: 14, suit: 'clubs' },
+        ] as Card[],
+    };
+
+    assert.equal(analyzePureStraightPortfolio(player).securedColumns, 1);
+    assert.ok(pureStraightPortfolioDelta(player, six, 0)
+        > pureStraightPortfolioDelta(player, six, 2));
+});
+
+test('A7 triages strong visible opponent columns instead of feeding them resources', () => {
+    const base = startedState([6, 6, 4, 3, 2]);
+    const opponentBoard = base.players[1].board.map(row => [...row]);
+    opponentBoard[0][0] = { id: 'opp-q1', rank: 12, suit: 'hearts' };
+    opponentBoard[1][0] = { id: 'opp-q2', rank: 12, suit: 'clubs' };
+    const eight = { id: 'eight', rank: 8, suit: 'spades' } as Card;
+    const state = {
+        ...base,
+        players: [
+            { ...base.players[0], hand: [eight] },
+            { ...base.players[1], board: opponentBoard },
+        ],
+    } as GameState;
+
+    assert.ok(scoreGtoMove(state, 0, eight, 0, XY_GTO_A6)
+        > scoreGtoMove(state, 0, eight, 1, XY_GTO_A6));
+    assert.ok(scoreGtoMove(state, 0, eight, 0, XY_GTO_A7)
+        < scoreGtoMove(state, 0, eight, 1, XY_GTO_A7));
+    assert.equal(XY_GTO_A7.opponentResponseScale, -2);
+});
+
 test('A3 invests in a secured pure straight where A2 overvalues a lower pure pair', () => {
     const base = startedState([6, 5, 4, 2, 1]);
     const board = base.players[0].board.map(row => [...row]);
@@ -342,6 +389,7 @@ test('runtime AI completes full-rule belief rollouts instead of timing out to it
     assert.equal(DEFAULT_AI_PARAMS.mcSimulations, 64);
     assert.equal(DEFAULT_AI_PARAMS.generalizedSearch, true);
     assert.equal(DEFAULT_AI_PARAMS.multiPolicyRollouts, false);
+    assert.equal(DEFAULT_AI_PARAMS.policyGeneration, 'a7');
 });
 
 test('runtime AI decision cannot depend on the true deck order or hidden identities', () => {

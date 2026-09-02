@@ -751,6 +751,8 @@ function main(): void {
                 pureStraightKickerEfficiency: round(profile.pureStraightKickerEfficiency ?? 0),
                 queenConservation: round(profile.queenConservation ?? 0),
                 completionResourceConservation: round(profile.completionResourceConservation ?? 0),
+                pureStraightPortfolioEfficiency: round(profile.pureStraightPortfolioEfficiency ?? 0),
+                opponentResponseScale: round(profile.opponentResponseScale ?? 1),
                 temperature: round(profile.temperature),
             },
             equilibriumProbability: round(equilibrium.averageStrategy[index]),

@@ -22,6 +22,10 @@ export interface GtoPolicyWeights {
     queenConservation?: number;
     /** Shadow price of consuming the best held completion for another Y column. */
     completionResourceConservation?: number;
+    /** Global, disjoint assignment value of held cards to Pure Straight routes. */
+    pureStraightPortfolioEfficiency?: number;
+    /** Scales the legacy pressure to contest an opponent's visible column. */
+    opponentResponseScale?: number;
 }
 
 /** The original policy-space equilibrium retained as a reproducible baseline. */
@@ -88,6 +92,22 @@ export const XY_GTO_A6: Readonly<GtoPolicyWeights> = Object.freeze({
     ...XY_GTO_A4,
     completionResourceConservation: 2,
 });
+
+/** Column-triage policy: stop over-investing into strong visible opponent lanes. */
+export const XY_GTO_A7: Readonly<GtoPolicyWeights> = Object.freeze({
+    ...XY_GTO_A6,
+    opponentResponseScale: -2,
+});
+
+interface PureStraightPortfolioOption {
+    cardIds: string[];
+    value: number;
+}
+
+export interface PureStraightPortfolio {
+    value: number;
+    securedColumns: number;
+}
 
 export interface DiceBoardMetrics {
     total: number;
@@ -206,6 +226,78 @@ function handCanSupplyRanks(hand: Card[], ranks: Rank[]): boolean {
         counts.set(rank, remaining - 1);
     }
     return true;
+}
+
+function cardAssignmentsForRanks(hand: Card[], ranks: Rank[]): string[][] {
+    const assignments: string[][] = [];
+    const visit = (rankIndex: number, used: Set<string>, cardIds: string[]) => {
+        if (rankIndex === ranks.length) {
+            assignments.push(cardIds);
+            return;
+        }
+        for (const card of hand) {
+            if (card.rank !== ranks[rankIndex] || used.has(card.id)) continue;
+            const nextUsed = new Set(used);
+            nextUsed.add(card.id);
+            visit(rankIndex + 1, nextUsed, [...cardIds, card.id]);
+        }
+    };
+    visit(0, new Set(), []);
+    return assignments;
+}
+
+function pureStraightPortfolioOptions(player: PlayerState, column: number): PureStraightPortfolioOption[] {
+    const cards = player.board
+        .map(row => row[column])
+        .filter((candidate): candidate is Card => candidate !== null);
+    if (cards.length === 0) return [];
+    if (cards.length === 3) {
+        const result = evaluateYHand(cards, 1);
+        if (result.type !== 'PureStraight' && result.type !== 'PureStraightFlush') return [];
+        const high = result.kickers[0] ?? 0;
+        return [{ cardIds: [], value: player.dice[column] * (1 + pureStraightKickerEquity(high) * 0.6) }];
+    }
+
+    const prefix = cards.map(card => card.rank);
+    return PURE_STRAIGHT_SEQUENCES
+        .filter(sequence => prefix.every((rank, index) => sequence[index] === rank))
+        .flatMap(sequence => {
+            const suffix = sequence.slice(prefix.length);
+            const value = player.dice[column]
+                * (1 + pureStraightKickerEquity(straightHighForSequence(sequence)) * 0.6);
+            return cardAssignmentsForRanks(player.hand, suffix).map(cardIds => ({ cardIds, value }));
+        });
+}
+
+/**
+ * Solves a five-column weighted set-packing problem over cards currently held.
+ * One physical card can secure at most one route, preventing the local policy
+ * from promising the same completion card to several columns simultaneously.
+ */
+export function analyzePureStraightPortfolio(player: PlayerState): PureStraightPortfolio {
+    const options = Array.from({ length: 5 }, (_, column) => (
+        pureStraightPortfolioOptions(player, column)
+    ));
+    let bestValue = 0;
+    let bestColumns = 0;
+    const visit = (column: number, used: Set<string>, value: number, securedColumns: number) => {
+        if (column === 5) {
+            if (value > bestValue || (value === bestValue && securedColumns > bestColumns)) {
+                bestValue = value;
+                bestColumns = securedColumns;
+            }
+            return;
+        }
+        visit(column + 1, used, value, securedColumns);
+        for (const option of options[column]) {
+            if (option.cardIds.some(cardId => used.has(cardId))) continue;
+            const nextUsed = new Set(used);
+            option.cardIds.forEach(cardId => nextUsed.add(cardId));
+            visit(column + 1, nextUsed, value + option.value, securedColumns + 1);
+        }
+    };
+    visit(0, new Set(), 0, 0);
+    return { value: bestValue, securedColumns: bestColumns };
 }
 
 /**
@@ -440,6 +532,45 @@ interface CompletionResourceProfile {
 }
 
 const completionResourceCache = new WeakMap<PlayerState, Array<CompletionResourceProfile | null>>();
+const pureStraightPortfolioCache = new WeakMap<PlayerState, PureStraightPortfolio>();
+const pureStraightPortfolioDeltaCache = new WeakMap<PlayerState, Map<string, number>>();
+
+function getPureStraightPortfolio(player: PlayerState): PureStraightPortfolio {
+    const cached = pureStraightPortfolioCache.get(player);
+    if (cached) return cached;
+    const portfolio = analyzePureStraightPortfolio(player);
+    pureStraightPortfolioCache.set(player, portfolio);
+    return portfolio;
+}
+
+export function pureStraightPortfolioDelta(
+    player: PlayerState,
+    card: Card,
+    destinationColumn: number,
+): number {
+    const row = firstEmptyRow(player, destinationColumn);
+    if (row === -1) return Number.NEGATIVE_INFINITY;
+    let stateCache = pureStraightPortfolioDeltaCache.get(player);
+    if (!stateCache) {
+        stateCache = new Map();
+        pureStraightPortfolioDeltaCache.set(player, stateCache);
+    }
+    const key = `${card.id}:${destinationColumn}`;
+    const cached = stateCache.get(key);
+    if (cached !== undefined) return cached;
+
+    const board = player.board.map(boardRow => [...boardRow]);
+    board[row][destinationColumn] = card;
+    const projectedPlayer: PlayerState = {
+        ...player,
+        board,
+        hand: player.hand.filter(candidate => candidate.id !== card.id),
+    };
+    const delta = analyzePureStraightPortfolio(projectedPlayer).value
+        - getPureStraightPortfolio(player).value;
+    stateCache.set(key, delta);
+    return delta;
+}
 
 function getCompletionResourceProfiles(player: PlayerState): Array<CompletionResourceProfile | null> {
     const cached = completionResourceCache.get(player);
@@ -487,7 +618,7 @@ export function completionResourceOpportunityCost(
     return weightedLoss;
 }
 
-export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A6): number {
+export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A7): number {
     const ranks = player.hand.map(card => card.rank);
     const duplicateCards = ranks.length - new Set(ranks).size;
     const highCards = ranks.filter(rank => rank >= 11).length;
@@ -511,7 +642,7 @@ export function scoreGtoMove(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A6,
+    weights = XY_GTO_A7,
 ): number {
     const player = state.players[playerIndex];
     const opponent = state.players[1 - playerIndex];
@@ -562,6 +693,10 @@ export function scoreGtoMove(
         // On polarized boards, finishing the cheap column for a bonus draw can
         // dominate preserving a known completion elsewhere (e.g. 66611).
         * (1 - rushPotential * 0.85);
+    const portfolioWeight = weights.pureStraightPortfolioEfficiency ?? 0;
+    const pureStraightPortfolioValue = portfolioWeight === 0
+        ? 0
+        : pureStraightPortfolioDelta(player, card, column) * portfolioWeight;
 
     const bottomCards = player.board[2].filter((value): value is Card => value !== null);
     const xValue = row === 2
@@ -593,11 +728,12 @@ export function scoreGtoMove(
     const opponentVisible = getVisibleOpponentCards(opponent, column);
     const showdownValue = compareCompletedY(projectedColumn, opponentVisible) * dice * weights.yWeight;
     const responseValue = opponentVisible.length > 0
-        ? opponentVisible.length * partialYValue(opponentVisible) * dice * 0.22 * weights.flexibilityWeight
+        ? opponentVisible.length * partialYValue(opponentVisible) * dice * 0.22
+            * weights.flexibilityWeight * (weights.opponentResponseScale ?? 1)
         : 0;
 
     return yValue + pureStraightValue + openingAnchorValue + xValue + tempoValue + progressValue
-        + rushPlanValue + flexibilityValue
+        + rushPlanValue + flexibilityValue + pureStraightPortfolioValue
         + showdownValue + responseValue + resourceAlignmentValue
         - row3Penalty - lowDiceHighCardCost - queenOpportunityCost - completionOpportunityCost;
 }
@@ -607,7 +743,7 @@ export function getGtoHideProbability(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A6,
+    weights = XY_GTO_A7,
 ): number {
     const player = state.players[playerIndex];
     if (player.hiddenCardsCount >= 3) return 0;

@@ -11,17 +11,23 @@ import {
     XY_GTO_A3,
     XY_GTO_A4,
     XY_GTO_A4_SOLVER_BASE,
+    XY_GTO_A6,
     type GtoPolicyWeights,
 } from '../src/logic/gtoPolicy';
 import type { Card, GameState, Rank, YHandType } from '../src/logic/types';
 
 type Policy = 'a3' | 'a4' | 'solver_base' | 'anchor_quarter' | 'anchor_half' | 'anchor_double'
     | 'kicker_half' | 'kicker_double' | 'q_expendable' | 'q_guarded' | 'feature_half'
-    | 'resource_half' | 'resource_one' | 'resource_two' | 'resource_four';
+    | 'resource_half' | 'resource_one' | 'resource_two' | 'resource_four' | 'a6'
+    | 'portfolio_015' | 'portfolio_030' | 'portfolio_060' | 'portfolio_120'
+    | 'response_zero' | 'response_half' | 'response_negative' | 'response_high'
+    | 'response_n025' | 'response_n100' | 'response_n200' | 'defense_combo';
 
 interface GameResult {
     utility: -1 | 0 | 1;
     scoreDifference: number;
+    ownScore: number;
+    opponentScore: number;
     firstRowRanks: Rank[];
     yHands: Array<{ type: YHandType; kicker: number }>;
     queenTrips: number;
@@ -74,6 +80,7 @@ function weightsFor(policy: Policy): Readonly<GtoPolicyWeights> {
     switch (policy) {
         case 'a3': return XY_GTO_A3;
         case 'solver_base': return XY_GTO_A4_SOLVER_BASE;
+        case 'a6': return XY_GTO_A6;
         case 'anchor_quarter': return {
             ...XY_GTO_A4,
             openingAnchorEfficiency: (XY_GTO_A4.openingAnchorEfficiency ?? 0) / 4,
@@ -103,6 +110,22 @@ function weightsFor(policy: Policy): Readonly<GtoPolicyWeights> {
         case 'resource_one': return { ...XY_GTO_A4, completionResourceConservation: 1 };
         case 'resource_two': return { ...XY_GTO_A4, completionResourceConservation: 2 };
         case 'resource_four': return { ...XY_GTO_A4, completionResourceConservation: 4 };
+        case 'portfolio_015': return { ...XY_GTO_A6, pureStraightPortfolioEfficiency: 0.15 };
+        case 'portfolio_030': return { ...XY_GTO_A6, pureStraightPortfolioEfficiency: 0.3 };
+        case 'portfolio_060': return { ...XY_GTO_A6, pureStraightPortfolioEfficiency: 0.6 };
+        case 'portfolio_120': return { ...XY_GTO_A6, pureStraightPortfolioEfficiency: 1.2 };
+        case 'response_zero': return { ...XY_GTO_A6, opponentResponseScale: 0 };
+        case 'response_half': return { ...XY_GTO_A6, opponentResponseScale: 0.5 };
+        case 'response_negative': return { ...XY_GTO_A6, opponentResponseScale: -0.5 };
+        case 'response_high': return { ...XY_GTO_A6, opponentResponseScale: 1.5 };
+        case 'response_n025': return { ...XY_GTO_A6, opponentResponseScale: -0.25 };
+        case 'response_n100': return { ...XY_GTO_A6, opponentResponseScale: -1 };
+        case 'response_n200': return { ...XY_GTO_A6, opponentResponseScale: -2 };
+        case 'defense_combo': return {
+            ...XY_GTO_A6,
+            opponentResponseScale: -0.5,
+            pureStraightPortfolioEfficiency: 0.6,
+        };
         default: return XY_GTO_A4;
     }
 }
@@ -137,7 +160,10 @@ function chooseMove(
     };
 }
 
-function readBoardResult(state: GameState, playerIndex: 0 | 1): Omit<GameResult, 'utility' | 'scoreDifference'> {
+function readBoardResult(
+    state: GameState,
+    playerIndex: 0 | 1,
+): Omit<GameResult, 'utility' | 'scoreDifference' | 'ownScore' | 'opponentScore'> {
     const player = state.players[playerIndex];
     const yHands = player.dice.map((die, column) => evaluateYHand([
         player.board[0][column]!,
@@ -189,6 +215,8 @@ function playGame(
     return {
         utility: state.winner === ownId ? 1 : state.winner === opponentId ? -1 : 0,
         scoreDifference: state.players[ownSeat].score - state.players[1 - ownSeat].score,
+        ownScore: state.players[ownSeat].score,
+        opponentScore: state.players[1 - ownSeat].score,
         ...boardResult,
     };
 }
@@ -253,6 +281,10 @@ function evaluatePolicies(
         winRate: games.filter(game => game.utility === 1).length / games.length,
         drawRate: games.filter(game => game.utility === 0).length / games.length,
         averageScoreDifference: games.reduce((sum, game) => sum + game.scoreDifference, 0) / games.length,
+        catastrophicLossRate: games.filter(game => game.scoreDifference <= -15).length / games.length,
+        dominantWinRate: games.filter(game => game.scoreDifference >= 15).length / games.length,
+        ownScoreAtMostTwoRate: games.filter(game => game.ownScore <= 2).length / games.length,
+        opponentScoreAtMostTwoRate: games.filter(game => game.opponentScore <= 2).length / games.length,
         firstRowRankCounts: rankCounts(games.flatMap(game => game.firstRowRanks)),
         firstRowQueenPerGame: games.flatMap(game => game.firstRowRanks).filter(rank => rank === 12).length / games.length,
         firstRowKingOrTwoPerGame: games.flatMap(game => game.firstRowRanks)
@@ -275,6 +307,100 @@ function main(): void {
     const pairedDeals = readPositiveFlag('--deals', 2_000);
     const seed = readPositiveFlag('--seed', 0x4f50454e);
     const ranks = Array.from({ length: 13 }, (_, index) => index + 2 as Rank);
+    if (process.argv.includes('--portfolio-search')) {
+        const result = rounded({
+            schemaVersion: 1,
+            generatedAt: new Date().toISOString(),
+            method: 'global disjoint Pure Straight card assignment with paired seat/initial-hand matches',
+            comparisons: {
+                weight015VsA6: evaluatePolicies('portfolio_015', 'a6', null, pairedDeals, mixSeed(seed, 40)),
+                weight030VsA6: evaluatePolicies('portfolio_030', 'a6', null, pairedDeals, mixSeed(seed, 40)),
+                weight060VsA6: evaluatePolicies('portfolio_060', 'a6', null, pairedDeals, mixSeed(seed, 40)),
+                weight120VsA6: evaluatePolicies('portfolio_120', 'a6', null, pairedDeals, mixSeed(seed, 40)),
+                weight030VsA4: evaluatePolicies('portfolio_030', 'a4', null, pairedDeals, mixSeed(seed, 41)),
+                weight030VsA3: evaluatePolicies('portfolio_030', 'a3', null, pairedDeals, mixSeed(seed, 42)),
+            },
+        });
+        writeFileSync('gto_portfolio_search_analysis.json', `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+        console.log(JSON.stringify(result, null, 2));
+        return;
+    }
+    if (process.argv.includes('--response-search')) {
+        const result = rounded({
+            schemaVersion: 1,
+            generatedAt: new Date().toISOString(),
+            method: 'paired sensitivity test of visible-opponent column pressure',
+            comparisons: {
+                zeroVsA6: evaluatePolicies('response_zero', 'a6', null, pairedDeals, mixSeed(seed, 50)),
+                halfVsA6: evaluatePolicies('response_half', 'a6', null, pairedDeals, mixSeed(seed, 50)),
+                negativeVsA6: evaluatePolicies('response_negative', 'a6', null, pairedDeals, mixSeed(seed, 50)),
+                highVsA6: evaluatePolicies('response_high', 'a6', null, pairedDeals, mixSeed(seed, 50)),
+                zeroVsA3: evaluatePolicies('response_zero', 'a3', null, pairedDeals, mixSeed(seed, 51)),
+                halfVsA3: evaluatePolicies('response_half', 'a3', null, pairedDeals, mixSeed(seed, 51)),
+            },
+        });
+        writeFileSync('gto_response_pressure_analysis.json', `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+        console.log(JSON.stringify(result, null, 2));
+        return;
+    }
+    if (process.argv.includes('--defense-finalists')) {
+        const result = rounded({
+            schemaVersion: 1,
+            generatedAt: new Date().toISOString(),
+            method: 'paired finalist test for opponent-pressure triage and global Pure Straight allocation',
+            comparisons: {
+                negative025VsA6: evaluatePolicies('response_n025', 'a6', null, pairedDeals, mixSeed(seed, 60)),
+                negative050VsA6: evaluatePolicies('response_negative', 'a6', null, pairedDeals, mixSeed(seed, 60)),
+                negative100VsA6: evaluatePolicies('response_n100', 'a6', null, pairedDeals, mixSeed(seed, 60)),
+                negative200VsA6: evaluatePolicies('response_n200', 'a6', null, pairedDeals, mixSeed(seed, 60)),
+                comboVsA6: evaluatePolicies('defense_combo', 'a6', null, pairedDeals, mixSeed(seed, 60)),
+                comboVsNegative050: evaluatePolicies('defense_combo', 'response_negative', null, pairedDeals, mixSeed(seed, 61)),
+                negative050VsA3: evaluatePolicies('response_negative', 'a3', null, pairedDeals, mixSeed(seed, 62)),
+            },
+        });
+        writeFileSync('gto_defense_finalists_analysis.json', `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+        console.log(JSON.stringify(result, null, 2));
+        return;
+    }
+    if (process.argv.includes('--response-confirmation')) {
+        const result = rounded({
+            schemaVersion: 1,
+            generatedAt: new Date().toISOString(),
+            method: 'independent paired confirmation of column-triage response pressure',
+            selectedScale: -2,
+            comparisons: {
+                randomVsA6: evaluatePolicies('response_n200', 'a6', null, pairedDeals, mixSeed(seed, 70)),
+                polarized66611VsA6: evaluatePolicies('response_n200', 'a6', [6, 6, 6, 1, 1], pairedDeals, mixSeed(seed, 71)),
+                spread65421VsA6: evaluatePolicies('response_n200', 'a6', [6, 5, 4, 2, 1], pairedDeals, mixSeed(seed, 72)),
+                flat44444VsA6: evaluatePolicies('response_n200', 'a6', [4, 4, 4, 4, 4], pairedDeals, mixSeed(seed, 73)),
+                vsNegative100: evaluatePolicies('response_n200', 'response_n100', null, pairedDeals, mixSeed(seed, 74)),
+                vsNegative025: evaluatePolicies('response_n200', 'response_n025', null, pairedDeals, mixSeed(seed, 75)),
+                vsA3: evaluatePolicies('response_n200', 'a3', null, pairedDeals, mixSeed(seed, 76)),
+            },
+        });
+        writeFileSync('gto_response_confirmation_analysis.json', `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+        console.log(JSON.stringify(result, null, 2));
+        return;
+    }
+    if (process.argv.includes('--blowout-audit')) {
+        const result = rounded({
+            schemaVersion: 1,
+            generatedAt: new Date().toISOString(),
+            method: 'paired large-margin and low-score audit of A7 column triage',
+            comparisons: {
+                a7VsA6: evaluatePolicies('response_n200', 'a6', null, pairedDeals, mixSeed(seed, 80)),
+                a7VsA3: evaluatePolicies('response_n200', 'a3', null, pairedDeals, mixSeed(seed, 81)),
+            },
+            thresholds: {
+                catastrophicMargin: -15,
+                dominantMargin: 15,
+                lowFinalScore: 2,
+            },
+        });
+        writeFileSync('gto_a7_blowout_analysis.json', `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+        console.log(JSON.stringify(result, null, 2));
+        return;
+    }
     if (process.argv.includes('--resource-finalists')) {
         const result = rounded({
             schemaVersion: 1,

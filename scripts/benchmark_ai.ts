@@ -15,6 +15,8 @@ import {
     XY_GTO_A3,
     XY_GTO_A4,
     XY_GTO_A4_SOLVER_BASE,
+    XY_GTO_A6,
+    XY_GTO_A7,
     type GtoPolicyWeights,
 } from '../src/logic/gtoPolicy';
 import type { Card, GameState } from '../src/logic/types';
@@ -44,12 +46,26 @@ function readDiceFlag(): number[] | null {
     return dice.sort((a, b) => b - a);
 }
 
-function readOpponent(): { name: string; weights: readonly Readonly<GtoPolicyWeights>[] } {
+function readOpponent(): {
+    name: string;
+    weights: readonly Readonly<GtoPolicyWeights>[];
+    policyGeneration?: 'a6' | 'a7';
+} {
     const argument = process.argv.find(value => value.startsWith('--opponent='));
     const id = argument?.slice('--opponent='.length) ?? 'a2';
     if (id === 'a2') return { name: 'XY-GTO-A2 one-step policy', weights: [XY_GTO_A2] };
     if (id === 'a3') return { name: 'XY-GTO-A3 one-step policy', weights: [XY_GTO_A3] };
     if (id === 'a4') return { name: 'XY-GTO-A4 one-step policy', weights: [XY_GTO_A4] };
+    if (id === 'a6') return {
+        name: 'XY-GTO-A6 one-step policy',
+        weights: [XY_GTO_A6],
+        policyGeneration: 'a6',
+    };
+    if (id === 'a7') return {
+        name: 'XY-GTO-A7 one-step policy',
+        weights: [XY_GTO_A7],
+        policyGeneration: 'a7',
+    };
     if (id === 'solver-base') return {
         name: 'XY-GTO-A4 solver-base one-step policy',
         weights: [XY_GTO_A4_SOLVER_BASE],
@@ -58,7 +74,14 @@ function readOpponent(): { name: string; weights: readonly Readonly<GtoPolicyWei
         name: 'A4 / solver-base / A3 / A2 rotating one-step ensemble',
         weights: [XY_GTO_A4, XY_GTO_A4_SOLVER_BASE, XY_GTO_A3, XY_GTO_A2],
     };
-    throw new Error('--opponent must be a2, a3, a4, solver-base, or ensemble.');
+    throw new Error('--opponent must be a2, a3, a4, a6, a7, solver-base, or ensemble.');
+}
+
+function readPolicyGeneration(): 'a6' | 'a7' {
+    const argument = process.argv.find(value => value.startsWith('--policy='));
+    const generation = argument?.slice('--policy='.length) ?? 'a7';
+    if (generation === 'a6' || generation === 'a7') return generation;
+    throw new Error('--policy must be a6 or a7.');
 }
 
 function readSearchMode(): { generalizedSearch: boolean; multiPolicyRollouts: boolean; name: string } {
@@ -67,12 +90,12 @@ function readSearchMode(): { generalizedSearch: boolean; multiPolicyRollouts: bo
     if (mode === 'generalized') return {
         generalizedSearch: true,
         multiPolicyRollouts: true,
-        name: 'A6 generalized multi-policy search',
+        name: 'A7 generalized multi-policy search',
     };
     if (mode === 'broad') return {
         generalizedSearch: true,
         multiPolicyRollouts: false,
-        name: 'A6 broad-action single-policy search',
+        name: 'A7 broad-action single-policy search',
     };
     if (mode === 'single') return {
         generalizedSearch: false,
@@ -157,6 +180,8 @@ function playMatch(
     beliefSamples: number,
     opponentWeights: Readonly<GtoPolicyWeights>,
     searchMode: ReturnType<typeof readSearchMode>,
+    policyGeneration: 'a6' | 'a7',
+    searchOpponentGeneration: 'a6' | 'a7' | null,
 ): MatchResult {
     const random = seededRandom(seed);
     const originalRandom = Math.random;
@@ -166,8 +191,11 @@ function playMatch(
             type: 'START_GAME',
             payload: { initialDeck: deck, initialDice: dice, startingPlayer: selector },
         });
-        const chooserGoesFirst = selector === rolloutSeat
-            ? getBestTurnOrder(state, selector)
+        const selectorGeneration = selector === rolloutSeat
+            ? policyGeneration
+            : searchOpponentGeneration;
+        const chooserGoesFirst = selectorGeneration
+            ? getBestTurnOrder(state, selector, { ...DEFAULT_AI_PARAMS, policyGeneration: selectorGeneration })
             : getGtoTurnOrderScore(state.players[selector], opponentWeights) > 0;
         state = gameReducer(state, {
             type: 'CHOOSE_TURN_ORDER',
@@ -178,13 +206,17 @@ function playMatch(
         const completedBeliefs: number[] = [];
         while (state.phase === 'playing') {
             const actor = state.currentPlayerIndex as 0 | 1;
-            const move = actor === rolloutSeat
+            const actorGeneration = actor === rolloutSeat
+                ? policyGeneration
+                : searchOpponentGeneration;
+            const move = actorGeneration
                 ? getBestMove(state, actor, {
                     ...DEFAULT_AI_PARAMS,
                     timeBudgetMs,
                     mcSimulations: beliefSamples,
                     generalizedSearch: searchMode.generalizedSearch,
                     multiPolicyRollouts: searchMode.multiPolicyRollouts,
+                    policyGeneration: actorGeneration,
                 })
                 : policyMove(state, actor, random, opponentWeights);
             if (actor === rolloutSeat) {
@@ -213,14 +245,22 @@ function playMatch(
 const deals = readPositiveFlag('--deals', 20);
 const timeBudgetMs = readPositiveFlag('--time-ms', DEFAULT_AI_PARAMS.timeBudgetMs);
 const beliefSamples = readPositiveFlag('--samples', DEFAULT_AI_PARAMS.mcSimulations);
+const benchmarkSeed = readPositiveFlag('--seed', 0x58594232);
 const fixedDice = readDiceFlag();
 const opponent = readOpponent();
 const searchMode = readSearchMode();
+const policyGeneration = readPolicyGeneration();
+const searchOpponentGeneration = process.argv.includes('--search-opponent')
+    ? opponent.policyGeneration ?? null
+    : null;
+if (process.argv.includes('--search-opponent') && !searchOpponentGeneration) {
+    throw new Error('--search-opponent requires --opponent=a6 or --opponent=a7.');
+}
 const results: MatchResult[] = [];
 const startedAt = performance.now();
 
 for (let deal = 0; deal < deals; deal++) {
-    const chance = seededRandom(mixSeed(0x58594232, deal));
+    const chance = seededRandom(mixSeed(benchmarkSeed, deal));
     const deck = shuffledDeck(chance);
     const dice = fixedDice
         ? [...fixedDice]
@@ -237,6 +277,8 @@ for (let deal = 0; deal < deals; deal++) {
         beliefSamples,
         opponentWeights,
         searchMode,
+        policyGeneration,
+        searchOpponentGeneration,
     ));
     results.push(playMatch(
         swapInitialHands(deck),
@@ -248,6 +290,8 @@ for (let deal = 0; deal < deals; deal++) {
         beliefSamples,
         opponentWeights,
         searchMode,
+        policyGeneration,
+        searchOpponentGeneration,
     ));
 }
 
@@ -258,8 +302,10 @@ const losses = results.filter(result => result.utility === -1).length;
 const draws = results.length - wins - losses;
 console.log(JSON.stringify({
     opponent: opponent.name,
-    search: searchMode.name,
+    opponentSearch: searchOpponentGeneration !== null,
+    search: `${searchMode.name} (${policyGeneration.toUpperCase()} policy)`,
     dice: fixedDice ?? 'random',
+    seed: benchmarkSeed,
     pairedDeals: deals,
     games: results.length,
     rolloutWins: wins,

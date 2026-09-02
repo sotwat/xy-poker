@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09021205` (2026-09-02 12:05)
+- **Current Version:** `09021311` (2026-09-02 13:11)
 - **Status:** **Full local quality gate and production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ Japanese/English home and rules checked at 320×568, 390×844, and 1440×900
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 42 passing
+    - Automated tests: ✅ 44 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~307 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09021205` live on Cloudflare Pages; Render `/api/health` responding normally
+    - Deployment: 🔄 `v09021311` deployment in progress
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09021311** (2026-09-02): **Column-Triage GTO A7** - Fixed a strategic inversion where stronger visible opponent columns received a larger unconditional contest bonus, causing the AI to feed scarce cards into likely-lost lanes. A7 applies a validated negative response pressure so it sacrifices bad matchups and concentrates cards on winnable dice. Independent 3,000-pair tests beat A6 on random, 66611, and 65421 boards with positive 95% lower bounds; a separate 10,000-pair audit measured +0.0505 utility and reduced 15-point blowout losses by about 19.6%. Two-seed, 1,000 ms search-versus-search regression finished 8-7-1 while maintaining 61.28/64 belief samples. Added reproducible A6/A7 generation selection and search-opponent benchmarking.
 1. **v09021205** (2026-09-02): **Cross-Column GTO A6** - Added an exact hand-resource shadow price across all two-card Y columns so the AI preserves uniquely valuable completion cards for Pure Straights, trips, flushes, and other roles instead of only protecting queens. The opportunity cost is dice-weighted and attenuated on polarized cheap-column bonus races. Across 8,000 paired deals spanning random, 66611, 65421, and 44444 boards, the equal-regime descriptive improvement over A4 was +0.0205 utility with an approximate 95% interval of [+0.0017, +0.0393]. Tested and rejected public-showdown overreaction and secured-opening first-mover bonuses, then integrated A6 into both the 20% prior and 1,000 ms information-set rollout policy. Cached per-state best/second-best completions restored runtime density to 61.14/64 belief samples on the final audit.
 1. **v09021003** (2026-09-02): **Japanese / English Localization** - Added a shared application-wide i18n layer with Japanese as the default language and a persistent `Language` selector on the home screen. Localized the home, match flow, online lobby, rules and hand rankings, authentication, feedback, skin shop and gacha, My Page, game records, result tables, timers, scoring, accessibility labels, alerts, document metadata, and showdown hand names. Japanese showdown speech now selects a Japanese system voice when available. Added catalog parity/default-language tests and verified instant switching plus reload persistence at phone and desktop viewports.
 1. **v09020904** (2026-09-02): **Generalized Information-Set GTO A5** - Rebalanced the complete A4 policy with a confirmed PSRO response, added exact first-row route/kicker economics and cross-column Q opportunity cost, and re-solved a 12-policy population over 396,000 terminal games. A4 received 100% population support and beat A3 across random, 66611, 65421, and 22211 dice regimes in separate 5,000-pair tests. Replaced the 400 ms / 20-sample runtime with a 1,000 ms / 64-sample A5 search that broadly evaluates up to 60 card-column-face actions, progressively narrows to 16, samples only information-set-consistent worlds, and plays every candidate through all draws, Y/X scoring, bonuses, and opponent responses. A rotating-policy regression scored 28-10-2; a tempting multi-opponent rollout variant was measured at 21-16-3 and deliberately rejected.

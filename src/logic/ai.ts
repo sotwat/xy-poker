@@ -6,8 +6,8 @@ import {
     scoreGtoMove,
     XY_GTO_A3,
     XY_GTO_A4,
-    XY_GTO_A4_SOLVER_BASE,
     XY_GTO_A6,
+    XY_GTO_A7,
     type GtoPolicyWeights,
 } from './gtoPolicy';
 import type { Card, GameState } from './types';
@@ -33,6 +33,8 @@ export interface AiParams {
     generalizedSearch?: boolean;
     /** False isolates broad root actions from multi-policy opponent modeling. */
     multiPolicyRollouts?: boolean;
+    /** Retains the previous generation for reproducible head-to-head audits. */
+    policyGeneration?: 'a6' | 'a7';
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
@@ -51,6 +53,7 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     timeBudgetMs: 1_000,
     generalizedSearch: true,
     multiPolicyRollouts: false,
+    policyGeneration: 'a7',
 };
 
 export interface AiDecisionDiagnostics {
@@ -76,10 +79,9 @@ interface RolloutProfile {
     opponentTemperature: number;
 }
 
-const ROLLOUT_PROFILES: readonly RolloutProfile[] = [
+const SECONDARY_ROLLOUT_PROFILES: readonly RolloutProfile[] = [
     { opponentWeights: XY_GTO_A6, opponentTemperature: 0 },
     { opponentWeights: XY_GTO_A4, opponentTemperature: 0 },
-    { opponentWeights: XY_GTO_A4_SOLVER_BASE, opponentTemperature: 0 },
     { opponentWeights: XY_GTO_A3, opponentTemperature: 0 },
 ];
 
@@ -100,8 +102,8 @@ export function getBestTurnOrder(
     playerIndex: number,
     params: AiParams = DEFAULT_AI_PARAMS,
 ): boolean {
-    void params;
-    return getGtoTurnOrderScore(gameState.players[playerIndex]) > 0;
+    const weights = params.policyGeneration === 'a6' ? XY_GTO_A6 : XY_GTO_A7;
+    return getGtoTurnOrderScore(gameState.players[playerIndex], weights) > 0;
 }
 
 /**
@@ -118,13 +120,18 @@ export function getBestMove(
 ): { cardId: string; colIndex: number; isHidden: boolean } {
     const startedAt = now();
     const player = gameState.players[playerIndex];
+    const policyWeights = params.policyGeneration === 'a6' ? XY_GTO_A6 : XY_GTO_A7;
     const generalizedSearch = params.generalizedSearch !== false;
     const profiles = generalizedSearch && params.multiPolicyRollouts !== false
-        ? ROLLOUT_PROFILES
-        : ROLLOUT_PROFILES.slice(0, 1);
+        ? [
+            { opponentWeights: policyWeights, opponentTemperature: 0 },
+            ...SECONDARY_ROLLOUT_PROFILES.filter(profile => profile.opponentWeights !== policyWeights),
+        ]
+        : [{ opponentWeights: policyWeights, opponentTemperature: 0 }];
     const legalMoves = generalizedSearch
-        ? enumerateRootActions(gameState, playerIndex as 0 | 1)
-        : enumeratePlacements(gameState, playerIndex as 0 | 1).map(move => ({ ...move, isHidden: false }));
+        ? enumerateRootActions(gameState, playerIndex as 0 | 1, policyWeights)
+        : enumeratePlacements(gameState, playerIndex as 0 | 1, policyWeights)
+            .map(move => ({ ...move, isHidden: false }));
 
     if (legalMoves.length === 0) {
         const fallback = { cardId: player.hand[0]?.id ?? '', colIndex: 0, isHidden: false };
@@ -192,6 +199,7 @@ export function getBestMove(
                 rolloutRandom,
                 deadline,
                 profile,
+                policyWeights,
             );
             if (result === null) {
                 complete = false;
@@ -275,6 +283,7 @@ export function getBestMove(
             playerIndex as 0 | 1,
             selectedCard,
             selected.colIndex,
+            policyWeights,
         ));
     setDiagnostics(startedAt, legalMoves.length, candidates.length, completedSamples);
     return {
@@ -314,7 +323,7 @@ function candidateRolloutObjective(
 function enumeratePlacements(
     state: GameState,
     playerIndex: 0 | 1,
-    weights: Readonly<GtoPolicyWeights> = XY_GTO_A6,
+    weights: Readonly<GtoPolicyWeights> = XY_GTO_A7,
 ): ScoredMove[] {
     const player = state.players[playerIndex];
     const moves: ScoredMove[] = [];
@@ -331,9 +340,13 @@ function enumeratePlacements(
     return moves.sort((a, b) => b.gtoScore - a.gtoScore);
 }
 
-function enumerateRootActions(state: GameState, playerIndex: 0 | 1): RootAction[] {
+function enumerateRootActions(
+    state: GameState,
+    playerIndex: 0 | 1,
+    weights: Readonly<GtoPolicyWeights> = XY_GTO_A7,
+): RootAction[] {
     const player = state.players[playerIndex];
-    const placements = enumeratePlacements(state, playerIndex);
+    const placements = enumeratePlacements(state, playerIndex, weights);
     const actions: RootAction[] = [];
     for (const placement of placements) {
         const card = player.hand.find(candidate => candidate.id === placement.cardId);
@@ -343,6 +356,7 @@ function enumerateRootActions(state: GameState, playerIndex: 0 | 1): RootAction[
             playerIndex,
             card,
             placement.colIndex,
+            weights,
         );
         actions.push({
             ...placement,
@@ -396,13 +410,14 @@ function rolloutToEnd(
     random: () => number,
     deadline: number,
     profile: RolloutProfile,
+    rootWeights: Readonly<GtoPolicyWeights>,
 ): number | null {
     let state = initialState;
     let safety = 0;
     while (state.phase === 'playing' && safety < 40) {
         if ((safety & 3) === 0 && now() >= deadline) return null;
         const actor = state.currentPlayerIndex as 0 | 1;
-        const move = selectRolloutMove(state, actor, rootPlayerIndex, profile, random);
+        const move = selectRolloutMove(state, actor, rootPlayerIndex, profile, rootWeights, random);
         const nextState = gameReducer(state, { type: 'PLACE_AND_DRAW', payload: move });
         if (nextState === state) return null;
         state = nextState;
@@ -423,10 +438,11 @@ function selectRolloutMove(
     playerIndex: 0 | 1,
     rootPlayerIndex: 0 | 1,
     profile: RolloutProfile,
+    rootWeights: Readonly<GtoPolicyWeights>,
     random: () => number,
 ): { cardId: string; colIndex: number; isHidden: boolean } {
     const isRootPlayer = playerIndex === rootPlayerIndex;
-    const weights = isRootPlayer ? XY_GTO_A6 : profile.opponentWeights;
+    const weights = isRootPlayer ? rootWeights : profile.opponentWeights;
     const temperature = isRootPlayer ? 0.08 : profile.opponentTemperature;
     const placements = enumeratePlacements(state, playerIndex, weights);
     const shortlist = placements.slice(0, 4);

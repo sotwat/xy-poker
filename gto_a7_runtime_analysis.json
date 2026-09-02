@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-02T04:11:00.000Z",
+  "method": "two-seed paired search-versus-search audit",
+  "challenger": "XY-GTO-A7 broad-action information-set search",
+  "opponent": "XY-GTO-A6 broad-action information-set search",
+  "timeBudgetMs": 1000,
+  "requestedBeliefSamples": 64,
+  "trials": [
+    {
+      "seed": 1482244658,
+      "games": 8,
+      "wins": 4,
+      "losses": 3,
+      "draws": 1,
+      "averageScoreDifference": 1.375,
+      "averageDecisionMs": 557.730411,
+      "p90DecisionMs": 988.169166,
+      "averageCompletedBeliefSamples": 61.425,
+      "minimumCompletedBeliefSamples": 44
+    },
+    {
+      "seed": 1482252377,
+      "games": 8,
+      "wins": 4,
+      "losses": 4,
+      "draws": 0,
+      "averageScoreDifference": -2.875,
+      "averageDecisionMs": 566.513145,
+      "p90DecisionMs": 988.010791,
+      "averageCompletedBeliefSamples": 61.133333,
+      "minimumCompletedBeliefSamples": 34
+    }
+  ],
+  "aggregate": {
+    "games": 16,
+    "wins": 8,
+    "losses": 7,
+    "draws": 1,
+    "score": 0.53125,
+    "meanUtility": 0.0625,
+    "averageScoreDifference": -0.75,
+    "averageDecisionMs": 562.121778,
+    "maximumTrialP90DecisionMs": 988.169166,
+    "averageCompletedBeliefSamples": 61.279167,
+    "minimumCompletedBeliefSamples": 34,
+    "runtimeSeconds": 268.940104
+  },
+  "limitations": [
+    "Sixteen games are a runtime regression sample, not a precise win-rate estimate.",
+    "The larger paired fixed-policy studies provide the primary strength evidence."
+  ]
+}

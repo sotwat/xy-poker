@@ -13,7 +13,8 @@ function mutateParams(params: AiParams, mutationRate: number = 0.1): AiParams {
             || key === 'timeBudgetMs'
             || key === 'gtoPriorWeight'
             || key === 'generalizedSearch'
-            || key === 'multiPolicyRollouts') continue;
+            || key === 'multiPolicyRollouts'
+            || key === 'policyGeneration') continue;
         
         if (Math.random() < mutationRate) {
             // +/- 20% mutation
