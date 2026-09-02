@@ -24,7 +24,8 @@
     "analyze:gto-resources": "tsx scripts/analyze_opening_efficiency.ts --resource-finalists",
     "analyze:gto-defense": "tsx scripts/analyze_opening_efficiency.ts --response-confirmation",
     "analyze:gto-blowouts": "tsx scripts/analyze_opening_efficiency.ts --blowout-audit",
-    "benchmark:ai": "tsx scripts/benchmark_ai.ts"
+    "benchmark:ai": "tsx scripts/benchmark_ai.ts",
+    "prepare:training": "tsx scripts/prepare_training_records.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",

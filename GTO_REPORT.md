@@ -15,10 +15,17 @@
 - A7係数感度・最終候補: [`gto_response_pressure_analysis.json`](./gto_response_pressure_analysis.json), [`gto_defense_finalists_analysis.json`](./gto_defense_finalists_analysis.json)
 - A7大敗監査: [`gto_a7_blowout_analysis.json`](./gto_a7_blowout_analysis.json)
 - A7探索間比較: [`gto_a7_runtime_analysis.json`](./gto_a7_runtime_analysis.json)
+- 思考時間再監査: [`gto_time_budget_analysis.json`](./gto_time_budget_analysis.json)
 - 棄却した全列割当実験: [`gto_portfolio_search_analysis.json`](./gto_portfolio_search_analysis.json)
 - 再現コード: [`scripts/solve_gto.ts`](./scripts/solve_gto.ts), [`scripts/analyze_opening_efficiency.ts`](./scripts/analyze_opening_efficiency.ts)
 
 > **本番AIへの反映:** `XY-GTO-A7` を20% priorと終局ロールアウトの両方に使い、残り80%を不完全情報下終局探索で評価する。最大60個のカード×列×表裏行動を広く調べ、8 belief samples後に16候補へ絞って最大64 samplesを使う。思考上限は1,000 ms。完全ゲームの厳密GTOではない。
+
+## 2026-09-03: 棋譜の強度重みと思考時間再監査
+
+今後の人間棋譜学習では、全棋譜を同価値としない。サーバーが保存時に対局者のレーティング、対局数、勝数を取得し、少数対局のレートを1500へ縮約した実効レートを作る。学習重みは `2 ^ ((effectiveRating - 1500) / 400)` で、0.25〜4.0に制限する。これにより十分な対局数の強いプレイヤーの1手は重く、弱いプレイヤーの1手は軽く扱われる。メタデータはクライアント申告ではなくサーバーが付与し、学習コーパスには認証済み視聴者自身の着手だけを入れる。
+
+思考時間は、1,000 ms / 64 samplesと2,000 ms / 96 samplesを監査した。同一配札の対一手A7では両者とも15勝1敗で、2秒版は平均95.71 samplesまで増えたが平均得失点は8.125から7.938へ改善しなかった。さらに長考版と現行版を直接対決させた2シード16局は長考版が6勝9敗1分、勝率換算40.625%、平均効用-0.1875だった。標本は小さく「長考が本質的に弱い」とは結論できないが、強化を根拠に本番の待ち時間を増やす条件は満たさない。そのため現行の1,000 msを維持し、今後は別シードの独立評価で95%下限が正になった場合のみ延長する。
 
 ## 最新結果: 負け列への過剰投資を止める `XY-GTO-A7`
 

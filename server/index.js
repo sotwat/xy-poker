@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import supabase from './db.js';
 import {
     calculateUpdatedAiParams,
+    createGameRecordTrainingMetadata,
     createDeck,
     generateRoomId,
     generateSessionToken,
@@ -76,6 +77,8 @@ const games = new Map();
 const matchmakingQueue = [];
 const recentStatUpdates = new Map();
 const recentAiUpdates = new Map();
+const RUNTIME_AI_POLICY_ID = 'xy-gto-a7';
+const RUNTIME_AI_THINK_TIME_MS = 1_000;
 
 function acknowledge(callback, payload) {
     if (typeof callback === 'function') callback(payload);
@@ -346,16 +349,27 @@ io.on('connection', socket => {
         try {
             const userId = socket.data.userId;
             if (!userId) throw new Error('Authentication required');
+            if (record && typeof record === 'object' && 'trainingMetadata' in record) {
+                throw new Error('Training metadata must be server generated');
+            }
             if (!isValidGameRecord(record)) throw new Error('Invalid game record');
             const hasProThoughts = record.schemaVersion === 3 && record.moves.some(move => Boolean(move.thought));
-            if (hasProThoughts) {
-                const { data: player, error: playerError } = await supabase
-                    .from('players')
-                    .select('is_premium')
-                    .eq('id', userId)
-                    .single();
-                if (playerError || !player?.is_premium) throw new Error('PRO membership required for thought notes');
-            }
+            const { data: player, error: playerError } = await supabase
+                .from('players')
+                .select('is_premium, rating, games_played, wins')
+                .eq('id', userId)
+                .single();
+            if (playerError || !player) throw new Error('Player profile unavailable');
+            if (hasProThoughts && !player.is_premium) throw new Error('PRO membership required for thought notes');
+
+            const storedRecord = {
+                ...record,
+                trainingMetadata: createGameRecordTrainingMetadata(player, record.mode === 'bot' ? {
+                    aiPolicyId: RUNTIME_AI_POLICY_ID,
+                    aiThinkTimeMs: RUNTIME_AI_THINK_TIME_MS,
+                } : {}),
+            };
+            if (JSON.stringify(storedRecord).length > 25_000) throw new Error('Enriched game record too large');
 
             const viewerWinner = record.winner === 'draw'
                 ? 'draw'
@@ -368,7 +382,7 @@ io.on('connection', socket => {
                 mode: record.mode,
                 result: viewerWinner,
                 opponent_name: record.playerNames[opponentIndex],
-                record_data: record,
+                record_data: storedRecord,
             }, { onConflict: 'id', ignoreDuplicates: true });
             if (error) throw error;
             acknowledge(callback, { success: true, id: record.id });

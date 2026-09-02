@@ -178,6 +178,8 @@ function playMatch(
     seed: number,
     timeBudgetMs: number,
     beliefSamples: number,
+    opponentTimeBudgetMs: number,
+    opponentBeliefSamples: number,
     opponentWeights: Readonly<GtoPolicyWeights>,
     searchMode: ReturnType<typeof readSearchMode>,
     policyGeneration: 'a6' | 'a7',
@@ -209,11 +211,13 @@ function playMatch(
             const actorGeneration = actor === rolloutSeat
                 ? policyGeneration
                 : searchOpponentGeneration;
+            const actorTimeBudgetMs = actor === rolloutSeat ? timeBudgetMs : opponentTimeBudgetMs;
+            const actorBeliefSamples = actor === rolloutSeat ? beliefSamples : opponentBeliefSamples;
             const move = actorGeneration
                 ? getBestMove(state, actor, {
                     ...DEFAULT_AI_PARAMS,
-                    timeBudgetMs,
-                    mcSimulations: beliefSamples,
+                    timeBudgetMs: actorTimeBudgetMs,
+                    mcSimulations: actorBeliefSamples,
                     generalizedSearch: searchMode.generalizedSearch,
                     multiPolicyRollouts: searchMode.multiPolicyRollouts,
                     policyGeneration: actorGeneration,
@@ -245,6 +249,8 @@ function playMatch(
 const deals = readPositiveFlag('--deals', 20);
 const timeBudgetMs = readPositiveFlag('--time-ms', DEFAULT_AI_PARAMS.timeBudgetMs);
 const beliefSamples = readPositiveFlag('--samples', DEFAULT_AI_PARAMS.mcSimulations);
+const opponentTimeBudgetMs = readPositiveFlag('--opponent-time-ms', timeBudgetMs);
+const opponentBeliefSamples = readPositiveFlag('--opponent-samples', beliefSamples);
 const benchmarkSeed = readPositiveFlag('--seed', 0x58594232);
 const fixedDice = readDiceFlag();
 const opponent = readOpponent();
@@ -275,6 +281,8 @@ for (let deal = 0; deal < deals; deal++) {
         mixSeed(deal, 1),
         timeBudgetMs,
         beliefSamples,
+        opponentTimeBudgetMs,
+        opponentBeliefSamples,
         opponentWeights,
         searchMode,
         policyGeneration,
@@ -288,6 +296,8 @@ for (let deal = 0; deal < deals; deal++) {
         mixSeed(deal, 2),
         timeBudgetMs,
         beliefSamples,
+        opponentTimeBudgetMs,
+        opponentBeliefSamples,
         opponentWeights,
         searchMode,
         policyGeneration,
@@ -312,6 +322,11 @@ console.log(JSON.stringify({
     policyWins: losses,
     draws,
     rolloutScore: (wins + draws * 0.5) / results.length,
+    candidate: { timeBudgetMs, beliefSamples },
+    searchOpponent: searchOpponentGeneration === null ? null : {
+        timeBudgetMs: opponentTimeBudgetMs,
+        beliefSamples: opponentBeliefSamples,
+    },
     meanUtility: results.reduce((sum, result) => sum + result.utility, 0) / results.length,
     averageScoreDifference: results.reduce((sum, result) => sum + result.scoreDifference, 0) / results.length,
     averageDecisionMs: decisionTimes.reduce((sum, value) => sum + value, 0) / decisionTimes.length,

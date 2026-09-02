@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-03T00:30:00+09:00",
+  "policy": "XY-GTO-A7 broad-action single-policy search",
+  "decision": "retain-1000ms-64-samples",
+  "reason": "The 2000 ms candidate completed more belief samples but did not improve matched outcomes and lost the direct search-versus-search aggregate.",
+  "oneStepOpponentChecks": [
+    {
+      "seed": 1482240562,
+      "games": 16,
+      "candidate": { "timeBudgetMs": 1000, "beliefSamples": 64 },
+      "wins": 15,
+      "losses": 1,
+      "draws": 0,
+      "averageScoreDifference": 8.125,
+      "averageDecisionMs": 577.5474,
+      "averageCompletedBeliefSamples": 60.2125,
+      "minimumCompletedBeliefSamples": 29
+    },
+    {
+      "seed": 1482240562,
+      "games": 16,
+      "candidate": { "timeBudgetMs": 2000, "beliefSamples": 96 },
+      "wins": 15,
+      "losses": 1,
+      "draws": 0,
+      "averageScoreDifference": 7.9375,
+      "averageDecisionMs": 965.8117,
+      "averageCompletedBeliefSamples": 95.7083,
+      "minimumCompletedBeliefSamples": 80
+    }
+  ],
+  "directChecks": [
+    {
+      "seed": 1482240562,
+      "games": 8,
+      "candidate": { "timeBudgetMs": 2000, "beliefSamples": 96 },
+      "opponent": { "timeBudgetMs": 1000, "beliefSamples": 64 },
+      "wins": 2,
+      "losses": 5,
+      "draws": 1,
+      "meanUtility": -0.375,
+      "averageScoreDifference": -2.875
+    },
+    {
+      "seed": 1482249119,
+      "games": 8,
+      "candidate": { "timeBudgetMs": 2000, "beliefSamples": 96 },
+      "opponent": { "timeBudgetMs": 1000, "beliefSamples": 64 },
+      "wins": 4,
+      "losses": 4,
+      "draws": 0,
+      "meanUtility": 0,
+      "averageScoreDifference": 0.75
+    }
+  ],
+  "directAggregate": {
+    "games": 16,
+    "wins": 6,
+    "losses": 9,
+    "draws": 1,
+    "score": 0.40625,
+    "meanUtility": -0.1875,
+    "averageScoreDifference": -1.0625
+  },
+  "limitations": [
+    "The direct comparison is too small to prove that longer search is intrinsically weaker.",
+    "It is sufficient to reject an unverified production increase.",
+    "Future increases require an independent positive confidence bound against the current runtime policy."
+  ]
+}

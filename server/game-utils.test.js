@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
     calculateEloChange,
     calculateUpdatedAiParams,
+    createGameRecordTrainingMetadata,
     createDeck,
     generateRoomId,
     generateSessionToken,
@@ -158,6 +159,24 @@ test('calculates symmetric Elo changes', () => {
     assert.equal(calculateEloChange(1500, 1500, 1), 16);
     assert.equal(calculateEloChange(1500, 1500, 0), -16);
     assert.equal(calculateEloChange(1500, 1500, 0.5), 0);
+});
+
+test('weights established strong records above weak records and shrinks uncertain ratings', () => {
+    const strong = createGameRecordTrainingMetadata({ rating: 2000, games_played: 200, wins: 130 }, {
+        aiPolicyId: 'xy-gto-a7',
+        aiThinkTimeMs: 1000,
+    });
+    const weak = createGameRecordTrainingMetadata({ rating: 1000, games_played: 200, wins: 40 });
+    const uncertain = createGameRecordTrainingMetadata({ rating: 2000, games_played: 1, wins: 1 });
+
+    assert.equal(strong.source, 'server');
+    assert.equal(strong.skillTier, 'expert');
+    assert.equal(weak.skillTier, 'weak');
+    assert.ok(strong.sampleWeight > 2);
+    assert.ok(weak.sampleWeight < 0.6);
+    assert.ok(uncertain.sampleWeight > 1 && uncertain.sampleWeight < 1.1);
+    assert.equal(strong.aiPolicyId, 'xy-gto-a7');
+    assert.equal(strong.aiThinkTimeMs, 1000);
 });
 
 test('updates AI parameters from safe defaults and clamps them', () => {

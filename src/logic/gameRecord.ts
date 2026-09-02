@@ -4,6 +4,22 @@ export type GameRecordMode = 'bot' | 'ranked' | 'private';
 export type GameRecordWinner = 'p1' | 'p2' | 'draw';
 export type GameRecordBoard = (Card | null)[][];
 export type GameRecordHands = [Card[], Card[]];
+export type GameRecordSkillTier = 'weak' | 'developing' | 'strong' | 'expert';
+
+export interface GameRecordTrainingMetadata {
+    schemaVersion: 1;
+    source: 'server';
+    playerRating: number;
+    playerGamesPlayed: number;
+    playerWins: number;
+    playerWinRate: number;
+    ratingConfidence: number;
+    effectiveRating: number;
+    sampleWeight: number;
+    skillTier: GameRecordSkillTier;
+    aiPolicyId: string | null;
+    aiThinkTimeMs: number | null;
+}
 
 export interface GameRecordMove {
     ply: number;
@@ -33,6 +49,7 @@ interface GameRecordBase {
     winner: GameRecordWinner;
     scores: [number, number];
     bonuses: [number, number];
+    trainingMetadata?: GameRecordTrainingMetadata;
 }
 
 export interface LegacyGameRecordData extends GameRecordBase {
@@ -299,6 +316,15 @@ export function serializeGameRecordText(record: GameRecordData, language: GameRe
             '-------------',
         ];
 
+    if (record.trainingMetadata) {
+        const metadata = record.trainingMetadata;
+        lines.splice(lines.length - 3, 0,
+            japanese
+                ? `学習品質: ${metadata.skillTier} / 実効レート ${metadata.effectiveRating} / 重み ${metadata.sampleWeight}`
+                : `Training quality: ${metadata.skillTier} / effective rating ${metadata.effectiveRating} / weight ${metadata.sampleWeight}`,
+        );
+    }
+
     if (record.schemaVersion !== 1) {
         lines.push(`P1 ${names[0]}: ${record.initialHands[0].map(formatExportCard).join(' ')}`);
         lines.push(`P2 ${names[1]}: ${record.initialHands[1].map(formatExportCard).join(' ')}`);
@@ -370,6 +396,23 @@ function isRecordCard(value: unknown, requireHidden = false): value is Card {
         && validHidden;
 }
 
+function isGameRecordTrainingMetadata(value: unknown): value is GameRecordTrainingMetadata {
+    if (!value || typeof value !== 'object') return false;
+    const metadata = value as Partial<GameRecordTrainingMetadata>;
+    return metadata.schemaVersion === 1
+        && metadata.source === 'server'
+        && Number.isInteger(metadata.playerRating) && metadata.playerRating! >= 600 && metadata.playerRating! <= 3000
+        && Number.isInteger(metadata.playerGamesPlayed) && metadata.playerGamesPlayed! >= 0
+        && Number.isInteger(metadata.playerWins) && metadata.playerWins! >= 0 && metadata.playerWins! <= metadata.playerGamesPlayed!
+        && Number.isFinite(metadata.playerWinRate) && metadata.playerWinRate! >= 0 && metadata.playerWinRate! <= 1
+        && Number.isFinite(metadata.ratingConfidence) && metadata.ratingConfidence! >= 0 && metadata.ratingConfidence! <= 1
+        && Number.isInteger(metadata.effectiveRating) && metadata.effectiveRating! >= 600 && metadata.effectiveRating! <= 3000
+        && Number.isFinite(metadata.sampleWeight) && metadata.sampleWeight! >= 0.25 && metadata.sampleWeight! <= 4
+        && ['weak', 'developing', 'strong', 'expert'].includes(metadata.skillTier || '')
+        && (metadata.aiPolicyId === null || (typeof metadata.aiPolicyId === 'string' && /^[a-z0-9-]{1,40}$/.test(metadata.aiPolicyId)))
+        && (metadata.aiThinkTimeMs === null || (Number.isInteger(metadata.aiThinkTimeMs) && metadata.aiThinkTimeMs! >= 1 && metadata.aiThinkTimeMs! <= 10_000));
+}
+
 export function isGameRecordData(value: unknown): value is GameRecordData {
     if (!value || typeof value !== 'object') return false;
     if (JSON.stringify(value).length > 25_000) return false;
@@ -378,6 +421,9 @@ export function isGameRecordData(value: unknown): value is GameRecordData {
     if (!record.startedAt || !Number.isFinite(Date.parse(record.startedAt))) return false;
     if (!record.completedAt || !Number.isFinite(Date.parse(record.completedAt))) return false;
     if (!['bot', 'ranked', 'private'].includes(record.mode || '')) return false;
+    if ('trainingMetadata' in record
+        && record.trainingMetadata !== undefined
+        && !isGameRecordTrainingMetadata(record.trainingMetadata)) return false;
     if (record.viewerPlayerIndex !== 0 && record.viewerPlayerIndex !== 1) return false;
     if (!Array.isArray(record.playerNames) || record.playerNames.length !== 2
         || !record.playerNames.every(name => typeof name === 'string' && name.length > 0 && name.length <= 15)) return false;
@@ -478,7 +524,12 @@ export function mergeGameRecords(...groups: GameRecordData[][]): GameRecordData[
     for (const record of groups.flat()) {
         if (!isGameRecordData(record)) continue;
         const existing = byId.get(record.id);
-        if (!existing || record.schemaVersion >= existing.schemaVersion) byId.set(record.id, record);
+        const isNewerSchema = existing && record.schemaVersion > existing.schemaVersion;
+        const addsTrustedTrainingMetadata = existing
+            && record.schemaVersion === existing.schemaVersion
+            && Boolean(record.trainingMetadata)
+            && !existing.trainingMetadata;
+        if (!existing || isNewerSchema || addsTrustedTrainingMetadata) byId.set(record.id, record);
     }
     return [...byId.values()].sort((left, right) => Date.parse(right.completedAt) - Date.parse(left.completedAt));
 }

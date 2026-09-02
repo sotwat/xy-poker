@@ -13,6 +13,7 @@ import {
     getGameRecordResult,
     isGameRecordData,
     MAX_GAME_RECORD_THOUGHT_LENGTH,
+    mergeGameRecords,
     normalizeGameRecordThought,
     serializeGameRecordText,
 } from './gameRecord';
@@ -131,6 +132,29 @@ test('finalizes and validates a complete thirty-move game', () => {
     assert.equal(record.moves[0].thought, '出目6の列より、Qの純正ストレート2経路を優先する。\nAIの資源配分と比較する。');
     assert.equal(isGameRecordData(record), true);
     assert.ok(JSON.stringify(record).length < 25_000);
+
+    const weightedRecord = structuredClone(record);
+    weightedRecord.trainingMetadata = {
+        schemaVersion: 1,
+        source: 'server',
+        playerRating: 2000,
+        playerGamesPlayed: 200,
+        playerWins: 130,
+        playerWinRate: 0.65,
+        ratingConfidence: 0.9933,
+        effectiveRating: 1997,
+        sampleWeight: 2.373,
+        skillTier: 'expert',
+        aiPolicyId: 'xy-gto-a7',
+        aiThinkTimeMs: 1000,
+    };
+    assert.equal(isGameRecordData(weightedRecord), true);
+    assert.match(serializeGameRecordText(weightedRecord, 'ja'), /学習品質: expert \/ 実効レート 1997 \/ 重み 2\.373/);
+    assert.equal(mergeGameRecords([weightedRecord], [record])[0].trainingMetadata?.source, 'server');
+
+    const forgedWeight = structuredClone(weightedRecord);
+    forgedWeight.trainingMetadata.sampleWeight = 8;
+    assert.equal(isGameRecordData(forgedWeight), false);
 
     const replayBoards = buildReplayBoards(record, 30);
     assert.deepEqual(replayBoards, state.players.map(player => player.board.map(row => row.map(card => card ? { ...card, isHidden: false } : null))));
