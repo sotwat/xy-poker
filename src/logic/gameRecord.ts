@@ -43,6 +43,7 @@ export interface GameRecordDataV2 extends Omit<GameRecordBase, 'schemaVersion'> 
 }
 
 export type GameRecordData = LegacyGameRecordData | GameRecordDataV2;
+export type GameRecordTextLanguage = 'ja' | 'en';
 
 export interface ActiveGameRecording {
     id: string;
@@ -187,6 +188,108 @@ export function buildReplayHands(record: GameRecordData, moveCount: number): Gam
     }
 
     return hands;
+}
+
+const EXPORT_RANK_LABELS: Record<number, string> = { 11: 'J', 12: 'Q', 13: 'K', 14: 'A' };
+const EXPORT_SUIT_LABELS = { hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' } as const;
+
+function formatExportCard(card: Card): string {
+    return `${EXPORT_RANK_LABELS[card.rank] ?? card.rank}${EXPORT_SUIT_LABELS[card.suit]}`;
+}
+
+function formatExportName(name: string): string {
+    return name.replace(/[\r\n\t]+/g, ' ').trim();
+}
+
+/** Creates a deterministic, human-readable UTF-8 game record for sharing or analysis. */
+export function serializeGameRecordText(record: GameRecordData, language: GameRecordTextLanguage = 'ja'): string {
+    const japanese = language === 'ja';
+    const names = record.playerNames.map(formatExportName) as [string, string];
+    const winnerName = record.winner === 'draw'
+        ? (japanese ? '引き分け' : 'Draw')
+        : names[record.winner === 'p1' ? 0 : 1];
+    const mode = japanese
+        ? { bot: 'AI対戦', ranked: 'ランク対戦', private: 'プライベート対戦' }[record.mode]
+        : { bot: 'AI Match', ranked: 'Ranked Match', private: 'Private Match' }[record.mode];
+    const finalBoards = buildReplayBoards(record, record.moves.length);
+    const lines: string[] = japanese
+        ? [
+            'XYポーカー 棋譜',
+            '================',
+            `棋譜ID: ${record.id}`,
+            `形式: ${mode}`,
+            `開始: ${new Date(record.startedAt).toISOString()}`,
+            `終了: ${new Date(record.completedAt).toISOString()}`,
+            `プレイヤー: P1 ${names[0]} / P2 ${names[1]}`,
+            `勝者: ${winnerName}`,
+            `最終スコア: ${names[0]} ${record.scores[0]} - ${record.scores[1]} ${names[1]}`,
+            `ボーナス: ${names[0]} ${record.bonuses[0]} / ${names[1]} ${record.bonuses[1]}`,
+            `サイコロ: ${record.dice.map((die, index) => `${index + 1}列=${die}`).join(' / ')}`,
+            '',
+            '初期手札',
+            '--------',
+        ]
+        : [
+            'XY Poker Game Record',
+            '====================',
+            `Record ID: ${record.id}`,
+            `Mode: ${mode}`,
+            `Started: ${new Date(record.startedAt).toISOString()}`,
+            `Completed: ${new Date(record.completedAt).toISOString()}`,
+            `Players: P1 ${names[0]} / P2 ${names[1]}`,
+            `Winner: ${winnerName}`,
+            `Final score: ${names[0]} ${record.scores[0]} - ${record.scores[1]} ${names[1]}`,
+            `Bonuses: ${names[0]} ${record.bonuses[0]} / ${names[1]} ${record.bonuses[1]}`,
+            `Dice: ${record.dice.map((die, index) => `Column ${index + 1}=${die}`).join(' / ')}`,
+            '',
+            'Initial hands',
+            '-------------',
+        ];
+
+    if (record.schemaVersion === 2) {
+        lines.push(`P1 ${names[0]}: ${record.initialHands[0].map(formatExportCard).join(' ')}`);
+        lines.push(`P2 ${names[1]}: ${record.initialHands[1].map(formatExportCard).join(' ')}`);
+    } else {
+        lines.push(japanese ? 'この古い棋譜には手札データがありません。' : 'Hand data is unavailable in this legacy record.');
+    }
+
+    lines.push('', japanese ? '手順（1段目はサイコロ側）' : 'Moves (Row 1 is closest to the dice)', '------------------------');
+    for (const move of record.moves) {
+        const actor = names[move.playerIndex];
+        const visibility = move.card.isHidden
+            ? (japanese ? '伏せ札' : 'face down')
+            : (japanese ? '表向き' : 'face up');
+        const draw = record.schemaVersion === 2
+            ? record.moves[move.ply - 1].drawnCards.map(formatExportCard)
+            : [];
+        const placement = japanese
+            ? `${String(move.ply).padStart(2, '0')}. ${actor}: ${formatExportCard(move.card)} → ${move.column + 1}列・${move.row + 1}段（ダイス${record.dice[move.column]}、${visibility}）`
+            : `${String(move.ply).padStart(2, '0')}. ${actor}: ${formatExportCard(move.card)} → Column ${move.column + 1}, Row ${move.row + 1} (die ${record.dice[move.column]}, ${visibility})`;
+        const drawText = draw.length > 0
+            ? `${japanese ? ' / ドロー' : ' / Draw'}: ${draw.join(' ')}`
+            : '';
+        lines.push(`${placement}${drawText}`);
+    }
+
+    lines.push('', japanese ? '最終盤面（各行は左から1〜5列）' : 'Final board (each row is Columns 1–5)', '------------------------------');
+    for (const playerIndex of [0, 1] as const) {
+        lines.push(`P${playerIndex + 1} ${names[playerIndex]}`);
+        for (let row = 0; row < 3; row += 1) {
+            const cards = finalBoards[playerIndex][row].map(card => card ? formatExportCard(card) : '—').join(' | ');
+            lines.push(`${japanese ? `${row + 1}段` : `Row ${row + 1}`}: ${cards}`);
+        }
+    }
+
+    return `${lines.join('\n')}\n`;
+}
+
+export function getGameRecordExportFilename(record: GameRecordData): string {
+    const completed = new Date(record.completedAt);
+    const timestamp = Number.isNaN(completed.getTime())
+        ? 'unknown-date'
+        : completed.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z').replace('T', '-');
+    const shortId = record.id.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 8) || 'match';
+    return `xy-poker-record-${timestamp}-${shortId}.txt`;
 }
 
 export function getGameRecordResult(record: GameRecordData): 'win' | 'loss' | 'draw' {

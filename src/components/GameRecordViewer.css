@@ -48,6 +48,7 @@
 }
 
 .record-back-btn,
+.record-export-btn,
 .record-controls button {
     min-height: 34px;
     padding: 6px 9px;
@@ -63,7 +64,22 @@
     font-size: 0.7rem;
 }
 
+.record-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.record-export-btn {
+    min-height: 34px;
+    padding-inline: 8px;
+    color: #b8c9d8;
+    font-size: 0.66rem;
+    white-space: nowrap;
+}
+
 .record-back-btn:hover,
+.record-export-btn:hover,
 .record-controls button:hover:not(:disabled) {
     border-color: #607080;
     background: #1b222a;
@@ -246,7 +262,7 @@
 }
 
 .record-board-wrap .dice-row .dice {
-    font-size: clamp(10px, 4.2cqw, 18px) !important;
+    font-size: clamp(7px, 1.9cqw, 9px) !important;
 }
 
 .record-move-copy {
@@ -317,6 +333,12 @@
 
     .record-match-meta strong {
         font-size: 0.72rem;
+    }
+
+    .record-back-btn,
+    .record-export-btn {
+        padding-inline: 6px;
+        font-size: 0.62rem;
     }
 
     .record-hand-cards {

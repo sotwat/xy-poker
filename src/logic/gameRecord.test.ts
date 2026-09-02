@@ -8,8 +8,10 @@ import {
     buildReplayHands,
     captureGameRecordMoves,
     finalizeGameRecord,
+    getGameRecordExportFilename,
     getGameRecordResult,
     isGameRecordData,
+    serializeGameRecordText,
 } from './gameRecord';
 
 test('records placements and reconstructs the replay board', () => {
@@ -121,6 +123,19 @@ test('finalizes and validates a complete thirty-move game', () => {
     assert.deepEqual(replayBoards, state.players.map(player => player.board.map(row => row.map(card => card ? { ...card, isHidden: false } : null))));
     const replayHands = buildReplayHands(record, 30);
     assert.deepEqual(replayHands, state.players.map(player => player.hand));
+
+    const japaneseExport = serializeGameRecordText(record, 'ja');
+    assert.match(japaneseExport, /^XYポーカー 棋譜/m);
+    assert.match(japaneseExport, /サイコロ: 1列=6 \/ 2列=5 \/ 3列=4 \/ 4列=3 \/ 5列=2/);
+    assert.match(japaneseExport, /初期手札/);
+    assert.match(japaneseExport, /手順（1段目はサイコロ側）/);
+    assert.match(japaneseExport, /30\. /);
+    assert.match(japaneseExport, /最終盤面/);
+
+    const englishExport = serializeGameRecordText(record, 'en');
+    assert.match(englishExport, /^XY Poker Game Record/m);
+    assert.match(englishExport, /Moves \(Row 1 is closest to the dice\)/);
+    assert.match(getGameRecordExportFilename(record), /^xy-poker-record-20260901-001000Z-[a-zA-Z0-9_-]+\.txt$/);
 
     const invalidRecord = structuredClone(record);
     invalidRecord.moves[0].drawnCards = [{ ...invalidRecord.initialHands[1][0] }];

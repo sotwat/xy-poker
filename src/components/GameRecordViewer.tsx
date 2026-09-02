@@ -1,6 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import type { BoardSkin, Card as CardType, CardSkin, DiceSkin } from '../logic/types';
-import { buildReplayBoards, buildReplayHands, getGameRecordResult, type GameRecordData } from '../logic/gameRecord';
+import {
+    buildReplayBoards,
+    buildReplayHands,
+    getGameRecordExportFilename,
+    getGameRecordResult,
+    serializeGameRecordText,
+    type GameRecordData,
+} from '../logic/gameRecord';
 import { Card } from './Card';
 import { SharedBoard } from './SharedBoard';
 import './GameRecordViewer.css';
@@ -59,7 +66,7 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
     selectedCardSkin,
     selectedBoardSkin,
 }) => {
-    const { t, locale } = useI18n();
+    const { language, t, locale } = useI18n();
     const [moveCount, setMoveCount] = useState(record.moves.length);
 
     const boards = useMemo(() => buildReplayBoards(record, moveCount), [moveCount, record]);
@@ -88,10 +95,32 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
 
     const resultLabel = result === 'win' ? t('record.win') : result === 'loss' ? t('record.loss') : t('record.draw');
 
+    const exportAsText = () => {
+        const blob = new Blob(['\uFEFF', serializeGameRecordText(record, language)], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = getGameRecordExportFilename(record);
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    };
+
     return (
         <div className="record-viewer">
             <div className="record-viewer-header">
-                <button type="button" className="record-back-btn" onClick={onBack}>← {t('record.back')}</button>
+                <div className="record-header-actions">
+                    <button type="button" className="record-back-btn" onClick={onBack}>← {t('record.back')}</button>
+                    <button
+                        type="button"
+                        className="record-export-btn"
+                        onClick={exportAsText}
+                        aria-label={t('record.exportAria')}
+                    >
+                        ↓ {t('record.exportTxt')}
+                    </button>
+                </div>
                 <div className="record-match-meta">
                     <span className={`record-result record-result-${result}`}>{resultLabel}</span>
                     <strong>{viewerName} {t('common.vs')} {opponentName}</strong>
