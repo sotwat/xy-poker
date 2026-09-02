@@ -50,6 +50,15 @@
     animation: pulse 1s infinite;
 }
 
+.turn-timer.paused {
+    box-shadow: 0 0 0 1px rgba(242, 194, 75, 0.28), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.turn-timer.paused .timer-label,
+.turn-timer.paused .timer-value {
+    color: #f2c24b;
+}
+
 @keyframes pulse {
     0% {
         transform: scale(1);

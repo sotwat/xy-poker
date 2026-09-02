@@ -69,8 +69,8 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09021343` (2026-09-02 13:43)
-- **Status:** **Production deployment verified**
+- **Current Version:** `09022111` (2026-09-02 21:11)
+- **Status:** **Local quality gate in progress; production deployment pending**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 44 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~317 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09021343` live on Cloudflare Pages; Render API health normal
+    - Deployment: ⏳ `v09022111` deployment pending
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09022111** (2026-09-02): **AI-Only PRO Thought Pause** - Restricted the PRO reasoning journal to local AI matches in both the client and record validator. Opening it on the PRO player's turn now freezes the 60-second action timer at its current value, visibly marks the timer as paused, and resumes from the same value when the editor closes; online matches never expose or accept journal notes.
 1. **v09021343** (2026-09-02): **PRO Move-Reasoning Journal** - Added an in-match PRO-only thought editor that attaches up to 280 characters of strategic reasoning to the player’s next manual move. Notes are stored with the exact card, column, row, visibility, and draw in game-record schema v3; shown at the matching replay position; and included in localized TXT exports. Client and server validators reject notes on opponent moves, malformed text, legacy-schema injection, and oversized records, while cloud saves containing notes require a server-verified PRO profile. AUTO and timeout moves cannot inherit stale human notes.
 1. **v09021321** (2026-09-02): **Balanced Replay Dice & Text Export** - Reduced replay-only dice from 40–72 px to a compact responsive 28–36 px so the board’s cards and placements remain visually dominant without changing live-match dice. Added localized UTF-8 TXT exports containing match metadata, all five dice, both initial hands when available, every placement and draw, face-up/face-down history, bonuses, scores, and final boards. Legacy records remain exportable with unavailable hand data identified explicitly.
 1. **v09021311** (2026-09-02): **Column-Triage GTO A7** - Fixed a strategic inversion where stronger visible opponent columns received a larger unconditional contest bonus, causing the AI to feed scarce cards into likely-lost lanes. A7 applies a validated negative response pressure so it sacrifices bad matchups and concentrates cards on winnable dice. Independent 3,000-pair tests beat A6 on random, 66611, and 65421 boards with positive 95% lower bounds; a separate 10,000-pair audit measured +0.0505 utility and reduced 15-point blowout losses by about 19.6%. Two-seed, 1,000 ms search-versus-search regression finished 8-7-1 while maintaining 61.28/64 belief samples. Added reproducible A6/A7 generation selection and search-opponent benchmarking.

@@ -121,6 +121,9 @@ export function isValidGameRecord(record) {
         || !record.bonuses.every(bonus => Number.isInteger(bonus) && bonus >= 0 && bonus <= 5)) return false;
     if (!Array.isArray(record.moves) || record.moves.length !== 30) return false;
     if (JSON.stringify(record).length > 25_000) return false;
+    if (record.schemaVersion === 3
+        && record.mode !== 'bot'
+        && record.moves.some(move => move && typeof move === 'object' && 'thought' in move)) return false;
 
     const occupiedSlots = new Set();
     const usedCards = new Set();

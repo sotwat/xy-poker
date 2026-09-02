@@ -133,8 +133,13 @@ test('validates hand-aware version 2 game records', () => {
 
     const proRecord = structuredClone(record);
     proRecord.schemaVersion = 3;
+    proRecord.mode = 'bot';
     proRecord.moves[0].thought = '出目6を守りつつ、Qのストレート2経路を残す。';
     assert.equal(isValidGameRecord(proRecord), true);
+
+    const onlineThought = structuredClone(proRecord);
+    onlineThought.mode = 'ranked';
+    assert.equal(isValidGameRecord(onlineThought), false);
 
     const opponentThought = structuredClone(proRecord);
     opponentThought.moves[1].thought = '相手の思考を偽装';

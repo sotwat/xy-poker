@@ -6,17 +6,18 @@ interface TurnTimerProps {
     timeLeft: number;
     currentPlayerIndex: number; // 0 for P1 (Blue), 1 for P2 (Red)
     isMyTurn: boolean;
+    isPaused?: boolean;
     onResync?: () => void;
 }
 
-export const TurnTimer: React.FC<TurnTimerProps> = ({ timeLeft, currentPlayerIndex, isMyTurn, onResync }) => {
+export const TurnTimer: React.FC<TurnTimerProps> = ({ timeLeft, currentPlayerIndex, isMyTurn, isPaused = false, onResync }) => {
     const { t } = useI18n();
     const borderColor = currentPlayerIndex === 0 ? '#4da8da' : '#ff4d4d'; // Blue : Red
 
     return (
-        <div className={`turn-timer ${timeLeft <= 10 ? 'warning' : ''}`} style={{ borderColor }}>
+        <div className={`turn-timer ${!isPaused && timeLeft <= 10 ? 'warning' : ''} ${isPaused ? 'paused' : ''}`} style={{ borderColor }}>
             <div className="timer-label">
-                {isMyTurn ? t('timer.yourTurn') : t('timer.opponentTurn')}
+                {isPaused ? t('timer.thoughtPaused') : (isMyTurn ? t('timer.yourTurn') : t('timer.opponentTurn'))}
                 {!isMyTurn && onResync && (
                     <button
                         type="button"
@@ -28,7 +29,7 @@ export const TurnTimer: React.FC<TurnTimerProps> = ({ timeLeft, currentPlayerInd
                     </button>
                 )}
             </div>
-            <div className="timer-value">{timeLeft}s</div>
+            <div className="timer-value" aria-live="polite">{timeLeft}s</div>
         </div>
     );
 };

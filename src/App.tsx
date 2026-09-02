@@ -33,6 +33,10 @@ import {
   shouldProAutoChooseTurn,
   shouldProAutoPlace,
 } from './logic/proAuto';
+import {
+  canUseProThoughtJournal,
+  shouldPauseTurnTimerForProThought,
+} from './logic/proThought';
 import { generateRandomPlayerName } from './logic/nameGenerator';
 import { playClickSound, playSuccessSound, playCoinTossSound, playShowdownStinger, speakText, warmupAudio, initSpeech, unlockAudioContext } from './utils/sound';
 import { getBrowserId } from './utils/identity';
@@ -611,6 +615,18 @@ function App() {
   const currentPlayer = players[currentPlayerIndex];
   const myPlayerIndex = getControlledPlayerIndex(isOnlineGame, playerRole);
   const isProAutoActive = isPremium && isAutoPlay;
+  const canUseProThought = canUseProThoughtJournal({ isPremium, mode, phase });
+  const isTurnTimerPaused = shouldPauseTurnTimerForProThought({
+    isAvailable: canUseProThought,
+    isEditorOpen: isProThoughtEditorOpen,
+    currentPlayerIndex,
+    controlledPlayerIndex: myPlayerIndex,
+  });
+  const isTurnTimerPausedRef = useRef(isTurnTimerPaused);
+
+  useEffect(() => {
+    isTurnTimerPausedRef.current = isTurnTimerPaused;
+  }, [isTurnTimerPaused]);
 
   // Auto-Finish Logic
   useEffect(() => {
@@ -1076,6 +1092,7 @@ function App() {
     let remaining = 60;
     const resetTimer = window.setTimeout(() => setTimeLeft(remaining), 0);
     const timer = window.setInterval(() => {
+      if (isTurnTimerPausedRef.current) return;
       remaining -= 1;
       setTimeLeft(remaining);
       if (remaining <= 0) {
@@ -1396,7 +1413,7 @@ function App() {
     if (currentPlayerIndex !== myPlayerIndex) return;
     if (currentPlayer.board[2][colIndex] !== null) return;
 
-    if (isPremium && proThoughtDraft.trim()) {
+    if (canUseProThought && proThoughtDraft.trim()) {
       pendingGameThoughtRef.current = {
         playerIndex: myPlayerIndex,
         cardId: selectedCardId,
@@ -1622,6 +1639,7 @@ function App() {
                   <TurnTimer
                     timeLeft={timeLeft}
                     currentPlayerIndex={currentPlayerIndex}
+                    isPaused={isTurnTimerPaused}
                     isMyTurn={
                       (isOnlineGame && playerRole === 'host' && currentPlayerIndex === 0) ||
                       (isOnlineGame && playerRole === 'guest' && currentPlayerIndex === 1) ||
@@ -1772,7 +1790,7 @@ function App() {
                             <span>{t('home.support')}</span>
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09021343</div>
+                          <div className="home-version">v09022111</div>
                         </div>
                       </div>
                     )}
@@ -1897,7 +1915,7 @@ function App() {
                               <span style={{ marginLeft: '4px' }}>{t('game.faceDown', { count: 3 - currentPlayer.hiddenCardsCount })}</span>
                             </div>
                           </div>
-                          {isPremium && (
+                          {canUseProThought && (
                             <button
                               type="button"
                               className={`pro-thought-trigger ${proThoughtDraft ? 'has-draft' : ''}`}
@@ -1959,7 +1977,7 @@ function App() {
         </>
       )}
 
-      {isPremium && isProThoughtEditorOpen && phase === 'playing' && (
+      {canUseProThought && isProThoughtEditorOpen && (
         <div className="pro-thought-overlay" role="presentation" onMouseDown={(event) => {
           if (event.target === event.currentTarget) setIsProThoughtEditorOpen(false);
         }}>

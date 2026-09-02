@@ -159,6 +159,10 @@ test('finalizes and validates a complete thirty-move game', () => {
     opponentThought.moves.find(move => move.playerIndex === 1)!.thought = '相手の思考は記録できない';
     assert.equal(isGameRecordData(opponentThought), false);
 
+    const onlineThought = structuredClone(record);
+    onlineThought.mode = 'ranked';
+    assert.equal(isGameRecordData(onlineThought), false);
+
     const maximumNotes = structuredClone(record);
     for (const move of maximumNotes.moves.filter(move => move.playerIndex === maximumNotes.viewerPlayerIndex)) {
         move.thought = '戦'.repeat(MAX_GAME_RECORD_THOUGHT_LENGTH);
