@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 44 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~307 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: 🔄 `v09021311` deployment in progress
+    - Deployment: ✅ `v09021311` live on Cloudflare Pages; Render `/api/health` responding normally
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
