@@ -16,7 +16,8 @@ import {
 import type { Card, GameState, Rank, YHandType } from '../src/logic/types';
 
 type Policy = 'a3' | 'a4' | 'solver_base' | 'anchor_quarter' | 'anchor_half' | 'anchor_double'
-    | 'kicker_half' | 'kicker_double' | 'q_expendable' | 'q_guarded' | 'feature_half';
+    | 'kicker_half' | 'kicker_double' | 'q_expendable' | 'q_guarded' | 'feature_half'
+    | 'resource_half' | 'resource_one' | 'resource_two' | 'resource_four';
 
 interface GameResult {
     utility: -1 | 0 | 1;
@@ -98,6 +99,10 @@ function weightsFor(policy: Policy): Readonly<GtoPolicyWeights> {
         };
         case 'q_expendable': return { ...XY_GTO_A4, queenConservation: 0 };
         case 'q_guarded': return { ...XY_GTO_A4, queenConservation: 5 };
+        case 'resource_half': return { ...XY_GTO_A4, completionResourceConservation: 0.5 };
+        case 'resource_one': return { ...XY_GTO_A4, completionResourceConservation: 1 };
+        case 'resource_two': return { ...XY_GTO_A4, completionResourceConservation: 2 };
+        case 'resource_four': return { ...XY_GTO_A4, completionResourceConservation: 4 };
         default: return XY_GTO_A4;
     }
 }
@@ -270,6 +275,33 @@ function main(): void {
     const pairedDeals = readPositiveFlag('--deals', 2_000);
     const seed = readPositiveFlag('--seed', 0x4f50454e);
     const ranks = Array.from({ length: 13 }, (_, index) => index + 2 as Rank);
+    if (process.argv.includes('--resource-finalists')) {
+        const result = rounded({
+            schemaVersion: 1,
+            generatedAt: new Date().toISOString(),
+            method: 'paired seat/initial-hand comparison of cross-column completion-resource shadow pricing',
+            testedWeight: 2,
+            comparisons: {
+                randomVsA4: evaluatePolicies('resource_two', 'a4', null, pairedDeals, mixSeed(seed, 20)),
+                halfRandomVsA4: evaluatePolicies('resource_half', 'a4', null, pairedDeals, mixSeed(seed, 20)),
+                polarized66611VsA4: evaluatePolicies('resource_two', 'a4', [6, 6, 6, 1, 1], pairedDeals, mixSeed(seed, 21)),
+                halfPolarized66611VsA4: evaluatePolicies('resource_half', 'a4', [6, 6, 6, 1, 1], pairedDeals, mixSeed(seed, 21)),
+                spread65421VsA4: evaluatePolicies('resource_two', 'a4', [6, 5, 4, 2, 1], pairedDeals, mixSeed(seed, 22)),
+                halfSpread65421VsA4: evaluatePolicies('resource_half', 'a4', [6, 5, 4, 2, 1], pairedDeals, mixSeed(seed, 22)),
+                flat44444VsA4: evaluatePolicies('resource_two', 'a4', [4, 4, 4, 4, 4], pairedDeals, mixSeed(seed, 23)),
+                halfFlat44444VsA4: evaluatePolicies('resource_half', 'a4', [4, 4, 4, 4, 4], pairedDeals, mixSeed(seed, 23)),
+                randomVsHalf: evaluatePolicies('resource_two', 'resource_half', null, pairedDeals, mixSeed(seed, 24)),
+                randomVsFour: evaluatePolicies('resource_two', 'resource_four', null, pairedDeals, mixSeed(seed, 25)),
+            },
+            limitations: [
+                'This evaluates the deterministic policy prior, not the complete information-set rollout search.',
+                'Confidence intervals measure deal sampling only; they are not a proof of full-game exploitability.',
+            ],
+        });
+        writeFileSync('gto_resource_conservation_analysis.json', `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+        console.log(JSON.stringify(result, null, 2));
+        return;
+    }
     if (process.argv.includes('--finalists-only')) {
         const finalistSeed = mixSeed(seed, 0x46494e41);
         const result = rounded({

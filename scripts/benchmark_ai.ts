@@ -67,12 +67,12 @@ function readSearchMode(): { generalizedSearch: boolean; multiPolicyRollouts: bo
     if (mode === 'generalized') return {
         generalizedSearch: true,
         multiPolicyRollouts: true,
-        name: 'A5 generalized multi-policy search',
+        name: 'A6 generalized multi-policy search',
     };
     if (mode === 'broad') return {
         generalizedSearch: true,
         multiPolicyRollouts: false,
-        name: 'A5 broad-action single-policy search',
+        name: 'A6 broad-action single-policy search',
     };
     if (mode === 'single') return {
         generalizedSearch: false,

@@ -750,6 +750,7 @@ function main(): void {
                 openingAnchorEfficiency: round(profile.openingAnchorEfficiency ?? 0),
                 pureStraightKickerEfficiency: round(profile.pureStraightKickerEfficiency ?? 0),
                 queenConservation: round(profile.queenConservation ?? 0),
+                completionResourceConservation: round(profile.completionResourceConservation ?? 0),
                 temperature: round(profile.temperature),
             },
             equilibriumProbability: round(equilibrium.averageStrategy[index]),

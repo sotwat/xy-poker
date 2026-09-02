@@ -13,6 +13,7 @@ import {
     analyzeOpeningRank,
     analyzePureStraightPlan,
     analyzeDiceBoard,
+    completionResourceOpportunityCost,
     getGtoHideProbability,
     getGtoTurnOrderScore,
     scoreGtoMove,
@@ -20,6 +21,7 @@ import {
     XY_GTO_A2,
     XY_GTO_A3,
     XY_GTO_A4,
+    XY_GTO_A6,
 } from './gtoPolicy';
 import type { Card, GameState } from './types';
 
@@ -209,6 +211,23 @@ test('A4 charges the cross-column opportunity cost of spending a Q on trips', ()
     assert.ok(scoreGtoMove(state, 0, queen, 1, XY_GTO_A4)
         > scoreGtoMove(state, 0, queen, 0, XY_GTO_A4));
     assert.equal(XY_GTO_A3.queenConservation, undefined);
+});
+
+test('A6 preserves a uniquely strong completion card for another Y column', () => {
+    const base = startedState([4, 4, 4, 4, 4]);
+    const board = base.players[0].board.map(row => [...row]);
+    board[0][1] = { id: 'five', rank: 5, suit: 'hearts' };
+    board[1][1] = { id: 'six', rank: 6, suit: 'clubs' };
+    const seven = { id: 'seven', rank: 7, suit: 'spades' } as Card;
+    const king = { id: 'king', rank: 13, suit: 'diamonds' } as Card;
+    const player = { ...base.players[0], board, hand: [seven, king] };
+    const state = { ...base, players: [player, base.players[1]] } as GameState;
+
+    assert.ok(completionResourceOpportunityCost(player, seven, 0) > 3);
+    assert.equal(completionResourceOpportunityCost(player, seven, 1), 0);
+    assert.ok(scoreGtoMove(state, 0, seven, 0, XY_GTO_A6)
+        < scoreGtoMove(state, 0, seven, 0, XY_GTO_A4));
+    assert.equal(XY_GTO_A6.completionResourceConservation, 2);
 });
 
 test('A3 invests in a secured pure straight where A2 overvalues a lower pure pair', () => {

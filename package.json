@@ -21,6 +21,7 @@
     "analyze:gto-dice": "tsx scripts/analyze_dice_regimes.ts",
     "analyze:gto-hands": "tsx scripts/analyze_hand_efficiency.ts",
     "analyze:gto-openings": "tsx scripts/analyze_opening_efficiency.ts",
+    "analyze:gto-resources": "tsx scripts/analyze_opening_efficiency.ts --resource-finalists",
     "benchmark:ai": "tsx scripts/benchmark_ai.ts"
   },
   "dependencies": {

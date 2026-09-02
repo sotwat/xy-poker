@@ -7,6 +7,7 @@ import {
     XY_GTO_A3,
     XY_GTO_A4,
     XY_GTO_A4_SOLVER_BASE,
+    XY_GTO_A6,
     type GtoPolicyWeights,
 } from './gtoPolicy';
 import type { Card, GameState } from './types';
@@ -76,10 +77,10 @@ interface RolloutProfile {
 }
 
 const ROLLOUT_PROFILES: readonly RolloutProfile[] = [
+    { opponentWeights: XY_GTO_A6, opponentTemperature: 0 },
     { opponentWeights: XY_GTO_A4, opponentTemperature: 0 },
     { opponentWeights: XY_GTO_A4_SOLVER_BASE, opponentTemperature: 0 },
     { opponentWeights: XY_GTO_A3, opponentTemperature: 0 },
-    { opponentWeights: XY_GTO_A4, opponentTemperature: 0.22 },
 ];
 
 let lastDecisionDiagnostics: AiDecisionDiagnostics = {
@@ -313,7 +314,7 @@ function candidateRolloutObjective(
 function enumeratePlacements(
     state: GameState,
     playerIndex: 0 | 1,
-    weights: Readonly<GtoPolicyWeights> = XY_GTO_A4,
+    weights: Readonly<GtoPolicyWeights> = XY_GTO_A6,
 ): ScoredMove[] {
     const player = state.players[playerIndex];
     const moves: ScoredMove[] = [];
@@ -425,7 +426,7 @@ function selectRolloutMove(
     random: () => number,
 ): { cardId: string; colIndex: number; isHidden: boolean } {
     const isRootPlayer = playerIndex === rootPlayerIndex;
-    const weights = isRootPlayer ? XY_GTO_A4 : profile.opponentWeights;
+    const weights = isRootPlayer ? XY_GTO_A6 : profile.opponentWeights;
     const temperature = isRootPlayer ? 0.08 : profile.opponentTemperature;
     const placements = enumeratePlacements(state, playerIndex, weights);
     const shortlist = placements.slice(0, 4);

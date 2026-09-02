@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-02T03:19:00.000Z",
+  "method": "paired seat and initial-hand runtime benchmark",
+  "opponent": "XY-GTO-A4 one-step policy",
+  "search": "XY-GTO-A6 broad-action single-policy information-set search",
+  "dice": "random",
+  "pairedDeals": 4,
+  "games": 8,
+  "rolloutWins": 5,
+  "policyWins": 2,
+  "draws": 1,
+  "rolloutScore": 0.6875,
+  "meanUtility": 0.375,
+  "averageScoreDifference": 4.625,
+  "averageDecisionMs": 551.61315,
+  "p90DecisionMs": 989.310334,
+  "averageCompletedBeliefSamples": 61.141667,
+  "minimumCompletedBeliefSamples": 35,
+  "requestedBeliefSamples": 64,
+  "timeBudgetMs": 1000,
+  "limitations": [
+    "Eight games are a runtime regression sample, not a statistically precise win-rate estimate.",
+    "The opponent is the frozen A4 one-step policy, not an exhaustive best response."
+  ]
+}

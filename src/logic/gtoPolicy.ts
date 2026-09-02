@@ -20,6 +20,8 @@ export interface GtoPolicyWeights {
     pureStraightKickerEfficiency?: number;
     /** Opportunity cost of spending a queen away from an available first-row anchor. */
     queenConservation?: number;
+    /** Shadow price of consuming the best held completion for another Y column. */
+    completionResourceConservation?: number;
 }
 
 /** The original policy-space equilibrium retained as a reproducible baseline. */
@@ -79,6 +81,12 @@ export const XY_GTO_A4: Readonly<GtoPolicyWeights> = Object.freeze({
     openingAnchorEfficiency: 0.45,
     pureStraightKickerEfficiency: 1,
     queenConservation: 3,
+});
+
+/** Cross-column resource policy used as the prior and rollout policy for A6. */
+export const XY_GTO_A6: Readonly<GtoPolicyWeights> = Object.freeze({
+    ...XY_GTO_A4,
+    completionResourceConservation: 2,
 });
 
 export interface DiceBoardMetrics {
@@ -416,7 +424,70 @@ function compareCompletedY(ownCards: Card[], opponentCards: Card[]): number {
     return 0;
 }
 
-export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A4): number {
+function yHandUtility(cards: Card[]): number {
+    const result = evaluateYHand(cards, 1);
+    const kicker = result.kickers.reduce(
+        (value, rank, index) => value + rank / (14 * 10 ** index),
+        0,
+    );
+    return result.rankValue + kicker * 0.08;
+}
+
+interface CompletionResourceProfile {
+    bestCardId: string;
+    bestValue: number;
+    secondBestValue: number;
+}
+
+const completionResourceCache = new WeakMap<PlayerState, Array<CompletionResourceProfile | null>>();
+
+function getCompletionResourceProfiles(player: PlayerState): Array<CompletionResourceProfile | null> {
+    const cached = completionResourceCache.get(player);
+    if (cached) return cached;
+    const profiles = Array.from({ length: 5 }, (_, column) => {
+        const columnCards = player.board
+            .map(row => row[column])
+            .filter((candidate): candidate is Card => candidate !== null);
+        if (columnCards.length !== 2 || player.hand.length === 0) return null;
+        const ranked = player.hand
+            .map(candidate => ({
+                cardId: candidate.id,
+                value: yHandUtility([...columnCards, candidate]),
+            }))
+            .sort((left, right) => right.value - left.value);
+        return {
+            bestCardId: ranked[0].cardId,
+            bestValue: ranked[0].value,
+            secondBestValue: ranked[1]?.value ?? 0,
+        };
+    });
+    completionResourceCache.set(player, profiles);
+    return profiles;
+}
+
+/**
+ * Exact, local-to-the-information-set shadow price for a card in hand. Only
+ * immediate two-card columns are used: their completion value is fully known,
+ * cheap to enumerate, and does not assume which unseen cards will be drawn.
+ */
+export function completionResourceOpportunityCost(
+    player: PlayerState,
+    card: Card,
+    destinationColumn: number,
+): number {
+    let weightedLoss = 0;
+    const profiles = getCompletionResourceProfiles(player);
+    for (let column = 0; column < 5; column++) {
+        if (column === destinationColumn) continue;
+        const profile = profiles[column];
+        if (!profile || profile.bestCardId !== card.id) continue;
+        weightedLoss += Math.max(0, profile.bestValue - profile.secondBestValue)
+            * player.dice[column] / 6;
+    }
+    return weightedLoss;
+}
+
+export function getGtoTurnOrderScore(player: PlayerState, weights = XY_GTO_A6): number {
     const ranks = player.hand.map(card => card.rank);
     const duplicateCards = ranks.length - new Set(ranks).size;
     const highCards = ranks.filter(rank => rank >= 11).length;
@@ -440,7 +511,7 @@ export function scoreGtoMove(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A4,
+    weights = XY_GTO_A6,
 ): number {
     const player = state.players[playerIndex];
     const opponent = state.players[1 - playerIndex];
@@ -484,6 +555,13 @@ export function scoreGtoMove(
             * (1 + queensAlreadyInColumn * 0.7)
             * (pureRouteUse ? 1.1 : 4)
         : 0;
+    const conservationWeight = weights.completionResourceConservation ?? 0;
+    const completionOpportunityCost = (conservationWeight === 0
+        ? 0
+        : completionResourceOpportunityCost(player, card, column) * conservationWeight)
+        // On polarized boards, finishing the cheap column for a bonus draw can
+        // dominate preserving a known completion elsewhere (e.g. 66611).
+        * (1 - rushPotential * 0.85);
 
     const bottomCards = player.board[2].filter((value): value is Card => value !== null);
     const xValue = row === 2
@@ -521,7 +599,7 @@ export function scoreGtoMove(
     return yValue + pureStraightValue + openingAnchorValue + xValue + tempoValue + progressValue
         + rushPlanValue + flexibilityValue
         + showdownValue + responseValue + resourceAlignmentValue
-        - row3Penalty - lowDiceHighCardCost - queenOpportunityCost;
+        - row3Penalty - lowDiceHighCardCost - queenOpportunityCost - completionOpportunityCost;
 }
 
 export function getGtoHideProbability(
@@ -529,7 +607,7 @@ export function getGtoHideProbability(
     playerIndex: 0 | 1,
     card: Card,
     column: number,
-    weights = XY_GTO_A4,
+    weights = XY_GTO_A6,
 ): number {
     const player = state.players[playerIndex];
     if (player.hiddenCardsCount >= 3) return 0;
