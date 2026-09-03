@@ -1,5 +1,19 @@
 import { lazy, Suspense, useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import {
+  ArrowRight,
+  BookOpen,
+  Bot,
+  Dices,
+  HeartHandshake,
+  Languages,
+  Maximize2,
+  MessageCircle,
+  Minimize2,
+  Palette,
+  Swords,
+  UserRound,
+} from 'lucide-react';
 import { gameReducer, INITIAL_GAME_STATE, type GameAction } from './logic/game';
 import { evaluateYHand, evaluateXHand } from './logic/evaluation';
 import { calculateXHandScores } from './logic/scoring';
@@ -112,6 +126,14 @@ type FullscreenElement = HTMLElement & {
 };
 
 const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000;
+
+const HOME_PREVIEW_COLUMNS = [
+  { die: 6, top: ['Q', '♦', 'blue'], bottom: ['10', '♣', 'green'] },
+  { die: 5, top: ['A', '♣', 'green'], bottom: ['9', '♠', 'black'] },
+  { die: 4, top: ['J', '♥', 'red'], bottom: ['8', '♦', 'blue'] },
+  { die: 3, top: ['4', '♠', 'black'], bottom: ['7', '♥', 'red'] },
+  { die: 2, top: ['2', '♦', 'blue'], bottom: ['3', '♣', 'green'] },
+] as const;
 
 function readStoredJson<T>(key: string, fallback: T): T {
   try {
@@ -747,14 +769,10 @@ function App() {
     }
   }, [gameState, handleChooseTurnOrder, myPlayerIndex, turnSelectionTimeLeft]);
 
-  // Determine if we are in the Lobby view (where version and title inputs are shown)
-  // Lobby view is:
-  // 1. Local mode AND Setup phase
-  // 2. Online mode AND Not in a game AND Not waiting for Quick Match
-  // Note: Quick Match waiting screen is NOT the lobby.
-  // Lobby view is ONLY for Online mode initialization
-  // Local mode setup is handled by the game board view (with setup overlay)
+  // Online lobby controls which branch is rendered; the broader lobby surface also
+  // includes the local home so it can use the wide, headerless responsive shell.
   const isLobbyView = mode === 'online' && !isOnlineGame && !isQuickMatch;
+  const isHomeView = mode === 'local' && phase === 'setup' && !isQuickMatch;
   const p1DisplayName = isOnlineGame && playerRole === 'guest' ? opponentName : playerName;
   const p2DisplayName = isOnlineGame && playerRole === 'guest' ? playerName : opponentName;
 
@@ -1534,7 +1552,7 @@ function App() {
   };
 
   return (
-    <div className={`app ${isLobbyView ? 'view-lobby' : 'view-game'} phase-${phase} ${phase === 'scoring' ? 'showdown-active' : ''}`}>
+    <div className={`app ${(isLobbyView || isHomeView) ? 'view-lobby' : 'view-game'} phase-${phase} ${phase === 'scoring' ? 'showdown-active' : ''}`}>
 
       {/* 先攻・後攻 アナウンスオーバーレイ */}
       {turnAnnounce && (
@@ -1563,7 +1581,7 @@ function App() {
           onClick={toggleFullscreen}
           aria-label={t('home.fullscreen')}
         >
-          {isFullscreen ? '⊠' : '⛶'}
+          {isFullscreen ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
         </button>
 
         {/* Auth Button (Top Right) */}
@@ -1709,82 +1727,135 @@ function App() {
                       </div>
                     ) : (
                       <div className="lobby-home">
-                        <div className="home-player-bar">
-                          <div className="home-player-copy">
-                            <span className="home-eyebrow">{t('home.playerLabel')}</span>
-                            <strong>{playerName || t('common.guest')}</strong>
-                            {session?.user.email && (
-                              <span className="home-player-email" title={session.user.email}>
-                                {session.user.email}
-                              </span>
-                            )}
-                            <span className="home-player-id">
-                              {session ? `ID ${session.user.id.slice(0, 8)}` : t('common.localGuest')}
-                            </span>
+                        <header className="home-brandbar">
+                          <div className="home-wordmark" aria-label="XY Poker">
+                            <span className="home-wordmark-symbol" aria-hidden="true">XY</span>
+                            <span>Poker</span>
                           </div>
-                          <div className="home-rating" aria-label={`${t('common.rating')} ${myRating || 1500}`}>
-                            <span>{t('common.rating')}</span>
-                            <strong>{myRating || 1500}</strong>
-                          </div>
-                        </div>
+                          <button
+                            type="button"
+                            className="home-account-quick"
+                            onClick={() => {
+                              playClickSound();
+                              if (session) setShowMyPage(true);
+                              else setShowAuthModal(true);
+                            }}
+                          >
+                            <UserRound aria-hidden="true" />
+                            <span>{session ? t('common.account') : t('common.signIn')}</span>
+                          </button>
+                        </header>
 
-                        <section className="home-intro" aria-labelledby="home-title">
-                          <span className="home-kicker">{t('home.cardDiceStrategy')}</span>
-                          <h2 id="home-title">XY Poker</h2>
-                          <p>{t('home.description')}</p>
-                          <div className="home-meta" aria-label={t('home.overview')}>
-                            <span>{t('home.twoPlayers')}</span>
-                            <span>{t('home.fiveColumns')}</span>
-                            <span>{t('home.quickMatches')}</span>
+                        <section className="home-stage" aria-labelledby="home-title">
+                          <div className="home-intro">
+                            <span className="home-kicker">
+                              <Dices aria-hidden="true" />
+                              {t('home.cardDiceStrategy')}
+                            </span>
+                            <h2 id="home-title">XY Poker</h2>
+                            <p>{t('home.description')}</p>
+                            <div className="home-meta" aria-label={t('home.overview')}>
+                              <span>{t('home.twoPlayers')}</span>
+                              <span>{t('home.fiveColumns')}</span>
+                              <span>{t('home.quickMatches')}</span>
+                            </div>
+                          </div>
+
+                          <div className="home-table-preview" aria-hidden="true">
+                            <div className="home-table-score">
+                              <span className="preview-player preview-player-blue">Y</span>
+                              <span>5 × 5</span>
+                              <span className="preview-player preview-player-red">X</span>
+                            </div>
+                            <div className="home-preview-grid">
+                              {HOME_PREVIEW_COLUMNS.map((column) => (
+                                <div className="home-preview-column" key={column.die}>
+                                  <span className={`preview-card suit-${column.top[2]}`}>
+                                    {column.top[0]}<small>{column.top[1]}</small>
+                                  </span>
+                                  <span className="preview-slot" />
+                                  <span className="preview-die">{column.die}</span>
+                                  <span className="preview-slot" />
+                                  <span className={`preview-card suit-${column.bottom[2]}`}>
+                                    {column.bottom[0]}<small>{column.bottom[1]}</small>
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </section>
 
-                        <div className="lobby-actions-panel">
-                          <button
-                            type="button"
-                            className="quest-btn-primary"
-                            onClick={() => {
-                              setIsAutoPlay(false);
-                              playClickSound();
-                              handleStartGame();
-                            }}
-                          >
-                            <span className="quest-tag">{t('home.playNow')}</span>
-                            <span className="quest-title">{t('home.playAi')}</span>
-                            <span className="quest-arrow" aria-hidden="true">→</span>
-                          </button>
+                        <aside className="home-command" aria-label={t('home.playNow')}>
+                          <div className="home-player-bar">
+                            <div className="home-player-copy">
+                              <span className="home-eyebrow">{t('home.playerLabel')}</span>
+                              <strong>{playerName || t('common.guest')}</strong>
+                              {session?.user.email && (
+                                <span className="home-player-email" title={session.user.email}>
+                                  {session.user.email}
+                                </span>
+                              )}
+                              <span className="home-player-id">
+                                {session ? `ID ${session.user.id.slice(0, 8)}` : t('common.localGuest')}
+                              </span>
+                            </div>
+                            <div className="home-rating" aria-label={`${t('common.rating')} ${myRating || 1500}`}>
+                              <span>{t('common.rating')}</span>
+                              <strong>{myRating || 1500}</strong>
+                            </div>
+                          </div>
 
-                          <button
-                            type="button"
-                            className="quest-btn-secondary"
-                            onClick={() => {
-                              playClickSound();
-                              setMode('online');
-                              setIsOnlineGame(false);
-                              setIsQuickMatch(false);
-                            }}
-                          >
-                            <span>
-                              <small>{t('home.playWithOthers')}</small>
-                              {t('home.onlineMatch')}
-                            </span>
-                            <span aria-hidden="true">→</span>
-                          </button>
-                        </div>
+                          <div className="lobby-actions-panel">
+                            <button
+                              type="button"
+                              className="quest-btn-primary"
+                              onClick={() => {
+                                setIsAutoPlay(false);
+                                playClickSound();
+                                handleStartGame();
+                              }}
+                            >
+                              <Bot aria-hidden="true" />
+                              <span>
+                                <small className="quest-tag">{t('home.playNow')}</small>
+                                <span className="quest-title">{t('home.playAi')}</span>
+                              </span>
+                              <ArrowRight className="quest-arrow" aria-hidden="true" />
+                            </button>
+
+                            <button
+                              type="button"
+                              className="quest-btn-secondary"
+                              onClick={() => {
+                                playClickSound();
+                                setMode('online');
+                                setIsOnlineGame(false);
+                                setIsQuickMatch(false);
+                              }}
+                            >
+                              <Swords aria-hidden="true" />
+                              <span>
+                                <small>{t('home.playWithOthers')}</small>
+                                <span>{t('home.onlineMatch')}</span>
+                              </span>
+                              <ArrowRight aria-hidden="true" />
+                            </button>
+                          </div>
+                        </aside>
 
                         <nav className="lobby-footer-tabs" aria-label={t('home.menu')}>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             setShowSkinStore(true);
                           }}>
-                            <span className="tab-index">01</span>
+                            <Palette aria-hidden="true" />
                             <span className="tab-label">{t('home.skins')}</span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             setShowRules(true);
                           }}>
-                            <span className="tab-index">02</span>
+                            <BookOpen aria-hidden="true" />
                             <span className="tab-label">{t('home.rules')}</span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
@@ -1792,20 +1863,21 @@ function App() {
                             if (session) setShowMyPage(true);
                             else setShowAuthModal(true);
                           }}>
-                            <span className="tab-index">03</span>
+                            <UserRound aria-hidden="true" />
                             <span className="tab-label">{t('common.account')}</span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             setShowContactModal(true);
                           }}>
-                            <span className="tab-index">04</span>
+                            <MessageCircle aria-hidden="true" />
                             <span className="tab-label">{t('home.feedback')}</span>
                           </button>
                         </nav>
 
                         <div className="home-support-row">
                           <label className="home-language-select">
+                            <Languages aria-hidden="true" />
                             <span>{t('language.label')}</span>
                             <select
                               value={language}
@@ -1827,10 +1899,10 @@ function App() {
                             aria-label={t('home.supportAria')}
                             onClick={playClickSound}
                           >
+                            <HeartHandshake aria-hidden="true" />
                             <span>{t('home.support')}</span>
-                            <span aria-hidden="true">↗</span>
                           </a>
-                          <div className="home-version">v09031151</div>
+                          <div className="home-version">v09031259</div>
                         </div>
                       </div>
                     )}

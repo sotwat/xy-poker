@@ -35,14 +35,14 @@
 
 .record-match-meta strong {
     overflow: hidden;
-    color: #f5f7fa;
+    color: var(--text);
     font-size: 0.82rem;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .record-viewer-header time {
-    color: #87909c;
+    color: var(--text-muted);
     font-size: 0.64rem;
     white-space: nowrap;
 }
@@ -52,11 +52,28 @@
 .record-controls button {
     min-height: 34px;
     padding: 6px 9px;
-    border: 1px solid #39424d;
+    border: 1px solid var(--border);
     border-radius: 7px;
-    color: #dbe1e8;
-    background: #151a20;
+    color: var(--text-secondary);
+    background: var(--surface);
     cursor: pointer;
+}
+
+.record-back-btn,
+.record-export-btn,
+.record-controls button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.record-back-btn svg,
+.record-export-btn svg,
+.record-controls button svg {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
 }
 
 .record-back-btn {
@@ -73,7 +90,7 @@
 .record-export-btn {
     min-height: 34px;
     padding-inline: 8px;
-    color: #b8c9d8;
+    color: var(--text-secondary);
     font-size: 0.66rem;
     white-space: nowrap;
 }
@@ -81,8 +98,8 @@
 .record-back-btn:hover,
 .record-export-btn:hover,
 .record-controls button:hover:not(:disabled) {
-    border-color: #607080;
-    background: #1b222a;
+    border-color: var(--border-strong);
+    background: var(--surface-hover);
 }
 
 .record-controls button:disabled {
@@ -99,9 +116,9 @@
     letter-spacing: 0.08em;
 }
 
-.record-result-win { color: #a8dfbd; background: #183428; }
-.record-result-loss { color: #efb1b1; background: #3a2022; }
-.record-result-draw { color: #c4cad1; background: #30363d; }
+.record-result-win { color: #147a48; background: #e6f4ec; }
+.record-result-loss { color: #c7253d; background: #fbeaec; }
+.record-result-draw { color: #536171; background: #e5e9ed; }
 
 .record-scoreline {
     min-width: 0;
@@ -109,7 +126,7 @@
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     gap: 8px;
-    color: #7f8994;
+    color: var(--text-muted);
     font-size: 0.7rem;
     text-align: center;
 }
@@ -118,7 +135,7 @@
 .record-scoreline > span:last-child { text-align: left; }
 
 .record-scoreline strong {
-    color: #f5f7fa;
+    color: var(--text);
     font-size: 1rem;
 }
 
@@ -136,14 +153,14 @@
     display: grid;
     gap: 4px;
     padding: 5px 7px 6px;
-    border: 1px solid #29313a;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: #0f1419;
+    background: #f6f8f9;
 }
 
 .record-hand-panel.is-next {
-    border-color: rgb(255 255 255 / 28%);
-    background: #131a21;
+    border-color: rgb(20 110 245 / 42%);
+    background: var(--accent-soft);
 }
 
 .record-hand-heading {
@@ -152,13 +169,13 @@
     grid-template-columns: auto minmax(0, 1fr) auto auto;
     align-items: center;
     gap: 6px;
-    color: #77828d;
+    color: var(--text-muted);
     font-size: 0.58rem;
 }
 
 .record-hand-heading strong {
     overflow: hidden;
-    color: #dce2e8;
+    color: var(--text);
     font-size: 0.68rem;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -167,8 +184,8 @@
 .record-hand-heading em {
     padding: 2px 5px;
     border-radius: 999px;
-    color: #dfe8f2;
-    background: #28323d;
+    color: var(--accent);
+    background: #fff;
     font-size: 0.52rem;
     font-style: normal;
     font-weight: 800;
@@ -213,10 +230,10 @@
 
 .record-hands-unavailable {
     padding: 8px 10px;
-    border: 1px solid #3b3327;
+    border: 1px solid #ead9a3;
     border-radius: 8px;
-    color: #c9b99e;
-    background: #1b1813;
+    color: #775d16;
+    background: #fff9e9;
     font-size: 0.67rem;
     text-align: center;
 }
@@ -230,9 +247,9 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border: 1px solid #303842;
+    border: 1px solid var(--border);
     border-radius: 9px;
-    background: #0c1014;
+    background: #edf1f3;
 }
 
 .record-board-wrap .shared-board {
@@ -271,13 +288,13 @@
     align-content: center;
     gap: 3px;
     padding: 7px 9px;
-    border: 1px solid #303842;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: #11161b;
+    background: #f6f8f9;
 }
 
 .record-move-copy span {
-    color: #6f7b87;
+    color: var(--text-muted);
     font-size: 0.57rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -285,7 +302,7 @@
 
 .record-move-copy strong {
     overflow-wrap: anywhere;
-    color: #dce2e8;
+    color: var(--text);
     font-size: 0.7rem;
     font-weight: 600;
 }
@@ -297,20 +314,31 @@
     align-items: start;
     gap: 8px;
     padding: 8px 9px;
-    border: 1px solid #544923;
+    border: 1px solid #ead9a3;
     border-radius: 8px;
-    color: #e9ddb7;
-    background: #1c1911;
+    color: #624d15;
+    background: #fff9e9;
 }
 
 .record-thought-note > span {
     padding: 2px 5px;
     border-radius: 4px;
-    color: #17140b;
-    background: #e6b65c;
+    color: #624d15;
+    background: #f2df9f;
     font-size: 0.52rem;
     font-weight: 900;
     letter-spacing: 0.08em;
+}
+
+.record-thought-note > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.record-thought-note > span svg {
+    width: 12px;
+    height: 12px;
 }
 
 .record-thought-note > div {
@@ -327,7 +355,7 @@
 .record-thought-note p {
     margin: 0;
     overflow-wrap: anywhere;
-    color: #d8d1bd;
+    color: #6d5c2c;
     font-size: 0.68rem;
     line-height: 1.45;
     white-space: pre-wrap;
@@ -342,7 +370,7 @@
     border: 0 !important;
     background: transparent !important;
     box-sizing: border-box;
-    accent-color: #7d95ad;
+    accent-color: var(--accent);
 }
 
 .record-controls {

@@ -30,6 +30,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",
     "express": "^5.2.1",
+    "lucide-react": "^1.39.0",
     "react": "^19.2.0",
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.0",

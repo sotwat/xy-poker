@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ArrowLeft, ArrowRight, Copy, KeyRound, Swords, UserRound, Users, Zap } from 'lucide-react';
 import { playClickSound } from '../utils/sound';
 import { useI18n } from '../i18n';
 import './Lobby.css';
@@ -47,18 +48,22 @@ export const Lobby: React.FC<LobbyProps> = ({
     if (!isConnected) {
         return (
             <div className="lobby-container online-lobby">
-                <div className="lobby-top-bar">
-                    <div className="player-rank-badge">
-                        <span className="rank-label">{t('lobby.rank')}</span>
-                        <span className="rank-value">??</span>
-                    </div>
+                <div className="lobby-top-bar-online">
+                    <button type="button" className="back-btn" onClick={() => { playClickSound(); if (onBack) onBack(); }}>
+                        <ArrowLeft aria-hidden="true" />
+                        <span>{t('common.back')}</span>
+                    </button>
                     <div className="player-meta-info-online">
-                        <span className="player-display-name">{t('lobby.connecting')}</span>
+                        <span className="player-display-name">{playerName || t('common.guest')}</span>
+                        <span className="player-rating-badge">{t('common.rating')} {rating ?? 1500}</span>
                     </div>
                 </div>
-                <div className="waiting-room glass-panel">
+                <div className="waiting-room connection-room">
                     <div className="loading-spinner"></div>
-                    <p>{t('lobby.connectingServer')}</p>
+                    <div>
+                        <h3>{t('lobby.connecting')}</h3>
+                        <p>{t('lobby.connectingServer')}</p>
+                    </div>
                 </div>
             </div>
         );
@@ -68,7 +73,8 @@ export const Lobby: React.FC<LobbyProps> = ({
         <div className="lobby-container online-lobby">
             <div className="lobby-top-bar-online">
                 <button type="button" className="back-btn" onClick={() => { playClickSound(); if (onBack) onBack(); }}>
-                    <span aria-hidden="true">←</span> {t('common.back')}
+                    <ArrowLeft aria-hidden="true" />
+                    <span>{t('common.back')}</span>
                 </button>
                 <div className="player-meta-info-online">
                     <span className="player-display-name">{playerName || t('common.guest')}</span>
@@ -78,13 +84,13 @@ export const Lobby: React.FC<LobbyProps> = ({
 
             <div className="online-lobby-content glass-panel">
                 <div className="online-lobby-heading">
-                    <span className="home-kicker">{t('lobby.multiplayer')}</span>
+                    <span className="home-kicker"><Swords aria-hidden="true" />{t('lobby.multiplayer')}</span>
                     <h3 className="section-title">{t('lobby.title')}</h3>
                     <p>{t('lobby.description')}</p>
                 </div>
 
                 <div className="lobby-field-row">
-                    <label htmlFor="playerName">{t('lobby.displayName')}</label>
+                    <label htmlFor="playerName"><UserRound aria-hidden="true" />{t('lobby.displayName')}</label>
                     <input
                         id="playerName"
                         type="text"
@@ -101,9 +107,12 @@ export const Lobby: React.FC<LobbyProps> = ({
                         className="quest-btn-primary" 
                         onClick={() => { playClickSound(); onQuickMatch(); }}
                     >
-                        <span className="quest-tag">{t('lobby.ranked')}</span>
-                        <span className="quest-title">{t('lobby.find')}</span>
-                        <span className="quest-arrow" aria-hidden="true">→</span>
+                        <Zap aria-hidden="true" />
+                        <span>
+                            <small className="quest-tag">{t('lobby.ranked')}</small>
+                            <span className="quest-title">{t('lobby.find')}</span>
+                        </span>
+                        <ArrowRight className="quest-arrow" aria-hidden="true" />
                     </button>
                     <p className="hint-text">{t('lobby.ratingHint')}</p>
                 </div>
@@ -115,7 +124,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 {!roomId ? (
                     <div className="room-actions-grid">
                         <div className="action-card-secondary">
-                            <h4>{t('lobby.create')}</h4>
+                            <h4><Users aria-hidden="true" />{t('lobby.create')}</h4>
                             <p className="card-desc">{t('lobby.createDescription')}</p>
                             <button 
                                 type="button"
@@ -127,7 +136,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         </div>
 
                         <div className="action-card-secondary">
-                            <h4>{t('lobby.join')}</h4>
+                            <h4><KeyRound aria-hidden="true" />{t('lobby.join')}</h4>
                             <p className="card-desc">{t('lobby.joinDescription')}</p>
                             <input
                                 type="text"
@@ -162,6 +171,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                                     className="copy-id-btn"
                                     onClick={copyRoomId}
                                 >
+                                    <Copy aria-hidden="true" />
                                     {copyStatus === 'copied' ? t('lobby.copied') : copyStatus === 'failed' ? t('common.retry') : t('lobby.copy')}
                                 </button>
                             )}

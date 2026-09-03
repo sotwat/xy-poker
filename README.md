@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09031151` (2026-09-03 11:51)
+- **Current Version:** `09031259` (2026-09-03 12:59)
 - **Status:** **Production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 57 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~323 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09031151` live on Cloudflare Pages; locked/unlocked achievement catalog assets verified; Render API health normal
+    - Deployment: ✅ `v09031259` prepared for Cloudflare Pages; responsive light UI verified locally; Render API health normal
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09031259** (2026-09-03): **Responsive Competitive UI Redesign** - Rebuilt the product shell around a restrained light tabletop system with a game-native board preview, one dominant AI-play action, clear online secondary action, compact account context, and thumb-friendly bottom navigation. Added a consistent Lucide outline icon language, consolidated blue/player-one and red/player-two semantics, removed decorative glow and gradient noise from non-gameplay UI, and restyled the online lobby, authentication, rules, contact, skin store, My Page, results, turn status, and replay controls. Desktop now uses the available width for a two-column command center while phone layouts retain full board and hand visibility without page overflow. The replay viewer now presents hands, move details, PRO thoughts, and transport controls as a coherent light analysis surface.
 1. **v09031151** (2026-09-03): **Complete Achievement Catalog** - Changed My Page from an unlocked-only feed to an always-visible catalog of all four defined achievements. Locked entries use a deliberately muted gray surface, border, typography, and diamond marker with a localized `Locked` state; unlocked entries retain a brighter blue treatment, checkmark, and localized completion date. Existing unknown achievement types remain visible for forward compatibility. Fixed the achievement card's invalid border declaration and added catalog tests for empty, partially unlocked, and future-type data.
 1. **v09031134** (2026-09-03): **Higher-Velocity Card Whooshes** - Raised the main per-card sweep from roughly 380 Hz–3.2 kHz to 820 Hz–5.6 kHz and added a second 1.9 kHz–8.2 kHz air layer, with later cards climbing still higher. Increased level, widened the left-to-arrival stereo travel, and raised the pitched edge accent to 340 Hz–2.6 kHz so every slide feels faster and sharper without masking the later hand voice. The final X-hand receives an additional gain lift. Added regression coverage for the high-frequency range, acceleration ratio, per-card climb, and stronger final-hand profile.
 1. **v09030412** (2026-09-03): **Cinematic Showdown Soundscape** - Replaced the sparse generic stinger with a synchronized Web Audio sequence: a stereo arena riser, sub rumble, individual left-to-center card whooshes, three-layer landing snaps for every winning card, electrical cracks for the expanding rings and lightning, a compressed role-title slam, and distinct blue/red/draw confirmation chords. The five-card X-hand receives an additional bass hit, sweep, octave shimmer, and longer tail. A shared dynamics compressor prevents clipping, all scheduled sources are stopped and disconnected on replay or phase changes, and authored character voices now enter just after the sound-effect peak for intelligibility. Added pure timing tests that lock sound entries and impacts to the CSS card stagger; verified a complete six-stage replay in-browser with no audio warnings.

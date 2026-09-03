@@ -75,7 +75,7 @@
     background: #252525;
     color: #aaa;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
     font-size: 0.9rem;
 }
 
@@ -89,27 +89,28 @@
     border-color: #4a90e2;
 }
 
-input,
-textarea {
+.contact-modal input,
+.contact-modal textarea {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
     border: 1px solid #333;
-    background: #252525;
-    color: #fff;
+    background: #fff;
+    color: var(--text);
     font-family: inherit;
     font-size: 0.95rem;
     box-sizing: border-box;
 }
 
-input:focus,
-textarea:focus {
-    outline: none;
-    border-color: #4a90e2;
-    background: #2a2a2a;
+.contact-modal input:focus,
+.contact-modal textarea:focus {
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 2px;
+    border-color: var(--accent);
+    background: #fff;
 }
 
-textarea {
+.contact-modal textarea {
     resize: vertical;
     min-height: 100px;
 }
@@ -180,26 +181,28 @@ textarea {
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(circle at center, #1b1b2f 0%, #0d0d1a 100%) !important;
+    background: rgb(24 34 44 / 72%) !important;
     z-index: 2000 !important;
     display: flex !important;
-    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     padding: 16px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
 .contact-modal {
-    flex: 1 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 100% !important;
+    flex: 0 1 auto !important;
+    width: min(100%, 560px) !important;
+    max-width: 560px !important;
+    height: auto !important;
     max-height: 100% !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 20px !important;
-    padding: 16px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+    color: var(--text) !important;
+    background: var(--surface) !important;
+    backdrop-filter: none !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    padding: clamp(18px, 4cqw, 26px) !important;
+    box-shadow: var(--shadow) !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 14px !important;
@@ -207,3 +210,24 @@ textarea {
     overflow-y: auto !important;
     margin: 0 !important;
 }
+
+.contact-modal h2 { color: var(--text) !important; }
+.contact-modal .form-group label { color: var(--text-secondary) !important; }
+.contact-modal .close-btn { color: var(--text-muted) !important; }
+.contact-modal .cat-btn {
+    color: var(--text-secondary) !important;
+    background: #f6f8f9 !important;
+    border-color: var(--border) !important;
+}
+.contact-modal .cat-btn.active {
+    color: #fff !important;
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+}
+.contact-modal .btn-secondary {
+    color: var(--text-secondary) !important;
+    background: var(--surface) !important;
+    border-color: var(--border-strong) !important;
+}
+.contact-modal .btn-secondary:hover { background: var(--surface-hover) !important; }
+.contact-modal .btn-primary { background: var(--accent) !important; }

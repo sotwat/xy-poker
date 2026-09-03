@@ -519,30 +519,131 @@
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(circle at center, #1b1b2f 0%, #0d0d1a 100%) !important;
+    background: rgb(24 34 44 / 72%) !important;
     z-index: 2000 !important;
     display: flex !important;
-    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     padding: 16px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
 .skin-store-modal {
-    flex: 1 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 100% !important;
+    flex: 0 1 auto !important;
+    width: min(100%, 900px) !important;
+    max-width: 900px !important;
+    height: min(100%, 800px) !important;
     max-height: 100% !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 20px !important;
-    padding: 16px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+    color: var(--text) !important;
+    background: var(--surface) !important;
+    backdrop-filter: none !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    padding: clamp(16px, 4cqw, 24px) !important;
+    box-shadow: var(--shadow) !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 14px !important;
     box-sizing: border-box !important;
     overflow-y: auto !important;
     margin: 0 !important;
+}
+
+.skin-store-modal .skin-item,
+.skin-store-modal .gacha-option {
+    color: var(--text) !important;
+    background: #f6f8f9 !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+}
+
+.skin-store-modal h2,
+.skin-store-modal .store-header,
+.skin-store-modal .gacha-label { color: var(--text) !important; }
+
+.skin-store-modal h2 {
+    margin: 0 !important;
+    font-size: clamp(1.15rem, 4.5cqw, 1.5rem) !important;
+    line-height: 1.1;
+    text-shadow: none !important;
+    white-space: nowrap;
+}
+.skin-store-modal .store-header {
+    min-height: 42px;
+    gap: 12px;
+    margin: 0;
+    padding-right: 34px;
+}
+.skin-store-modal .store-subtitle { color: var(--text-muted) !important; }
+.skin-store-modal .coin-balance {
+    flex: 0 1 auto;
+    min-width: 0;
+    gap: 5px;
+    padding: 4px 5px 4px 8px;
+    color: #805d00 !important;
+    background: #fff8df !important;
+    border-color: #dfc66a !important;
+    font-size: 0.72rem;
+}
+.skin-store-modal .ad-box { min-width: 0; }
+.skin-store-modal .btn-ad {
+    min-height: 32px !important;
+    max-width: 148px;
+    padding: 4px 8px !important;
+    border-color: #cfbd79 !important;
+    border-radius: 7px !important;
+    color: var(--text) !important;
+    background: #fff !important;
+    font-size: 0.66rem !important;
+    line-height: 1.15;
+}
+.skin-store-modal .tab-btn {
+    color: var(--text-muted) !important;
+    background: #f6f8f9 !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+}
+.skin-store-modal .tab-btn.active {
+    color: var(--accent) !important;
+    background: var(--accent-soft) !important;
+    border-color: rgb(20 110 245 / 36%) !important;
+}
+.skin-store-modal .gacha-cost,
+.skin-store-modal .gacha-text p { color: var(--text-secondary) !important; }
+.skin-store-modal .expiry-notice {
+    margin: 0 !important;
+    font-size: 0.7rem !important;
+    line-height: 1.35;
+    text-shadow: none !important;
+}
+.skin-store-modal .gacha-actions,
+.skin-store-modal .store-tabs { margin-bottom: 0 !important; }
+.skin-store-modal .skins-grid { margin-bottom: 0 !important; }
+.skin-store-modal .btn-close {
+    color: var(--text-secondary) !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: 9px !important;
+}
+.skin-store-modal .btn-close-x {
+    color: var(--text-muted) !important;
+    transition: color 120ms ease, background-color 120ms ease !important;
+}
+.skin-store-modal .btn-close-x:hover {
+    color: var(--text) !important;
+    background: var(--surface-hover) !important;
+}
+
+.skin-store-modal .gacha-option.special {
+    color: var(--accent) !important;
+    background: var(--accent-soft) !important;
+    border-color: var(--accent) !important;
+}
+
+.skin-store-modal .skin-name,
+.skin-store-modal .expiry-notice { color: var(--text-secondary) !important; }
+
+@media (max-width: 620px) {
+    .skin-store-overlay { padding: 0 !important; }
+    .skin-store-modal { border-radius: 0 !important; }
 }

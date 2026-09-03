@@ -48,17 +48,18 @@
 .auth-content form input {
     width: 100%;
     padding: 12px;
-    background: #333;
-    border: 1px solid #444;
+    background: #fff;
+    border: 1px solid var(--border-strong);
     border-radius: 6px;
     margin-bottom: 12px;
-    color: #fff;
+    color: var(--text);
     box-sizing: border-box;
 }
 
 .auth-content form input:focus {
-    outline: none;
-    border-color: #4da8da;
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 2px;
+    border-color: var(--accent);
 }
 
 .auth-submit-btn {
@@ -99,7 +100,7 @@
 }
 
 .auth-toggle button:hover {
-    color: #fff;
+    color: var(--text);
 }
 
 .close-btn {
@@ -124,26 +125,28 @@
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(circle at center, #1b1b2f 0%, #0d0d1a 100%) !important;
+    background: rgb(24 34 44 / 72%) !important;
     z-index: 2000 !important;
     display: flex !important;
-    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     padding: 16px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
 .auth-content {
-    flex: 1 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 100% !important;
+    flex: 0 1 auto !important;
+    width: min(100%, 420px) !important;
+    max-width: 420px !important;
+    height: auto !important;
     max-height: 100% !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 20px !important;
-    padding: 16px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+    color: var(--text) !important;
+    background: var(--surface) !important;
+    backdrop-filter: none !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    padding: clamp(20px, 5cqw, 28px) !important;
+    box-shadow: var(--shadow) !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 14px !important;
@@ -151,3 +154,8 @@
     overflow-y: auto !important;
     margin: 0 !important;
 }
+
+.auth-content h2 { color: var(--text) !important; }
+.auth-description,
+.auth-toggle,
+.auth-toggle button { color: var(--text-muted) !important; }

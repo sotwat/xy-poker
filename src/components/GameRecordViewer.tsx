@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Brain, ChevronLeft, ChevronRight, Download, SkipBack, SkipForward } from 'lucide-react';
 import type { BoardSkin, Card as CardType, CardSkin, DiceSkin } from '../logic/types';
 import {
     buildReplayBoards,
@@ -114,14 +115,18 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
         <div className="record-viewer">
             <div className="record-viewer-header">
                 <div className="record-header-actions">
-                    <button type="button" className="record-back-btn" onClick={onBack}>← {t('record.back')}</button>
+                    <button type="button" className="record-back-btn" onClick={onBack}>
+                        <ChevronLeft aria-hidden="true" />
+                        {t('record.back')}
+                    </button>
                     <button
                         type="button"
                         className="record-export-btn"
                         onClick={exportAsText}
                         aria-label={t('record.exportAria')}
                     >
-                        ↓ {t('record.exportTxt')}
+                        <Download aria-hidden="true" />
+                        {t('record.exportTxt')}
                     </button>
                 </div>
                 <div className="record-match-meta">
@@ -183,7 +188,7 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
 
             {currentThought && (
                 <div className="record-thought-note">
-                    <span>PRO</span>
+                    <span><Brain aria-hidden="true" /> PRO</span>
                     <div>
                         <strong>{t('record.thought')}</strong>
                         <p>{currentThought}</p>
@@ -202,10 +207,10 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
             />
 
             <div className="record-controls">
-                <button type="button" aria-label={t('record.start')} onClick={() => setMoveCount(0)} disabled={moveCount === 0}>{t('record.start')}</button>
-                <button type="button" aria-label={t('record.previous')} onClick={() => setMoveCount(value => Math.max(0, value - 1))} disabled={moveCount === 0}>{t('record.previous')}</button>
-                <button type="button" aria-label={t('record.nextButton')} onClick={() => setMoveCount(value => Math.min(record.moves.length, value + 1))} disabled={moveCount === record.moves.length}>{t('record.nextButton')}</button>
-                <button type="button" aria-label={t('record.end')} onClick={() => setMoveCount(record.moves.length)} disabled={moveCount === record.moves.length}>{t('record.end')}</button>
+                <button type="button" aria-label={t('record.start')} onClick={() => setMoveCount(0)} disabled={moveCount === 0}><SkipBack aria-hidden="true" />{t('record.start')}</button>
+                <button type="button" aria-label={t('record.previous')} onClick={() => setMoveCount(value => Math.max(0, value - 1))} disabled={moveCount === 0}><ChevronLeft aria-hidden="true" />{t('record.previous')}</button>
+                <button type="button" aria-label={t('record.nextButton')} onClick={() => setMoveCount(value => Math.min(record.moves.length, value + 1))} disabled={moveCount === record.moves.length}>{t('record.nextButton')}<ChevronRight aria-hidden="true" /></button>
+                <button type="button" aria-label={t('record.end')} onClick={() => setMoveCount(record.moves.length)} disabled={moveCount === record.moves.length}>{t('record.end')}<SkipForward aria-hidden="true" /></button>
             </div>
         </div>
     );

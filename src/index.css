@@ -1,7 +1,8 @@
 :root {
   font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #f4f6f8;
-  background: #07090c;
+  color: #121820;
+  background: #dfe5e9;
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -23,7 +24,7 @@ body,
 
 body {
   overflow: hidden;
-  background: #07090c;
+  background: #dfe5e9;
 }
 
 button,
@@ -46,7 +47,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid #7aa7ff;
+  outline: 2px solid #146ef5;
   outline-offset: 2px;
 }
 

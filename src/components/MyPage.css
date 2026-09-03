@@ -552,3 +552,135 @@
         display: none;
     }
 }
+
+/* Reference-locked light profile surface */
+.mypage-overlay {
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgb(24 34 44 / 72%) !important;
+}
+
+.mypage-content {
+    flex: 0 1 auto !important;
+    width: min(100%, 900px) !important;
+    max-width: 900px !important;
+    height: min(100%, 800px) !important;
+    max-height: 100% !important;
+    color: var(--text) !important;
+    background: var(--surface) !important;
+    backdrop-filter: none !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.mypage-header {
+    border-color: var(--border) !important;
+}
+
+.mypage-header h2 {
+    color: var(--text) !important;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+}
+
+.username,
+.stat-card .value.highlight { color: var(--accent) !important; }
+
+.edit-icon-btn,
+.xp-labels,
+.ranking-view th,
+.achievement-item .date,
+.records-heading span,
+.records-heading > strong,
+.record-list-main span,
+.record-list-meta span,
+.record-list-arrow { color: var(--text-muted) !important; }
+
+.level-badge,
+.stat-card,
+.xp-section,
+.achievement-item,
+.record-list-item {
+    color: var(--text) !important;
+    background: #f6f8f9 !important;
+    border-color: var(--border) !important;
+    box-shadow: none !important;
+}
+
+.mypage-tabs {
+    background: #eef1f4 !important;
+    border-radius: 9px;
+    padding: 3px;
+}
+
+.mypage-tabs button {
+    color: var(--text-muted) !important;
+    border: 0 !important;
+    border-radius: 7px;
+}
+
+.mypage-tabs button.active {
+    color: var(--accent) !important;
+    background: #fff !important;
+    box-shadow: 0 1px 3px rgb(25 39 52 / 10%);
+}
+
+.stat-card label { color: var(--text-muted) !important; }
+.stat-card .value,
+.achievement-item .title,
+.records-heading h3,
+.record-list-main strong,
+.record-list-meta strong,
+.records-empty strong { color: var(--text) !important; }
+
+.xp-bar-bg { background: #e2e7eb !important; }
+.xp-bar-fill { background: var(--accent) !important; }
+
+.ranking-view td { border-color: var(--border) !important; }
+.ranking-view tr.highlight td { color: var(--accent) !important; }
+
+.achievement-item.is-unlocked {
+    border-color: rgb(20 110 245 / 36%) !important;
+    background: var(--accent-soft) !important;
+}
+
+.achievement-item.is-locked {
+    color: var(--text-muted) !important;
+    background: #eef1f3 !important;
+    border-color: var(--border) !important;
+    opacity: 0.72;
+}
+
+.achievement-item .icon,
+.achievement-item.is-locked .icon {
+    color: var(--text-muted) !important;
+    background: #e3e8ec !important;
+    box-shadow: none !important;
+}
+
+.achievement-item.is-unlocked .icon {
+    color: var(--accent) !important;
+    background: #fff !important;
+    box-shadow: inset 0 0 0 1px rgb(20 110 245 / 24%) !important;
+}
+
+.record-list-item:hover {
+    border-color: var(--border-strong) !important;
+    background: #fff !important;
+}
+
+.record-list-result-win { color: #147a48; background: #e6f4ec; }
+.record-list-result-loss { color: #c7253d; background: #fbeaec; }
+.record-list-result-draw { color: #536171; background: #e5e9ed; }
+
+.records-empty { border-color: var(--border-strong) !important; }
+
+@media (max-width: 620px) {
+    .mypage-overlay { padding: 0 !important; }
+    .mypage-content {
+        border: 0 !important;
+        border-radius: 0 !important;
+        padding: 10px !important;
+    }
+}
