@@ -127,13 +127,41 @@ type FullscreenElement = HTMLElement & {
 
 const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000;
 
-const HOME_PREVIEW_COLUMNS = [
-  { die: 6, top: ['Q', '♦', 'blue'], bottom: ['10', '♣', 'green'] },
-  { die: 5, top: ['A', '♣', 'green'], bottom: ['9', '♠', 'black'] },
-  { die: 4, top: ['J', '♥', 'red'], bottom: ['8', '♦', 'blue'] },
-  { die: 3, top: ['4', '♠', 'black'], bottom: ['7', '♥', 'red'] },
-  { die: 2, top: ['2', '♦', 'blue'], bottom: ['3', '♣', 'green'] },
-] as const;
+const HOME_PREVIEW_OPPONENT_BOARD: (Card | null)[][] = [
+  [
+    { id: 'preview-o-q', rank: 12, suit: 'diamonds' },
+    { id: 'preview-o-a', rank: 14, suit: 'clubs' },
+    { id: 'preview-o-j', rank: 11, suit: 'hearts' },
+    { id: 'preview-o-4', rank: 4, suit: 'spades' },
+    { id: 'preview-o-2', rank: 2, suit: 'diamonds' },
+  ],
+  [
+    { id: 'preview-o-10', rank: 10, suit: 'hearts' },
+    null,
+    null,
+    { id: 'preview-o-hidden', rank: 6, suit: 'clubs', isHidden: true },
+    null,
+  ],
+  [null, null, null, null, null],
+];
+
+const HOME_PREVIEW_PLAYER_BOARD: (Card | null)[][] = [
+  [
+    { id: 'preview-p-10', rank: 10, suit: 'clubs' },
+    { id: 'preview-p-9', rank: 9, suit: 'spades' },
+    { id: 'preview-p-8', rank: 8, suit: 'diamonds' },
+    { id: 'preview-p-7', rank: 7, suit: 'hearts' },
+    { id: 'preview-p-3', rank: 3, suit: 'clubs' },
+  ],
+  [
+    null,
+    { id: 'preview-p-k', rank: 13, suit: 'clubs' },
+    { id: 'preview-p-6', rank: 6, suit: 'diamonds' },
+    null,
+    null,
+  ],
+  [null, null, null, null, null],
+];
 
 function readStoredJson<T>(key: string, fallback: T): T {
   try {
@@ -1754,33 +1782,21 @@ function App() {
                             </span>
                             <h2 id="home-title">XY Poker</h2>
                             <p>{t('home.description')}</p>
-                            <div className="home-meta" aria-label={t('home.overview')}>
-                              <span>{t('home.twoPlayers')}</span>
-                              <span>{t('home.fiveColumns')}</span>
-                              <span>{t('home.quickMatches')}</span>
-                            </div>
                           </div>
 
                           <div className="home-table-preview" aria-hidden="true">
-                            <div className="home-table-score">
-                              <span className="preview-player preview-player-blue">Y</span>
-                              <span>5 × 5</span>
-                              <span className="preview-player preview-player-red">X</span>
-                            </div>
-                            <div className="home-preview-grid">
-                              {HOME_PREVIEW_COLUMNS.map((column) => (
-                                <div className="home-preview-column" key={column.die}>
-                                  <span className={`preview-card suit-${column.top[2]}`}>
-                                    {column.top[0]}<small>{column.top[1]}</small>
-                                  </span>
-                                  <span className="preview-slot" />
-                                  <span className="preview-die">{column.die}</span>
-                                  <span className="preview-slot" />
-                                  <span className={`preview-card suit-${column.bottom[2]}`}>
-                                    {column.bottom[0]}<small>{column.bottom[1]}</small>
-                                  </span>
-                                </div>
-                              ))}
+                            <div className="home-table-board">
+                              <SharedBoard
+                                playerBoard={HOME_PREVIEW_PLAYER_BOARD}
+                                opponentBoard={HOME_PREVIEW_OPPONENT_BOARD}
+                                dice={[6, 5, 4, 3, 2]}
+                                onColumnClick={() => undefined}
+                                isCurrentPlayer={false}
+                                bottomPlayerId="p1"
+                                selectedSkin={selectedSkin}
+                                selectedCardSkin={selectedCardSkin}
+                                selectedBoardSkin={selectedBoardSkin}
+                              />
                             </div>
                           </div>
                         </section>
@@ -1902,7 +1918,7 @@ function App() {
                             <HeartHandshake aria-hidden="true" />
                             <span>{t('home.support')}</span>
                           </a>
-                          <div className="home-version">v09031259</div>
+                          <div className="home-version">v09031315</div>
                         </div>
                       </div>
                     )}

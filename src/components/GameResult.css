@@ -420,7 +420,7 @@
 .game-result-modal .score-box,
 .game-result-modal .rating-update {
     color: var(--text-secondary) !important;
-    background: #f6f8f9 !important;
+    background: var(--surface-raised) !important;
     border-color: var(--border) !important;
 }
 

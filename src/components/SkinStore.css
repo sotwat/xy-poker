@@ -552,9 +552,32 @@
 .skin-store-modal .skin-item,
 .skin-store-modal .gacha-option {
     color: var(--text) !important;
-    background: #f6f8f9 !important;
+    background: var(--surface-raised) !important;
     border: 1px solid var(--border) !important;
     box-shadow: none !important;
+}
+
+.skin-store-modal .skin-item {
+    padding: 10px !important;
+    gap: 7px !important;
+}
+
+.skin-store-modal .skin-item:hover:not(:disabled) {
+    background: var(--surface-hover) !important;
+}
+
+.skin-store-modal .skin-item.selected {
+    background: var(--accent-soft) !important;
+    border-color: var(--accent) !important;
+}
+
+.skin-store-modal .skin-preview {
+    width: 40px;
+    height: 36px;
+}
+
+.skin-store-modal .skin-preview .dice {
+    font-size: 4.5px !important;
 }
 
 .skin-store-modal h2,
@@ -580,9 +603,9 @@
     min-width: 0;
     gap: 5px;
     padding: 4px 5px 4px 8px;
-    color: #805d00 !important;
-    background: #fff8df !important;
-    border-color: #dfc66a !important;
+    color: #f0c966 !important;
+    background: #1c1a12 !important;
+    border-color: #66572a !important;
     font-size: 0.72rem;
 }
 .skin-store-modal .ad-box { min-width: 0; }
@@ -590,23 +613,23 @@
     min-height: 32px !important;
     max-width: 148px;
     padding: 4px 8px !important;
-    border-color: #cfbd79 !important;
+    border-color: #574c2c !important;
     border-radius: 7px !important;
     color: var(--text) !important;
-    background: #fff !important;
+    background: #151c25 !important;
     font-size: 0.66rem !important;
     line-height: 1.15;
 }
 .skin-store-modal .tab-btn {
     color: var(--text-muted) !important;
-    background: #f6f8f9 !important;
+    background: #0d141d !important;
     border: 1px solid var(--border) !important;
     box-shadow: none !important;
 }
 .skin-store-modal .tab-btn.active {
-    color: var(--accent) !important;
+    color: #dbe8ff !important;
     background: var(--accent-soft) !important;
-    border-color: rgb(20 110 245 / 36%) !important;
+    border-color: rgb(67 136 255 / 50%) !important;
 }
 .skin-store-modal .gacha-cost,
 .skin-store-modal .gacha-text p { color: var(--text-secondary) !important; }
@@ -624,6 +647,11 @@
     background: var(--surface) !important;
     border: 1px solid var(--border-strong) !important;
     border-radius: 9px !important;
+}
+
+.skin-store-modal .check-icon {
+    color: #fff;
+    background: var(--accent);
 }
 .skin-store-modal .btn-close-x {
     color: var(--text-muted) !important;

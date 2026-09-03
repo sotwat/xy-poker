@@ -116,9 +116,9 @@
     letter-spacing: 0.08em;
 }
 
-.record-result-win { color: #147a48; background: #e6f4ec; }
-.record-result-loss { color: #c7253d; background: #fbeaec; }
-.record-result-draw { color: #536171; background: #e5e9ed; }
+.record-result-win { color: #72dda9; background: #173528; }
+.record-result-loss { color: #ff98a2; background: #3a1d24; }
+.record-result-draw { color: #b1bdca; background: #28333f; }
 
 .record-scoreline {
     min-width: 0;
@@ -155,7 +155,7 @@
     padding: 5px 7px 6px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: #f6f8f9;
+    background: var(--surface-raised);
 }
 
 .record-hand-panel.is-next {
@@ -185,7 +185,7 @@
     padding: 2px 5px;
     border-radius: 999px;
     color: var(--accent);
-    background: #fff;
+    background: #0d141d;
     font-size: 0.52rem;
     font-style: normal;
     font-weight: 800;
@@ -230,10 +230,10 @@
 
 .record-hands-unavailable {
     padding: 8px 10px;
-    border: 1px solid #ead9a3;
+    border: 1px solid #66572a;
     border-radius: 8px;
-    color: #775d16;
-    background: #fff9e9;
+    color: #e3c86f;
+    background: #1c1a12;
     font-size: 0.67rem;
     text-align: center;
 }
@@ -249,7 +249,7 @@
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: 9px;
-    background: #edf1f3;
+    background: #0b1118;
 }
 
 .record-board-wrap .shared-board {
@@ -290,7 +290,7 @@
     padding: 7px 9px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: #f6f8f9;
+    background: var(--surface-raised);
 }
 
 .record-move-copy span {
@@ -314,17 +314,17 @@
     align-items: start;
     gap: 8px;
     padding: 8px 9px;
-    border: 1px solid #ead9a3;
+    border: 1px solid #66572a;
     border-radius: 8px;
-    color: #624d15;
-    background: #fff9e9;
+    color: #e3c86f;
+    background: #1c1a12;
 }
 
 .record-thought-note > span {
     padding: 2px 5px;
     border-radius: 4px;
-    color: #624d15;
-    background: #f2df9f;
+    color: #201b0d;
+    background: #e3c86f;
     font-size: 0.52rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -355,7 +355,7 @@
 .record-thought-note p {
     margin: 0;
     overflow-wrap: anywhere;
-    color: #6d5c2c;
+    color: #cdbc83;
     font-size: 0.68rem;
     line-height: 1.45;
     white-space: pre-wrap;

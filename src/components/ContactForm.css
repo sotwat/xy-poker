@@ -95,7 +95,7 @@
     padding: 12px;
     border-radius: 8px;
     border: 1px solid #333;
-    background: #fff;
+    background: #0d141d;
     color: var(--text);
     font-family: inherit;
     font-size: 0.95rem;
@@ -107,7 +107,7 @@
     outline: 2px solid var(--accent-soft);
     outline-offset: 2px;
     border-color: var(--accent);
-    background: #fff;
+    background: #0d141d;
 }
 
 .contact-modal textarea {
@@ -216,7 +216,7 @@
 .contact-modal .close-btn { color: var(--text-muted) !important; }
 .contact-modal .cat-btn {
     color: var(--text-secondary) !important;
-    background: #f6f8f9 !important;
+    background: #0d141d !important;
     border-color: var(--border) !important;
 }
 .contact-modal .cat-btn.active {
@@ -231,3 +231,9 @@
 }
 .contact-modal .btn-secondary:hover { background: var(--surface-hover) !important; }
 .contact-modal .btn-primary { background: var(--accent) !important; }
+.contact-modal input,
+.contact-modal textarea {
+    color: var(--text) !important;
+    background: #0d141d !important;
+    border-color: var(--border-strong) !important;
+}

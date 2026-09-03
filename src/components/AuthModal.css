@@ -48,7 +48,7 @@
 .auth-content form input {
     width: 100%;
     padding: 12px;
-    background: #fff;
+    background: #0d141d;
     border: 1px solid var(--border-strong);
     border-radius: 6px;
     margin-bottom: 12px;
@@ -159,3 +159,8 @@
 .auth-description,
 .auth-toggle,
 .auth-toggle button { color: var(--text-muted) !important; }
+.auth-content form input {
+    color: var(--text) !important;
+    background: #0d141d !important;
+    border-color: var(--border-strong) !important;
+}

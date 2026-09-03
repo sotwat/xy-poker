@@ -230,7 +230,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
             selected = selectedSkin;
             selectFn = onSelect as (id: string) => void;
             PreviewComponent = ({ id }: PreviewProps) => (
-                <Dice value={6} size="medium" skin={id as DiceSkin} />
+                <Dice value={6} size="small" skin={id as DiceSkin} />
             );
         } else if (activeTab === 'card') {
             items = AVAILABLE_CARD_SKINS;

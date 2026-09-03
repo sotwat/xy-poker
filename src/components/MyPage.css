@@ -553,7 +553,7 @@
     }
 }
 
-/* Reference-locked light profile surface */
+/* Reference-locked competitive profile surface */
 .mypage-overlay {
     align-items: center !important;
     justify-content: center !important;
@@ -603,13 +603,13 @@
 .achievement-item,
 .record-list-item {
     color: var(--text) !important;
-    background: #f6f8f9 !important;
+    background: var(--surface-raised) !important;
     border-color: var(--border) !important;
     box-shadow: none !important;
 }
 
 .mypage-tabs {
-    background: #eef1f4 !important;
+    background: #0d141d !important;
     border-radius: 9px;
     padding: 3px;
 }
@@ -621,9 +621,9 @@
 }
 
 .mypage-tabs button.active {
-    color: var(--accent) !important;
-    background: #fff !important;
-    box-shadow: 0 1px 3px rgb(25 39 52 / 10%);
+    color: #dbe8ff !important;
+    background: var(--accent-soft) !important;
+    box-shadow: inset 0 0 0 1px rgb(67 136 255 / 34%);
 }
 
 .stat-card label { color: var(--text-muted) !important; }
@@ -634,7 +634,7 @@
 .record-list-meta strong,
 .records-empty strong { color: var(--text) !important; }
 
-.xp-bar-bg { background: #e2e7eb !important; }
+.xp-bar-bg { background: #0c121a !important; }
 .xp-bar-fill { background: var(--accent) !important; }
 
 .ranking-view td { border-color: var(--border) !important; }
@@ -647,7 +647,7 @@
 
 .achievement-item.is-locked {
     color: var(--text-muted) !important;
-    background: #eef1f3 !important;
+    background: #0d141d !important;
     border-color: var(--border) !important;
     opacity: 0.72;
 }
@@ -655,24 +655,24 @@
 .achievement-item .icon,
 .achievement-item.is-locked .icon {
     color: var(--text-muted) !important;
-    background: #e3e8ec !important;
+    background: #19232e !important;
     box-shadow: none !important;
 }
 
 .achievement-item.is-unlocked .icon {
-    color: var(--accent) !important;
-    background: #fff !important;
-    box-shadow: inset 0 0 0 1px rgb(20 110 245 / 24%) !important;
+    color: #dbe8ff !important;
+    background: var(--accent-soft) !important;
+    box-shadow: inset 0 0 0 1px rgb(67 136 255 / 34%) !important;
 }
 
 .record-list-item:hover {
     border-color: var(--border-strong) !important;
-    background: #fff !important;
+    background: var(--surface-hover) !important;
 }
 
-.record-list-result-win { color: #147a48; background: #e6f4ec; }
-.record-list-result-loss { color: #c7253d; background: #fbeaec; }
-.record-list-result-draw { color: #536171; background: #e5e9ed; }
+.record-list-result-win { color: #72dda9; background: #173528; }
+.record-list-result-loss { color: #ff98a2; background: #3a1d24; }
+.record-list-result-draw { color: #b1bdca; background: #28333f; }
 
 .records-empty { border-color: var(--border-strong) !important; }
 

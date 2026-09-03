@@ -271,7 +271,7 @@
     border-color: var(--border) !important;
 }
 .rules-content .score-item {
-    background: #f6f8f9 !important;
+    background: #0d141d !important;
     border-left-color: var(--warning) !important;
 }
 .rules-content .score-item p,
