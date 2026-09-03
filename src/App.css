@@ -294,17 +294,6 @@ body {
   transform: skewX(-7deg);
 }
 
-.home-account-quick {
-  min-height: 36px !important;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 11px !important;
-  color: var(--text-secondary) !important;
-  background: transparent !important;
-}
-
-.home-account-quick svg,
 .home-support-link svg,
 .home-language-select > svg {
   width: 16px;

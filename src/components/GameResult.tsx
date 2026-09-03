@@ -11,6 +11,7 @@ interface GameResultProps {
     onRestart: () => void;
     onClose: () => void;
     onViewBoard: () => void; // New prop
+    backLabel: string;
     p1Name?: string;
     p2Name?: string;
     ratingUpdates?: {
@@ -24,6 +25,7 @@ export const GameResult: React.FC<GameResultProps> = ({
     onRestart,
     onClose,
     onViewBoard,
+    backLabel,
     p1Name = 'Player 1',
     p2Name = 'Player 2',
     ratingUpdates
@@ -216,8 +218,8 @@ export const GameResult: React.FC<GameResultProps> = ({
                     <button className="btn-secondary view-board-btn" onClick={() => { playClickSound(); onViewBoard(); }}>
                         {t('result.viewBoard')}
                     </button>
-                    <button className="btn-secondary quit-btn" onClick={() => { playClickSound(); onClose(); }}>
-                        {t('game.backLobby')}
+                    <button className="btn-secondary quit-btn" onClick={onClose}>
+                        {backLabel}
                     </button>
                     <button className="btn-primary restart-btn" onClick={() => { playClickSound(); onRestart(); }}>
                         {t('result.playAgain')}

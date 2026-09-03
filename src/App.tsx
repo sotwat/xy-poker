@@ -1382,6 +1382,34 @@ function App() {
     dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
   };
 
+  const returnToHome = () => {
+    playClickSound();
+    quickMatchRequestRef.current += 1;
+    if (quickMatchTimeoutRef.current) {
+      clearTimeout(quickMatchTimeoutRef.current);
+      quickMatchTimeoutRef.current = null;
+    }
+    if (roomId) {
+      socket.emit('leave_room', { roomId });
+    }
+    setMode('local');
+    setRoomId(null);
+    setPlayerRole(null);
+    setIsOnlineGame(false);
+    setIsQuickMatch(false);
+    setIsBotDisguise(false);
+    setOpponentName('AI');
+    setRatingUpdates(null);
+    setRematchRequested(false);
+    setRematchInvited(false);
+    dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
+  };
+
+  const returnFromFinishedGame = () => {
+    if (mode === 'online') returnToLobby();
+    else returnToHome();
+  };
+
   const handleCancelMatchmaking = () => {
     playClickSound();
     quickMatchRequestRef.current += 1;
@@ -1760,18 +1788,6 @@ function App() {
                             <span className="home-wordmark-symbol" aria-hidden="true">XY</span>
                             <span>Poker</span>
                           </div>
-                          <button
-                            type="button"
-                            className="home-account-quick"
-                            onClick={() => {
-                              playClickSound();
-                              if (session) setShowMyPage(true);
-                              else setShowAuthModal(true);
-                            }}
-                          >
-                            <UserRound aria-hidden="true" />
-                            <span>{session ? t('common.account') : t('common.signIn')}</span>
-                          </button>
                         </header>
 
                         <section className="home-stage" aria-labelledby="home-title">
@@ -1918,7 +1934,7 @@ function App() {
                             <HeartHandshake aria-hidden="true" />
                             <span>{t('home.support')}</span>
                           </a>
-                          <div className="home-version">v09031327</div>
+                          <div className="home-version">v09031338</div>
                         </div>
                       </div>
                     )}
@@ -2090,9 +2106,9 @@ function App() {
                         {t('game.showDetails')}
                       </button>
                       <button type="button" className="btn-secondary" onClick={() => {
-                        returnToLobby();
+                        returnFromFinishedGame();
                       }}>
-                        {t('game.backLobby')}
+                        {mode === 'online' ? t('game.backLobby') : t('game.backHome')}
                       </button>
                     </div>
                   )}
@@ -2214,13 +2230,9 @@ function App() {
           ratingUpdates={ratingUpdates}
           onRestart={handleRestart}
           onViewBoard={() => setShowResultsModal(false)}
+          backLabel={mode === 'online' ? t('game.backLobby') : t('game.backHome')}
           onClose={() => {
-            if (isOnlineGame) {
-              if (phase === 'ended') returnToLobby();
-              else handleCancelMatchmaking();
-            } else {
-              dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
-            }
+            returnFromFinishedGame();
             setShowResultsModal(false);
           }}
         />
