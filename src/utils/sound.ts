@@ -6,6 +6,7 @@ import {
     type ShowdownVoiceCharacter,
 } from '../logic/showdownVoice';
 import {
+    getCardWhooshProfile,
     getShowdownSoundTimeline,
     getShowdownWinnerChord,
     type ShowdownSoundWinner,
@@ -321,11 +322,41 @@ export const playShowdownStinger = ({
 
         // Each visible card gets its own travelling whoosh and a three-layer landing snap.
         timeline.cardEntries.forEach((entry, index) => {
+            const whoosh = getCardWhooshProfile(index, isFinalHand);
             const destinationPan = cardCount > 1
                 ? -0.48 + (index / (Math.min(cardCount, 5) - 1)) * 0.96
                 : 0;
-            playNoise(entry, 0.31, 380 + index * 55, 3_200 + index * 180, 0.19, 'bandpass', -0.92, destinationPan);
-            playTone(entry + 0.015, 0.25, 135 + index * 9, 980 + index * 115, 0.045, 'sawtooth', -0.82, destinationPan);
+            const arrivalPan = Math.min(1, destinationPan + 0.12);
+            playNoise(
+                entry,
+                whoosh.duration,
+                whoosh.bodyFromFrequency,
+                whoosh.bodyToFrequency,
+                whoosh.bodyVolume,
+                'bandpass',
+                -1,
+                arrivalPan,
+            );
+            playNoise(
+                entry + 0.025,
+                whoosh.duration * 0.78,
+                whoosh.airFromFrequency,
+                whoosh.airToFrequency,
+                whoosh.airVolume,
+                'highpass',
+                -1,
+                arrivalPan,
+            );
+            playTone(
+                entry + 0.01,
+                whoosh.duration * 0.86,
+                whoosh.toneFromFrequency,
+                whoosh.toneToFrequency,
+                whoosh.toneVolume,
+                'sawtooth',
+                -0.94,
+                arrivalPan,
+            );
 
             const impact = timeline.cardImpacts[index];
             playNoise(impact, 0.13, 2_800, 620, 0.25, 'bandpass', destinationPan);

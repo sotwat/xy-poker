@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { getShowdownSoundTimeline, getShowdownWinnerChord } from './showdownSound';
+import {
+    getCardWhooshProfile,
+    getShowdownSoundTimeline,
+    getShowdownWinnerChord,
+} from './showdownSound';
 
 test('synchronizes every card entry and impact with the visual stagger', () => {
     const timeline = getShowdownSoundTimeline(3, false);
@@ -30,4 +34,18 @@ test('gives blue, red, and draw outcomes distinct confirmation chords', () => {
     assert.notDeepEqual(blue, red);
     assert.notDeepEqual(red, draw);
     assert.notDeepEqual(draw, blue);
+});
+
+test('keeps card whooshes high, accelerating, and stronger for the final hand', () => {
+    const standard = getCardWhooshProfile(0, false);
+    const laterCard = getCardWhooshProfile(4, false);
+    const final = getCardWhooshProfile(0, true);
+
+    assert.ok(standard.bodyFromFrequency >= 800);
+    assert.ok(standard.bodyToFrequency >= 5_500);
+    assert.ok(standard.airToFrequency >= 8_000);
+    assert.ok(standard.toneToFrequency > standard.toneFromFrequency * 7);
+    assert.ok(laterCard.airToFrequency > standard.airToFrequency);
+    assert.ok(final.bodyVolume > standard.bodyVolume);
+    assert.ok(final.airVolume > standard.airVolume);
 });
