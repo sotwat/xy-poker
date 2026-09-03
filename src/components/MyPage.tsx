@@ -13,6 +13,7 @@ import { PremiumBadge } from './PremiumBadge';
 import { GameRecordViewer } from './GameRecordViewer';
 import './MyPage.css';
 import { useI18n, type Translate } from '../i18n';
+import { buildAchievementCatalog } from '../logic/achievements';
 
 interface MyPageProps {
     isOpen: boolean;
@@ -192,6 +193,7 @@ export const MyPage: React.FC<MyPageProps> = ({
     const totalGames = profile?.games_played || 0;
     const totalWins = profile?.wins || 0;
     const winRate = totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(1) : '0.0';
+    const achievementRows = buildAchievementCatalog(achievements);
 
     return (
         <div className="mypage-overlay">
@@ -353,19 +355,22 @@ export const MyPage: React.FC<MyPageProps> = ({
 
                     {!loading && activeTab === 'achievements' && (
                         <div className="achievements-view">
-                            {achievements.length === 0 ? (
-                                <div className="empty-state">{t('mypage.noAchievements')}</div>
-                            ) : (
-                                achievements.map(a => (
-                                    <div className="achievement-item" key={a.id}>
-                                        <div className="icon">{t('mypage.award')}</div>
-                                        <div className="info">
-                                            <div className="title">{getReadableAchievement(a.achievement_type, t)}</div>
-                                            <div className="date">{new Date(a.unlocked_at).toLocaleDateString(locale)}</div>
+                            {achievementRows.map(({ type, achievement }) => (
+                                <div
+                                    className={`achievement-item ${achievement ? 'is-unlocked' : 'is-locked'}`}
+                                    key={type}
+                                >
+                                    <div className="icon" aria-hidden="true">{achievement ? '✓' : '◇'}</div>
+                                    <div className="info">
+                                        <div className="title">{getReadableAchievement(type, t)}</div>
+                                        <div className="date">
+                                            {achievement
+                                                ? t('mypage.unlockedOn', { date: new Date(achievement.unlocked_at).toLocaleDateString(locale) })
+                                                : t('mypage.locked')}
                                         </div>
                                     </div>
-                                ))
-                            )}
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

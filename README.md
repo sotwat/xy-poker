@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09031134` (2026-09-03 11:34)
+- **Current Version:** `09031151` (2026-09-03 11:51)
 - **Status:** **Production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ Japanese/English home and rules checked at 320×568, 390×844, and 1440×900
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 55 passing
+    - Automated tests: ✅ 57 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~323 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09031134` live on Cloudflare Pages; higher-velocity card whooshes verified; Render API health normal
+    - Deployment: ⏳ `v09031151` pending Cloudflare Pages verification
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09031151** (2026-09-03): **Complete Achievement Catalog** - Changed My Page from an unlocked-only feed to an always-visible catalog of all four defined achievements. Locked entries use a deliberately muted gray surface, border, typography, and diamond marker with a localized `Locked` state; unlocked entries retain a brighter blue treatment, checkmark, and localized completion date. Existing unknown achievement types remain visible for forward compatibility. Fixed the achievement card's invalid border declaration and added catalog tests for empty, partially unlocked, and future-type data.
 1. **v09031134** (2026-09-03): **Higher-Velocity Card Whooshes** - Raised the main per-card sweep from roughly 380 Hz–3.2 kHz to 820 Hz–5.6 kHz and added a second 1.9 kHz–8.2 kHz air layer, with later cards climbing still higher. Increased level, widened the left-to-arrival stereo travel, and raised the pitched edge accent to 340 Hz–2.6 kHz so every slide feels faster and sharper without masking the later hand voice. The final X-hand receives an additional gain lift. Added regression coverage for the high-frequency range, acceleration ratio, per-card climb, and stronger final-hand profile.
 1. **v09030412** (2026-09-03): **Cinematic Showdown Soundscape** - Replaced the sparse generic stinger with a synchronized Web Audio sequence: a stereo arena riser, sub rumble, individual left-to-center card whooshes, three-layer landing snaps for every winning card, electrical cracks for the expanding rings and lightning, a compressed role-title slam, and distinct blue/red/draw confirmation chords. The five-card X-hand receives an additional bass hit, sweep, octave shimmer, and longer tail. A shared dynamics compressor prevents clipping, all scheduled sources are stopped and disconnected on replay or phase changes, and authored character voices now enter just after the sound-effect peak for intelligibility. Added pure timing tests that lock sound entries and impacts to the CSS card stagger; verified a complete six-stage replay in-browser with no audio warnings.
 1. **v09030400** (2026-09-03): **Kinetic Showdown Impact** - Rebuilt the winning-card entrance as a deeper left-to-right 3D launch with alternating vertical trajectories, perspective rotation, aggressive overshoot, recoil, settling bounce, and per-card light trails. Added three expanding energy rings, an arena-wide moving light cut, eight radial lightning strikes, synchronized camera and card-row impacts, a card-core burst, title glint, pulse, and split glitch accents. All motion is finite, dominated by compositor-friendly transforms and opacity, responsive to compact containers, and fully disabled by `prefers-reduced-motion`. Completed a real AI match in-browser and visually verified the animated cut-in without losing card, role, or winner-color legibility.
