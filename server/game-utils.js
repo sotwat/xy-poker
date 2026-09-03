@@ -10,6 +10,36 @@ const ALLOWED_ACTIONS = new Set(['CHOOSE_TURN_ORDER', 'PLACE_AND_DRAW']);
 export const MAX_GAME_RECORD_THOUGHT_LENGTH = 280;
 export const GAME_RECORD_TRAINING_METADATA_VERSION = 2;
 
+const Y_HAND_ACHIEVEMENTS = Object.freeze({
+    PureStraightFlush: 'y_win_pure_straight_flush',
+    ThreeOfAKind: 'y_win_three_of_a_kind',
+    StraightFlush: 'y_win_straight_flush',
+    PureStraight: 'y_win_pure_straight',
+    Flush: 'y_win_flush',
+    PureOnePair: 'y_win_pure_one_pair',
+    Straight: 'y_win_straight',
+    OnePair: 'y_win_one_pair',
+    HighCard: 'y_win_high_card',
+});
+
+const X_HAND_ACHIEVEMENTS = Object.freeze({
+    RoyalFlush: 'x_win_royal_flush',
+    StraightFlush: 'straight_flush_x',
+    FourOfAKind: 'x_win_four_of_a_kind',
+    FullHouse: 'x_win_full_house',
+    Straight: 'x_win_straight',
+    Flush: 'x_win_flush',
+    ThreeOfAKind: 'x_win_three_of_a_kind',
+    TwoPair: 'x_win_two_pair',
+    OnePair: 'x_win_one_pair',
+    HighCard: 'x_win_high_card',
+});
+
+export const ROLE_WIN_ACHIEVEMENT_TYPES = Object.freeze([
+    ...Object.values(X_HAND_ACHIEVEMENTS),
+    ...Object.values(Y_HAND_ACHIEVEMENTS),
+]);
+
 export function createGameRecordTrainingMetadata(options = {}) {
     return {
         schemaVersion: GAME_RECORD_TRAINING_METADATA_VERSION,
@@ -198,6 +228,145 @@ export function isValidGameRecord(record) {
     }
 
     return playerMoveCounts[0] === 15 && playerMoveCounts[1] === 15;
+}
+
+function compareKickers(first, second) {
+    for (let index = 0; index < Math.max(first.length, second.length); index += 1) {
+        const difference = (first[index] || 0) - (second[index] || 0);
+        if (difference !== 0) return Math.sign(difference);
+    }
+    return 0;
+}
+
+function isOrderedThreeCardStraight(cards) {
+    const ranks = cards.map(card => card.rank);
+    return (ranks[0] + 1 === ranks[1] && ranks[1] + 1 === ranks[2])
+        || (ranks[0] - 1 === ranks[1] && ranks[1] - 1 === ranks[2])
+        || (ranks[0] === 14 && ranks[1] === 2 && ranks[2] === 3)
+        || (ranks[0] === 3 && ranks[1] === 2 && ranks[2] === 14);
+}
+
+/** Mirrors the client Y-hand evaluator so achievement wins match the result table. */
+export function evaluateYHandForAchievement(cards) {
+    const ranks = cards.map(card => card.rank).sort((a, b) => a - b);
+    const isFlush = cards.every(card => card.suit === cards[0].suit);
+    const isStraight = (ranks[0] + 1 === ranks[1] && ranks[1] + 1 === ranks[2])
+        || (ranks[0] === 2 && ranks[1] === 3 && ranks[2] === 14);
+    const straightHigh = ranks[0] === 2 && ranks[1] === 3 && ranks[2] === 14 ? 3 : ranks[2];
+    const isTrips = ranks[0] === ranks[1] && ranks[1] === ranks[2];
+    const isPair = !isTrips && (ranks[0] === ranks[1] || ranks[1] === ranks[2] || ranks[0] === ranks[2]);
+    const isLowerPair = ranks[0] === ranks[1];
+    const orderedStraight = isStraight && isOrderedThreeCardStraight(cards);
+    const sortedRanks = [...ranks].sort((a, b) => b - a);
+
+    if (isFlush && orderedStraight) return { type: 'PureStraightFlush', rankValue: 9, kickers: [straightHigh] };
+    if (isTrips) return { type: 'ThreeOfAKind', rankValue: 8, kickers: [ranks[0]] };
+    if (isFlush && isStraight) return { type: 'StraightFlush', rankValue: 7, kickers: [straightHigh] };
+    if (!isFlush && orderedStraight) return { type: 'PureStraight', rankValue: 6, kickers: [straightHigh] };
+    if (isFlush) return { type: 'Flush', rankValue: 5, kickers: sortedRanks };
+
+    if (isPair) {
+        const positionalRanks = cards.map(card => card.rank);
+        const adjacentPair = positionalRanks[0] === positionalRanks[1]
+            || positionalRanks[1] === positionalRanks[2];
+        if (adjacentPair) {
+            const pairRank = isLowerPair ? ranks[0] : ranks[1];
+            const kicker = isLowerPair ? ranks[2] : ranks[0];
+            return { type: 'PureOnePair', rankValue: 4, kickers: [pairRank, kicker] };
+        }
+    }
+
+    if (isStraight) return { type: 'Straight', rankValue: 3, kickers: [straightHigh] };
+    if (isPair) return { type: 'OnePair', rankValue: 2, kickers: [ranks[0], ranks[1]] };
+    return { type: 'HighCard', rankValue: 1, kickers: sortedRanks };
+}
+
+const X_HAND_BASE_SCORES = Object.freeze({
+    RoyalFlush: 1000,
+    StraightFlush: 16,
+    FourOfAKind: 14,
+    FullHouse: 12,
+    Straight: 10,
+    Flush: 8,
+    ThreeOfAKind: 6,
+    TwoPair: 4,
+    OnePair: 2,
+    HighCard: 0,
+});
+
+/** Mirrors the client X-hand evaluator and its game-specific scoring order. */
+export function evaluateXHandForAchievement(cards) {
+    const ranks = cards.map(card => card.rank).sort((a, b) => a - b);
+    const isFlush = cards.every(card => card.suit === cards[0].suit);
+    const isWheel = ranks[0] === 2 && ranks[1] === 3 && ranks[2] === 4 && ranks[3] === 5 && ranks[4] === 14;
+    const isStraight = isWheel || ranks.every((rank, index) => index === 0 || ranks[index - 1] + 1 === rank);
+    const counts = new Map();
+    for (const rank of ranks) counts.set(rank, (counts.get(rank) || 0) + 1);
+    const countValues = [...counts.values()].sort((a, b) => b - a);
+
+    let type;
+    let kickers;
+    if (isFlush && isStraight && ranks[0] === 10 && ranks[4] === 14) {
+        type = 'RoyalFlush'; kickers = [];
+    } else if (isFlush && isStraight) {
+        type = 'StraightFlush'; kickers = [ranks[4]];
+    } else if (countValues[0] === 4) {
+        const fourRank = [...counts].find(([, count]) => count === 4)[0];
+        const kicker = [...counts].find(([, count]) => count === 1)[0];
+        type = 'FourOfAKind'; kickers = [fourRank, kicker];
+    } else if (countValues[0] === 3 && countValues[1] === 2) {
+        const threeRank = [...counts].find(([, count]) => count === 3)[0];
+        const pairRank = [...counts].find(([, count]) => count === 2)[0];
+        type = 'FullHouse'; kickers = [threeRank, pairRank];
+    } else if (isFlush) {
+        type = 'Flush'; kickers = [...ranks].reverse();
+    } else if (isStraight) {
+        type = 'Straight'; kickers = [isWheel ? 5 : ranks[4]];
+    } else if (countValues[0] === 3) {
+        const threeRank = [...counts].find(([, count]) => count === 3)[0];
+        type = 'ThreeOfAKind'; kickers = [threeRank, ...ranks.filter(rank => rank !== threeRank).reverse()];
+    } else if (countValues[0] === 2 && countValues[1] === 2) {
+        const pairs = [...counts].filter(([, count]) => count === 2).map(([rank]) => rank).sort((a, b) => b - a);
+        const kicker = [...counts].find(([, count]) => count === 1)[0];
+        type = 'TwoPair'; kickers = [...pairs, kicker];
+    } else if (countValues[0] === 2) {
+        const pairRank = [...counts].find(([, count]) => count === 2)[0];
+        type = 'OnePair'; kickers = [pairRank, ...ranks.filter(rank => rank !== pairRank).reverse()];
+    } else {
+        type = 'HighCard'; kickers = [...ranks].reverse();
+    }
+
+    return { type, baseScore: X_HAND_BASE_SCORES[type], kickers };
+}
+
+export function getWonHandAchievementTypes(record) {
+    const boards = [0, 1].map(() => Array.from({ length: 3 }, () => Array(5).fill(null)));
+    for (const move of record.moves) boards[move.playerIndex][move.row][move.column] = move.card;
+
+    const playerIndex = record.viewerPlayerIndex;
+    const opponentIndex = playerIndex === 0 ? 1 : 0;
+    const achievements = new Set();
+
+    for (let column = 0; column < 5; column += 1) {
+        const playerCards = boards[playerIndex].map(row => row[column]);
+        const opponentCards = boards[opponentIndex].map(row => row[column]);
+        if (playerCards.some(card => !card) || opponentCards.some(card => !card)) continue;
+        const playerHand = evaluateYHandForAchievement(playerCards);
+        const opponentHand = evaluateYHandForAchievement(opponentCards);
+        const rankDifference = playerHand.rankValue - opponentHand.rankValue;
+        const comparison = rankDifference === 0 ? compareKickers(playerHand.kickers, opponentHand.kickers) : Math.sign(rankDifference);
+        if (comparison > 0) achievements.add(Y_HAND_ACHIEVEMENTS[playerHand.type]);
+    }
+
+    const playerX = evaluateXHandForAchievement(boards[playerIndex][2]);
+    const opponentX = evaluateXHandForAchievement(boards[opponentIndex][2]);
+    const scoreDifference = playerX.baseScore - opponentX.baseScore;
+    const xComparison = scoreDifference === 0 && playerX.type === opponentX.type
+        ? compareKickers(playerX.kickers, opponentX.kickers)
+        : Math.sign(scoreDifference);
+    if (xComparison > 0) achievements.add(X_HAND_ACHIEVEMENTS[playerX.type]);
+
+    return [...achievements];
 }
 
 const AI_PARAMETER_DEFAULTS = {

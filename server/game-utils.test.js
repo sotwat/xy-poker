@@ -7,15 +7,85 @@ import {
     createDeck,
     generateRoomId,
     generateSessionToken,
+    getWonHandAchievementTypes,
     isValidBrowserId,
     isValidGameAction,
     isValidGameRecord,
+    evaluateXHandForAchievement,
+    evaluateYHandForAchievement,
     normalizeRoomId,
     randomPlayerIndex,
+    ROLE_WIN_ACHIEVEMENT_TYPES,
     sanitizePlayerName,
     selectShowdownVoiceAssignment,
     shuffleDeck,
 } from './game-utils.js';
+
+const testCard = (rank, suit) => ({ rank, suit, id: `${suit}-${rank}` });
+
+test('recognizes every X and Y hand used by win achievements', () => {
+    const yHands = [
+        [[testCard(2, 'hearts'), testCard(3, 'hearts'), testCard(4, 'hearts')], 'PureStraightFlush'],
+        [[testCard(7, 'hearts'), testCard(7, 'clubs'), testCard(7, 'diamonds')], 'ThreeOfAKind'],
+        [[testCard(2, 'hearts'), testCard(4, 'hearts'), testCard(3, 'hearts')], 'StraightFlush'],
+        [[testCard(2, 'hearts'), testCard(3, 'clubs'), testCard(4, 'diamonds')], 'PureStraight'],
+        [[testCard(2, 'hearts'), testCard(5, 'hearts'), testCard(9, 'hearts')], 'Flush'],
+        [[testCard(7, 'hearts'), testCard(7, 'clubs'), testCard(2, 'diamonds')], 'PureOnePair'],
+        [[testCard(2, 'hearts'), testCard(4, 'clubs'), testCard(3, 'diamonds')], 'Straight'],
+        [[testCard(7, 'hearts'), testCard(2, 'clubs'), testCard(7, 'diamonds')], 'OnePair'],
+        [[testCard(2, 'hearts'), testCard(5, 'clubs'), testCard(9, 'diamonds')], 'HighCard'],
+    ];
+    assert.deepEqual(yHands.map(([cards]) => evaluateYHandForAchievement(cards).type), yHands.map(([, type]) => type));
+
+    const xHands = [
+        [[10, 11, 12, 13, 14].map(rank => testCard(rank, 'hearts')), 'RoyalFlush'],
+        [[5, 6, 7, 8, 9].map(rank => testCard(rank, 'spades')), 'StraightFlush'],
+        [[testCard(7, 'hearts'), testCard(7, 'diamonds'), testCard(7, 'clubs'), testCard(7, 'spades'), testCard(2, 'hearts')], 'FourOfAKind'],
+        [[testCard(7, 'hearts'), testCard(7, 'diamonds'), testCard(7, 'clubs'), testCard(2, 'spades'), testCard(2, 'hearts')], 'FullHouse'],
+        [[testCard(5, 'hearts'), testCard(6, 'diamonds'), testCard(7, 'clubs'), testCard(8, 'spades'), testCard(9, 'hearts')], 'Straight'],
+        [[2, 5, 8, 11, 13].map(rank => testCard(rank, 'clubs')), 'Flush'],
+        [[testCard(7, 'hearts'), testCard(7, 'diamonds'), testCard(7, 'clubs'), testCard(2, 'spades'), testCard(4, 'hearts')], 'ThreeOfAKind'],
+        [[testCard(7, 'hearts'), testCard(7, 'diamonds'), testCard(5, 'clubs'), testCard(5, 'spades'), testCard(2, 'hearts')], 'TwoPair'],
+        [[testCard(7, 'hearts'), testCard(7, 'diamonds'), testCard(2, 'clubs'), testCard(4, 'spades'), testCard(9, 'hearts')], 'OnePair'],
+        [[testCard(2, 'hearts'), testCard(5, 'diamonds'), testCard(9, 'clubs'), testCard(11, 'spades'), testCard(13, 'hearts')], 'HighCard'],
+    ];
+    assert.deepEqual(xHands.map(([cards]) => evaluateXHandForAchievement(cards).type), xHands.map(([, type]) => type));
+    assert.equal(ROLE_WIN_ACHIEVEMENT_TYPES.length, 19);
+    assert.equal(new Set(ROLE_WIN_ACHIEVEMENT_TYPES).size, 19);
+});
+
+test('awards only the viewer hand types that actually win their showdowns', () => {
+    const playerBoard = [
+        [testCard(12, 'hearts'), testCard(7, 'spades'), testCard(2, 'spades'), testCard(4, 'hearts'), testCard(6, 'hearts')],
+        [testCard(13, 'clubs'), testCard(7, 'hearts'), testCard(5, 'spades'), testCard(4, 'clubs'), testCard(8, 'clubs')],
+        [testCard(14, 'diamonds'), testCard(7, 'clubs'), testCard(9, 'spades'), testCard(8, 'diamonds'), testCard(7, 'diamonds')],
+    ];
+    const opponentBoard = [
+        [testCard(2, 'hearts'), testCard(3, 'diamonds'), testCard(3, 'hearts'), testCard(3, 'spades'), testCard(4, 'spades')],
+        [testCard(5, 'clubs'), testCard(6, 'diamonds'), testCard(6, 'clubs'), testCard(14, 'hearts'), testCard(5, 'diamonds')],
+        [testCard(9, 'diamonds'), testCard(10, 'diamonds'), testCard(13, 'spades'), testCard(3, 'clubs'), testCard(12, 'spades')],
+    ];
+    const moves = [];
+    for (const playerIndex of [0, 1]) {
+        const board = playerIndex === 0 ? playerBoard : opponentBoard;
+        for (let row = 0; row < 3; row += 1) {
+            for (let column = 0; column < 5; column += 1) {
+                moves.push({ playerIndex, row, column, card: board[row][column] });
+            }
+        }
+    }
+
+    const record = { viewerPlayerIndex: 0, moves };
+    assert.deepEqual(new Set(getWonHandAchievementTypes(record)), new Set([
+        'y_win_pure_straight',
+        'y_win_three_of_a_kind',
+        'y_win_flush',
+        'y_win_pure_one_pair',
+        'y_win_straight',
+        'x_win_one_pair',
+    ]));
+    assert.deepEqual(getWonHandAchievementTypes({ ...record, viewerPlayerIndex: 1 }), []);
+});
 
 test('creates and shuffles a complete deck without changing its cards', () => {
     const deck = createDeck();

@@ -1,6 +1,18 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { ACHIEVEMENT_TYPES, buildAchievementCatalog } from './achievements';
+import {
+    ACHIEVEMENT_TYPES,
+    buildAchievementCatalog,
+    X_HAND_WIN_ACHIEVEMENT_TYPES,
+    Y_HAND_WIN_ACHIEVEMENT_TYPES,
+} from './achievements';
+
+test('catalogs one win achievement for every X and Y hand', () => {
+    assert.equal(X_HAND_WIN_ACHIEVEMENT_TYPES.length, 10);
+    assert.equal(Y_HAND_WIN_ACHIEVEMENT_TYPES.length, 9);
+    assert.equal(ACHIEVEMENT_TYPES.length, 22);
+    assert.equal(new Set(ACHIEVEMENT_TYPES).size, ACHIEVEMENT_TYPES.length);
+});
 
 test('lists every achievement as locked when the player has none', () => {
     const rows = buildAchievementCatalog([]);

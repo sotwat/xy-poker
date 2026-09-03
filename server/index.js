@@ -10,6 +10,7 @@ import {
     createDeck,
     generateRoomId,
     generateSessionToken,
+    getWonHandAchievementTypes,
     isValidBrowserId,
     isValidGameAction,
     isValidGameRecord,
@@ -50,11 +51,13 @@ app.use(express.static(path.join(directory, '../dist'), {
     maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0,
 }));
 
+const SERVER_VERSION = '09031357';
+
 app.get('/api/health', async (_request, response) => {
     try {
         const { error } = await supabase.from('players').select('id').limit(1);
         if (error) throw error;
-        response.status(200).json({ status: 'ok' });
+        response.status(200).json({ status: 'ok', version: SERVER_VERSION });
     } catch (error) {
         console.error('Health check failed:', error);
         response.status(503).json({ status: 'error' });
@@ -388,7 +391,20 @@ io.on('connection', socket => {
                 record_data: storedRecord,
             }, { onConflict: 'id', ignoreDuplicates: true });
             if (error) throw error;
-            acknowledge(callback, { success: true, id: record.id });
+
+            const achievementTypes = getWonHandAchievementTypes(record);
+            if (achievementTypes.length > 0) {
+                const { error: achievementError } = await supabase.from('achievements').upsert(
+                    achievementTypes.map(achievementType => ({
+                        player_id: userId,
+                        achievement_type: achievementType,
+                    })),
+                    { onConflict: 'player_id,achievement_type', ignoreDuplicates: true },
+                );
+                if (achievementError) throw achievementError;
+            }
+
+            acknowledge(callback, { success: true, id: record.id, unlockedAchievements: achievementTypes });
         } catch (error) {
             console.error('Unable to save game record:', error);
             acknowledge(callback, { success: false, error: 'Unable to save game record' });

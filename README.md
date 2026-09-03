@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09031338` (2026-09-03 13:38)
+- **Current Version:** `09031357` (2026-09-03 13:57)
 - **Status:** **Production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 57 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~323 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09031338` prepared for Cloudflare Pages; account and post-result navigation verified locally; Render API health normal
+    - Deployment: ✅ `v09031357` prepared for Cloudflare Pages and Render; complete X/Y hand-win achievement catalog and server-side adjudication verified locally
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -89,6 +89,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09031357** (2026-09-03): **Complete X/Y Hand Victory Achievements** - Expanded the achievement catalog from four entries to 22, including one victory achievement for every X hand (10 types) and every Y hand (9 types). The existing `straight_flush_x` identifier remains the canonical X Straight Flush achievement for backward compatibility. Completed game records are reconstructed and adjudicated on the server: only the viewer's hand types that actually beat the opposing X/Y hand are inserted, draws and losing hands do not unlock, and repeated wins remain idempotent. Added Japanese and English names, generic forward-compatible title lookup, exhaustive known-hand tests, viewer-side win tests, and 10,000 randomized client/server evaluator parity checks.
 1. **v09031338** (2026-09-03): **Mode-Correct Result Navigation** - Removed the duplicate account shortcut from the home brand bar and retained the account entry in the primary footer menu as the single destination. Result exits now branch on the actual match mode: local and quick-match bot games return to Home, while real online games continue to return to the Online Match lobby. Both the result modal and the post-result board controls display the matching Home/Lobby label and follow the same routing rule.
 1. **v09031327** (2026-09-03): **Frame-Relative Skin Dice Previews** - Replaced the undersized 18 px fixed dice samples with container-relative sizing tied to each skin tile. Dice now scale continuously from about 30 px in compact three-column phone layouts through about 40 px in wider phone tiles to 48 px on desktop, while the preview row reserves proportional breathing room so the sample remains balanced inside its frame. Short viewports keep a stable tile height and scroll the catalog instead of crushing dice and names together.
 1. **v09031315** (2026-09-03): **Dark Game Shell & Accurate Board Preview** - Replaced the light application shell with a deep navy competitive-game theme inspired by modern card-game menus, while retaining white only for physical cards and dice. Home, match chrome, online lobby, forms, dialogs, rules, skin store, My Page, results, and replay surfaces now share dark layered tokens with restrained blue interaction accents. Replaced the misleading decorative `5 × 5` illustration with the same SharedBoard component used by live matches: five columns with three opponent slots, a central die, and three player slots per column, filled from the dice outward. Removed all explanatory labels around the preview and the redundant `2 players / 5 columns / Quick matches` metadata. Reduced skin-store dice previews to about 18 CSS pixels and verified the redesign at phone and desktop widths.

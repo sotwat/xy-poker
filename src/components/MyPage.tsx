@@ -406,11 +406,7 @@ export const MyPage: React.FC<MyPageProps> = ({
 
 // Helper
 const getReadableAchievement = (type: string, t: Translate) => {
-    switch (type) {
-        case 'first_win': return t('achievement.first_win');
-        case 'win_streak_3': return t('achievement.win_streak_3');
-        case 'straight_flush_x': return t('achievement.straight_flush_x');
-        case 'perfect_game': return t('achievement.perfect_game');
-        default: return type.replace(/_/g, ' ');
-    }
+    const key = `achievement.${type}`;
+    const translated = t(key);
+    return translated === key ? type.replace(/_/g, ' ') : translated;
 };
