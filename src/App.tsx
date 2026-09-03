@@ -1918,7 +1918,7 @@ function App() {
                             <HeartHandshake aria-hidden="true" />
                             <span>{t('home.support')}</span>
                           </a>
-                          <div className="home-version">v09031315</div>
+                          <div className="home-version">v09031327</div>
                         </div>
                       </div>
                     )}

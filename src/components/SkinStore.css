@@ -560,6 +560,8 @@
 .skin-store-modal .skin-item {
     padding: 10px !important;
     gap: 7px !important;
+    min-height: 116px;
+    container-type: inline-size;
 }
 
 .skin-store-modal .skin-item:hover:not(:disabled) {
@@ -572,12 +574,12 @@
 }
 
 .skin-store-modal .skin-preview {
-    width: 40px;
-    height: 36px;
+    width: 100%;
+    height: clamp(44px, 34cqw, 60px);
 }
 
 .skin-store-modal .skin-preview .dice {
-    font-size: 4.5px !important;
+    font-size: clamp(7.5px, 8.5cqw, 12px) !important;
 }
 
 .skin-store-modal h2,
@@ -641,7 +643,11 @@
 }
 .skin-store-modal .gacha-actions,
 .skin-store-modal .store-tabs { margin-bottom: 0 !important; }
-.skin-store-modal .skins-grid { margin-bottom: 0 !important; }
+.skin-store-modal .skins-grid {
+    min-height: 0;
+    margin-bottom: 0 !important;
+    align-content: start;
+}
 .skin-store-modal .btn-close {
     color: var(--text-secondary) !important;
     background: var(--surface) !important;
