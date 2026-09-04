@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09041048` (2026-09-04 10:48)
+- **Current Version:** `09050141` (2026-09-05 01:41)
 - **Status:** **Production deployment verified**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 64 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~335 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: ✅ `v09041048` prepared for Cloudflare Pages and Render; 39-achievement catalog, live progress UI, and server-authoritative streak tracking verified
+    - Deployment: ✅ `v09050141` prepared for Cloudflare Pages and Render; blue/red result identity and responsive result layout verified
 
 ### Database status
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
@@ -90,6 +90,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v09050141** (2026-09-05): **Blue/Red Result Identity** - Restored the game's established blue player-one and red player-two identity throughout the result screen after a late neutral-theme override had erased the colors. Player headings and every hand result now retain their side color, winning hands add weight, the winner heading carries the matching rule, and both score cards use restrained tinted surfaces with high-contrast colored scores and borders. The X-hand keeps its gold label while its two results remain side-colored. Removed the obsolete pulsing gold winner glow, verified text contrast against the actual dark surfaces, and checked the result at 320×568, 390×844, and 1280×1000 without horizontal overflow or undersized buttons.
 1. **v09041048** (2026-09-04): **Expanded Achievements & Live Progress** - Expanded the catalog from 22 to 39 achievements with cumulative matches and wins, 3/5/10-win streaks, first draw, one-point wins, 30-point games, three/five bonus cards, zero-bonus wins, three-hidden-card wins, five-column Y sweeps, and complete Y/X sweeps. Added server-authoritative current and best win-streak storage for both AI and ranked games; losses and draws correctly reset current streaks, while unlocked achievements remain permanent. Existing player totals are backfilled into cumulative milestones. Locked cumulative and streak cards now show compact numeric progress and responsive native progress bars, with the current live streak called out explicitly. Match feats and role wins are adjudicated from validated game records on the server. Verified 64 automated tests, SQL migration state, and the Japanese achievement layout at 320 px, 390 px, and 1280 px widths.
 1. **v09031357** (2026-09-03): **Complete X/Y Hand Victory Achievements** - Expanded the achievement catalog from four entries to 22, including one victory achievement for every X hand (10 types) and every Y hand (9 types). The existing `straight_flush_x` identifier remains the canonical X Straight Flush achievement for backward compatibility. Completed game records are reconstructed and adjudicated on the server: only the viewer's hand types that actually beat the opposing X/Y hand are inserted, draws and losing hands do not unlock, and repeated wins remain idempotent. Added Japanese and English names, generic forward-compatible title lookup, exhaustive known-hand tests, viewer-side win tests, and 10,000 randomized client/server evaluator parity checks.
 1. **v09031338** (2026-09-03): **Mode-Correct Result Navigation** - Removed the duplicate account shortcut from the home brand bar and retained the account entry in the primary footer menu as the single destination. Result exits now branch on the actual match mode: local and quick-match bot games return to Home, while real online games continue to return to the Online Match lobby. Both the result modal and the post-result board controls display the matching Home/Lobby label and follow the same routing rule.

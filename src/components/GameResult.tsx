@@ -136,7 +136,7 @@ export const GameResult: React.FC<GameResultProps> = ({
     return (
         <div className="game-result-overlay">
             <div className="game-result-modal">
-                <div className="winner-announcement">
+                <div className={`winner-announcement winner-${winner ?? 'draw'}`}>
                     {winner === 'draw' ? (
                         <span className="draw-text">{t('result.tie')}</span>
                     ) : (
@@ -151,14 +151,14 @@ export const GameResult: React.FC<GameResultProps> = ({
                 <div className="results-table">
                     <div className="table-header">
                         <div>{t('result.dice')}</div>
-                        <div>{p1Name}</div>
-                        <div>{p2Name}</div>
+                        <div className="result-player-heading player-one-heading">{p1Name}</div>
+                        <div className="result-player-heading player-two-heading">{p2Name}</div>
                     </div>
                     {columnResults.map((res, idx) => (
                         <div key={idx} className="table-row">
                             <div className="dice-val">{res.dice}</div>
-                            <div className={`hand-name ${res.winner === 'p1' ? 'p1-text' : ''}`}>{res.p1Hand}</div>
-                            <div className={`hand-name ${res.winner === 'p2' ? 'p2-text' : ''}`}>{res.p2Hand}</div>
+                            <div className={`hand-name player-one-hand ${res.winner === 'p1' ? 'winning-hand' : ''}`}>{res.p1Hand}</div>
+                            <div className={`hand-name player-two-hand ${res.winner === 'p2' ? 'winning-hand' : ''}`}>{res.p2Hand}</div>
                         </div>
                     ))}
 
@@ -170,10 +170,10 @@ export const GameResult: React.FC<GameResultProps> = ({
                         aria-label={`${t('result.xHand')}: ${p1Name} ${handName(p1XRes.type)} ${t('result.points', { points: p1XScore })}; ${p2Name} ${handName(p2XRes.type)} ${t('result.points', { points: p2XScore })}`}
                     >
                         <div className="x-hand-label">{t('result.xHand')}</div>
-                        <div className={`hand-name ${xWinner === 'p1' ? 'p1-text' : ''}`}>
+                        <div className={`hand-name player-one-hand ${xWinner === 'p1' ? 'winning-hand' : ''}`}>
                             {handName(p1XRes.type)} <span className="score-detail">({p1XScore})</span>
                         </div>
-                        <div className={`hand-name ${xWinner === 'p2' ? 'p2-text' : ''}`}>
+                        <div className={`hand-name player-two-hand ${xWinner === 'p2' ? 'winning-hand' : ''}`}>
                             {handName(p2XRes.type)} <span className="score-detail">({p2XScore})</span>
                         </div>
                     </div>

@@ -114,21 +114,6 @@
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
     border: 2px solid #ffd700;
     background: rgba(255, 215, 0, 0.1);
-    animation: winner-glow 2s infinite ease-in-out;
-}
-
-@keyframes winner-glow {
-    0% {
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-    }
-
-    50% {
-        box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
-    }
-
-    100% {
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-    }
 }
 
 .winner-col.draw {
@@ -427,3 +412,75 @@
 .game-result-modal .table-header { color: var(--text-muted) !important; }
 .game-result-modal .hand-name,
 .game-result-modal .bonus-val { color: var(--text-secondary); }
+
+.game-result-modal {
+    --result-player-one: #63a2ff;
+    --result-player-two: #ff6673;
+    --result-player-one-soft: rgb(67 136 255 / 12%);
+    --result-player-two-soft: rgb(242 87 103 / 12%);
+    --result-player-one-border: var(--result-player-one);
+    --result-player-two-border: var(--result-player-two);
+}
+
+.winner-announcement.winner-p1 {
+    border-bottom-color: var(--result-player-one) !important;
+}
+
+.winner-announcement.winner-p2 {
+    border-bottom-color: var(--result-player-two) !important;
+}
+
+.winner-announcement.winner-p1,
+.winner-announcement.winner-p2 {
+    border-bottom-style: solid;
+    border-bottom-width: 2px !important;
+    padding-bottom: 12px !important;
+}
+
+.game-result-modal .p1-text,
+.game-result-modal .player-one-heading,
+.game-result-modal .player-one-hand {
+    color: var(--result-player-one);
+}
+
+.game-result-modal .p2-text,
+.game-result-modal .player-two-heading,
+.game-result-modal .player-two-hand {
+    color: var(--result-player-two);
+}
+
+.result-player-heading {
+    font-weight: 750;
+}
+
+.game-result-modal .hand-name.winning-hand {
+    font-weight: 800;
+}
+
+.game-result-modal .score-detail {
+    color: inherit;
+    opacity: 0.76;
+}
+
+.game-result-modal .score-box.p1 {
+    --score-accent: var(--result-player-one);
+    background: var(--result-player-one-soft) !important;
+    border: 1px solid var(--result-player-one-border) !important;
+    border-top-width: 3px !important;
+}
+
+.game-result-modal .score-box.p2 {
+    --score-accent: var(--result-player-two);
+    background: var(--result-player-two-soft) !important;
+    border: 1px solid var(--result-player-two-border) !important;
+    border-top-width: 3px !important;
+}
+
+.game-result-modal .score-box h3,
+.game-result-modal .score-box .score-val {
+    color: var(--score-accent);
+}
+
+.game-result-modal .score-box.winner-box {
+    box-shadow: 0 0 0 2px var(--score-accent), 0 12px 24px rgb(0 0 0 / 26%);
+}

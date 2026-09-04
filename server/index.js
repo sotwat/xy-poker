@@ -51,7 +51,7 @@ app.use(express.static(path.join(directory, '../dist'), {
     maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0,
 }));
 
-const SERVER_VERSION = '09041048';
+const SERVER_VERSION = '09050141';
 
 app.get('/api/health', async (_request, response) => {
     try {
