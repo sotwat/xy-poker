@@ -33,6 +33,7 @@ interface Profile {
     level: number;
     games_played: number;
     wins: number;
+    current_win_streak: number;
     username?: string; // Optional if not set
 }
 
@@ -81,7 +82,7 @@ export const MyPage: React.FC<MyPageProps> = ({
             try {
                 const { data: rawProfile, error: profileError } = await supabase
                     .from('players')
-                    .select('id, rating, xp, level, games_played, wins, username')
+                    .select('id, rating, xp, level, games_played, wins, current_win_streak, username')
                     .eq('id', userId)
                     .single();
 
@@ -193,7 +194,12 @@ export const MyPage: React.FC<MyPageProps> = ({
     const totalGames = profile?.games_played || 0;
     const totalWins = profile?.wins || 0;
     const winRate = totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(1) : '0.0';
-    const achievementRows = buildAchievementCatalog(achievements);
+    const achievementRows = buildAchievementCatalog(achievements, {
+        gamesPlayed: totalGames,
+        wins: totalWins,
+        currentWinStreak: profile?.current_win_streak || 0,
+    });
+    const unlockedAchievementCount = achievementRows.filter(row => row.achievement).length;
 
     return (
         <div className="mypage-overlay">
@@ -355,22 +361,51 @@ export const MyPage: React.FC<MyPageProps> = ({
 
                     {!loading && activeTab === 'achievements' && (
                         <div className="achievements-view">
-                            {achievementRows.map(({ type, achievement }) => (
-                                <div
-                                    className={`achievement-item ${achievement ? 'is-unlocked' : 'is-locked'}`}
-                                    key={type}
-                                >
-                                    <div className="icon" aria-hidden="true">{achievement ? '✓' : '◇'}</div>
-                                    <div className="info">
-                                        <div className="title">{getReadableAchievement(type, t)}</div>
-                                        <div className="date">
-                                            {achievement
-                                                ? t('mypage.unlockedOn', { date: new Date(achievement.unlocked_at).toLocaleDateString(locale) })
-                                                : t('mypage.locked')}
+                            <div className="achievements-summary">
+                                <span>{t('mypage.achievementProgress')}</span>
+                                <strong>{unlockedAchievementCount} / {achievementRows.length}</strong>
+                            </div>
+                            {achievementRows.map(({ type, achievement, progress: achievementProgress }) => {
+                                const title = getReadableAchievement(type, t);
+                                return (
+                                    <div
+                                        className={`achievement-item ${achievement ? 'is-unlocked' : 'is-locked'}`}
+                                        key={type}
+                                    >
+                                        <div className="icon" aria-hidden="true">{achievement ? '✓' : '◇'}</div>
+                                        <div className="info">
+                                            <div className="title">{title}</div>
+                                            {achievement ? (
+                                                <div className="date">
+                                                    {t('mypage.unlockedOn', { date: new Date(achievement.unlocked_at).toLocaleDateString(locale) })}
+                                                </div>
+                                            ) : achievementProgress ? (
+                                                <div className="achievement-progress">
+                                                    <div className="achievement-progress-meta">
+                                                        <span>
+                                                            {achievementProgress.metric === 'currentWinStreak'
+                                                                ? t('mypage.currentStreak', { count: achievementProgress.current })
+                                                                : t('mypage.progress')}
+                                                        </span>
+                                                        <strong>{achievementProgress.current} / {achievementProgress.target}</strong>
+                                                    </div>
+                                                    <progress
+                                                        value={achievementProgress.current}
+                                                        max={achievementProgress.target}
+                                                        aria-label={t('mypage.progressAria', {
+                                                            title,
+                                                            current: achievementProgress.current,
+                                                            target: achievementProgress.target,
+                                                        })}
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <div className="date">{t('mypage.locked')}</div>
+                                            )}
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>

@@ -7,6 +7,7 @@ import {
     createDeck,
     generateRoomId,
     generateSessionToken,
+    getGameRecordAchievementTypes,
     getWonHandAchievementTypes,
     isValidBrowserId,
     isValidGameAction,
@@ -85,6 +86,76 @@ test('awards only the viewer hand types that actually win their showdowns', () =
         'x_win_one_pair',
     ]));
     assert.deepEqual(getWonHandAchievementTypes({ ...record, viewerPlayerIndex: 1 }), []);
+});
+
+test('awards match achievements from server-adjudicated records', () => {
+    const playerBoard = [
+        [testCard(2, 'hearts'), testCard(3, 'hearts'), testCard(4, 'hearts'), testCard(5, 'hearts'), testCard(6, 'hearts')],
+        [testCard(3, 'clubs'), testCard(4, 'clubs'), testCard(5, 'clubs'), testCard(6, 'clubs'), testCard(7, 'clubs')],
+        [testCard(4, 'diamonds'), testCard(5, 'diamonds'), testCard(6, 'diamonds'), testCard(7, 'diamonds'), testCard(8, 'diamonds')],
+    ];
+    playerBoard[0][0].isHidden = true;
+    playerBoard[0][1].isHidden = true;
+    playerBoard[0][2].isHidden = true;
+    const opponentBoard = [
+        [testCard(2, 'clubs'), testCard(3, 'spades'), testCard(4, 'clubs'), testCard(5, 'spades'), testCard(6, 'clubs')],
+        [testCard(8, 'diamonds'), testCard(9, 'diamonds'), testCard(10, 'spades'), testCard(11, 'spades'), testCard(12, 'spades')],
+        [testCard(13, 'spades'), testCard(13, 'hearts'), testCard(13, 'clubs'), testCard(13, 'diamonds'), testCard(14, 'clubs')],
+    ];
+    const moves = [];
+    for (const playerIndex of [0, 1]) {
+        const board = playerIndex === 0 ? playerBoard : opponentBoard;
+        for (let row = 0; row < 3; row += 1) {
+            for (let column = 0; column < 5; column += 1) {
+                moves.push({ playerIndex, row, column, card: board[row][column] });
+            }
+        }
+    }
+
+    const achievements = new Set(getGameRecordAchievementTypes({
+        viewerPlayerIndex: 0,
+        winner: 'p1',
+        scores: [30, 29],
+        bonuses: [5, 0],
+        moves,
+    }));
+    assert.ok(achievements.has('close_win'));
+    assert.ok(achievements.has('score_30'));
+    assert.ok(achievements.has('bonus_3'));
+    assert.ok(achievements.has('bonus_5'));
+    assert.ok(achievements.has('hidden_three_win'));
+    assert.ok(achievements.has('y_sweep'));
+    assert.ok(achievements.has('perfect_game'));
+    assert.ok(!achievements.has('no_bonus_win'));
+});
+
+test('awards draw and zero-bonus win achievements without false perfect games', () => {
+    const lowBoard = Array.from({ length: 3 }, (_, row) => Array.from({ length: 5 }, (_, column) => (
+        testCard(2 + row * 5 + column, row === 0 ? 'hearts' : row === 1 ? 'clubs' : 'spades')
+    )));
+    const highBoard = Array.from({ length: 3 }, (_, row) => Array.from({ length: 5 }, (_, column) => (
+        testCard(14 - row * 5 - column, row === 0 ? 'diamonds' : row === 1 ? 'clubs' : 'hearts')
+    )));
+    const moves = [lowBoard, highBoard].flatMap((board, playerIndex) => board.flatMap((cards, row) => (
+        cards.map((card, column) => ({ playerIndex, row, column, card }))
+    )));
+
+    assert.ok(getGameRecordAchievementTypes({
+        viewerPlayerIndex: 0,
+        winner: 'draw',
+        scores: [12, 12],
+        bonuses: [0, 0],
+        moves,
+    }).includes('first_draw'));
+    const winAchievements = getGameRecordAchievementTypes({
+        viewerPlayerIndex: 1,
+        winner: 'p2',
+        scores: [8, 12],
+        bonuses: [1, 0],
+        moves,
+    });
+    assert.ok(winAchievements.includes('no_bonus_win'));
+    assert.ok(!winAchievements.includes('perfect_game'));
 });
 
 test('creates and shuffles a complete deck without changing its cards', () => {

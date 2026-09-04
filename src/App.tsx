@@ -1934,7 +1934,7 @@ function App() {
                             <HeartHandshake aria-hidden="true" />
                             <span>{t('home.support')}</span>
                           </a>
-                          <div className="home-version">v09031357</div>
+                          <div className="home-version">v09041048</div>
                         </div>
                       </div>
                     )}

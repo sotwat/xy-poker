@@ -339,13 +339,14 @@ export function evaluateXHandForAchievement(cards) {
     return { type, baseScore: X_HAND_BASE_SCORES[type], kickers };
 }
 
-export function getWonHandAchievementTypes(record) {
+function analyzeWonHands(record) {
     const boards = [0, 1].map(() => Array.from({ length: 3 }, () => Array(5).fill(null)));
     for (const move of record.moves) boards[move.playerIndex][move.row][move.column] = move.card;
 
     const playerIndex = record.viewerPlayerIndex;
     const opponentIndex = playerIndex === 0 ? 1 : 0;
     const achievements = new Set();
+    let wonYHands = 0;
 
     for (let column = 0; column < 5; column += 1) {
         const playerCards = boards[playerIndex].map(row => row[column]);
@@ -355,7 +356,10 @@ export function getWonHandAchievementTypes(record) {
         const opponentHand = evaluateYHandForAchievement(opponentCards);
         const rankDifference = playerHand.rankValue - opponentHand.rankValue;
         const comparison = rankDifference === 0 ? compareKickers(playerHand.kickers, opponentHand.kickers) : Math.sign(rankDifference);
-        if (comparison > 0) achievements.add(Y_HAND_ACHIEVEMENTS[playerHand.type]);
+        if (comparison > 0) {
+            wonYHands += 1;
+            achievements.add(Y_HAND_ACHIEVEMENTS[playerHand.type]);
+        }
     }
 
     const playerX = evaluateXHandForAchievement(boards[playerIndex][2]);
@@ -364,7 +368,39 @@ export function getWonHandAchievementTypes(record) {
     const xComparison = scoreDifference === 0 && playerX.type === opponentX.type
         ? compareKickers(playerX.kickers, opponentX.kickers)
         : Math.sign(scoreDifference);
-    if (xComparison > 0) achievements.add(X_HAND_ACHIEVEMENTS[playerX.type]);
+    const wonXHand = xComparison > 0;
+    if (wonXHand) achievements.add(X_HAND_ACHIEVEMENTS[playerX.type]);
+
+    return { achievements, boards, wonXHand, wonYHands };
+}
+
+export function getWonHandAchievementTypes(record) {
+    return [...analyzeWonHands(record).achievements];
+}
+
+export function getGameRecordAchievementTypes(record) {
+    const { achievements, boards, wonXHand, wonYHands } = analyzeWonHands(record);
+    const playerIndex = record.viewerPlayerIndex;
+    const viewerWinner = `p${playerIndex + 1}`;
+    const wonGame = record.winner === viewerWinner;
+    const viewerScore = record.scores[playerIndex];
+    const opponentScore = record.scores[playerIndex === 0 ? 1 : 0];
+    const viewerBonuses = record.bonuses[playerIndex];
+
+    if (record.winner === 'draw') achievements.add('first_draw');
+    if (viewerScore >= 30) achievements.add('score_30');
+    if (viewerBonuses >= 3) achievements.add('bonus_3');
+    if (viewerBonuses >= 5) achievements.add('bonus_5');
+
+    if (wonGame) {
+        if (Math.abs(viewerScore - opponentScore) === 1) achievements.add('close_win');
+        if (viewerBonuses === 0) achievements.add('no_bonus_win');
+        if (boards[playerIndex].flat().filter(card => card?.isHidden).length === 3) {
+            achievements.add('hidden_three_win');
+        }
+        if (wonYHands === 5) achievements.add('y_sweep');
+        if (wonYHands === 5 && wonXHand) achievements.add('perfect_game');
+    }
 
     return [...achievements];
 }

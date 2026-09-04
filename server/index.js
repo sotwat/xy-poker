@@ -10,7 +10,7 @@ import {
     createDeck,
     generateRoomId,
     generateSessionToken,
-    getWonHandAchievementTypes,
+    getGameRecordAchievementTypes,
     isValidBrowserId,
     isValidGameAction,
     isValidGameRecord,
@@ -51,7 +51,7 @@ app.use(express.static(path.join(directory, '../dist'), {
     maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0,
 }));
 
-const SERVER_VERSION = '09031357';
+const SERVER_VERSION = '09041048';
 
 app.get('/api/health', async (_request, response) => {
     try {
@@ -392,7 +392,7 @@ io.on('connection', socket => {
             }, { onConflict: 'id', ignoreDuplicates: true });
             if (error) throw error;
 
-            const achievementTypes = getWonHandAchievementTypes(record);
+            const achievementTypes = getGameRecordAchievementTypes(record);
             if (achievementTypes.length > 0) {
                 const { error: achievementError } = await supabase.from('achievements').upsert(
                     achievementTypes.map(achievementType => ({
