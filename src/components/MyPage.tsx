@@ -243,6 +243,11 @@ export const MyPage: React.FC<MyPageProps> = ({
                             </div>
                         </div>
 
+                        <div className="account-player-id">
+                            <span>{t('mypage.playerId')}</span>
+                            <code>{userId}</code>
+                        </div>
+
                         <div className="mypage-tabs">
                             <button type="button" className={activeTab === 'stats' ? 'active' : ''} onClick={() => setActiveTab('stats')}>{t('mypage.stats')}</button>
                             <button type="button" className={activeTab === 'records' ? 'active' : ''} onClick={() => { setSelectedRecord(null); setActiveTab('records'); }}>{t('mypage.records')}</button>

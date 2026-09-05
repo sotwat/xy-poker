@@ -1,13 +1,13 @@
 .app.view-game { max-width: 740px; }
-.view-game .app-header { min-height: 44px; background: #141021; padding: 7px 130px 7px 48px; justify-content: flex-start; }
-.game-wordmark { line-height: 0; }
-.game-wordmark img { display: block; width: 132px; max-height: 28px; object-fit: contain; }
+.view-game .app-header { height: 44px; min-height: 44px; background: #141021; padding: 0 176px 0 48px; justify-content: flex-start; }
+.game-wordmark { min-width: 0; line-height: 0; }
+.game-wordmark img { display: block; width: 132px; max-width: 100%; max-height: 28px; object-fit: contain; }
 .view-game .btn-fullscreen { width: 40px; height: 40px; left: 4px; border: 0; color: #d2c8e4; }
 .view-game .game-info { background: #141021 !important; z-index: 110; }
-.view-game .status-bar { position: absolute; top: -44px; right: 8px; width: 120px; height: 44px; min-height: 0; padding: 0; border: 0; }
+.view-game .status-bar { position: absolute; top: -44px; right: 8px; width: 160px; height: 44px; min-height: 0; padding: 0; border: 0; justify-content: flex-end; gap: 8px; }
 .view-game .turn-indicator { display: none; }
-.view-game .surrender-btn { position: static !important; min-height: 40px !important; margin-left: auto !important; padding: 8px 14px !important; border: 0; color: #d2c8e4 !important; font-size: 11px !important; }
-.view-game .auto-toggle-btn { min-height: 36px !important; }
+.view-game .surrender-btn { position: static !important; flex-shrink: 0; min-height: 40px !important; padding: 8px 10px !important; border: 0; color: #d2c8e4 !important; font-size: 11px !important; }
+.view-game .auto-toggle-btn { position: static !important; flex-shrink: 0; min-height: 36px !important; }
 .view-game .winner-banner, .view-game .scoring-banner { font-size: 11px !important; }
 .view-game .player-score-row { position: relative; grid-template-columns: minmax(0, 1fr) auto; padding: 12px 22px !important; gap: 10px !important; background: linear-gradient(120deg, #242137, #0c0b13); border-bottom: 2px solid #716b83; }
 .view-game .score-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; overflow: visible; }
@@ -89,7 +89,7 @@
 }
 
 @container app (max-height: 650px) {
-  .view-game .app-header { min-height: 40px; }
+  .view-game .app-header { height: 40px; min-height: 40px; }
   .view-game .status-bar { top: -40px; height: 40px; }
   .view-game .player-score-row { padding-block: 6px !important; }
   .view-game .score-number { font-size: 21px; }

@@ -33,7 +33,6 @@
 .home-player-icon { flex-shrink: 0; width: 36px; height: 36px; padding: 7px; color: #fff7a0; background: #302942; border: 1px solid #9993ab; }
 .home-player-copy { display: grid; flex: 1; gap: 3px; min-width: 0; }
 .home-player-copy strong { color: #fff; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.home-player-id { color: #bdb7cc; font-size: 10px; }
 .home-player-copy strong > .lettering-text { width: min(100%, 180px); height: 1.4em; }
 .home-rating { display: flex; align-items: baseline; gap: 12px; margin-left: auto; padding-left: 20px; border-left: 1px solid #696179; white-space: nowrap; }
 .home-rating span { color: #c9c3d7; font-size: 11px; }
@@ -144,7 +143,6 @@
 }
 @container app (max-width: 370px) {
   .lobby-home { grid-template-rows: 52px minmax(175px, 1fr) 148px 58px 32px; gap: 7px; padding: 10px 12px 4px; }
-  .home-player-id { font-size: 9px; }
   .home-rating span { font-size: 8px; }
   .app .home-title { width: 120px; height: 96px; }
   .home-game-art { height: 170px; margin-left: 60px; width: calc(100% - 60px); }

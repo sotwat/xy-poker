@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09051526` (2026-09-05 15:26)
-- **Status:** **Angular UI / English interface release**
+- **Current Version:** `09051617` (2026-09-05 16:17)
+- **Status:** **Account ID / match controls fix**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
-    - Responsive UI: ✅ Japanese/English home and rules checked at 320×568, 390×844, and 1440×900
+    - Responsive UI: ✅ AUTO/Surrender separation checked at 320×568, 390×844, and 1440×900; full account ID fits the narrow screen
     - Repository lint: ✅ 0 errors / 0 warnings
     - Automated tests: ✅ 74 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~360 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: `v09051526` targets Cloudflare Pages and Render; A8 remains the default AI policy
+    - Deployment: `v09051617` targets Cloudflare Pages and Render; A8 remains the default AI policy
 
 ### Local deployment input
 
@@ -93,6 +93,8 @@ graph TD
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
+
+1. **v09051617** (2026-09-05): **Account ID & Match Controls** - Moved the player ID from the home header into ACCOUNT, with the full ID selectable for copying. AUTO and Surrender now share a flex row with an 8 px gap; the match header reserves their width and scales the logo on narrow screens. Verified both buttons independently, AUTO on/off, the non-PRO view, and 320/390/1440 px widths.
 
 1. **v09051526** (2026-09-05): **Angular UI & English Interface** - Adopted the angular card/dice outlines, square dice pips, and custom menu icons. The Poker Chase-inspired purple home uses Vectura lettering and filled angular suits. Game controls, hand names, results, skins, account screens, and replays now use English, including YOU and YOUR TURN. Rules retain Japanese and an independent English switch inside RULES. Public card ranks, ratings, and English home names render as PNGs in a Pages Function; the licensed font stays outside Git and public assets. Only the chosen font's fixed-word art ships. Fixed narrow-screen store controls and dialog headers, and kept the start-of-game announcement timer alive when a player makes an early move. Added locale-routing and renderer input/PNG checks. See [UI notes](docs/ui-refresh.md), [lettering setup](docs/font-selection.md), and [geometry notes](docs/geometry-selection.md).
 

@@ -1758,7 +1758,6 @@ function App() {
                             <HomeIcon name="account" className="home-player-icon" />
                             <div className="home-player-copy">
                               <strong><LetteringText>{playerName || t('common.guest')}</LetteringText></strong>
-                              {session && <span className="home-player-id"><LetteringText>{`ID ${session.user.id.slice(0, 8)}`}</LetteringText></span>}
                             </div>
                           </div>
                           <div className="home-rating" aria-label={`RATING ${myRating || 1500}`}>
@@ -1860,7 +1859,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v09051526</LetteringText></div>
+                          <div className="home-version"><LetteringText>v09051617</LetteringText></div>
                         </div>
                       </div>
                     )}
