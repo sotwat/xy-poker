@@ -3,7 +3,7 @@ import './ColorReview.css';
 
 const directions = [
     { id: 'current', mark: '—', name: 'CURRENT', title: '変更前のデザイン', colors: ['#141122', '#3b3280', '#ffe66d'], detail: '紫と青の光、金色のロゴ、金属調のフレーム。背景模様の比較用です。' },
-    { id: 'ink', mark: 'A', name: 'INK', title: '採用：INK配色＋CURRENTの模様', colors: ['#191c1b', '#ee503c', '#f1eee5'], detail: '墨色・朱赤・白の配色に、CURRENTの斜めの枠と細いラインを組み合わせました。' },
+    { id: 'ink', mark: 'A', name: 'INK', title: '採用：INK配色＋CURRENTの模様', colors: ['#151818', '#fb4932', '#faf6ed'], detail: '墨色・朱赤・白の配色に、CURRENTの斜めの枠と細いラインを組み合わせました。' },
     { id: 'paper', mark: 'B', name: 'PAPER', title: '白い紙 × コバルト', colors: ['#e8e6dc', '#2949bd', '#202b46'], detail: '紙に刷った罫線と青いインク。明るい背景で、ボードゲームの道具らしさを出します。' },
     { id: 'clay', mark: 'C', name: 'CLAY', title: '赤土色 × 生成り', colors: ['#984431', '#e8d8b9', '#31251f'], detail: '段差のある色面と細い刻み。温かい背景に白いカードとダイスが浮かびます。' },
     { id: 'slate', mark: 'D', name: 'SLATE', title: '石板色 × ライム', colors: ['#444c50', '#d7ee69', '#202629'], detail: '5列を思わせる区切りと硬い面。ライムは対戦ボタンと選択中の場所に使います。' },

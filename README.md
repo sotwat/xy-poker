@@ -69,8 +69,8 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09051652` (2026-09-05 16:52)
-- **Status:** **INK palette with the original angular background**
+- **Current Version:** `09051702` (2026-09-05 17:02)
+- **Status:** **INK saturation and contrast refinement**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 74 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~360 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: `v09051652` adopts INK on Cloudflare Pages and Render. Other color candidates remain development-only; A8 remains the default AI policy
+    - Deployment: `v09051702` refines INK on Cloudflare Pages and Render. Other color candidates remain development-only; A8 remains the default AI policy
 
 ### Local deployment input
 
@@ -93,6 +93,8 @@ graph TD
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
+
+1. **v09051702** (2026-09-05): **Stronger INK Contrast** - Slightly increased the saturation of the vermilion accent and player colors, deepened dark surfaces, and brightened text and borders. Raised the visibility of the existing diagonal background lines without changing their geometry. Updated the comparison swatches to match.
 
 1. **v09051652** (2026-09-05): **INK Colors & Original Background** - Adopted INK's charcoal, vermilion, and white palette as the normal theme while retaining CURRENT's angled frame, line positions, and background composition. Recolored the original patterns instead of using INK's proposed orthogonal SVG. Kept Vectura, filled suits, angular geometry, and showdown choreography. Promoted only the selected palette and shared color rules into production; PAPER/CLAY/SLATE stay in development previews. Default table colors now match INK while other board skins retain their colors. Updated the comparison page to identify the adopted combination.
 

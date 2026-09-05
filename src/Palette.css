@@ -1,10 +1,10 @@
 .app[data-palette='ink'] {
-  --bg: #191c1b; --surface: #242525; --surface-raised: #393a39; --surface-hover: #474848;
-  --border: #666e65; --border-strong: #aeb4a5; --text: #f1eee5; --text-secondary: #d0d3c8; --text-muted: #b0b8ad;
-  --accent: #ff806b; --accent-hover: #ffad9e; --accent-soft: #4e2b25; --button: #ee503c; --button-ink: #151916;
-  --button-secondary: #272829; --button-secondary-ink: #f1eee5; --logo: #f1eee5; --glyph-filter: brightness(0) invert(1);
-  --player-one: #b1cad6; --player-two: #ff9681; --danger: #ff9681; --table: #303132; --table-edge: #93958f;
-  --table-art: radial-gradient(ellipse at 50% 45%, #3b3d3d, #272a2b);
+  --bg: #151818; --surface: #1d2020; --surface-raised: #353a39; --surface-hover: #434a49;
+  --border: #7c827b; --border-strong: #c5cbbf; --text: #faf6ed; --text-secondary: #e0e3d8; --text-muted: #c0c7bb;
+  --accent: #ff725b; --accent-hover: #ffa18f; --accent-soft: #522820; --button: #fb4932; --button-ink: #101613;
+  --button-secondary: #1b1e1e; --button-secondary-ink: #faf6ed; --logo: #faf6ed; --glyph-filter: brightness(0) invert(1);
+  --player-one: #a5cee3; --player-two: #ff876f; --danger: #ff876f; --table: #2a2d2e; --table-edge: #adb1a7;
+  --table-art: radial-gradient(ellipse at 50% 45%, #363b3b, #202627);
 }
 body:has(.app[data-palette]) { background: #151918; }
 .app[data-palette] { border-color: var(--border); }
@@ -61,15 +61,15 @@ body:has(.app[data-palette]) { background: #151918; }
 .app[data-palette] .board-theme-classic-green { background: var(--table-art), var(--table) !important; border-color: var(--table-edge) !important; }
 
 .app[data-palette='ink'] .lobby-home {
-  background: radial-gradient(ellipse at 28% 58%, #3b3d3d 0, #252828 42%, #171a1a 75%);
+  background: radial-gradient(ellipse at 28% 58%, #3e4342 0, #202525 42%, #101414 75%);
 }
 .app[data-palette='ink'] .lobby-home::before {
-  border-color: rgb(238 80 60 / 12%);
-  box-shadow: 0 0 0 2px #925247, 0 0 0 14px rgb(174 180 165 / 12%), inset 0 0 0 2px #615b57;
+  border-color: rgb(251 73 50 / 16%);
+  box-shadow: 0 0 0 2px #b65b4c, 0 0 0 14px rgb(197 203 191 / 14%), inset 0 0 0 2px #74615b;
 }
 .app[data-palette='ink'] .lobby-home::after {
-  background: linear-gradient(154deg, transparent 24%, rgb(238 80 60 / 15%) 24.2%, transparent 24.7%, transparent 59%, rgb(241 238 229 / 18%) 59.2%, transparent 60%);
+  background: linear-gradient(154deg, transparent 24%, rgb(251 73 50 / 20%) 24.2%, transparent 24.7%, transparent 59%, rgb(250 246 237 / 23%) 59.2%, transparent 60%);
 }
 .app[data-palette='ink'].view-game .game-board {
-  background: linear-gradient(135deg, transparent 32%, #ee503c38 32.2%, transparent 32.5%, transparent 69%, #b1b6b440 69.2%, transparent 69.5%), linear-gradient(125deg, #303131, #202525 55%, #353535);
+  background: linear-gradient(135deg, transparent 32%, #fb493248 32.2%, transparent 32.5%, transparent 69%, #c5cbca50 69.2%, transparent 69.5%), linear-gradient(125deg, #2b3030, #191f20 55%, #343a39);
 }
