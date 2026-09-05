@@ -1,0 +1,23 @@
+- generic [ref=e58]:
+  - generic [ref=e59]:
+    - button "Back" [ref=e60] [cursor=pointer]
+    - generic [ref=e64]:
+      - generic [ref=e65]: WiseBear
+      - generic [ref=e66]: RATING 1500
+  - generic [ref=e67]:
+    - generic [ref=e68]:
+      - generic [ref=e69]: Display name
+      - textbox "Display name" [ref=e73]:
+        - /placeholder: Player Name
+        - text: WiseBear
+    - button "Ranked Find a match" [ref=e75] [cursor=pointer]:
+      - generic [ref=e76]:
+        - generic [ref=e77]: Ranked
+        - generic [ref=e78]: Find a match
+    - generic [ref=e79]: Private Room
+    - generic [ref=e81]:
+      - button "Create Room" [ref=e83] [cursor=pointer]
+      - generic [ref=e84]:
+        - generic [ref=e85]: Room code
+        - textbox "Room ID" [ref=e86]
+        - button "Join Room" [disabled] [ref=e87]

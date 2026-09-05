@@ -176,6 +176,9 @@
   grid-template-columns: 1fr;
   gap: 8px;
 }
+.online-lobby .room-join .quest-btn-secondary { order: 0; }
+.online-lobby .room-join label { order: 1; }
+.online-lobby .room-join .room-id-input { order: 2; }
 .room-join label { grid-column: 1 / -1; font-size: 12px; color: #d5ccdf; }
 .online-lobby .room-id-input { min-width: 0; margin: 0; border-color: #8d819d; }
 @container app (max-width: 370px) {

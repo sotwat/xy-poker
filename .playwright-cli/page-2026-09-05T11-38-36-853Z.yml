@@ -1,0 +1,35 @@
+- main [ref=f2e4]:
+  - generic [ref=f2e6]:
+    - generic [ref=f2e7]:
+      - strong [ref=f2e12]:
+        - generic [ref=f2e13]: WiseBear
+      - generic "RATING 1500" [ref=f2e14]:
+        - img "RATING" [ref=f2e16]
+        - strong [ref=f2e17]:
+          - generic [ref=f2e18]: "1500"
+    - region [ref=f2e19]:
+      - heading "XY Poker" [level=2] [ref=f2e20]
+      - generic [aria-hidden]:
+        - generic: "10"
+        - generic: J
+        - generic: Q
+        - generic: K
+        - generic: A
+    - complementary "Play now" [ref=f2e21]:
+      - generic [ref=f2e22]:
+        - button "AI MATCH" [ref=f2e23] [cursor=pointer]
+        - button "ONLINE MATCH" [ref=f2e26] [cursor=pointer]
+    - navigation "Home menu" [ref=f2e29]:
+      - button [ref=f2e30] [cursor=pointer]:
+        - img "SKINS" [ref=f2e34]
+      - button [ref=f2e35] [cursor=pointer]:
+        - img "RULES" [ref=f2e39]
+      - button [ref=f2e40] [cursor=pointer]:
+        - img "ACCOUNT" [ref=f2e44]
+      - button [ref=f2e45] [cursor=pointer]:
+        - img "CONTACT" [ref=f2e49]
+    - generic [ref=f2e50]:
+      - link "Support the developer (opens in a new tab)" [ref=f2e51] [cursor=pointer]:
+        - /url: https://ofuse.me/c1b70795
+        - generic [ref=f2e54]: Support
+      - generic [ref=f2e56]: v09051702
