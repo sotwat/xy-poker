@@ -65,12 +65,12 @@ body:has(.app[data-palette]) { background: #151918; }
   background: radial-gradient(ellipse at 28% 58%, #3e4342 0, #202525 42%, #101414 75%);
 }
 .app[data-palette='ink'] .lobby-home::before {
-  border-color: rgb(251 73 50 / 16%);
-  box-shadow: 0 0 0 2px #b65b4c, 0 0 0 14px rgb(197 203 191 / 14%), inset 0 0 0 2px #74615b;
+  border-color: rgb(255 92 70 / 22%);
+  box-shadow: 0 0 0 2px #c7705c, 0 0 0 14px rgb(197 203 191 / 14%), inset 0 0 0 2px #74615b;
 }
 .app[data-palette='ink'] .lobby-home::after {
-  background: linear-gradient(154deg, transparent 24%, rgb(251 73 50 / 20%) 24.2%, transparent 24.7%, transparent 59%, rgb(250 246 237 / 23%) 59.2%, transparent 60%);
+  background: linear-gradient(154deg, transparent 24%, rgb(255 92 70 / 30%) 24.2%, transparent 24.7%, transparent 59%, rgb(250 246 237 / 23%) 59.2%, transparent 60%);
 }
 .app[data-palette='ink'].view-game .game-board {
-  background: linear-gradient(135deg, transparent 32%, #fb493248 32.2%, transparent 32.5%, transparent 69%, #c5cbca50 69.2%, transparent 69.5%), linear-gradient(125deg, #2b3030, #191f20 55%, #343a39);
+  background: linear-gradient(135deg, transparent 32%, #ff5d4a90 32.2%, transparent 32.5%, transparent 69%, #c5cbca50 69.2%, transparent 69.5%), linear-gradient(125deg, #2b3030, #191f20 55%, #343a39);
 }
