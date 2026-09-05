@@ -1,0 +1,29 @@
+.app[data-palette='paper'] {
+  color-scheme: light; --bg: #e8e6dc; --surface: #f1f0e7; --surface-raised: #d9dcd4; --surface-hover: #cfd3d2;
+  --border: #939b9c; --border-strong: #384c73; --text: #202b46; --text-secondary: #3b4a61; --text-muted: #4d5a6b;
+  --accent: #2949bd; --accent-hover: #183998; --accent-soft: #d5dcf2; --button: #2949bd; --button-ink: #f8f8f1;
+  --button-secondary: #f1f0e7; --button-secondary-ink: #202b46; --logo: #2949bd; --glyph-filter: brightness(0);
+  --player-one: #2949bd; --player-two: #ac4436; --danger: #b63029; --table: #d8dedc; --table-edge: #526e9b;
+  --canvas-art: url('./backgrounds/paper.svg'); --table-art: repeating-linear-gradient(0deg, transparent 0 35px, #64748a12 35px 36px), repeating-linear-gradient(90deg, transparent 0 35px, #64748a12 35px 36px);
+}
+.app[data-palette='clay'] {
+  --bg: #984431; --surface: #31251f; --surface-raised: #514034; --surface-hover: #614c3e;
+  --border: #947c63; --border-strong: #cfb690; --text: #f6ead6; --text-secondary: #e7d9be; --text-muted: #d6c2a6;
+  --accent: #f0d5a5; --accent-hover: #ffe8bf; --accent-soft: #64523e; --button: #e8d8b9; --button-ink: #31251f;
+  --button-secondary: #31251f; --button-secondary-ink: #f6ead6; --logo: #f6ead6; --glyph-filter: brightness(0) invert(1);
+  --player-one: #b8d7d1; --player-two: #efbd8c; --danger: #ffb89e; --table: #4b3429; --table-edge: #b49370;
+  --canvas-art: url('./backgrounds/clay.svg'); --table-art: repeating-linear-gradient(90deg, transparent 0 13px, #d7b89708 13px 14px);
+}
+.app[data-palette='slate'] {
+  --bg: #444c50; --surface: #202629; --surface-raised: #364146; --surface-hover: #455359;
+  --border: #79888f; --border-strong: #b5c1c6; --text: #edf2f0; --text-secondary: #d0dadd; --text-muted: #b6c4c9;
+  --accent: #d7ee69; --accent-hover: #edff9d; --accent-soft: #424b2a; --button: #d7ee69; --button-ink: #202629;
+  --button-secondary: #202629; --button-secondary-ink: #edf2f0; --logo: #edf2f0; --glyph-filter: brightness(0) invert(1);
+  --player-one: #b3d8ed; --player-two: #f4ba99; --danger: #ffb39b; --table: #303b40; --table-edge: #84949a;
+  --canvas-art: url('./backgrounds/slate.svg'); --table-art: repeating-linear-gradient(90deg, transparent 0 calc(20% - 1px), #b4c3ca18 calc(20% - 1px) 20%);
+}
+
+.app[data-palette]:not([data-palette='ink']) .lobby-home,
+.app[data-palette]:not([data-palette='ink']).view-game .game-board { background: var(--canvas-art) center / cover no-repeat, var(--bg); }
+.app[data-palette]:not([data-palette='ink']) .lobby-home::before,
+.app[data-palette]:not([data-palette='ink']) .lobby-home::after { display: none; }

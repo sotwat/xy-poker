@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="900" viewBox="0 0 740 900">
+<defs><pattern id="cuts" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 0V9" stroke="#e5b796" stroke-opacity=".12" stroke-width="1"/></pattern></defs>
+<rect width="740" height="900" fill="#984431"/>
+<path d="M0 158H516V298H740V556H245V691H0Z" fill="#ad533a"/>
+<path d="M0 166H508V306H740 M0 699H253V564H740" stroke="#d08761" fill="none"/>
+<path d="M570 0H740V900H570Z" fill="#7d382b"/>
+<rect width="740" height="900" fill="url(#cuts)"/>
+<path d="M610 132V668 M638 132V668 M666 132V668 M694 132V668 M722 132V668" stroke="#e1a27c" stroke-opacity=".55"/>
+<path d="M54 584H456" stroke="#e8d8b9" stroke-width="3"/>
+</svg>

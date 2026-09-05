@@ -1,0 +1,75 @@
+.app[data-palette='ink'] {
+  --bg: #191c1b; --surface: #242525; --surface-raised: #393a39; --surface-hover: #474848;
+  --border: #666e65; --border-strong: #aeb4a5; --text: #f1eee5; --text-secondary: #d0d3c8; --text-muted: #b0b8ad;
+  --accent: #ff806b; --accent-hover: #ffad9e; --accent-soft: #4e2b25; --button: #ee503c; --button-ink: #151916;
+  --button-secondary: #272829; --button-secondary-ink: #f1eee5; --logo: #f1eee5; --glyph-filter: brightness(0) invert(1);
+  --player-one: #b1cad6; --player-two: #ff9681; --danger: #ff9681; --table: #303132; --table-edge: #93958f;
+  --table-art: radial-gradient(ellipse at 50% 45%, #3b3d3d, #272a2b);
+}
+body:has(.app[data-palette]) { background: #151918; }
+.app[data-palette] { border-color: var(--border); }
+.app[data-palette] .home-brandbar { background: var(--surface); border-color: var(--border); box-shadow: none; }
+.app[data-palette] .home-player-icon { background: var(--surface-raised); color: var(--text); border-color: var(--border); }
+.app[data-palette] .home-player-copy strong { color: var(--text); }
+.app[data-palette] .home-rating { border-color: var(--border); }
+.app[data-palette] .home-rating strong { color: var(--text); }
+.app[data-palette] :is(.home-rating-number img, .game-wordmark img) { filter: var(--glyph-filter); }
+.app[data-palette] .home-title { background: var(--logo); mask: url('./assets/lettering/vectura-logo.png') center / contain no-repeat; filter: none; }
+.app[data-palette] .home-title img { opacity: 0; }
+.app[data-palette] .home-mode { filter: drop-shadow(4px 5px 0 #0d11104d); }
+.app[data-palette] .home-mode::before { background: var(--border-strong); }
+.app[data-palette] .home-mode::after { background: var(--button); }
+.app[data-palette] .home-mode-online::after { background: var(--button-secondary); }
+.app[data-palette] .home-mode-title { filter: none; background: var(--button-ink); mask: url('./assets/lettering/vectura-ai.png') center / contain no-repeat; }
+.app[data-palette] .home-mode-online .home-mode-title { background: var(--button-secondary-ink); mask-image: url('./assets/lettering/vectura-online.png'); }
+.app[data-palette] .home-mode-title img { opacity: 0; }
+.app[data-palette] .home-mode:hover { filter: brightness(1.08) drop-shadow(4px 5px 0 #0d11104d); }
+.app[data-palette] .home-mode:focus-visible { outline-color: var(--accent); }
+.app[data-palette] .lobby-footer-tabs { background: var(--surface); border-color: var(--border-strong); }
+.app[data-palette] .tab-item { color: var(--text); border-color: var(--border); }
+.app[data-palette] .tab-item:hover { color: var(--accent); background: var(--surface-hover); }
+.app[data-palette] .tab-label { background: currentColor; mask: var(--label-art) center / contain no-repeat; }
+.app[data-palette] .tab-label img { opacity: 0; }
+.app[data-palette] .tab-item:nth-child(1) { --label-art: url('./assets/lettering/vectura-skins.png'); }
+.app[data-palette] .tab-item:nth-child(2) { --label-art: url('./assets/lettering/vectura-rules.png'); }
+.app[data-palette] .tab-item:nth-child(3) { --label-art: url('./assets/lettering/vectura-account.png'); }
+.app[data-palette] .tab-item:nth-child(4) { --label-art: url('./assets/lettering/vectura-contact.png'); }
+.app[data-palette] .home-rating-label { background: var(--text-secondary); mask: url('./assets/lettering/vectura-rating-label.png') center / contain no-repeat; }
+.app[data-palette] .home-rating-label img { opacity: 0; }
+.app[data-palette] :is(.home-support-link, .home-version) { color: var(--text); }
+.app[data-palette].view-game :is(.app-header, .game-info, .turn-timer) { background: var(--surface) !important; }
+.app[data-palette].view-game :is(.btn-fullscreen, .surrender-btn, .score-total small, .table-seat) { color: var(--text-secondary) !important; }
+.app[data-palette].view-game .player-score-row { background: var(--surface); border-color: var(--border); }
+.app[data-palette] .table-seat > span:first-child { background: var(--surface); border-color: var(--border); color: var(--text); }
+.app[data-palette] .table-surface .shared-board { border-color: var(--table-edge); box-shadow: 0 0 0 5px var(--surface), 3px 5px 0 6px #0d11104d !important; }
+.app[data-palette] .table-surface .card-slot:not(:has(.card)):not(.next-slot) { border-color: var(--border) !important; }
+.app[data-palette] .table-surface .card-slot.next-slot { border-color: var(--accent) !important; background: var(--accent-soft) !important; }
+.app[data-palette] .placement-mark { color: var(--accent); }
+.app[data-palette] .controls { background: var(--surface); border-color: var(--border-strong); }
+.app[data-palette] .hand .card.selected { outline-color: var(--accent) !important; }
+.app[data-palette] .timer-track { background: var(--surface-raised); }
+.app[data-palette] .online-lobby { background: var(--surface) !important; }
+.app[data-palette] .online-lobby .lobby-top-bar-online { border-color: var(--border); }
+.app[data-palette] .online-lobby .action-card-primary .quest-btn-primary { background: var(--button) !important; border-color: var(--border-strong); color: var(--button-ink) !important; box-shadow: 3px 4px 0 #0d11104d !important; }
+.app[data-palette] .online-lobby .action-card-secondary .quest-btn-secondary { background: var(--surface-raised) !important; border-color: var(--border) !important; color: var(--text) !important; }
+.app[data-palette] .online-lobby :is(.divider-text, .room-join label) { color: var(--text-secondary); }
+.app[data-palette] :is(.ranking-column, .table-header) { background: var(--surface-raised) !important; }
+.app[data-palette] :is(.modal-native, .online-lobby) :is(input, textarea, select) { background: var(--surface-raised) !important; border-color: var(--border) !important; }
+.app[data-palette] :is(.modal-native, .online-lobby) :is(input, textarea)::placeholder { color: var(--text-muted); }
+.app[data-palette] .username { color: var(--text); }
+
+.app[data-palette] .board-theme-classic-green { background: var(--table-art), var(--table) !important; border-color: var(--table-edge) !important; }
+
+.app[data-palette='ink'] .lobby-home {
+  background: radial-gradient(ellipse at 28% 58%, #3b3d3d 0, #252828 42%, #171a1a 75%);
+}
+.app[data-palette='ink'] .lobby-home::before {
+  border-color: rgb(238 80 60 / 12%);
+  box-shadow: 0 0 0 2px #925247, 0 0 0 14px rgb(174 180 165 / 12%), inset 0 0 0 2px #615b57;
+}
+.app[data-palette='ink'] .lobby-home::after {
+  background: linear-gradient(154deg, transparent 24%, rgb(238 80 60 / 15%) 24.2%, transparent 24.7%, transparent 59%, rgb(241 238 229 / 18%) 59.2%, transparent 60%);
+}
+.app[data-palette='ink'].view-game .game-board {
+  background: linear-gradient(135deg, transparent 32%, #ee503c38 32.2%, transparent 32.5%, transparent 69%, #b1b6b440 69.2%, transparent 69.5%), linear-gradient(125deg, #303131, #202525 55%, #353535);
+}

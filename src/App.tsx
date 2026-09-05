@@ -69,10 +69,12 @@ import { HomeRating } from './components/HomeRating';
 import { LetteringText } from './components/LetteringText';
 import { HomeIcon } from './components/HomeIcon';
 import { uiGeometry } from './uiGeometry';
+import { uiPalette } from './uiPalette';
 import './App.css';
 import './Home.css';
 import './Table.css';
 import './Angular.css';
+import './Palette.css';
 
 const GameResult = lazy(() => import('./components/GameResult').then(module => ({ default: module.GameResult })));
 const SkinStore = lazy(() => import('./components/SkinStore').then(module => ({ default: module.SkinStore })));
@@ -1578,7 +1580,7 @@ function App() {
   };
 
   return (
-    <div className={`app ${(isLobbyView || isHomeView) ? 'view-lobby' : 'view-game'} phase-${phase} ${phase === 'scoring' ? 'showdown-active' : ''}`} data-geometry={uiGeometry}>
+    <div className={`app ${(isLobbyView || isHomeView) ? 'view-lobby' : 'view-game'} phase-${phase} ${phase === 'scoring' ? 'showdown-active' : ''}`} data-geometry={uiGeometry} data-palette={uiPalette}>
 
       {/* 先攻・後攻 アナウンスオーバーレイ */}
       {turnAnnounce && (
@@ -1859,7 +1861,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v09051617</LetteringText></div>
+                          <div className="home-version"><LetteringText>v09051652</LetteringText></div>
                         </div>
                       </div>
                     )}

@@ -69,8 +69,8 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09051617` (2026-09-05 16:17)
-- **Status:** **Account ID / match controls fix**
+- **Current Version:** `09051652` (2026-09-05 16:52)
+- **Status:** **INK palette with the original angular background**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
@@ -79,7 +79,7 @@ graph TD
     - Automated tests: ✅ 74 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~360 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: `v09051617` targets Cloudflare Pages and Render; A8 remains the default AI policy
+    - Deployment: `v09051652` adopts INK on Cloudflare Pages and Render. Other color candidates remain development-only; A8 remains the default AI policy
 
 ### Local deployment input
 
@@ -93,6 +93,10 @@ graph TD
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
+
+1. **v09051652** (2026-09-05): **INK Colors & Original Background** - Adopted INK's charcoal, vermilion, and white palette as the normal theme while retaining CURRENT's angled frame, line positions, and background composition. Recolored the original patterns instead of using INK's proposed orthogonal SVG. Kept Vectura, filled suits, angular geometry, and showdown choreography. Promoted only the selected palette and shared color rules into production; PAPER/CLAY/SLATE stay in development previews. Default table colors now match INK while other board skins retain their colors. Updated the comparison page to identify the adopted combination.
+
+1. **v09051636** (2026-09-05): **Color & Background Proposals (Local)** - Added four opt-in development palettes: INK, PAPER, CLAY, and SLATE. Each has an original SVG background, matte Vectura lettering, and matching home/table/control colors. The [color comparison](docs/color-review.html) shows the current design alongside all four options, with HOME/TABLE and PHONE/PC switches. TABLE uses one clearly labeled static sample with the real game components; links open the playable app in each palette. Palette CSS loads only through a development-only branch and is excluded from production. No palette has been adopted or deployed. See [design direction](docs/color-selection.md).
 
 1. **v09051617** (2026-09-05): **Account ID & Match Controls** - Moved the player ID from the home header into ACCOUNT, with the full ID selectable for copying. AUTO and Surrender now share a flex row with an 8 px gap; the match header reserves their width and scales the logo on narrow screens. Verified both buttons independently, AUTO on/off, the non-PRO view, and 320/390/1440 px widths.
 
