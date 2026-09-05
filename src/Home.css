@@ -127,7 +127,7 @@
   .app .home-stage { width: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; height: 100%; }
   .app .home-title { position: absolute; top: 16px; left: 0; width: 155px; height: 124px; align-items: flex-start; }
   .home-game-art { margin-top: 20px; margin-left: 75px; width: calc(100% - 75px); height: 220px; }
-  .home-card-fan { top: 47%; left: 55%; }
+  .home-card-fan { top: 65%; left: 55%; }
   .home-card-fan .card { width: 56px; height: 84px; }
   .home-dice-fan { gap: 10px; bottom: 5px; }
   .home-dice-fan .dice { font-size: 6px; }
@@ -147,6 +147,7 @@
   .app .home-title { width: 120px; height: 96px; }
   .home-game-art { height: 170px; margin-left: 60px; width: calc(100% - 60px); }
   .home-card-fan .card { width: 44px; height: 66px; }
+  .home-card-fan { top: 68%; }
   .home-dice-fan .dice { font-size: 5px; }
   .home-dice-fan { gap: 8px; }
   .home-mode-face { gap: 7px; }
