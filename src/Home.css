@@ -171,7 +171,11 @@
 .online-lobby .room-actions-grid { gap: 20px; }
 .online-lobby .action-card-secondary { padding: 0; border: 0; border-radius: 0; background: transparent; }
 .online-lobby .action-card-secondary .quest-btn-secondary { display: flex !important; min-height: 52px !important; border: 1px solid #b0a5c0 !important; border-left: 3px solid #e4dcec !important; border-bottom: 3px solid #736680 !important; border-radius: 1px !important; background: linear-gradient(110deg, #352944, #14101e) !important; color: #ffe986; font-size: 15px; }
-.online-lobby .room-join { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 12px; }
+.online-lobby .room-join {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
 .room-join label { grid-column: 1 / -1; font-size: 12px; color: #d5ccdf; }
 .online-lobby .room-id-input { min-width: 0; margin: 0; border-color: #8d819d; }
 @container app (max-width: 370px) {
