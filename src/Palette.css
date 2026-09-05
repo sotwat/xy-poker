@@ -1,7 +1,7 @@
 .app[data-palette='ink'] {
   --bg: #151818; --surface: #1d2020; --surface-raised: #353a39; --surface-hover: #434a49;
   --border: #7c827b; --border-strong: #c5cbbf; --text: #faf6ed; --text-secondary: #e0e3d8; --text-muted: #c0c7bb;
-  --accent: #ff725b; --accent-hover: #ffa18f; --accent-soft: #522820; --button: #fb4932; --button-ink: #101613; --button-ai: #ef3d2a;
+  --accent: #ff725b; --accent-hover: #ffa18f; --accent-soft: #522820; --button: #fb4932; --button-ink: #101613; --button-ai: #d93826;
   --button-secondary: #1b1e1e; --button-secondary-ink: #faf6ed; --logo: #faf6ed; --glyph-filter: brightness(0) invert(1);
   --player-one: #a5cee3; --player-two: #ff876f; --danger: #ff876f; --table: #2a2d2e; --table-edge: #adb1a7;
   --table-art: radial-gradient(ellipse at 50% 45%, #363b3b, #202627);
