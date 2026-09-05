@@ -51,7 +51,7 @@ app.use(express.static(path.join(directory, '../dist'), {
     maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0,
 }));
 
-const SERVER_VERSION = '09050141';
+const SERVER_VERSION = '09051209';
 
 app.get('/api/health', async (_request, response) => {
     try {
@@ -81,7 +81,7 @@ const games = new Map();
 const matchmakingQueue = [];
 const recentStatUpdates = new Map();
 const recentAiUpdates = new Map();
-const RUNTIME_AI_POLICY_ID = 'xy-gto-a7';
+const RUNTIME_AI_POLICY_ID = 'xy-gto-a8';
 const RUNTIME_AI_THINK_TIME_MS = 1_000;
 
 function acknowledge(callback, payload) {

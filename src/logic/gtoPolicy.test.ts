@@ -389,7 +389,7 @@ test('runtime AI completes full-rule belief rollouts instead of timing out to it
     assert.equal(DEFAULT_AI_PARAMS.mcSimulations, 64);
     assert.equal(DEFAULT_AI_PARAMS.generalizedSearch, true);
     assert.equal(DEFAULT_AI_PARAMS.multiPolicyRollouts, false);
-    assert.equal(DEFAULT_AI_PARAMS.policyGeneration, 'a7');
+    assert.equal(DEFAULT_AI_PARAMS.policyGeneration, 'a8');
 });
 
 test('runtime AI decision cannot depend on the true deck order or hidden identities', () => {

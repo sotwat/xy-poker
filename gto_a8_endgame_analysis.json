@@ -1,0 +1,816 @@
+{
+  "date": "2026-09-05",
+  "objective": "Proof-gated terminal improvement over A7; no whole-game equilibrium claim",
+  "pilot": {
+    "seed": 10826541,
+    "games": 400,
+    "search": false,
+    "params": {
+      "tripsInHandBonus": 99,
+      "pairInHandBonus": 12,
+      "lowCardPenalty": -650,
+      "queenFirstRowBonus": 220,
+      "showdownDelayPenalty": 450,
+      "row3DelayPenalty": 600,
+      "bluffBonus": 2,
+      "mcSimulations": 64,
+      "turnOrderBaseFirstValue": 0,
+      "turnOrderPairBonus": 2,
+      "turnOrderHighCardBonus": 2,
+      "gtoPriorWeight": 0.2,
+      "timeBudgetMs": 1000,
+      "generalizedSearch": true,
+      "multiPolicyRollouts": false,
+      "policyGeneration": "a7"
+    },
+    "finalMove": {
+      "decisions": 400,
+      "completed": 400,
+      "changed": 6,
+      "benefits": 3,
+      "harms": 0,
+      "meanUtilityImprovement": 0.01,
+      "lower95": -0.001977405629519013,
+      "upper95": 0.021977405629519012,
+      "averageMs": 8.829936987499982,
+      "maximumMs": 54.251916999999594
+    },
+    "penultimateMove": {
+      "decisions": 400,
+      "completed": 400,
+      "changed": 0,
+      "benefits": 0,
+      "harms": 0,
+      "meanUtilityImprovement": 0,
+      "lower95": 0,
+      "upper95": 0,
+      "averageMs": 110.55873531499994,
+      "maximumMs": 244.96170799999982
+    },
+    "runtimeSeconds": 58.122000666,
+    "observedChanges": [
+      {
+        "game": 9,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 9.305166999999983
+      },
+      {
+        "game": 17,
+        "response": false,
+        "delta": 1,
+        "worlds": 6840,
+        "ms": 8.652833999999984
+      },
+      {
+        "game": 117,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 10.135834000000614
+      },
+      {
+        "game": 160,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.4365420000031
+      },
+      {
+        "game": 165,
+        "response": false,
+        "delta": 2,
+        "worlds": 5814,
+        "ms": 7.551666999999725
+      },
+      {
+        "game": 394,
+        "response": false,
+        "delta": 1,
+        "worlds": 5814,
+        "ms": 7.515583000000333
+      }
+    ],
+    "sampleTotals": {
+      "decisions": 800,
+      "completedBeliefSamples": 51200
+    }
+  },
+  "confirmation": {
+    "seed": 10826561,
+    "games": 2000,
+    "search": false,
+    "params": {
+      "tripsInHandBonus": 99,
+      "pairInHandBonus": 12,
+      "lowCardPenalty": -650,
+      "queenFirstRowBonus": 220,
+      "showdownDelayPenalty": 450,
+      "row3DelayPenalty": 600,
+      "bluffBonus": 2,
+      "mcSimulations": 64,
+      "turnOrderBaseFirstValue": 0,
+      "turnOrderPairBonus": 2,
+      "turnOrderHighCardBonus": 2,
+      "gtoPriorWeight": 0.2,
+      "timeBudgetMs": 1000,
+      "generalizedSearch": true,
+      "multiPolicyRollouts": false,
+      "policyGeneration": "a7"
+    },
+    "finalMove": {
+      "decisions": 2000,
+      "completed": 2000,
+      "changed": 30,
+      "benefits": 6,
+      "harms": 0,
+      "meanUtilityImprovement": 0.0035,
+      "lower95": 0.00056327011947039,
+      "upper95": 0.00643672988052961,
+      "averageMs": 8.46634394050002,
+      "maximumMs": 28.340041999996174
+    },
+    "penultimateMove": {
+      "decisions": 2000,
+      "completed": 2000,
+      "changed": 9,
+      "benefits": 5,
+      "harms": 0,
+      "meanUtilityImprovement": 0.0035,
+      "lower95": 0.0002525173947139285,
+      "upper95": 0.006747482605286072,
+      "averageMs": 107.33231830550002,
+      "maximumMs": 410.4172499999986
+    },
+    "runtimeSeconds": 280.729464667,
+    "observedChanges": [
+      {
+        "game": 12,
+        "response": false,
+        "delta": 0,
+        "worlds": 7980,
+        "ms": 10.263082999999824
+      },
+      {
+        "game": 22,
+        "response": true,
+        "delta": 2,
+        "worlds": 116280,
+        "ms": 145.5832919999998
+      },
+      {
+        "game": 80,
+        "response": false,
+        "delta": 0,
+        "worlds": 7980,
+        "ms": 9.762582999999722
+      },
+      {
+        "game": 95,
+        "response": true,
+        "delta": 0,
+        "worlds": 5814,
+        "ms": 7.772291999999652
+      },
+      {
+        "game": 275,
+        "response": true,
+        "delta": 1,
+        "worlds": 5814,
+        "ms": 7.271917000005487
+      },
+      {
+        "game": 307,
+        "response": false,
+        "delta": 0,
+        "worlds": 7980,
+        "ms": 10.647417000000132
+      },
+      {
+        "game": 312,
+        "response": true,
+        "delta": 1,
+        "worlds": 116280,
+        "ms": 142.4787920000017
+      },
+      {
+        "game": 371,
+        "response": false,
+        "delta": 0,
+        "worlds": 5814,
+        "ms": 7.9212919999990845
+      },
+      {
+        "game": 382,
+        "response": false,
+        "delta": 1,
+        "worlds": 7980,
+        "ms": 9.364500000003318
+      },
+      {
+        "game": 391,
+        "response": true,
+        "delta": 1,
+        "worlds": 143640,
+        "ms": 181.94120799999655
+      },
+      {
+        "game": 443,
+        "response": false,
+        "delta": 0,
+        "worlds": 5814,
+        "ms": 8.094834000003175
+      },
+      {
+        "game": 533,
+        "response": false,
+        "delta": 0,
+        "worlds": 5814,
+        "ms": 8.312082999997074
+      },
+      {
+        "game": 534,
+        "response": false,
+        "delta": 1,
+        "worlds": 7980,
+        "ms": 10.350291000009747
+      },
+      {
+        "game": 587,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 9.37079200000153
+      },
+      {
+        "game": 761,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.52345900000364
+      },
+      {
+        "game": 762,
+        "response": true,
+        "delta": 0,
+        "worlds": 143640,
+        "ms": 174.89270899999246
+      },
+      {
+        "game": 778,
+        "response": false,
+        "delta": 2,
+        "worlds": 5814,
+        "ms": 7.422374999994645
+      },
+      {
+        "game": 901,
+        "response": false,
+        "delta": 1,
+        "worlds": 7980,
+        "ms": 9.744250000003376
+      },
+      {
+        "game": 907,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 9.523708999986411
+      },
+      {
+        "game": 992,
+        "response": false,
+        "delta": 0,
+        "worlds": 5814,
+        "ms": 8.280540999985533
+      },
+      {
+        "game": 1061,
+        "response": false,
+        "delta": 0,
+        "worlds": 7980,
+        "ms": 10.42695900000399
+      },
+      {
+        "game": 1076,
+        "response": false,
+        "delta": 0,
+        "worlds": 5814,
+        "ms": 7.753416999999899
+      },
+      {
+        "game": 1143,
+        "response": false,
+        "delta": 0,
+        "worlds": 5814,
+        "ms": 7.442625000025146
+      },
+      {
+        "game": 1167,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.257583999977214
+      },
+      {
+        "game": 1233,
+        "response": true,
+        "delta": 0,
+        "worlds": 116280,
+        "ms": 145.43037499999627
+      },
+      {
+        "game": 1282,
+        "response": false,
+        "delta": 1,
+        "worlds": 6840,
+        "ms": 8.089875000005122
+      },
+      {
+        "game": 1357,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.406707999994978
+      },
+      {
+        "game": 1373,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 9.103708999988157
+      },
+      {
+        "game": 1405,
+        "response": true,
+        "delta": 2,
+        "worlds": 116280,
+        "ms": 148.62295900000026
+      },
+      {
+        "game": 1509,
+        "response": false,
+        "delta": 0,
+        "worlds": 9240,
+        "ms": 11.059375000011642
+      },
+      {
+        "game": 1587,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.540500000002794
+      },
+      {
+        "game": 1595,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.512124999979278
+      },
+      {
+        "game": 1627,
+        "response": false,
+        "delta": 1,
+        "worlds": 4896,
+        "ms": 6.188957999984268
+      },
+      {
+        "game": 1637,
+        "response": true,
+        "delta": 0,
+        "worlds": 143640,
+        "ms": 172.18329099999391
+      },
+      {
+        "game": 1753,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.698124999995343
+      },
+      {
+        "game": 1807,
+        "response": false,
+        "delta": 0,
+        "worlds": 5814,
+        "ms": 8.005707999982405
+      },
+      {
+        "game": 1847,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 17.23658300001989
+      },
+      {
+        "game": 1851,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.504209000006085
+      },
+      {
+        "game": 1860,
+        "response": false,
+        "delta": 0,
+        "worlds": 6840,
+        "ms": 8.797000000020489
+      }
+    ],
+    "sampleTotals": {
+      "decisions": 4000,
+      "completedBeliefSamples": 256000
+    }
+  },
+  "searchTrajectories": {
+    "seed": 10826542,
+    "games": 12,
+    "search": true,
+    "params": {
+      "tripsInHandBonus": 99,
+      "pairInHandBonus": 12,
+      "lowCardPenalty": -650,
+      "queenFirstRowBonus": 220,
+      "showdownDelayPenalty": 450,
+      "row3DelayPenalty": 600,
+      "bluffBonus": 2,
+      "mcSimulations": 64,
+      "turnOrderBaseFirstValue": 0,
+      "turnOrderPairBonus": 2,
+      "turnOrderHighCardBonus": 2,
+      "gtoPriorWeight": 0.2,
+      "timeBudgetMs": 1000,
+      "generalizedSearch": true,
+      "multiPolicyRollouts": false,
+      "policyGeneration": "a7"
+    },
+    "finalMove": {
+      "decisions": 12,
+      "completed": 12,
+      "changed": 0,
+      "benefits": 0,
+      "harms": 0,
+      "meanUtilityImprovement": 0,
+      "lower95": 0,
+      "upper95": 0,
+      "averageMs": 8.126163166669963,
+      "maximumMs": 11.882499999999709
+    },
+    "penultimateMove": {
+      "decisions": 12,
+      "completed": 12,
+      "changed": 0,
+      "benefits": 0,
+      "harms": 0,
+      "meanUtilityImprovement": 0,
+      "lower95": 0,
+      "upper95": 0,
+      "averageMs": 178.37691650000275,
+      "maximumMs": 255.13520799999242
+    },
+    "runtimeSeconds": 207.52190025000002,
+    "observedChanges": [],
+    "sampleTotals": {
+      "decisions": 24,
+      "completedBeliefSamples": 1536
+    }
+  },
+  "rejectedBeliefRuntime": {
+    "opponent": "XY-GTO-A7 one-step policy",
+    "opponentSearch": true,
+    "search": "A7 broad-action single-policy search (A8 policy)",
+    "dice": "random",
+    "seed": 10826501,
+    "pairedDeals": 12,
+    "games": 24,
+    "rolloutWins": 10,
+    "policyWins": 12,
+    "draws": 2,
+    "rolloutScore": 0.4583333333333333,
+    "candidate": {
+      "timeBudgetMs": 1000,
+      "beliefSamples": 64
+    },
+    "searchOpponent": {
+      "timeBudgetMs": 1000,
+      "beliefSamples": 64
+    },
+    "meanUtility": -0.08333333333333333,
+    "pairedUtility": {
+      "mean": -0.08333333333333333,
+      "standardError": 0.2025718478351657,
+      "lower95": -0.4803741550902581,
+      "upper95": 0.3137074884235915
+    },
+    "averageScoreDifference": -0.6666666666666666,
+    "averageDecisionMs": 589.9911232694446,
+    "p90DecisionMs": 989.4304589999956,
+    "averageCompletedBeliefSamples": 60.00555555555555,
+    "minimumCompletedBeliefSamples": 30,
+    "leverageAudit": null,
+    "runtimeSeconds": 425.766494792
+  },
+  "beliefPredictionAudit": {
+    "seed": 10826502,
+    "games": 200,
+    "search": false,
+    "observations": 528,
+    "uniformBrier": 0.9683610920895638,
+    "conditionedBrier": 0.787486143153049,
+    "improvement": 0.1808749489365148,
+    "runtimeSeconds": 0.875098167
+  },
+  "searchBeliefPredictionAudit": {
+    "seed": 10826512,
+    "games": 8,
+    "search": true,
+    "observations": 24,
+    "uniformBrier": 0.9720188179790848,
+    "conditionedBrier": 0.9158014098372128,
+    "improvement": 0.05621740814187204,
+    "runtimeSeconds": 138.96083
+  },
+  "rolloutPilot": {
+    "dealOffset": 0,
+    "pairedUtilities": [
+      -0.5,
+      -1,
+      0,
+      -1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "opponent": "XY-GTO-A7 one-step policy",
+    "opponentSearch": true,
+    "search": "A7 broad-action single-policy search (A8 policy)",
+    "dice": "random",
+    "seed": 10826551,
+    "pairedDeals": 12,
+    "games": 24,
+    "rolloutWins": 12,
+    "policyWins": 11,
+    "draws": 1,
+    "rolloutScore": 0.5208333333333334,
+    "candidate": {
+      "timeBudgetMs": 1000,
+      "beliefSamples": 64
+    },
+    "searchOpponent": {
+      "timeBudgetMs": 1000,
+      "beliefSamples": 64
+    },
+    "meanUtility": 0.041666666666666664,
+    "pairedUtility": {
+      "mean": 0.041666666666666664,
+      "standardError": 0.19903491902150983,
+      "lower95": -0.3484417746154926,
+      "upper95": 0.43177510794882595
+    },
+    "averageScoreDifference": 0.5416666666666666,
+    "averageDecisionMs": 587.5245043694438,
+    "p90DecisionMs": 988.816833000019,
+    "averageCompletedBeliefSamples": 60.34722222222222,
+    "minimumCompletedBeliefSamples": 37,
+    "opponentAverageDecisionMs": 583.8639142555554,
+    "opponentAverageCompletedBeliefSamples": 60.55277777777778,
+    "leverageAudit": null,
+    "runtimeSeconds": 421.711902125
+  },
+  "adoptedPolicy": "XY-GTO-A8: root endgame certificates only; A7 priors and rollouts retained",
+  "rolloutConfirmation": {
+    "adopted": false,
+    "criterion": "95% pair-clustered lower utility bound > 0 and nonnegative score difference",
+    "seeds": [
+      10826571,
+      10826572,
+      10826573,
+      10826574
+    ],
+    "games": 96,
+    "pairedDeals": 48,
+    "wins": 53,
+    "losses": 40,
+    "draws": 3,
+    "meanUtility": 0.13541666666666666,
+    "standardError": 0.10811446453133988,
+    "lower95": -0.07648768381475951,
+    "upper95": 0.3473210171480928,
+    "averageScoreDifference": 0.8645833333333334,
+    "averageCompletedBeliefSamples": 56.290972222222216,
+    "opponentAverageCompletedBeliefSamples": 57.09375,
+    "batches": [
+      {
+        "pairedUtilities": [
+          1,
+          0,
+          1,
+          1,
+          -1,
+          0,
+          -1,
+          1,
+          0,
+          1,
+          0,
+          -1
+        ],
+        "opponent": "XY-GTO-A7 one-step policy",
+        "opponentSearch": true,
+        "search": "A7 broad-action single-policy search (A8 policy)",
+        "dice": "random",
+        "seed": 10826571,
+        "pairedDeals": 12,
+        "games": 24,
+        "rolloutWins": 13,
+        "policyWins": 9,
+        "draws": 2,
+        "rolloutScore": 0.5833333333333334,
+        "candidate": {
+          "timeBudgetMs": 1000,
+          "beliefSamples": 64
+        },
+        "searchOpponent": {
+          "timeBudgetMs": 1000,
+          "beliefSamples": 64
+        },
+        "meanUtility": 0.16666666666666666,
+        "pairedUtility": {
+          "mean": 0.16666666666666666,
+          "standardError": 0.24099960182707375,
+          "lower95": -0.3056925529143979,
+          "upper95": 0.6390258862477312
+        },
+        "averageScoreDifference": -0.20833333333333334,
+        "averageDecisionMs": 662.9048605333336,
+        "p90DecisionMs": 988.2221669999999,
+        "averageCompletedBeliefSamples": 55.55833333333333,
+        "minimumCompletedBeliefSamples": 13,
+        "opponentAverageDecisionMs": 630.9608037222216,
+        "opponentAverageCompletedBeliefSamples": 56.861111111111114,
+        "leverageAudit": null,
+        "runtimeSeconds": 465.806786792
+      },
+      {
+        "pairedUtilities": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          -0.5,
+          0,
+          0,
+          0
+        ],
+        "opponent": "XY-GTO-A7 one-step policy",
+        "opponentSearch": true,
+        "search": "A7 broad-action single-policy search (A8 policy)",
+        "dice": "random",
+        "seed": 10826572,
+        "pairedDeals": 12,
+        "games": 24,
+        "rolloutWins": 15,
+        "policyWins": 8,
+        "draws": 1,
+        "rolloutScore": 0.6458333333333334,
+        "candidate": {
+          "timeBudgetMs": 1000,
+          "beliefSamples": 64
+        },
+        "searchOpponent": {
+          "timeBudgetMs": 1000,
+          "beliefSamples": 64
+        },
+        "meanUtility": 0.2916666666666667,
+        "pairedUtility": {
+          "mean": 0.2916666666666667,
+          "standardError": 0.15640774865198923,
+          "lower95": -0.014892520691232203,
+          "upper95": 0.5982258540245655
+        },
+        "averageScoreDifference": 1.7916666666666667,
+        "averageDecisionMs": 642.3847238388879,
+        "p90DecisionMs": 989.5814159999718,
+        "averageCompletedBeliefSamples": 56.544444444444444,
+        "minimumCompletedBeliefSamples": 25,
+        "opponentAverageDecisionMs": 624.530363666666,
+        "opponentAverageCompletedBeliefSamples": 57.147222222222226,
+        "leverageAudit": null,
+        "runtimeSeconds": 456.105567709
+      },
+      {
+        "pairedUtilities": [
+          1,
+          -1,
+          1,
+          1,
+          1,
+          0,
+          -1,
+          0,
+          1,
+          -1,
+          0,
+          0
+        ],
+        "opponent": "XY-GTO-A7 one-step policy",
+        "opponentSearch": true,
+        "search": "A7 broad-action single-policy search (A8 policy)",
+        "dice": "random",
+        "seed": 10826573,
+        "pairedDeals": 12,
+        "games": 24,
+        "rolloutWins": 14,
+        "policyWins": 10,
+        "draws": 0,
+        "rolloutScore": 0.5833333333333334,
+        "candidate": {
+          "timeBudgetMs": 1000,
+          "beliefSamples": 64
+        },
+        "searchOpponent": {
+          "timeBudgetMs": 1000,
+          "beliefSamples": 64
+        },
+        "meanUtility": 0.16666666666666666,
+        "pairedUtility": {
+          "mean": 0.16666666666666666,
+          "standardError": 0.24099960182707375,
+          "lower95": -0.3056925529143979,
+          "upper95": 0.6390258862477312
+        },
+        "averageScoreDifference": 1.6666666666666667,
+        "averageDecisionMs": 649.3888997611097,
+        "p90DecisionMs": 988.0492080000113,
+        "averageCompletedBeliefSamples": 56.644444444444446,
+        "minimumCompletedBeliefSamples": 26,
+        "opponentAverageDecisionMs": 630.519065783333,
+        "opponentAverageCompletedBeliefSamples": 57.25277777777778,
+        "leverageAudit": null,
+        "runtimeSeconds": 460.781222417
+      },
+      {
+        "pairedUtilities": [
+          1,
+          0,
+          -1,
+          0,
+          -1,
+          0,
+          0,
+          -1,
+          -1,
+          0,
+          1,
+          1
+        ],
+        "opponent": "XY-GTO-A7 one-step policy",
+        "opponentSearch": true,
+        "search": "A7 broad-action single-policy search (A8 policy)",
+        "dice": "random",
+        "seed": 10826574,
+        "pairedDeals": 12,
+        "games": 24,
+        "rolloutWins": 11,
+        "policyWins": 13,
+        "draws": 0,
+        "rolloutScore": 0.4583333333333333,
+        "candidate": {
+          "timeBudgetMs": 1000,
+          "beliefSamples": 64
+        },
+        "searchOpponent": {
+          "timeBudgetMs": 1000,
+          "beliefSamples": 64
+        },
+        "meanUtility": -0.08333333333333333,
+        "pairedUtility": {
+          "mean": -0.08333333333333333,
+          "standardError": 0.22890825651118374,
+          "lower95": -0.5319935160952535,
+          "upper95": 0.3653268494285868
+        },
+        "averageScoreDifference": 0.20833333333333334,
+        "averageDecisionMs": 650.9747402916661,
+        "p90DecisionMs": 988.4942499999997,
+        "averageCompletedBeliefSamples": 56.416666666666664,
+        "minimumCompletedBeliefSamples": 28,
+        "opponentAverageDecisionMs": 629.9077199944455,
+        "opponentAverageCompletedBeliefSamples": 57.11388888888889,
+        "leverageAudit": null,
+        "runtimeSeconds": 461.131563208
+      }
+    ]
+  }
+}

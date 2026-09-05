@@ -1,4 +1,5 @@
 import { createDeck } from './deck';
+import { certifiedEndgameReplacement, solveFinalMove } from './endgame';
 import { gameReducer } from './game';
 import {
     getGtoHideProbability,
@@ -34,7 +35,7 @@ export interface AiParams {
     /** False isolates broad root actions from multi-policy opponent modeling. */
     multiPolicyRollouts?: boolean;
     /** Retains the previous generation for reproducible head-to-head audits. */
-    policyGeneration?: 'a6' | 'a7';
+    policyGeneration?: 'a6' | 'a7' | 'a8';
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
@@ -53,7 +54,7 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     timeBudgetMs: 1_000,
     generalizedSearch: true,
     multiPolicyRollouts: false,
-    policyGeneration: 'a7',
+    policyGeneration: 'a8',
 };
 
 export interface AiDecisionDiagnostics {
@@ -62,6 +63,8 @@ export interface AiDecisionDiagnostics {
     searchedMoves: number;
     completedBeliefSamples: number;
     usedRollout: boolean;
+    exactEndgameWorlds: number;
+    usedDominanceOverride: boolean;
 }
 
 interface ScoredMove {
@@ -91,6 +94,8 @@ let lastDecisionDiagnostics: AiDecisionDiagnostics = {
     searchedMoves: 0,
     completedBeliefSamples: 0,
     usedRollout: false,
+    exactEndgameWorlds: 0,
+    usedDominanceOverride: false,
 };
 
 export function getLastAiDecisionDiagnostics(): AiDecisionDiagnostics {
@@ -275,6 +280,11 @@ export function getBestMove(
         selected = candidates[bestIndex];
     }
 
+    const exact = params.policyGeneration === 'a8'
+        ? solveFinalMove(gameState, playerIndex as 0 | 1, deadline)
+        : null;
+    const certified = exact ? certifiedEndgameReplacement(exact, selected.cardId) : undefined;
+    if (certified) selected = { ...certified, gtoScore: selected.gtoScore, isHidden: selected.isHidden };
     const selectedCard = player.hand.find(card => card.id === selected.cardId);
     const selectedHidden = generalizedSearch
         ? selected.isHidden
@@ -286,6 +296,8 @@ export function getBestMove(
             policyWeights,
         ));
     setDiagnostics(startedAt, legalMoves.length, candidates.length, completedSamples);
+    lastDecisionDiagnostics.exactEndgameWorlds = exact?.worlds ?? 0;
+    lastDecisionDiagnostics.usedDominanceOverride = Boolean(certified);
     return {
         cardId: selected.cardId,
         colIndex: selected.colIndex,
@@ -607,5 +619,7 @@ function setDiagnostics(
         searchedMoves,
         completedBeliefSamples,
         usedRollout: completedBeliefSamples > 0,
+        exactEndgameWorlds: 0,
+        usedDominanceOverride: false,
     };
 }

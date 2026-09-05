@@ -6,6 +6,7 @@ import {
     getLastAiDecisionDiagnostics,
 } from '../src/logic/ai';
 import { createDeck } from '../src/logic/deck';
+import { evaluateXHand, evaluateYHand } from '../src/logic/evaluation';
 import { gameReducer, INITIAL_GAME_STATE } from '../src/logic/game';
 import {
     getGtoHideProbability,
@@ -26,7 +27,26 @@ interface MatchResult {
     scoreDifference: number;
     decisionMs: number[];
     beliefSamples: number[];
+    opponentDecisionMs: number[];
+    opponentCompletedSamples: number[];
+    leverageAudit: LeverageMatchAudit | null;
 }
+
+type LeverageStage = 'opening' | 'middle' | 'closing';
+
+interface LeverageDecision {
+    selectedColumn: number;
+    availableColumns: number[];
+    stage: LeverageStage;
+}
+
+interface LeverageMatchAudit {
+    dice: number[];
+    columnLeverages: number[];
+    decisions: LeverageDecision[];
+}
+
+const auditLeverage = process.argv.includes('--audit-leverage');
 
 function readPositiveFlag(name: string, fallback: number): number {
     const argument = process.argv.find(value => value.startsWith(`${name}=`));
@@ -49,7 +69,7 @@ function readDiceFlag(): number[] | null {
 function readOpponent(): {
     name: string;
     weights: readonly Readonly<GtoPolicyWeights>[];
-    policyGeneration?: 'a6' | 'a7';
+    policyGeneration?: 'a6' | 'a7' | 'a8';
 } {
     const argument = process.argv.find(value => value.startsWith('--opponent='));
     const id = argument?.slice('--opponent='.length) ?? 'a2';
@@ -66,6 +86,11 @@ function readOpponent(): {
         weights: [XY_GTO_A7],
         policyGeneration: 'a7',
     };
+    if (id === 'a8') return {
+        name: 'XY-GTO-A8 certified-endgame search',
+        weights: [XY_GTO_A7],
+        policyGeneration: 'a8',
+    };
     if (id === 'solver-base') return {
         name: 'XY-GTO-A4 solver-base one-step policy',
         weights: [XY_GTO_A4_SOLVER_BASE],
@@ -74,14 +99,14 @@ function readOpponent(): {
         name: 'A4 / solver-base / A3 / A2 rotating one-step ensemble',
         weights: [XY_GTO_A4, XY_GTO_A4_SOLVER_BASE, XY_GTO_A3, XY_GTO_A2],
     };
-    throw new Error('--opponent must be a2, a3, a4, a6, a7, solver-base, or ensemble.');
+    throw new Error('--opponent must be a2, a3, a4, a6, a7, a8, solver-base, or ensemble.');
 }
 
-function readPolicyGeneration(): 'a6' | 'a7' {
+function readPolicyGeneration(): 'a6' | 'a7' | 'a8' {
     const argument = process.argv.find(value => value.startsWith('--policy='));
-    const generation = argument?.slice('--policy='.length) ?? 'a7';
-    if (generation === 'a6' || generation === 'a7') return generation;
-    throw new Error('--policy must be a6 or a7.');
+    const generation = argument?.slice('--policy='.length) ?? DEFAULT_AI_PARAMS.policyGeneration;
+    if (generation === 'a6' || generation === 'a7' || generation === 'a8') return generation;
+    throw new Error('--policy must be a6, a7, or a8.');
 }
 
 function readSearchMode(): { generalizedSearch: boolean; multiPolicyRollouts: boolean; name: string } {
@@ -138,6 +163,45 @@ function swapInitialHands(deck: Card[]): Card[] {
     return [...deck.slice(4, 8), ...deck.slice(0, 4), ...deck.slice(8)];
 }
 
+function matchEquity(scoreDifference: number): number {
+    return scoreDifference > 0 ? 1 : scoreDifference < 0 ? 0 : 0.5;
+}
+
+function compareYColumns(ownCards: Card[], opponentCards: Card[], die: number): -1 | 0 | 1 {
+    const own = evaluateYHand(ownCards, die);
+    const opponent = evaluateYHand(opponentCards, die);
+    if (own.rankValue !== opponent.rankValue) return own.rankValue > opponent.rankValue ? 1 : -1;
+    for (let index = 0; index < Math.max(own.kickers.length, opponent.kickers.length); index++) {
+        const difference = (own.kickers[index] ?? 0) - (opponent.kickers[index] ?? 0);
+        if (difference !== 0) return difference > 0 ? 1 : -1;
+    }
+    return 0;
+}
+
+function terminalLeverageAudit(
+    state: GameState,
+    playerIndex: 0 | 1,
+    decisions: LeverageDecision[],
+): LeverageMatchAudit | null {
+    const player = state.players[playerIndex];
+    const opponent = state.players[1 - playerIndex];
+    const ownX = evaluateXHand(player.board[2] as Card[]);
+    const opponentX = evaluateXHand(opponent.board[2] as Card[]);
+    if (ownX.type === 'RoyalFlush' || opponentX.type === 'RoyalFlush') return null;
+
+    const scoreDifference = player.score - opponent.score;
+    const columnLeverages = player.dice.map((die, column) => {
+        const columnResult = compareYColumns(
+            player.board.map(row => row[column] as Card),
+            opponent.board.map(row => row[column] as Card),
+            die,
+        );
+        const remainder = scoreDifference - die * columnResult;
+        return matchEquity(remainder + die) - matchEquity(remainder - die);
+    });
+    return { dice: [...player.dice], columnLeverages, decisions };
+}
+
 function policyMove(
     state: GameState,
     playerIndex: 0 | 1,
@@ -182,8 +246,8 @@ function playMatch(
     opponentBeliefSamples: number,
     opponentWeights: Readonly<GtoPolicyWeights>,
     searchMode: ReturnType<typeof readSearchMode>,
-    policyGeneration: 'a6' | 'a7',
-    searchOpponentGeneration: 'a6' | 'a7' | null,
+    policyGeneration: 'a6' | 'a7' | 'a8',
+    searchOpponentGeneration: 'a6' | 'a7' | 'a8' | null,
 ): MatchResult {
     const random = seededRandom(seed);
     const originalRandom = Math.random;
@@ -206,6 +270,9 @@ function playMatch(
 
         const decisionMs: number[] = [];
         const completedBeliefs: number[] = [];
+        const opponentDecisionMs: number[] = [];
+        const opponentCompletedSamples: number[] = [];
+        const leverageDecisions: LeverageDecision[] = [];
         while (state.phase === 'playing') {
             const actor = state.currentPlayerIndex as 0 | 1;
             const actorGeneration = actor === rolloutSeat
@@ -227,6 +294,21 @@ function playMatch(
                 const diagnostics = getLastAiDecisionDiagnostics();
                 decisionMs.push(diagnostics.elapsedMs);
                 completedBeliefs.push(diagnostics.completedBeliefSamples);
+                if (auditLeverage) {
+                    const occupied = state.players[actor].board.flat().filter(Boolean).length;
+                    const stage = occupied < 5 ? 'opening' : occupied < 10 ? 'middle' : 'closing';
+                    leverageDecisions.push({
+                        selectedColumn: move.colIndex,
+                        availableColumns: [0, 1, 2, 3, 4].filter(
+                            column => state.players[actor].board[2][column] === null,
+                        ),
+                        stage,
+                    });
+                }
+            } else if (actorGeneration) {
+                const diagnostics = getLastAiDecisionDiagnostics();
+                opponentDecisionMs.push(diagnostics.elapsedMs);
+                opponentCompletedSamples.push(diagnostics.completedBeliefSamples);
             }
             const nextState = gameReducer(state, { type: 'PLACE_AND_DRAW', payload: move });
             if (nextState === state) throw new Error(`Illegal benchmark move: ${JSON.stringify(move)}`);
@@ -240,6 +322,11 @@ function playMatch(
             scoreDifference: state.players[rolloutSeat].score - state.players[1 - rolloutSeat].score,
             decisionMs,
             beliefSamples: completedBeliefs,
+            opponentDecisionMs,
+            opponentCompletedSamples,
+            leverageAudit: auditLeverage
+                ? terminalLeverageAudit(state, rolloutSeat, leverageDecisions)
+                : null,
         };
     } finally {
         Math.random = originalRandom;
@@ -260,7 +347,7 @@ const searchOpponentGeneration = process.argv.includes('--search-opponent')
     ? opponent.policyGeneration ?? null
     : null;
 if (process.argv.includes('--search-opponent') && !searchOpponentGeneration) {
-    throw new Error('--search-opponent requires --opponent=a6 or --opponent=a7.');
+    throw new Error('--search-opponent requires --opponent=a6, a7, or a8.');
 }
 const results: MatchResult[] = [];
 const startedAt = performance.now();
@@ -303,6 +390,9 @@ for (let deal = 0; deal < deals; deal++) {
         policyGeneration,
         searchOpponentGeneration,
     ));
+    if (process.argv.includes('--progress')) {
+        process.stderr.write(`${deal + 1}/${deals} pairs: ${results.filter(result => result.utility === 1).length} wins, ${results.filter(result => result.utility === -1).length} losses\n`);
+    }
 }
 
 const decisionTimes = results.flatMap(result => result.decisionMs).sort((a, b) => a - b);
@@ -310,7 +400,66 @@ const completedBeliefs = results.flatMap(result => result.beliefSamples);
 const wins = results.filter(result => result.utility === 1).length;
 const losses = results.filter(result => result.utility === -1).length;
 const draws = results.length - wins - losses;
+const pairedUtilities = Array.from({ length: deals }, (_, index) => (
+    (results[index * 2].utility + results[index * 2 + 1].utility) / 2
+));
+const pairedMean = pairedUtilities.reduce((sum, value) => sum + value, 0) / pairedUtilities.length;
+const pairedVariance = pairedUtilities.length > 1
+    ? pairedUtilities.reduce((sum, value) => sum + (value - pairedMean) ** 2, 0)
+        / (pairedUtilities.length - 1)
+    : 0;
+const pairedStandardError = Math.sqrt(pairedVariance / pairedUtilities.length);
+const leverageObservationsFor = (audit: LeverageMatchAudit | null) => {
+    if (!audit) return [];
+    return audit.decisions.map(decision => {
+        const available = decision.availableColumns.map(column => audit.columnLeverages[column]);
+        const selected = audit.columnLeverages[decision.selectedColumn];
+        const maximum = Math.max(...available);
+        return {
+            stage: decision.stage,
+            selected,
+            availableMean: available.reduce((sum, value) => sum + value, 0) / available.length,
+            selectedPivotal: selected > 0 ? 1 : 0,
+            availablePivotal: available.filter(value => value > 0).length / available.length,
+            selectedTop: selected === maximum ? 1 : 0,
+            randomTop: available.filter(value => value === maximum).length / available.length,
+        };
+    });
+};
+const leverageObservations = results.flatMap(result => leverageObservationsFor(result.leverageAudit));
+const summarizeLeverage = (observations: typeof leverageObservations) => ({
+    decisions: observations.length,
+    selectedMean: observations.reduce((sum, value) => sum + value.selected, 0) / observations.length,
+    randomAvailableMean: observations.reduce((sum, value) => sum + value.availableMean, 0) / observations.length,
+    meanLift: observations.reduce((sum, value) => sum + value.selected - value.availableMean, 0)
+        / observations.length,
+    selectedPivotalRate: observations.reduce((sum, value) => sum + value.selectedPivotal, 0)
+        / observations.length,
+    randomAvailablePivotalRate: observations.reduce((sum, value) => sum + value.availablePivotal, 0)
+        / observations.length,
+    selectedTopRate: observations.reduce((sum, value) => sum + value.selectedTop, 0) / observations.length,
+    randomTopRate: observations.reduce((sum, value) => sum + value.randomTop, 0) / observations.length,
+});
+const pairedLeverageLifts = Array.from({ length: deals }, (_, index) => {
+    const pair = results.slice(index * 2, index * 2 + 2).map(result => result.leverageAudit);
+    if (pair.some(audit => audit === null)) return null;
+    return pair.reduce((sum, audit) => {
+        const observations = leverageObservationsFor(audit);
+        return sum + observations.reduce(
+            (total, value) => total + value.selected - value.availableMean,
+            0,
+        ) / observations.length;
+    }, 0) / pair.length;
+}).filter((value): value is number => value !== null);
+const pairedLeverageMean = pairedLeverageLifts.reduce((sum, value) => sum + value, 0)
+    / pairedLeverageLifts.length;
+const pairedLeverageVariance = pairedLeverageLifts.length > 1
+    ? pairedLeverageLifts.reduce((sum, value) => sum + (value - pairedLeverageMean) ** 2, 0)
+        / (pairedLeverageLifts.length - 1)
+    : 0;
+const pairedLeverageStandardError = Math.sqrt(pairedLeverageVariance / pairedLeverageLifts.length);
 console.log(JSON.stringify({
+    pairedUtilities,
     opponent: opponent.name,
     opponentSearch: searchOpponentGeneration !== null,
     search: `${searchMode.name} (${policyGeneration.toUpperCase()} policy)`,
@@ -328,10 +477,38 @@ console.log(JSON.stringify({
         beliefSamples: opponentBeliefSamples,
     },
     meanUtility: results.reduce((sum, result) => sum + result.utility, 0) / results.length,
+    pairedUtility: {
+        mean: pairedMean,
+        standardError: pairedStandardError,
+        lower95: pairedMean - 1.96 * pairedStandardError,
+        upper95: pairedMean + 1.96 * pairedStandardError,
+    },
     averageScoreDifference: results.reduce((sum, result) => sum + result.scoreDifference, 0) / results.length,
     averageDecisionMs: decisionTimes.reduce((sum, value) => sum + value, 0) / decisionTimes.length,
     p90DecisionMs: decisionTimes[Math.floor(decisionTimes.length * 0.9)],
     averageCompletedBeliefSamples: completedBeliefs.reduce((sum, value) => sum + value, 0) / completedBeliefs.length,
     minimumCompletedBeliefSamples: Math.min(...completedBeliefs),
+    opponentAverageDecisionMs: searchOpponentGeneration
+        ? results.flatMap(result => result.opponentDecisionMs).reduce((sum, value) => sum + value, 0) / decisionTimes.length
+        : null,
+    opponentAverageCompletedBeliefSamples: searchOpponentGeneration
+        ? results.flatMap(result => result.opponentCompletedSamples).reduce((sum, value) => sum + value, 0) / completedBeliefs.length
+        : null,
+    leverageAudit: auditLeverage ? {
+        eligibleMatches: results.filter(result => result.leverageAudit !== null).length,
+        excludedRoyalMatches: results.filter(result => result.leverageAudit === null).length,
+        overall: summarizeLeverage(leverageObservations),
+        pairedDealMeanLift: {
+            pairs: pairedLeverageLifts.length,
+            mean: pairedLeverageMean,
+            standardError: pairedLeverageStandardError,
+            lower95: pairedLeverageMean - 1.96 * pairedLeverageStandardError,
+            upper95: pairedLeverageMean + 1.96 * pairedLeverageStandardError,
+        },
+        byStage: Object.fromEntries((['opening', 'middle', 'closing'] as const).map(stage => [
+            stage,
+            summarizeLeverage(leverageObservations.filter(value => value.stage === stage)),
+        ])),
+    } : null,
     runtimeSeconds: (performance.now() - startedAt) / 1_000,
 }, null, 2));
