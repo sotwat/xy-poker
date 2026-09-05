@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --import tsx --test src/logic/*.test.ts server/*.test.js",
+    "test": "node --import tsx --test src/logic/*.test.ts server/*.test.js workers/*.test.js",
     "check": "npm run lint && npm test && npm run build",
     "preview": "vite preview",
     "start": "node server/index.js",
@@ -26,7 +26,8 @@
     "analyze:gto-blowouts": "tsx scripts/analyze_opening_efficiency.ts --blowout-audit",
     "analyze:gto-endgame": "tsx scripts/analyze_endgame.ts",
     "benchmark:ai": "tsx scripts/benchmark_ai.ts",
-    "prepare:training": "tsx scripts/prepare_training_records.ts"
+    "prepare:training": "tsx scripts/prepare_training_records.ts",
+    "prepare:lettering": "tsx scripts/prepare_lettering.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@resvg/resvg-wasm": "^2.6.2",
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",

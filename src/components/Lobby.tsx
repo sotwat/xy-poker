@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, Copy, KeyRound, Swords, UserRound, Users, Zap } from 'lucide-react';
+import { ArrowLeft, Copy, UserRound } from 'lucide-react';
 import { playClickSound } from '../utils/sound';
 import { useI18n } from '../i18n';
 import './Lobby.css';
@@ -83,12 +83,6 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             <div className="online-lobby-content glass-panel">
-                <div className="online-lobby-heading">
-                    <span className="home-kicker"><Swords aria-hidden="true" />{t('lobby.multiplayer')}</span>
-                    <h3 className="section-title">{t('lobby.title')}</h3>
-                    <p>{t('lobby.description')}</p>
-                </div>
-
                 <div className="lobby-field-row">
                     <label htmlFor="playerName"><UserRound aria-hidden="true" />{t('lobby.displayName')}</label>
                     <input
@@ -107,14 +101,11 @@ export const Lobby: React.FC<LobbyProps> = ({
                         className="quest-btn-primary" 
                         onClick={() => { playClickSound(); onQuickMatch(); }}
                     >
-                        <Zap aria-hidden="true" />
                         <span>
-                            <small className="quest-tag">{t('lobby.ranked')}</small>
+                            <span className="rank-match-title">{t('lobby.ranked')}</span>
                             <span className="quest-title">{t('lobby.find')}</span>
                         </span>
-                        <ArrowRight className="quest-arrow" aria-hidden="true" />
                     </button>
-                    <p className="hint-text">{t('lobby.ratingHint')}</p>
                 </div>
 
                 <div className="divider-text">
@@ -123,9 +114,7 @@ export const Lobby: React.FC<LobbyProps> = ({
 
                 {!roomId ? (
                     <div className="room-actions-grid">
-                        <div className="action-card-secondary">
-                            <h4><Users aria-hidden="true" />{t('lobby.create')}</h4>
-                            <p className="card-desc">{t('lobby.createDescription')}</p>
+                        <div className="action-card-secondary room-create">
                             <button 
                                 type="button"
                                 className="quest-btn-secondary" 
@@ -135,12 +124,13 @@ export const Lobby: React.FC<LobbyProps> = ({
                             </button>
                         </div>
 
-                        <div className="action-card-secondary">
-                            <h4><KeyRound aria-hidden="true" />{t('lobby.join')}</h4>
-                            <p className="card-desc">{t('lobby.joinDescription')}</p>
+                        <div className="action-card-secondary room-join">
+                            <label htmlFor="join-room-code">{t('lobby.roomCode')}</label>
                             <input
+                                id="join-room-code"
                                 type="text"
                                 placeholder={t('lobby.roomId')}
+                                aria-label={t('lobby.roomId')}
                                 value={joinId}
                                 onChange={(e) => setJoinId(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
                                 maxLength={4}

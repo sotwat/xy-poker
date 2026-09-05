@@ -1,3 +1,4 @@
+import { Modal } from './Modal';
 import React, { useState, useEffect } from 'react';
 import type { GameState, Card } from '../logic/types';
 import { evaluateYHand, evaluateXHand } from '../logic/evaluation';
@@ -30,7 +31,7 @@ export const GameResult: React.FC<GameResultProps> = ({
     p2Name = 'Player 2',
     ratingUpdates
 }) => {
-    const { language, t, handName } = useI18n();
+    const { t, handName } = useI18n();
     const { players, winner } = gameState;
     const p1 = players[0];
     const p2 = players[1];
@@ -134,16 +135,16 @@ export const GameResult: React.FC<GameResultProps> = ({
 
 
     return (
-        <div className="game-result-overlay">
+        <Modal className="game-result-overlay" label={t('game.showDetails')} onClose={onViewBoard}>
             <div className="game-result-modal">
                 <div className={`winner-announcement winner-${winner ?? 'draw'}`}>
                     {winner === 'draw' ? (
                         <span className="draw-text">{t('result.tie')}</span>
                     ) : (
                         <>
-                            {language === 'ja' ? '勝者：' : 'Winner: '}<span className={winner === 'p1' ? 'p1-text' : 'p2-text'}>
+                            Winner: <span className={winner === 'p1' ? 'p1-text' : 'p2-text'}>
                                 {winner === 'p1' ? p1Name : p2Name}
-                            </span>{language === 'ja' ? '！' : '!'}
+                            </span>!
                         </>
                     )}
                 </div>
@@ -226,6 +227,6 @@ export const GameResult: React.FC<GameResultProps> = ({
                     </button>
                 </div>
             </div>
-        </div>
+        </Modal>
     );
 };

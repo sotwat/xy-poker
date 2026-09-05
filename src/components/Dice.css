@@ -188,3 +188,6 @@
     background: #3e2723;
     box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
+
+.dice.geometry-angular { border-radius: 0; box-shadow: .2em .25em 0 rgb(0 0 0 / 28%); }
+.dice.geometry-angular .dot { width: .6em; height: .6em; border-radius: 0; }

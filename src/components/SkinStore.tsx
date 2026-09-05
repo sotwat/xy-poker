@@ -1,4 +1,6 @@
+import { Modal } from './Modal';
 import React, { useCallback, useEffect, useState } from 'react';
+import { Check, Clock3, Coins, LockKeyhole } from 'lucide-react';
 import {
     AVAILABLE_DICE_SKINS, AVAILABLE_CARD_SKINS, AVAILABLE_BOARD_SKINS,
     type DiceSkin, type CardSkin, type BoardSkin
@@ -273,8 +275,8 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                                 <PreviewComponent id={item.id} color={item.color} />
                             </div>
                             <div className="skin-name">{item.name}</div>
-                            {!isUnlocked && <div className="lock-icon">🔒</div>}
-                            {isSelected && <div className="check-icon">✓</div>}
+                            {!isUnlocked && <LockKeyhole className="lock-icon" aria-hidden="true" />}
+                            {isSelected && <span className="check-icon"><Check aria-hidden="true" /></span>}
                         </button>
                     );
                 })}
@@ -292,13 +294,13 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     }
 
     return (
-        <div className="skin-store-overlay">
+        <Modal className="skin-store-overlay" label={t('store.title')} onClose={onClose}>
             <div className="skin-store-modal">
                 <button type="button" className="btn-close-x" onClick={() => { playClickSound(); onClose(); }} aria-label={t('common.close')}>×</button>
                 <div className="store-header">
                     <h2>{t('store.title')}</h2>
                     <div className="coin-balance">
-                        <span className="coin-icon">🪙</span> {userCoins}
+                        <Coins className="coin-icon" aria-hidden="true" /> {userCoins}
                         <div className="ad-box">
                             <button type="button" className="btn-ad" onClick={handleWatchAd} disabled={isWatchingAd}>
                                 {isWatchingAd ? t('store.watching') : (isPremium ? <span><PremiumBadge /> {t('store.freePremium')}</span> : t('store.watchFree'))}
@@ -307,18 +309,18 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                     </div>
                 </div>
                 <div className="expiry-notice">
-                    ⚠️ {t('store.expiry')}
+                    <Clock3 aria-hidden="true" /> {t('store.expiry')}
                 </div>
 
                 {/* Gacha Actions */}
                 <div className="gacha-actions">
                     <button type="button" className="gacha-option" onClick={() => handleGacha(1)}>
                         <div className="gacha-label">{t('store.single')}</div>
-                        <div className="gacha-cost">🪙 {GACHA_COST_SINGLE}</div>
+                        <div className="gacha-cost"><Coins aria-hidden="true" /> {GACHA_COST_SINGLE}</div>
                     </button>
                     <button type="button" className="gacha-option special" onClick={() => handleGacha(10)}>
                         <div className="gacha-label">{t('store.multi')}</div>
-                        <div className="gacha-cost">🪙 {GACHA_COST_MULTI}</div>
+                        <div className="gacha-cost"><Coins aria-hidden="true" /> {GACHA_COST_MULTI}</div>
                     </button>
                 </div>
 
@@ -332,6 +334,6 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
                 <button type="button" className="btn-close" onClick={() => { playClickSound(); onClose(); }}>{t('common.close')}</button>
             </div>
-        </div>
+        </Modal>
     );
 };

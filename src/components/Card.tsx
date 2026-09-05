@@ -2,6 +2,12 @@ import React from 'react';
 import type { Card as CardType, CardSkin } from '../logic/types';
 import './Card.css';
 import { useI18n } from '../i18n';
+import { LetteringText } from './LetteringText';
+import { uiGeometry, type UiGeometry } from '../uiGeometry';
+
+type SuitStyle = 'classic' | 'vectura' | 'vectura-filled';
+const requestedSuit = import.meta.env.DEV ? new URLSearchParams(window.location.search).get('suit') : null;
+const defaultSuitStyle: SuitStyle = requestedSuit === 'outline' ? 'vectura' : 'vectura-filled';
 
 interface CardProps {
     card: CardType;
@@ -17,6 +23,9 @@ interface CardProps {
     onTouchEnd?: () => void;
     skin?: CardSkin;
     size?: 'normal' | 'small' | 'xs';
+    rankLettering?: boolean;
+    suitStyle?: SuitStyle;
+    geometry?: UiGeometry;
 }
 
 const RANK_LABELS: Record<number, string> = {
@@ -30,15 +39,36 @@ const RANK_LABELS: Record<number, string> = {
 interface SuitMarkProps {
     suit: CardType['suit'];
     className?: string;
+    style: SuitStyle;
 }
 
-const SuitMark: React.FC<SuitMarkProps> = ({ suit, className = '' }) => (
+const VECTURA_SUIT_PATHS: Record<CardType['suit'], { outer: string; holes: string }> = {
+    hearts: {
+        outer: 'M6 24 18 12H35L50 27 65 12H82L94 24V42L50 87 6 42Z',
+        holes: 'M18 30V38L50 70 82 38V30L77 25H69L50 44 31 25H23Z',
+    },
+    diamonds: {
+        outer: 'M50 14 96 50 50 86 4 50Z',
+        holes: 'M50 31 26 50 50 69 74 50Z',
+    },
+    spades: {
+        outer: 'M50 8 94 47V63L83 74H65L60 69V80L75 92H25L40 80V69L35 74H17L6 63V47Z',
+        holes: 'M50 25 18 54V58L22 62H32L44 50H56L68 62H78L82 58V54Z',
+    },
+    clubs: {
+        outer: 'M38 6H62L74 18V34H82L96 48V64L82 78H64L58 72V80L74 94H26L42 80V72L36 78H18L4 64V48L18 34H26V18Z',
+        holes: 'M43 18 38 23V32L50 44 62 32V23L57 18ZM22 46 16 52V60L22 66H30L42 56 30 46ZM78 46H70L58 56 70 66H78L84 60V52Z',
+    },
+};
+
+const SuitMark: React.FC<SuitMarkProps> = ({ suit, className = '', style }) => (
     <svg
         className={`suit-mark ${className}`}
         viewBox="0 0 100 100"
         aria-hidden="true"
         focusable="false"
     >
+        {style !== 'classic' ? <path d={VECTURA_SUIT_PATHS[suit].outer + (style === 'vectura' ? VECTURA_SUIT_PATHS[suit].holes : '')} fillRule="evenodd" /> : <>
         {suit === 'hearts' && (
             <path d="M50 90C43 80 12 62 12 35 12 17 34 8 50 27 66 8 88 17 88 35 88 62 57 80 50 90Z" />
         )}
@@ -54,6 +84,7 @@ const SuitMark: React.FC<SuitMarkProps> = ({ suit, className = '' }) => (
                 <path d="M43 55h14c0 20 5 31 16 40H27c11-9 16-20 16-40Z" />
             </>
         )}
+        </>}
     </svg>
 );
 
@@ -115,7 +146,10 @@ export const Card: React.FC<CardProps> = ({
     onTouchStart,
     onTouchEnd,
     skin = 'classic',
-    size = 'normal'
+    size = 'normal',
+    rankLettering = true,
+    suitStyle = defaultSuitStyle,
+    geometry = uiGeometry
 }) => {
     const { t } = useI18n();
 
@@ -125,7 +159,7 @@ export const Card: React.FC<CardProps> = ({
     if (shouldHide) {
         return (
             <div
-                className={`card ${size} hidden ${isSelected ? 'selected' : ''} card-back-${skin}`}
+                className={`card ${size} geometry-${geometry} hidden ${isSelected ? 'selected' : ''} card-back-${skin}`}
                 onClick={onClick}
                 onMouseDown={onMouseDown}
                 onMouseUp={onMouseUp}
@@ -143,7 +177,16 @@ export const Card: React.FC<CardProps> = ({
 
     return (
         <div
-            className={`card ${size} ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''} ${isPeeking ? 'peeking' : ''}`}
+            className={`card ${size} geometry-${geometry} ${card.suit} ${isSelected ? 'selected' : ''} ${isPlayable ? 'playable' : ''} ${isPeeking ? 'peeking' : ''}`}
+            role={isPlayable ? 'button' : undefined}
+            tabIndex={isPlayable ? 0 : undefined}
+            aria-pressed={isPlayable ? !!isSelected : undefined}
+            onKeyDown={event => {
+                if (isPlayable && (event.key === 'Enter' || event.key === ' ')) {
+                    event.preventDefault();
+                    onClick?.();
+                }
+            }}
             onClick={onClick}
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
@@ -155,16 +198,16 @@ export const Card: React.FC<CardProps> = ({
         >
             {isPeeking && <div className="peek-overlay"></div>}
             <div className="card-index">
-                <span className="rank">{label}</span>
+                <span className="rank">{rankLettering ? <LetteringText layout="card-rank">{label}</LetteringText> : label}</span>
             </div>
             <div className={`card-art ${isCourtCard ? `court-art court-${label.toLowerCase()}` : 'number-art'}`} aria-hidden="true">
                 {isCourtCard ? (
                     <>
                         <CourtPortrait rank={card.rank} />
-                        <SuitMark suit={card.suit} className="court-suit-mark" />
+                        <SuitMark suit={card.suit} className="court-suit-mark" style={suitStyle} />
                     </>
                 ) : (
-                    <SuitMark suit={card.suit} className="large-suit" />
+                    <SuitMark suit={card.suit} className="large-suit" style={suitStyle} />
                 )}
             </div>
         </div>

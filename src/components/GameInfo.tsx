@@ -92,15 +92,17 @@ export const GameInfo: React.FC<GameInfoProps> = ({
 
             <div className="scores">
                 <div className="player-score-row player-1">
-                    <span className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
-                        {p1Name} {((myIndex === 0 && isPremium) || p1.isPremium) && <PremiumBadge />}: <AnimatedScore value={p1.score} className="score-number" />
-                    </span>
+                    <div className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
+                        <span className="score-player-name"><i aria-hidden="true" />{p1Name} {((myIndex === 0 && isPremium) || p1.isPremium) && <PremiumBadge />}</span>
+                        <span className="score-total"><AnimatedScore value={p1.score} className="score-number" /><small>pt</small></span>
+                    </div>
                     <span className="bonus-item">{t('gameInfo.bonus', { count: p1.bonusesClaimed })}</span>
                 </div>
                 <div className="player-score-row player-2">
-                    <span className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
-                        {p2Name} {((myIndex === 1 && isPremium) || p2.isPremium) && <PremiumBadge />}: <AnimatedScore value={p2.score} className="score-number" />
-                    </span>
+                    <div className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
+                        <span className="score-player-name"><i aria-hidden="true" />{p2Name} {((myIndex === 1 && isPremium) || p2.isPremium) && <PremiumBadge />}</span>
+                        <span className="score-total"><AnimatedScore value={p2.score} className="score-number" /><small>pt</small></span>
+                    </div>
                     <span className="bonus-item">{t('gameInfo.bonus', { count: p2.bonusesClaimed })}</span>
                 </div>
             </div>

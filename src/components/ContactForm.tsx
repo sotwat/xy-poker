@@ -1,3 +1,4 @@
+import { Modal } from './Modal';
 import React, { useState } from 'react';
 import { socket } from '../logic/online';
 import { useI18n } from '../i18n';
@@ -55,18 +56,18 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
 
     if (submitStatus === 'success') {
         return (
-            <div className="modal-overlay">
+            <Modal className="modal-overlay" label={t('home.feedback')} onClose={onClose}>
                 <div className="contact-modal success">
                     <div className="success-icon">{t('contact.sent')}</div>
                     <h3>{t('contact.sentTitle')}</h3>
                     <p>{t('contact.thanks')}</p>
                 </div>
-            </div>
+            </Modal>
         );
     }
 
     return (
-        <div className="modal-overlay">
+        <Modal className="modal-overlay" label={t('home.feedback')} onClose={onClose}>
             <div className="contact-modal">
                 <div className="modal-header">
                     <h2>{t('contact.title')}</h2>
@@ -102,9 +103,10 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
                     </div>
 
                     <div className="form-group">
-                        <label>{t('contact.optional')}</label>
+                        <label htmlFor="contact-address">{t('contact.optional')}</label>
                         <input
                             type="text"
+                            id="contact-address"
                             placeholder={t('contact.contactPlaceholder')}
                             value={contactInfo}
                             onChange={e => setContactInfo(e.target.value)}
@@ -112,9 +114,10 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
                     </div>
 
                     <div className="form-group">
-                        <label>{t('contact.device')}</label>
+                        <label htmlFor="contact-device">{t('contact.device')}</label>
                         <input
                             type="text"
+                            id="contact-device"
                             value={deviceInfo}
                             onChange={e => setDeviceInfo(e.target.value)}
                             placeholder={t('contact.devicePlaceholder')}
@@ -123,8 +126,9 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
                     </div>
 
                     <div className="form-group">
-                        <label>{t('contact.message')} <span className="required">*</span></label>
+                        <label htmlFor="contact-message">{t('contact.message')} <span className="required">*</span></label>
                         <textarea
+                            id="contact-message"
                             placeholder={t('contact.messagePlaceholder')}
                             value={message}
                             onChange={e => setMessage(e.target.value)}
@@ -153,7 +157,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onClose, playerId, initialCat
                     </div>
                 </form>
             </div>
-        </div>
+        </Modal>
     );
 };
 

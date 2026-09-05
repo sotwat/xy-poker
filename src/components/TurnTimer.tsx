@@ -12,10 +12,10 @@ interface TurnTimerProps {
 
 export const TurnTimer: React.FC<TurnTimerProps> = ({ timeLeft, currentPlayerIndex, isMyTurn, isPaused = false, onResync }) => {
     const { t } = useI18n();
-    const borderColor = currentPlayerIndex === 0 ? '#4da8da' : '#ff4d4d'; // Blue : Red
 
     return (
-        <div className={`turn-timer ${!isPaused && timeLeft <= 10 ? 'warning' : ''} ${isPaused ? 'paused' : ''}`} style={{ borderColor }}>
+        <div className={`turn-timer timer-player-${currentPlayerIndex + 1} ${!isPaused && timeLeft <= 10 ? 'warning' : ''} ${isPaused ? 'paused' : ''}`}>
+            <div className="timer-track" aria-hidden="true"><span style={{ transform: `scaleX(${Math.max(0, Math.min(1, timeLeft / 60))})` }} /></div>
             <div className="timer-label">
                 {isPaused ? t('timer.thoughtPaused') : (isMyTurn ? t('timer.yourTurn') : t('timer.opponentTurn'))}
                 {!isMyTurn && onResync && (
@@ -29,7 +29,7 @@ export const TurnTimer: React.FC<TurnTimerProps> = ({ timeLeft, currentPlayerInd
                     </button>
                 )}
             </div>
-            <div className="timer-value" aria-live="polite">{timeLeft}s</div>
+            <div className="timer-value" aria-live={!isPaused && timeLeft <= 10 ? 'polite' : 'off'}>{timeLeft}<small>s</small></div>
         </div>
     );
 };

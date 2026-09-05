@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { fontPreviewPlugin } from './scripts/fontPreviewPlugin'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), fontPreviewPlugin()],
   build: {
     target: 'es2022',
     rollupOptions: {

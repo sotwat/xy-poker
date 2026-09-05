@@ -123,3 +123,12 @@ dist
 *.backup.gz
 *.storage.zip
 **/.env
+
+# Licensed font input and private Worker build output
+.private/
+.wrangler/
+.dev.vars*
+
+# Unselected lettering studies stay local; ship only the adopted design.
+src/assets/lettering/*
+!src/assets/lettering/vectura-*.png

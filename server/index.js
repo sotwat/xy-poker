@@ -3,6 +3,8 @@ import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Server } from 'socket.io';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import supabase from './db.js';
 import {
     calculateUpdatedAiParams,
@@ -51,7 +53,31 @@ app.use(express.static(path.join(directory, '../dist'), {
     maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0,
 }));
 
-const SERVER_VERSION = '09051209';
+// Render also serves the built frontend; keep lettering on its private Pages renderer.
+app.get('/api/lettering/:kind', async (request, response) => {
+    const { kind } = request.params;
+    const value = request.query.value;
+    if (!['text', 'rating', 'card-rank'].includes(kind) || typeof value !== 'string' || value.length > 32) {
+        return response.status(400).send('Invalid lettering');
+    }
+    try {
+        const target = new URL(`https://xy-poker.pages.dev/api/lettering/${kind}`);
+        target.searchParams.set('value', value);
+        const upstream = await fetch(target, { signal: AbortSignal.timeout(5000) });
+        if (!upstream.ok || upstream.headers.get('content-type') !== 'image/png' || !upstream.body) {
+            await upstream.body?.cancel();
+            return response.status(503).send('Lettering unavailable');
+        }
+        response.setHeader('Content-Type', 'image/png');
+        response.setHeader('Cache-Control', 'private, max-age=86400');
+        await pipeline(Readable.fromWeb(upstream.body), response);
+    } catch {
+        if (!response.headersSent) response.status(503).send('Lettering unavailable');
+        else response.destroy();
+    }
+});
+
+const SERVER_VERSION = '09051526';
 
 app.get('/api/health', async (_request, response) => {
     try {

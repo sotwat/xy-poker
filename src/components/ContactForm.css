@@ -237,3 +237,5 @@
     background: #0d141d !important;
     border-color: var(--border-strong) !important;
 }
+
+.contact-modal { position: relative; }

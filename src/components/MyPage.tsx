@@ -59,7 +59,7 @@ export const MyPage: React.FC<MyPageProps> = ({
     selectedCardSkin,
     selectedBoardSkin,
 }) => {
-    const { language, t, locale } = useI18n();
+    const { t, locale } = useI18n();
     const [activeTab, setActiveTab] = useState<'stats' | 'records' | 'ranking' | 'achievements'>('stats');
     const [profile, setProfile] = useState<Profile | null>(null);
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -106,7 +106,7 @@ export const MyPage: React.FC<MyPageProps> = ({
                     if (!cancelled) {
                         setLeaderboard(entries.map(entry => ({
                             ...entry,
-                            username: entry.username || `${language === 'ja' ? 'ユーザー' : 'User'} ${entry.id.slice(0, 4)}`,
+                            username: entry.username || `User ${entry.id.slice(0, 4)}`,
                         })));
                     }
                 }
@@ -158,7 +158,7 @@ export const MyPage: React.FC<MyPageProps> = ({
         return () => {
             cancelled = true;
         };
-    }, [activeTab, isOpen, language, userId]);
+    }, [activeTab, isOpen, userId]);
 
     const handleUpdateName = async () => {
         if (!profile || !editNameValue.trim()) return;

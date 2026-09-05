@@ -1,0 +1,5 @@
+.lettering-text { position: relative; display: inline-block; max-width: 100%; vertical-align: middle; white-space: pre; }
+.lettering-text > span { font: inherit; }
+.lettering-text-hidden { opacity: 0; }
+.lettering-text-loader { display: none; }
+.lettering-text-face { position: absolute; inset: 0; background: currentColor; mask-repeat: no-repeat; mask-size: contain; mask-position: left center; pointer-events: none; }

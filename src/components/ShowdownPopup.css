@@ -383,13 +383,13 @@
     min-height: clamp(72px, 15cqh, 104px);
     display: grid;
     place-items: center;
-    padding: 14px clamp(22px, 8cqw, 42px);
+    padding: 24px clamp(22px, 8cqw, 42px);
     overflow: hidden;
     border-block: 2px solid var(--showdown-accent);
     background:
         linear-gradient(100deg, transparent, var(--showdown-accent-faint) 18% 82%, transparent),
         rgb(5 8 13 / 88%);
-    clip-path: polygon(7% 0, 100% 12%, 93% 100%, 0 86%);
+    clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%);
     opacity: 0;
     transform: translate3d(42%, 0, 0) skewX(-8deg) scaleX(0.55);
     will-change: transform, opacity;
@@ -422,7 +422,7 @@
     color: #fff;
     font-size: clamp(1.8rem, 9cqw, 3rem);
     font-weight: 950;
-    line-height: 0.95;
+    line-height: 1.08;
     letter-spacing: -0.045em;
     text-wrap: balance;
     text-shadow:
@@ -464,13 +464,13 @@
     min-width: 108px;
     padding: 6px 13px;
     border: 1px solid var(--showdown-accent);
-    border-radius: 999px;
+    border-radius: 3px;
     color: #fff;
     background: rgb(4 7 12 / 82%);
     font-size: 0.75rem;
     font-weight: 850;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-transform: none;
     opacity: 0;
     transform: translateY(10px) scale(0.9);
     animation: showdown-winner-in 380ms ease-out 1080ms both;
@@ -797,4 +797,33 @@
     .showdown-title-kicker {
         transform: none;
     }
+}
+
+.showdown-round {
+    position: absolute;
+    z-index: 2;
+    inset: 28px 28px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--showdown-accent);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .12em;
+}
+.showdown-progress { display: flex; gap: 5px; }
+.showdown-progress i { width: 20px; height: 3px; background: rgb(255 255 255 / 18%); }
+.showdown-progress i.revealed { background: var(--showdown-accent); }
+.showdown-progress i:last-child { width: 32px; }
+.showdown-award {
+    color: var(--showdown-winner);
+    font-size: clamp(36px, 10cqw, 60px);
+    font-weight: 750;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    animation: showdown-winner-in 320ms ease-out 1200ms both;
+}
+.showdown-award small { margin-left: 5px; font-size: 14px; font-weight: 500; }
+@media (prefers-reduced-motion: reduce) {
+    .showdown-award { animation: none !important; }
 }

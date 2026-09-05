@@ -1,0 +1,36 @@
+:root { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', sans-serif; color: #f4f0fc; background: #0b0912; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+:lang(ja) { line-break: strict; word-break: normal; }
+.geometry-review { max-width: 1240px; margin: auto; padding: 24px; }
+.geometry-review header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 26px; }
+.geometry-review h1 { margin: 0 0 8px; font-size: 22px; text-wrap: balance; }
+.geometry-review p { margin: 0; color: #c9c0d7; font-size: 13px; line-height: 1.6; text-wrap: pretty; }
+.viewport-switch { display: flex; flex-shrink: 0; }
+.viewport-switch button { min-height: 44px; padding: 8px 14px; border: 1px solid #766d87; color: #c9c0d7; background: transparent; font: inherit; font-size: 13px; cursor: pointer; }
+.viewport-switch button + button { border-left: 0; }
+.viewport-switch button[aria-pressed="true"] { color: #13101c; background: #fff1a0; }
+.geometry-review :is(button, a):focus-visible { outline: 2px solid #ffe986; outline-offset: 4px; }
+.geometry-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.geometry-columns section { min-width: 0; }
+.geometry-columns h2 { font-size: 15px; margin: 0 0 14px; }
+.geometry-parts { padding: 18px 12px; margin-bottom: 18px; border-block: 1px solid #534761; background: #151121; }
+.geometry-pieces { display: flex; justify-content: center; align-items: center; gap: 30px; }
+.geometry-cards { display: flex; gap: 10px; }
+.geometry-parts .card { width: 48px; height: 72px; cursor: default; }
+.geometry-parts .card:hover { transform: none; }
+.geometry-dice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.geometry-parts .dice { font-size: 6px; }
+.geometry-menu { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 22px; color: #ffe878; }
+.geometry-menu > div { display: grid; justify-items: center; gap: 10px; min-width: 0; }
+.geometry-menu svg { width: 26px; height: 26px; stroke-width: 2.2; }
+.geometry-menu img { display: block; width: 100%; max-width: 90px; height: 16px; object-fit: contain; }
+.geometry-frame { position: relative; overflow: hidden; border: 1px solid #534761; background: #141122; }
+.geometry-frame iframe { position: absolute; top: 0; left: 0; display: block; border: 0; transform-origin: left top; pointer-events: none; }
+.geometry-columns a { display: flex; justify-content: center; align-items: center; min-height: 46px; margin-top: 12px; padding: 10px; border: 1px solid #827590; color: #fff1a0; font-size: 13px; text-decoration: none; text-wrap: balance; }
+.geometry-columns a:hover { background: #302640; }
+@media (max-width: 680px) {
+  .geometry-review { padding: 18px 16px; }
+  .geometry-review header { align-items: flex-start; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+  .geometry-columns { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+}

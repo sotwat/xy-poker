@@ -1,15 +1,17 @@
 import React from 'react';
 import './Dice.css';
 import type { DiceSkin } from '../logic/types';
+import { uiGeometry, type UiGeometry } from '../uiGeometry';
 
 interface DiceProps {
     value: number;
     size?: 'small' | 'medium' | 'large';
     className?: string;
     skin?: DiceSkin;
+    geometry?: UiGeometry;
 }
 
-export const Dice: React.FC<DiceProps> = ({ value, size = 'medium', className = '', skin = 'white' }) => {
+export const Dice: React.FC<DiceProps> = ({ value, size = 'medium', className = '', skin = 'white', geometry = uiGeometry }) => {
     // Map value to dot positions
     const renderDots = () => {
         const dots = [];
@@ -30,7 +32,7 @@ export const Dice: React.FC<DiceProps> = ({ value, size = 'medium', className = 
     };
 
     return (
-        <div className={`dice ${size} ${className} ${skin}`}>
+        <div className={`dice ${size} geometry-${geometry} ${className} ${skin}`}>
             {renderDots()}
         </div>
     );

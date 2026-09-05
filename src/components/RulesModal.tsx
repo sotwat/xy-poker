@@ -2,7 +2,8 @@ import React from 'react';
 import './RulesModal.css';
 import { Card } from './Card';
 import type { Suit, Rank } from '../logic/types';
-import { useI18n } from '../i18n';
+import { formatHandName, translate, useI18n } from '../i18n';
+import { Modal } from './Modal';
 
 interface RulesModalProps {
     onClose: () => void;
@@ -19,11 +20,10 @@ const c = (rank: number, suit: Suit) => ({
 });
 
 // Hand Example Component
-const HandExample: React.FC<{ title: string; note?: string; cards: ReturnType<typeof c>[] }> = ({ title, note, cards }) => (
+const HandExample: React.FC<{ title: string; cards: ReturnType<typeof c>[] }> = ({ title, cards }) => (
     <div className="hand-example">
         <div className="hand-header">
             <span className="hand-title">{title}</span>
-            {note && <span className="hand-note">{note}</span>}
         </div>
         <div className="hand-cards">
             {cards.map((card, i) => (
@@ -34,12 +34,23 @@ const HandExample: React.FC<{ title: string; note?: string; cards: ReturnType<ty
 );
 
 export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
-    const { t, handName } = useI18n();
+    const { t: uiText, rulesLanguage, setRulesLanguage } = useI18n();
+    const t = (key: string) => translate(rulesLanguage, key);
+    const handName = (type: string) => formatHandName(type, rulesLanguage);
     return (
-        <div className="rules-overlay" onClick={onClose}>
-            <div className="rules-content" onClick={e => e.stopPropagation()}>
-                <button type="button" className="close-btn" onClick={onClose} aria-label={t('common.close')}>×</button>
-                <h2>{t('rules.title')}</h2>
+        <Modal className="rules-overlay" label="RULES" onClose={onClose}>
+            <div className="rules-content" lang={rulesLanguage} onClick={e => e.stopPropagation()}>
+                <button type="button" className="close-btn" onClick={onClose} aria-label={uiText('common.close')}>×</button>
+                <div className="rules-heading">
+                    <h2>RULES</h2>
+                    <label className="rules-language">
+                        <span className="sr-only">Rules language</span>
+                        <select value={rulesLanguage} onChange={event => setRulesLanguage(event.target.value === 'en' ? 'en' : 'ja')}>
+                            <option value="ja">日本語</option>
+                            <option value="en">English</option>
+                        </select>
+                    </label>
+                </div>
 
                 <div className="rules-scroll-area">
                     <section>
@@ -129,7 +140,6 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                                 <div className="hand-list-visual">
                                     <HandExample
                                         title={handName('PureStraightFlush')}
-                                        note={t('rules.ordered')}
                                         cards={[c(5, 'hearts'), c(6, 'hearts'), c(7, 'hearts')]}
                                     />
                                     <HandExample
@@ -138,12 +148,10 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                                     />
                                     <HandExample
                                         title={handName('StraightFlush')}
-                                        note={t('rules.unordered')}
                                         cards={[c(7, 'spades'), c(9, 'spades'), c(8, 'spades')]}
                                     />
                                     <HandExample
                                         title={handName('PureStraight')}
-                                        note={t('rules.ordered')}
                                         cards={[c(3, 'clubs'), c(4, 'hearts'), c(5, 'diamonds')]}
                                     />
                                     <HandExample
@@ -152,17 +160,14 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                                     />
                                     <HandExample
                                         title={handName('PureOnePair')}
-                                        note={t('rules.adjacent')}
                                         cards={[c(5, 'hearts'), c(5, 'clubs'), c(9, 'diamonds')]}
                                     />
                                     <HandExample
                                         title={handName('Straight')}
-                                        note={t('rules.unordered')}
                                         cards={[c(4, 'diamonds'), c(6, 'spades'), c(5, 'clubs')]}
                                     />
                                     <HandExample
                                         title={handName('OnePair')}
-                                        note={t('rules.split')}
                                         cards={[c(8, 'clubs'), c(12, 'diamonds'), c(8, 'spades')]}
                                     />
                                     <HandExample
@@ -174,8 +179,8 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                         </div>
                     </section>
                 </div>
-                <button type="button" className="rules-close-btn" onClick={onClose}>{t('common.close')}</button>
+                <button type="button" className="rules-close-btn" onClick={onClose}>{uiText('common.close')}</button>
             </div>
-        </div >
+        </Modal>
     );
 };

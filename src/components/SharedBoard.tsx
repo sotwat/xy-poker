@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { Card as CardType, DiceSkin, CardSkin, BoardSkin } from '../logic/types';
 import { Card } from './Card';
 import { Dice } from './Dice';
@@ -11,6 +11,7 @@ interface SharedBoardProps {
     dice: number[];
     onColumnClick: (colIndex: number) => void;
     isCurrentPlayer: boolean;
+    hasSelectedCard?: boolean;
     revealAll?: boolean; // For post-game view
     winningColumns?: ('p1' | 'p2' | 'draw')[];
     xWinner?: 'p1' | 'p2' | 'draw'; // X-hand winner for row highlighting
@@ -28,6 +29,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     dice,
     onColumnClick,
     isCurrentPlayer,
+    hasSelectedCard = false,
     revealAll = false,
     winningColumns,
     xWinner,
@@ -42,6 +44,10 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const pressTimerRef = useRef<number | null>(null);
     const longPressTriggeredRef = useRef(false);
+
+    useEffect(() => () => {
+        if (pressTimerRef.current !== null) window.clearTimeout(pressTimerRef.current);
+    }, []);
 
     const clearPressTimer = () => {
         if (pressTimerRef.current !== null) {
@@ -75,7 +81,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
             longPressTriggeredRef.current = false;
             return;
         }
-        if (isCurrentPlayer && (!card || !card.isHidden || revealAll)) {
+        if (isCurrentPlayer && hasSelectedCard && playerBoard.some(row => row[colIndex] === null) && (!card || !card.isHidden || revealAll)) {
             onColumnClick(colIndex);
         }
     };
@@ -91,6 +97,8 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         // row 0 therefore belongs at the bottom of this group, next to the die.
         const opponentCards = [opponentBoard[2][colIndex], opponentBoard[1][colIndex], opponentBoard[0][colIndex]];
         const playerCards = [playerBoard[0][colIndex], playerBoard[1][colIndex], playerBoard[2][colIndex]];
+        const nextSlot = playerCards.findIndex(card => card === null);
+        const isAvailable = isCurrentPlayer && nextSlot !== -1;
 
         // Determine if Top/Bottom rows are won
         // winningColumns[colIndex] returns 'p1' or 'p2' (the winner)
@@ -121,12 +129,13 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
         return (
             <div
                 key={colIndex}
-                className={`shared-column ${isCurrentPlayer ? 'interactive' : ''} ${colWinningClass}`}
-                role={isCurrentPlayer ? 'button' : undefined}
-                tabIndex={isCurrentPlayer ? 0 : -1}
-                aria-label={isCurrentPlayer ? t('board.place', { column: colIndex + 1, dice: dice[colIndex] }) : undefined}
+                className={`shared-column ${isAvailable ? 'interactive' : ''} ${isAvailable && hasSelectedCard ? 'placement-ready' : ''} ${colWinningClass}`}
+                role={isAvailable ? 'button' : undefined}
+                tabIndex={isAvailable ? 0 : -1}
+                aria-disabled={isAvailable ? !hasSelectedCard : undefined}
+                aria-label={isAvailable ? t('board.place', { column: colIndex + 1, dice: dice[colIndex] }) : undefined}
                 onClick={(event) => {
-                    if (!isCurrentPlayer) return;
+                    if (!isAvailable || !hasSelectedCard) return;
 
                     const target = event.target;
                     if (target instanceof Element && target.closest('.card-slot')) return;
@@ -134,7 +143,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                     onColumnClick(colIndex);
                 }}
                 onKeyDown={(event) => {
-                    if (isCurrentPlayer && (event.key === 'Enter' || event.key === ' ')) {
+                    if (isAvailable && hasSelectedCard && (event.key === 'Enter' || event.key === ' ')) {
                         event.preventDefault();
                         onColumnClick(colIndex);
                     }
@@ -146,7 +155,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                         <div
                             key={`opp-${idx}`}
                             className={`card-slot opponent-slot ${topWinningClass} ${isTopXWinner && idx === 0 ? 'winning-row-yellow' : ''}`}
-                            onClick={() => isCurrentPlayer && onColumnClick(colIndex)}
+                            onClick={() => isAvailable && hasSelectedCard && onColumnClick(colIndex)}
                         >
                             {card ? (
                                 <Card
@@ -169,7 +178,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                         <div
                             key={`pl-${idx}`}
                             className={`card-slot player-slot ${isBottomXWinner && idx === 2 ? 'winning-row-yellow' : ''
-                                } ${bottomWinningClass}`}
+                                } ${bottomWinningClass} ${isAvailable && hasSelectedCard && idx === nextSlot ? 'next-slot' : ''}`}
                             onPointerDown={() => handleCardPressStart(card, true)}
                             onPointerUp={handleCardPressEnd}
                             onPointerLeave={handleCardPressEnd}
@@ -182,7 +191,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                                     isPeeking={peekingCard === card.id}
                                     skin={selectedCardSkin}
                                 />
-                            ) : <div className="empty-slot" />}
+                            ) : <div className="empty-slot">{isAvailable && hasSelectedCard && idx === nextSlot && <span className="placement-mark" aria-hidden="true">+</span>}</div>}
                         </div>
                     ))}
                 </div>

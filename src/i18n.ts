@@ -4,8 +4,11 @@ export type Language = 'ja' | 'en';
 
 const STORAGE_KEY = 'xypoker_language';
 
+export const UI_LANGUAGE: Language = 'en';
+
 const messages: Record<Language, Record<string, string>> = {
     ja: {
+        'game.yourSide': 'あなた',
         'language.label': 'Language',
         'language.japanese': '日本語',
         'language.english': 'English',
@@ -18,7 +21,7 @@ const messages: Record<Language, Record<string, string>> = {
         'common.guest': 'ゲスト',
         'common.localGuest': 'ローカルゲスト',
         'common.player': 'プレイヤー',
-        'common.rating': 'レーティング',
+        'common.rating': 'RATING',
         'common.account': 'アカウント',
         'common.signIn': 'ログイン',
         'common.signOut': 'ログアウト',
@@ -33,7 +36,7 @@ const messages: Record<Language, Record<string, string>> = {
         'home.onlineMode': 'オンライン',
         'home.playerLabel': 'プレイヤー',
         'home.cardDiceStrategy': 'カード × ダイス戦略',
-        'home.description': '5つのダイスを巡ってポーカー役を組み立てます。一手ごとの配置が勝敗を左右します。',
+        'home.description': '5つのダイスを挟んで、カードを1枚ずつ。縦3枚と横5枚の役で勝負する、ふたりのポーカー。',
         'home.overview': 'ゲーム概要',
         'home.twoPlayers': '2人対戦',
         'home.fiveColumns': '5列',
@@ -149,15 +152,11 @@ const messages: Record<Language, Record<string, string>> = {
         'rules.pureIntro': 'Y役には、カードの並び順を満たす強い「純正役」があります。',
         'rules.pureStraight': '純正ストレート：上から順にランクが連続している必要があります（例：3-4-5）。',
         'rules.purePair': '純正ワンペア：同じ数字が隣り合う必要があります（例：5-5-9、9-5-5）。',
-        'rules.normal': '通常役：数字は連続していても順不同、またはペアが離れている組み合わせです。',
+        'rules.normal': '通常役：数字が連続していても並びが前後している、または同じ数字の間に別の数字が入る組み合わせです。',
         'rules.rankings': '役の強さ',
         'rules.xHeading': 'X役（横・5枚）',
         'rules.yHeading': 'Y役（縦・3枚）',
         'rules.orderNote': '表示は左から右が、盤面の上から下（1段目、2段目、3段目）に対応します。',
-        'rules.ordered': '順番どおり',
-        'rules.unordered': '順不同',
-        'rules.adjacent': '隣接',
-        'rules.split': '離れたペア',
         'store.title': 'スキンショップ',
         'store.watching': '広告を確認中…',
         'store.freePremium': '無料で引く',
@@ -311,6 +310,7 @@ const messages: Record<Language, Record<string, string>> = {
         'achievement.y_win_high_card': 'Y役・ハイカードで勝利',
     },
     en: {
+        'game.yourSide': 'YOU',
         'language.label': 'Language',
         'language.japanese': '日本語',
         'language.english': 'English',
@@ -318,34 +318,34 @@ const messages: Record<Language, Record<string, string>> = {
         'document.description': 'XY Poker is a free strategy game that combines card placement, poker hands, and dice values. Play against AI or online opponents.',
         'common.close': 'Close', 'common.cancel': 'Cancel', 'common.ok': 'OK', 'common.back': 'Back',
         'common.guest': 'Guest', 'common.localGuest': 'Local guest', 'common.player': 'Player',
-        'common.rating': 'Rating', 'common.account': 'Account', 'common.signIn': 'Sign in',
+        'common.rating': 'RATING', 'common.account': 'Account', 'common.signIn': 'Sign in',
         'common.signOut': 'Sign out', 'common.loading': 'Loading...', 'common.draw': 'Draw',
         'common.ai': 'AI', 'common.retry': 'Try again', 'common.cards': '{count} cards',
         'common.vs': 'vs',
         'home.fullscreen': 'Toggle fullscreen', 'home.localMode': 'Local (vs AI)', 'home.onlineMode': 'Online',
         'home.playerLabel': 'Player', 'home.cardDiceStrategy': 'Card + Dice Strategy',
-        'home.description': 'Build five poker hands across a shared line of dice. Every placement matters.',
+        'home.description': 'Place one card at a time to build three-card columns and five-card rows around five shared dice.',
         'home.overview': 'Game overview', 'home.twoPlayers': '2 players', 'home.fiveColumns': '5 columns',
         'home.quickMatches': 'Quick matches', 'home.playNow': 'Play now', 'home.playAi': 'Play against AI',
         'home.playWithOthers': 'Play with others', 'home.onlineMatch': 'Online match', 'home.menu': 'Home menu',
         'home.skins': 'Skins', 'home.rules': 'Rules', 'home.feedback': 'Feedback',
-        'home.support': 'Support the developer', 'home.supportAria': 'Support the developer (opens in a new tab)',
-        'match.quick': 'Quick Match', 'match.waiting': 'Waiting for opponent...',
+        'home.support': 'Support', 'home.supportAria': 'Support the developer (opens in a new tab)',
+        'match.quick': 'Quick Match', 'match.waiting': 'Finding a match...',
         'match.botFallback': 'If no player joins within {seconds} seconds, a bot match starts automatically.',
         'game.first': 'First', 'game.second': 'Second', 'game.coinToss': 'Coin toss',
-        'game.choosingRandom': 'Choosing at random...', 'game.wonToss': '{name} won the toss',
-        'game.autoChoosing': 'AUTO is choosing...', 'game.chooseIn': 'Choose in {seconds}s',
+        'game.choosingRandom': 'Flipping...', 'game.wonToss': '{name} won the toss',
+        'game.autoChoosing': 'AUTO choosing...', 'game.chooseIn': 'Choose in {seconds}s',
         'game.goFirst': 'Go first', 'game.goSecond': 'Go second',
-        'game.waitChoice': 'Waiting for opponent to choose...', 'game.faceDown': 'Face Down ({count} left)',
-        'game.calculating': 'Calculating scores...', 'game.replayShowdown': 'Replay Showdown',
-        'game.showDetails': 'Show Details', 'game.backHome': 'Back to Home', 'game.backLobby': 'Back to Lobby',
-        'game.rematchRequest': 'Rematch Request', 'game.rematchMessage': 'Opponent wants to play again.',
+        'game.waitChoice': 'Waiting for a choice...', 'game.faceDown': 'Face Down ({count} left)',
+        'game.calculating': 'Counting scores...', 'game.replayShowdown': 'Replay Showdown',
+        'game.showDetails': 'Results', 'game.backHome': 'Home', 'game.backLobby': 'Lobby',
+        'game.rematchRequest': 'Play Again?', 'game.rematchMessage': 'Opponent wants to play again.',
         'game.waitOpponent': 'Waiting for opponent...', 'game.finish': 'FINISH!!',
         'game.surrenderConfirm': 'Surrender? This will end the game.',
-        'proThought.button': 'Thought Note', 'proThought.openAria': 'Open a PRO thought note for your next move',
-        'proThought.title': 'Record Your Reasoning',
-        'proThought.description': 'This note will be attached to your next move and saved in the replay and TXT export.',
-        'proThought.placeholder': 'Example: On 66611 I will complete a 1 column early. Preserve Q for its two Pure Straight routes. The AI is overspending resources on high-die columns.',
+        'proThought.button': 'Note', 'proThought.openAria': 'Open a PRO thought note for your next move',
+        'proThought.title': 'Move Note',
+        'proThought.description': 'Saved with your next move in the replay and TXT file.',
+        'proThought.placeholder': 'Write your plan for the next move...',
         'proThought.inputAria': 'Reasoning note for your next move', 'proThought.clear': 'Clear', 'proThought.done': 'Done',
         'game.fullscreenUnsupported': "Fullscreen API is not supported on this device or browser.\nTry 'Add to Home Screen' for a fullscreen experience.",
         'game.joinFailed': 'Unable to join this room.', 'game.levelUp': 'Level Up! You are now Level {level}.',
@@ -358,12 +358,12 @@ const messages: Record<Language, Record<string, string>> = {
         'auth.confirmEmail': 'Registration successful! Please check your email to confirm your account before logging in.',
         'auth.created': 'Account created! You are now logged in.', 'auth.error': 'An error occurred.',
         'contact.sent': 'Sent', 'contact.sentTitle': 'Message Sent!', 'contact.thanks': 'Thank you for your feedback.',
-        'contact.title': 'Contact / Report', 'contact.category': 'Category', 'contact.request': 'Request',
+        'contact.title': 'Contact', 'contact.category': 'Category', 'contact.request': 'Request',
         'contact.bug': 'Bug', 'contact.other': 'Other', 'contact.optional': 'Contact (Optional)',
         'contact.contactPlaceholder': 'Email or User ID', 'contact.device': 'Device / OS',
         'contact.devicePlaceholder': 'e.g. iPhone, Chrome on Windows', 'contact.message': 'Message',
         'contact.messagePlaceholder': 'Describe your request or issue...', 'contact.sending': 'Sending...',
-        'contact.send': 'Send Message', 'contact.failed': 'Failed to submit. Please try again.',
+        'contact.send': 'Send', 'contact.failed': 'Failed to submit. Please try again.',
         'lobby.rank': 'Rank', 'lobby.connecting': 'Connecting...',
         'lobby.connectingServer': 'Connecting to game server...', 'lobby.multiplayer': 'Multiplayer',
         'lobby.title': 'Online match', 'lobby.description': 'Play ranked or invite someone with a four-character room code.',
@@ -387,18 +387,17 @@ const messages: Record<Language, Record<string, string>> = {
         'rules.rankings': 'Hand rankings', 'rules.xHeading': 'X-Hand (Horizontal - 5 Cards)',
         'rules.yHeading': 'Y-Hand (Vertical - 3 Cards)',
         'rules.orderNote': 'Cards shown left to right correspond to the board from top to bottom (Rows 1, 2, 3).',
-        'rules.ordered': 'Ordered', 'rules.unordered': 'Unordered', 'rules.adjacent': 'Adjacent', 'rules.split': 'Split',
         'store.title': 'Skin Shop', 'store.watching': 'Watching...', 'store.freePremium': 'Free draw',
-        'store.watchFree': 'Watch ad for a free draw', 'store.expiry': 'Discovered items expire in 3 hours.',
-        'store.single': 'Single Pull', 'store.multi': '10x Pull', 'store.dice': 'Dice', 'store.cards': 'Cards',
+        'store.watchFree': 'Watch ad for a free draw', 'store.expiry': 'Skins last for 3 hours.',
+        'store.single': 'Draw 1', 'store.multi': 'Draw 10', 'store.dice': 'Dice', 'store.cards': 'Cards',
         'store.boards': 'Boards', 'store.notEnough': 'Not enough coins! Need {cost} coins.',
-        'store.complete': 'All skins collected! You are amazing!',
+        'store.complete': 'All skins collected!',
         'store.deductFailed': 'Failed to deduct coins. Please try again or check your connection.',
-        'gacha.unlocked': 'UNLOCKED!', 'gacha.collect': 'Collect', 'gacha.results': 'Gacha Results!',
+        'gacha.unlocked': 'UNLOCKED!', 'gacha.collect': 'Collect', 'gacha.results': 'New Skins',
         'gacha.collectAll': 'Collect All', 'gacha.unknown': 'Unknown',
-        'mypage.title': 'My Page', 'mypage.enterName': 'Enter Name', 'mypage.save': 'Save',
+        'mypage.title': 'Account', 'mypage.enterName': 'Enter Name', 'mypage.save': 'Save',
         'mypage.edit': 'Edit', 'mypage.editName': 'Edit name', 'mypage.noName': 'No Name',
-        'mypage.stats': 'Stats & Progress', 'mypage.records': 'Game Records', 'mypage.ranking': 'World Ranking',
+        'mypage.stats': 'Stats', 'mypage.records': 'Records', 'mypage.ranking': 'Ranking',
         'mypage.achievements': 'Achievements', 'mypage.games': 'Games', 'mypage.winRate': 'Win Rate',
         'mypage.xp': 'XP Progress', 'mypage.nameTooLong': 'Name must be 15 characters or less.',
         'mypage.nameFailed': 'Failed to update name.', 'mypage.archive': 'Match Archive',
@@ -419,21 +418,21 @@ const messages: Record<Language, Record<string, string>> = {
         'record.exportAria': 'Save game record as a text file', 'record.start': 'Start', 'record.previous': 'Previous',
         'record.nextButton': 'Next', 'record.end': 'End', 'record.win': 'Win', 'record.loss': 'Loss', 'record.draw': 'Draw',
         'record.thought': 'Reasoning for this move',
-        'result.tie': 'Draw - Tie Game!', 'result.winner': 'Winner: {name}!', 'result.dice': 'Dice',
-        'result.xHand': 'X Hand', 'result.points': '{points} points', 'result.bonuses': 'Bonuses: {count}',
+        'result.tie': 'DRAW', 'result.winner': 'Winner: {name}!', 'result.dice': 'Dice',
+        'result.xHand': 'X Hand', 'result.points': '{points} pts', 'result.bonuses': 'Bonuses: {count}',
         'result.viewBoard': 'View Board', 'result.playAgain': 'Play Again',
-        'gameInfo.aiPlaying': 'AI IS PLAYING', 'gameInfo.yourTurn': 'YOUR TURN',
+        'gameInfo.aiPlaying': 'AUTO PLAY', 'gameInfo.yourTurn': 'YOUR TURN',
         'gameInfo.opponentTurn': "{name}'s Turn", 'gameInfo.autoAria': 'AI auto play {state}',
         'gameInfo.autoTitle': 'PRO: let the game AI choose every action', 'gameInfo.on': 'on', 'gameInfo.off': 'off',
-        'gameInfo.surrender': 'Surrender', 'gameInfo.tie': 'Draw - Tie Game!',
-        'gameInfo.winner': 'Winner: {name}!', 'gameInfo.scoring': 'Scoring Phase...',
-        'gameInfo.bonus': 'Bonus {count}', 'timer.yourTurn': 'Your Turn',
-        'timer.opponentTurn': "Opponent's Turn", 'timer.sync': 'Sync Game State',
-        'timer.thoughtPaused': 'Thought note · Paused',
+        'gameInfo.surrender': 'Surrender', 'gameInfo.tie': 'DRAW',
+        'gameInfo.winner': 'Winner: {name}!', 'gameInfo.scoring': 'SCORING...',
+        'gameInfo.bonus': 'Bonus {count}', 'timer.yourTurn': 'YOUR TURN',
+        'timer.opponentTurn': 'OPPONENT TURN', 'timer.sync': 'Sync',
+        'timer.thoughtPaused': 'NOTE · PAUSED',
         'showdown.blueWins': 'Blue wins', 'showdown.redWins': 'Red wins',
         'showdown.finalX': 'Final X-Hand', 'showdown.dice': 'Dice {value}',
         'showdown.winningCards': 'Winning cards', 'scoring.column': 'Column {column}',
-        'scoring.extra': 'Extra Hand (Row 3)', 'scoring.youWin': 'YOU WIN',
+        'scoring.extra': 'X HAND', 'scoring.youWin': 'YOU WIN',
         'scoring.opponentWins': 'OPPONENT WINS', 'scoring.aiWins': 'AI WINS',
         'scoring.win': 'WIN!!', 'dice.rolling': 'Rolling dice', 'dice.ready': 'Ready',
         'premium.member': 'Premium member', 'board.place': 'Place selected card in column {column}, dice {dice}',
@@ -520,20 +519,21 @@ export function formatHandName(type: string, language: Language): string {
 interface I18nContextValue {
     language: Language;
     locale: string;
-    setLanguage: (language: Language) => void;
+    rulesLanguage: Language;
+    setRulesLanguage: (language: Language) => void;
     t: Translate;
     handName: (type: string) => string;
 }
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-    const [language, setLanguageState] = useState<Language>(() =>
+export function I18nProvider({ children, manageDocumentMetadata = true }: { children: ReactNode; manageDocumentMetadata?: boolean }) {
+    const [rulesLanguage, setRulesLanguageState] = useState<Language>(() =>
         resolveInitialLanguage(typeof localStorage === 'undefined' ? undefined : localStorage),
     );
 
-    const setLanguage = useCallback((nextLanguage: Language) => {
-        setLanguageState(nextLanguage);
+    const setRulesLanguage = useCallback((nextLanguage: Language) => {
+        setRulesLanguageState(nextLanguage);
         try {
             localStorage.setItem(STORAGE_KEY, nextLanguage);
         } catch {
@@ -542,18 +542,20 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }, []);
 
     useEffect(() => {
-        document.documentElement.lang = language;
-        document.title = translate(language, 'document.title');
-        document.querySelector('meta[name="description"]')?.setAttribute('content', translate(language, 'document.description'));
-    }, [language]);
+        if (!manageDocumentMetadata) return;
+        document.documentElement.lang = UI_LANGUAGE;
+        document.title = translate(UI_LANGUAGE, 'document.title');
+        document.querySelector('meta[name="description"]')?.setAttribute('content', translate(UI_LANGUAGE, 'document.description'));
+    }, [manageDocumentMetadata]);
 
     const value = useMemo<I18nContextValue>(() => ({
-        language,
-        locale: language === 'ja' ? 'ja-JP' : 'en-US',
-        setLanguage,
-        t: (key, variables) => translate(language, key, variables),
-        handName: (type) => formatHandName(type, language),
-    }), [language, setLanguage]);
+        language: UI_LANGUAGE,
+        locale: 'en-US',
+        rulesLanguage,
+        setRulesLanguage,
+        t: (key, variables) => translate(UI_LANGUAGE, key, variables),
+        handName: (type) => formatHandName(type, UI_LANGUAGE),
+    }), [rulesLanguage, setRulesLanguage]);
 
     return createElement(I18nContext.Provider, { value }, children);
 }

@@ -1,7 +1,7 @@
 :root {
-  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #f3f7fb;
-  background: #05080d;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: #f6f3ff;
+  background: #090812;
   color-scheme: dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,7 +24,7 @@ body,
 
 body {
   overflow: hidden;
-  background: #05080d;
+  background: #090812;
 }
 
 button,
@@ -47,7 +47,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid #4388ff;
+  outline: 2px solid #ffe66d;
   outline-offset: 2px;
 }
 
@@ -61,3 +61,7 @@ select:focus-visible,
     transition-duration: 0.01ms !important;
   }
 }
+
+:lang(ja) { line-break: strict; word-break: normal; }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }

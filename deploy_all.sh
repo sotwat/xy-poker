@@ -17,6 +17,8 @@ if [[ -z "$app_version" || "$app_version" != "$readme_version" ]]; then
   exit 1
 fi
 
+npm run prepare:lettering
+
 git diff --check
 
 if command -v npm >/dev/null 2>&1; then

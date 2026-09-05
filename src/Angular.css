@@ -1,0 +1,15 @@
+.app[data-geometry="angular"] { --radius-sm: 0; --radius: 0; --radius-lg: 0; }
+.app[data-geometry="angular"] :is(button, input, textarea, select, .glass-panel, .card-slot) { border-radius: 0 !important; }
+.app[data-geometry="angular"] :is(.rules-content, .rules-content section, .ranking-column, .hand-example, .game-result-modal, .auth-content, .contact-modal, .mypage-content, .skin-store-modal, .preview-card, .preview-card .card-back, .preview-board) { border-radius: 0 !important; }
+.app[data-geometry="angular"] .lobby-home::before {
+  top: 18%; left: -34%; width: 116%; height: 68%; border-width: 28px; border-radius: 0;
+  transform: rotate(-26deg);
+}
+.app[data-geometry="angular"] .home-card-fan .card { box-shadow: 3px 5px 0 rgb(0 0 0 / 38%); }
+.app[data-geometry="angular"] .home-dice-fan .dice { filter: drop-shadow(3px 5px 0 rgb(0 0 0 / 32%)); }
+.app[data-geometry="angular"] .game-board {
+  background: linear-gradient(135deg, transparent 32%, #68418a55 32.2%, transparent 32.5%, transparent 69%, #35489b80 69.2%, transparent 69.5%), linear-gradient(125deg, #2c1b44, #18192f 55%, #292454);
+}
+.app[data-geometry="angular"] .table-surface .shared-board { border-radius: 0 !important; }
+.app[data-geometry="angular"] :is(.table-seat-player, .table-seat-opponent) > span:first-child::before,
+.app[data-geometry="angular"] .score-player-name i { border-radius: 0; }

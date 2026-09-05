@@ -1,3 +1,4 @@
+import { Modal } from './Modal';
 import React, { useState } from 'react';
 import { supabase } from '../supabase';
 import { useI18n } from '../i18n';
@@ -61,7 +62,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     };
 
     return (
-        <div className="auth-overlay">
+        <Modal className="auth-overlay" label={isSignUp ? t('auth.create') : t('auth.signIn')} onClose={onClose}>
             <div className="auth-content">
                 <button type="button" className="close-btn" onClick={onClose} aria-label={t('common.close')}>&times;</button>
                 <h2>{isSignUp ? t('auth.create') : t('auth.signIn')}</h2>
@@ -102,6 +103,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     </button>
                 </div>
             </div>
-        </div>
+        </Modal>
     );
 };

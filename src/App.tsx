@@ -1,26 +1,18 @@
-import { lazy, Suspense, useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useEffectEvent, useReducer, useRef, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import {
-  ArrowRight,
-  BookOpen,
-  Bot,
-  Dices,
-  HeartHandshake,
-  Languages,
   Maximize2,
-  MessageCircle,
   Minimize2,
-  Palette,
-  Swords,
-  UserRound,
 } from 'lucide-react';
 import { gameReducer, INITIAL_GAME_STATE, type GameAction } from './logic/game';
 import { evaluateYHand, evaluateXHand } from './logic/evaluation';
 import { calculateXHandScores } from './logic/scoring';
 import { recordGameResult } from './logic/aiLearning';
-import type { BoardSkin, Card, CardSkin, DiceSkin, GameState, Phase } from './logic/types';
+import type { BoardSkin, Card, CardSkin, DiceSkin, GameState } from './logic/types';
 import { SharedBoard } from './components/SharedBoard';
 import { Hand } from './components/Hand';
+import { Card as PlayingCard } from './components/Card';
+import { Dice } from './components/Dice';
 import { GameInfo } from './components/GameInfo';
 import { Lobby } from './components/Lobby';
 import { DiceRollOverlay } from './components/DiceRollOverlay';
@@ -72,7 +64,15 @@ import {
 } from './utils/sound';
 import { getBrowserId } from './utils/identity';
 import { formatHandName, translate, useI18n } from './i18n';
+import { homeLettering } from './homeLettering';
+import { HomeRating } from './components/HomeRating';
+import { LetteringText } from './components/LetteringText';
+import { HomeIcon } from './components/HomeIcon';
+import { uiGeometry } from './uiGeometry';
 import './App.css';
+import './Home.css';
+import './Table.css';
+import './Angular.css';
 
 const GameResult = lazy(() => import('./components/GameResult').then(module => ({ default: module.GameResult })));
 const SkinStore = lazy(() => import('./components/SkinStore').then(module => ({ default: module.SkinStore })));
@@ -127,40 +127,12 @@ type FullscreenElement = HTMLElement & {
 
 const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000;
 
-const HOME_PREVIEW_OPPONENT_BOARD: (Card | null)[][] = [
-  [
-    { id: 'preview-o-q', rank: 12, suit: 'diamonds' },
-    { id: 'preview-o-a', rank: 14, suit: 'clubs' },
-    { id: 'preview-o-j', rank: 11, suit: 'hearts' },
-    { id: 'preview-o-4', rank: 4, suit: 'spades' },
-    { id: 'preview-o-2', rank: 2, suit: 'diamonds' },
-  ],
-  [
-    { id: 'preview-o-10', rank: 10, suit: 'hearts' },
-    null,
-    null,
-    { id: 'preview-o-hidden', rank: 6, suit: 'clubs', isHidden: true },
-    null,
-  ],
-  [null, null, null, null, null],
-];
-
-const HOME_PREVIEW_PLAYER_BOARD: (Card | null)[][] = [
-  [
-    { id: 'preview-p-10', rank: 10, suit: 'clubs' },
-    { id: 'preview-p-9', rank: 9, suit: 'spades' },
-    { id: 'preview-p-8', rank: 8, suit: 'diamonds' },
-    { id: 'preview-p-7', rank: 7, suit: 'hearts' },
-    { id: 'preview-p-3', rank: 3, suit: 'clubs' },
-  ],
-  [
-    null,
-    { id: 'preview-p-k', rank: 13, suit: 'clubs' },
-    { id: 'preview-p-6', rank: 6, suit: 'diamonds' },
-    null,
-    null,
-  ],
-  [null, null, null, null, null],
+const HOME_CARDS: Card[] = [
+  { id: 'home-10', rank: 10, suit: 'clubs' },
+  { id: 'home-j', rank: 11, suit: 'diamonds' },
+  { id: 'home-q', rank: 12, suit: 'clubs' },
+  { id: 'home-k', rank: 13, suit: 'hearts' },
+  { id: 'home-a', rank: 14, suit: 'spades' },
 ];
 
 function readStoredJson<T>(key: string, fallback: T): T {
@@ -239,7 +211,7 @@ function unlockSkinGeneric<T extends string>(
 }
 
 function App() {
-  const { language, setLanguage, t } = useI18n();
+  const { language, t } = useI18n();
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
   const phase = gameState.phase;
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -865,28 +837,24 @@ function App() {
     }
   }, [dbPlayerId, gameState, isOnlineGame, isRankedGame, mode, p1DisplayName, p2DisplayName, phase, playerRole]);
 
-  // Sync local phase with game winner/turn
-  const prevPhaseRef = useRef<Phase>('setup');
-  useEffect(() => {
-    const enteredPlaying = gameState.phase === 'playing' && prevPhaseRef.current !== 'playing';
-    prevPhaseRef.current = gameState.phase;
-    if (!enteredPlaying) return;
-
+  const announceTurnOrder = useEffectEvent(() => {
     const firstIdx = gameState.currentPlayerIndex;
-    const first = firstIdx === 0 ? p1DisplayName : p2DisplayName;
-    const second = firstIdx === 0 ? p2DisplayName : p1DisplayName;
-    const showTimer = window.setTimeout(() => {
-      setTurnAnnounce({ firstName: first, secondName: second });
-    }, 0);
-    const hideTimer = window.setTimeout(() => {
-      setTurnAnnounce(null);
-    }, 3000);
+    setTurnAnnounce({
+      firstName: firstIdx === 0 ? p1DisplayName : p2DisplayName,
+      secondName: firstIdx === 0 ? p2DisplayName : p1DisplayName,
+    });
+  });
 
+  // A fast first move must not cancel the timer that releases the AI.
+  useEffect(() => {
+    if (phase !== 'playing') return;
+    const showTimer = window.setTimeout(() => announceTurnOrder(), 0);
+    const hideTimer = window.setTimeout(() => setTurnAnnounce(null), 3000);
     return () => {
       window.clearTimeout(showTimer);
       window.clearTimeout(hideTimer);
     };
-  }, [gameState.currentPlayerIndex, gameState.phase, p1DisplayName, p2DisplayName]);
+  }, [phase]);
 
   // AI Turn Logic
   useEffect(() => {
@@ -1055,7 +1023,8 @@ function App() {
           winner: res.winner,
           diceValue: dice[currentCol],
           isXHand: false,
-          cards: res.cards
+          cards: res.cards,
+          step: currentStep
         });
 
         await presentShowdown(res.type, res.winner, false, res.cards.length);
@@ -1067,7 +1036,8 @@ function App() {
           text: rowResult.type ? formatHandName(rowResult.type, 'en') : translate('en', 'common.draw'),
           winner: rowResult.winner,
           isXHand: true,
-          cards: rowResult.cards
+          cards: rowResult.cards,
+          step: 5
         });
 
         await presentShowdown(rowResult.type, rowResult.winner, true, rowResult.cards.length);
@@ -1608,7 +1578,7 @@ function App() {
   };
 
   return (
-    <div className={`app ${(isLobbyView || isHomeView) ? 'view-lobby' : 'view-game'} phase-${phase} ${phase === 'scoring' ? 'showdown-active' : ''}`}>
+    <div className={`app ${(isLobbyView || isHomeView) ? 'view-lobby' : 'view-game'} phase-${phase} ${phase === 'scoring' ? 'showdown-active' : ''}`} data-geometry={uiGeometry}>
 
       {/* 先攻・後攻 アナウンスオーバーレイ */}
       {turnAnnounce && (
@@ -1628,7 +1598,7 @@ function App() {
       )}
       <header className={`app-header ${(phase === 'playing' || phase === 'scoring') ? 'battle-mode' : ''}`}>
         <div className="header-title-row">
-          <h1>XY Poker</h1>
+          <h1 className="game-wordmark"><img src={homeLettering.wordmark} alt="XY Poker" /></h1>
         </div>
 
         <button
@@ -1784,80 +1754,54 @@ function App() {
                     ) : (
                       <div className="lobby-home">
                         <header className="home-brandbar">
-                          <div className="home-wordmark" aria-label="XY Poker">
-                            <span className="home-wordmark-symbol" aria-hidden="true">XY</span>
-                            <span>Poker</span>
+                          <div className="home-player-bar">
+                            <HomeIcon name="account" className="home-player-icon" />
+                            <div className="home-player-copy">
+                              <strong><LetteringText>{playerName || t('common.guest')}</LetteringText></strong>
+                              {session && <span className="home-player-id"><LetteringText>{`ID ${session.user.id.slice(0, 8)}`}</LetteringText></span>}
+                            </div>
+                          </div>
+                          <div className="home-rating" aria-label={`RATING ${myRating || 1500}`}>
+                            <span className="home-rating-label"><img src={homeLettering.ratingLabel} alt="RATING" /></span>
+                            <HomeRating value={myRating || 1500} />
                           </div>
                         </header>
 
                         <section className="home-stage" aria-labelledby="home-title">
-                          <div className="home-intro">
-                            <span className="home-kicker">
-                              <Dices aria-hidden="true" />
-                              {t('home.cardDiceStrategy')}
-                            </span>
-                            <h2 id="home-title">XY Poker</h2>
-                            <p>{t('home.description')}</p>
-                          </div>
-
-                          <div className="home-table-preview" aria-hidden="true">
-                            <div className="home-table-board">
-                              <SharedBoard
-                                playerBoard={HOME_PREVIEW_PLAYER_BOARD}
-                                opponentBoard={HOME_PREVIEW_OPPONENT_BOARD}
-                                dice={[6, 5, 4, 3, 2]}
-                                onColumnClick={() => undefined}
-                                isCurrentPlayer={false}
-                                bottomPlayerId="p1"
-                                selectedSkin={selectedSkin}
-                                selectedCardSkin={selectedCardSkin}
-                                selectedBoardSkin={selectedBoardSkin}
-                              />
+                          <h2 id="home-title" className="home-title" aria-label="XY Poker">
+                            <img src={homeLettering.logo} alt="" />
+                          </h2>
+                          <div className="home-game-art" aria-hidden="true">
+                            <div className="home-card-fan">
+                              {HOME_CARDS.map(card => <PlayingCard key={card.id} card={card} skin={selectedCardSkin} />)}
+                            </div>
+                            <div className="home-dice-fan">
+                              {[6, 3, 5, 2, 4].map(value => <Dice key={value} value={value} skin={selectedSkin} />)}
                             </div>
                           </div>
                         </section>
 
                         <aside className="home-command" aria-label={t('home.playNow')}>
-                          <div className="home-player-bar">
-                            <div className="home-player-copy">
-                              <span className="home-eyebrow">{t('home.playerLabel')}</span>
-                              <strong>{playerName || t('common.guest')}</strong>
-                              {session?.user.email && (
-                                <span className="home-player-email" title={session.user.email}>
-                                  {session.user.email}
-                                </span>
-                              )}
-                              <span className="home-player-id">
-                                {session ? `ID ${session.user.id.slice(0, 8)}` : t('common.localGuest')}
-                              </span>
-                            </div>
-                            <div className="home-rating" aria-label={`${t('common.rating')} ${myRating || 1500}`}>
-                              <span>{t('common.rating')}</span>
-                              <strong>{myRating || 1500}</strong>
-                            </div>
-                          </div>
-
                           <div className="lobby-actions-panel">
                             <button
                               type="button"
-                              className="quest-btn-primary"
+                              className="home-mode home-mode-ai"
+                              aria-label="AI MATCH"
                               onClick={() => {
                                 setIsAutoPlay(false);
                                 playClickSound();
                                 handleStartGame();
                               }}
                             >
-                              <Bot aria-hidden="true" />
-                              <span>
-                                <small className="quest-tag">{t('home.playNow')}</small>
-                                <span className="quest-title">{t('home.playAi')}</span>
+                              <span className="home-mode-face">
+                                <span className="home-mode-title" aria-hidden="true"><img src={homeLettering.ai} alt="" /></span>
                               </span>
-                              <ArrowRight className="quest-arrow" aria-hidden="true" />
                             </button>
 
                             <button
                               type="button"
-                              className="quest-btn-secondary"
+                              className="home-mode home-mode-online"
+                              aria-label="ONLINE MATCH"
                               onClick={() => {
                                 playClickSound();
                                 setMode('online');
@@ -1865,12 +1809,9 @@ function App() {
                                 setIsQuickMatch(false);
                               }}
                             >
-                              <Swords aria-hidden="true" />
-                              <span>
-                                <small>{t('home.playWithOthers')}</small>
-                                <span>{t('home.onlineMatch')}</span>
+                              <span className="home-mode-face">
+                                <span className="home-mode-title" aria-hidden="true"><img src={homeLettering.online} alt="" /></span>
                               </span>
-                              <ArrowRight aria-hidden="true" />
                             </button>
                           </div>
                         </aside>
@@ -1880,49 +1821,34 @@ function App() {
                             playClickSound();
                             setShowSkinStore(true);
                           }}>
-                            <Palette aria-hidden="true" />
-                            <span className="tab-label">{t('home.skins')}</span>
+                            <HomeIcon name="skins" />
+                            <span className="tab-label"><img src={homeLettering.skins} alt="SKINS" /></span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             setShowRules(true);
                           }}>
-                            <BookOpen aria-hidden="true" />
-                            <span className="tab-label">{t('home.rules')}</span>
+                            <HomeIcon name="rules" />
+                            <span className="tab-label"><img src={homeLettering.rules} alt="RULES" /></span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             if (session) setShowMyPage(true);
                             else setShowAuthModal(true);
                           }}>
-                            <UserRound aria-hidden="true" />
-                            <span className="tab-label">{t('common.account')}</span>
+                            <HomeIcon name="account" />
+                            <span className="tab-label"><img src={homeLettering.account} alt="ACCOUNT" /></span>
                           </button>
                           <button type="button" className="tab-item" onClick={() => {
                             playClickSound();
                             setShowContactModal(true);
                           }}>
-                            <MessageCircle aria-hidden="true" />
-                            <span className="tab-label">{t('home.feedback')}</span>
+                            <HomeIcon name="contact" />
+                            <span className="tab-label"><img src={homeLettering.contact} alt="CONTACT" /></span>
                           </button>
                         </nav>
 
                         <div className="home-support-row">
-                          <label className="home-language-select">
-                            <Languages aria-hidden="true" />
-                            <span>{t('language.label')}</span>
-                            <select
-                              value={language}
-                              onChange={(event) => {
-                                playClickSound();
-                                setLanguage(event.target.value === 'en' ? 'en' : 'ja');
-                              }}
-                              aria-label={t('language.label')}
-                            >
-                              <option value="ja">{t('language.japanese')}</option>
-                              <option value="en">{t('language.english')}</option>
-                            </select>
-                          </label>
                           <a
                             className="home-support-link"
                             href="https://ofuse.me/c1b70795"
@@ -1931,10 +1857,10 @@ function App() {
                             aria-label={t('home.supportAria')}
                             onClick={playClickSound}
                           >
-                            <HeartHandshake aria-hidden="true" />
-                            <span>{t('home.support')}</span>
+                            <HomeIcon name="support" />
+                            <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version">v09051209</div>
+                          <div className="home-version"><LetteringText>v09051526</LetteringText></div>
                         </div>
                       </div>
                     )}
@@ -2003,15 +1929,16 @@ function App() {
                   </div>
                 )}
                 {(phase === 'turn_selection' || phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
-                  <div className="play-area">
-
-
+                  <div className="play-area" data-bottom-player={myPlayerIndex + 1}>
+                    <div className="table-seat table-seat-opponent"><span>{opponentName}</span></div>
+                    <div className="table-surface">
                     <SharedBoard
                       playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
                       opponentBoard={players[isOnlineGame && playerRole === 'guest' ? 0 : 1].board}
                       dice={players[currentPlayerIndex].dice}
                       onColumnClick={handleColumnClick}
-                      isCurrentPlayer={currentPlayerIndex === myPlayerIndex && !isProAutoActive}
+                      isCurrentPlayer={phase === 'playing' && currentPlayerIndex === myPlayerIndex && !isProAutoActive}
+                      hasSelectedCard={!!selectedCardId}
                       revealAll={phase === 'ended'}
                       winningColumns={phase === 'ended' ? calculateWinningColumns() : undefined}
                       xWinner={phase === 'ended' ? calculateXWinner() : undefined}
@@ -2022,6 +1949,8 @@ function App() {
                       revealedCols={revealedCols}
                       showXHand={showXHand}
                     />
+                    </div>
+                    <div className="table-seat table-seat-player"><span>{t('game.yourSide')}</span></div>
                   </div>
                 )}
               </main>
@@ -2044,7 +1973,7 @@ function App() {
                       {phase === 'playing' && (
                         <div className="action-bar">
                           <div className="place-controls">
-                            <div className="toggle-hidden" style={{ opacity: (currentPlayerIndex === myPlayerIndex && !isProAutoActive) ? 1 : 0.5, pointerEvents: (currentPlayerIndex === myPlayerIndex && !isProAutoActive) ? 'auto' : 'none', transition: 'opacity 0.2s' }}>
+                            <label className="toggle-hidden">
                               <input
                                 type="checkbox"
                                 checked={placeHidden}
@@ -2056,8 +1985,8 @@ function App() {
                                   currentPlayer.hiddenCardsCount >= 3
                                 }
                               />
-                              <span style={{ marginLeft: '4px' }}>{t('game.faceDown', { count: 3 - currentPlayer.hiddenCardsCount })}</span>
-                            </div>
+                              <span>{t('game.faceDown', { count: 3 - players[myPlayerIndex].hiddenCardsCount })}</span>
+                            </label>
                           </div>
                           {canUseProThought && (
                             <button
@@ -2265,7 +2194,7 @@ function App() {
       )}
 
       {/* Showdown popup overlay mounted at root to prevent transform misalignment */}
-      {currentShowdownPopup && <ShowdownPopup data={currentShowdownPopup} />}
+      {currentShowdownPopup && <ShowdownPopup data={currentShowdownPopup} playerNames={myPlayerIndex === 0 ? [playerName, opponentName] : [opponentName, playerName]} />}
       </Suspense>
     </div>
   );

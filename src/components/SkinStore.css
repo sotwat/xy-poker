@@ -681,3 +681,6 @@
     .skin-store-overlay { padding: 0 !important; }
     .skin-store-modal { border-radius: 0 !important; }
 }
+
+.skin-store-modal .gacha-option { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px; }
+.skin-store-modal .gacha-label { margin: 0; }

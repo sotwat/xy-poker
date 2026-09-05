@@ -1,0 +1,33 @@
+:root { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', sans-serif; color: #f4f0fc; background: #0b0912; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.card-font-review { max-width: 1080px; margin: auto; padding: 28px; }
+.card-font-review header { margin-bottom: 28px; }
+.card-font-review h1 { margin: 0 0 10px; font-size: 24px; }
+.card-font-review p { color: #c9c0d7; font-size: 14px; line-height: 1.7; margin: 0 0 12px; }
+.card-font-review a { display: inline-flex; align-items: center; min-height: 44px; color: #fff1a0; text-underline-offset: 4px; }
+.card-font-review a:focus-visible { outline: 2px solid #ffe986; outline-offset: 4px; }
+.card-font-review h2 { font-size: 15px; font-weight: 600; margin: 0 0 14px; }
+.card-font-review h3 { font-size: 13px; font-weight: 500; margin: 24px 0 12px; color: #c9c0d7; }
+.card-font-review summary { display: flex; align-items: center; min-height: 48px; cursor: pointer; color: #c9c0d7; font-size: 14px; border-top: 1px solid #534761; }
+.card-font-review summary::before { content: '+'; margin-right: 10px; }
+.card-font-review details[open] summary::before { content: '−'; }
+.card-font-review section { padding: 22px 0; border-top: 1px solid #534761; }
+.type-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.featured-cards { display: flex; gap: 10px; }
+.featured-cards .card { flex: 0 1 72px; width: 72px; height: auto; aspect-ratio: 2 / 3; }
+.suit-cards { display: flex; gap: 12px; margin-bottom: 24px; }
+.suit-cards .card { width: 72px; height: 108px; }
+.rank-catalog, .compact-catalog { display: flex; flex-wrap: wrap; gap: 10px; }
+.rank-catalog .card { width: 50px; height: 75px; }
+.card-font-review .card { flex-shrink: 0; cursor: default; }
+.card-font-review .featured-cards .card { flex-shrink: 1; }
+.card-font-review .card:hover { transform: none; }
+@media (max-width: 740px) {
+  .card-font-review { padding: 20px 16px; }
+  .type-comparison { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .featured-cards { gap: 8px; }
+  .featured-cards .card { flex-basis: 60px; width: 60px; }
+  .suit-cards { gap: 10px; }
+  .suit-cards .card { width: 60px; height: 90px; }
+}

@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'node_modules', '.agents/**']),
+  globalIgnores(['dist', 'node_modules', '.agents/**', '.wrangler/**', '.private/**']),
   {
     files: ['src/**/*.{ts,tsx}'],
     extends: [
@@ -32,12 +32,17 @@ export default defineConfig([
     },
   },
   {
-    files: ['server/**/*.js'],
+    files: ['server/**/*.js', 'workers/**/*.js'],
     extends: [js.configs.recommended],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
       globals: globals.node,
     },
+  },
+  {
+    files: ['functions/**/*.js'],
+    extends: [js.configs.recommended],
+    languageOptions: { ecmaVersion: 2022, sourceType: 'module', globals: globals.worker },
   },
 ])
