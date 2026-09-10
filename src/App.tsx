@@ -679,6 +679,47 @@ function App() {
     isTurnTimerPausedRef.current = isTurnTimerPaused;
   }, [isTurnTimerPaused]);
 
+  const buildProAutoAction = useCallback((state: GameState, playerIndex: 0 | 1): GameAction | null => {
+    const player = state.players[playerIndex];
+    if (player.hand.length === 0) return null;
+
+    const move = getBestMove(state, playerIndex, DEFAULT_AI_PARAMS);
+    if (!move.cardId) return null;
+
+    const cardExists = player.hand.some(card => card.id === move.cardId);
+    if (!cardExists) return null;
+
+    const columnHasSpace = player.board[0][move.colIndex] !== null
+      && player.board[1][move.colIndex] !== null
+      && player.board[2][move.colIndex] !== null;
+    if (columnHasSpace) return null;
+
+    if (move.isHidden && player.hiddenCardsCount >= 3) return null;
+
+    return {
+      type: 'PLACE_AND_DRAW',
+      payload: {
+        cardId: move.cardId,
+        colIndex: move.colIndex,
+        isHidden: move.isHidden,
+      },
+    };
+  }, []);
+
+  const playAiAction = useCallback((state: GameState, playerIndex: 0 | 1, roomOnly: boolean) => {
+    const action = buildProAutoAction(state, playerIndex);
+    if (!action) return false;
+
+    dispatch(action);
+    playClickSound();
+
+    if (roomOnly && isOnlineGame && roomId) {
+      socket.emit('game_action', { roomId, action });
+    }
+
+    return true;
+  }, [buildProAutoAction, dispatch, isOnlineGame, roomId]);
+
   // Auto-Finish Logic
   useEffect(() => {
     if (phase === 'scoring') {
@@ -869,16 +910,10 @@ function App() {
       const delay = isBotDisguise ? (2000 + Math.random() * 3000) : 1000;
 
       const timer = setTimeout(() => {
-        const move = getBestMove(gameState, 1);
-        dispatch({
-          type: 'PLACE_AND_DRAW',
-          payload: {
-            cardId: move.cardId,
-            colIndex: move.colIndex,
-            isHidden: move.isHidden
-          }
-        });
-        playClickSound();
+        const moved = playAiAction(gameState, 1, false);
+        if (!moved) {
+          console.error('[AI] Failed to build a legal move for player 2.');
+        }
         isAIActingRef.current = false; // アクション完了後にフラグをリセット
       }, delay);
 
@@ -887,7 +922,7 @@ function App() {
         isAIActingRef.current = false;
       };
     }
-  }, [currentPlayerIndex, gameState, isBotDisguise, mode, phase, showDiceAnimation, turnAnnounce]);
+  }, [currentPlayerIndex, gameState, isBotDisguise, mode, phase, showDiceAnimation, turnAnnounce, playAiAction]);
 
   // User Auto-Play Logic (Both Local P1 and Online Self)
   useEffect(() => {
@@ -907,19 +942,10 @@ function App() {
     setPlaceHidden(false);
 
     const timer = window.setTimeout(() => {
-      const move = getBestMove(gameState, myPlayerIndex);
-      const action: GameAction = {
-        type: 'PLACE_AND_DRAW',
-        payload: {
-          cardId: move.cardId,
-          colIndex: move.colIndex,
-          isHidden: move.isHidden,
-        },
-      };
-
-      playClickSound();
-      dispatch(action);
-      if (isOnlineGame && roomId) socket.emit('game_action', { roomId, action });
+      const moved = playAiAction(gameState, myPlayerIndex as 0 | 1, true);
+      if (!moved) {
+        console.error('[AUTO] Failed to build a legal move.');
+      }
       isProAutoActingRef.current = false;
     }, 650);
 
@@ -927,7 +953,7 @@ function App() {
       window.clearTimeout(timer);
       isProAutoActingRef.current = false;
     };
-  }, [currentPlayerIndex, gameState, isAutoPlay, isOnlineGame, isPremium, myPlayerIndex, phase, roomId, showDiceAnimation, turnAnnounce]);
+  }, [currentPlayerIndex, gameState, isAutoPlay, isOnlineGame, isPremium, myPlayerIndex, phase, roomId, showDiceAnimation, turnAnnounce, playAiAction]);
 
   // Showdown sequence runner (Re-usable for Replay Showdown)
   useEffect(() => {
@@ -1120,16 +1146,11 @@ function App() {
 
     const currentPlayer = gameState.players[currentPlayerIndex];
     if (currentPlayer.hand.length === 0) return; // Should not happen in playing phase
-    const move = getBestMove(gameState, currentPlayerIndex);
-
-    const action: GameAction = {
-      type: 'PLACE_AND_DRAW',
-      payload: {
-        cardId: move.cardId,
-        colIndex: move.colIndex,
-        isHidden: move.isHidden,
-      },
-    };
+    const action = buildProAutoAction(gameState, currentPlayerIndex as 0 | 1);
+    if (!action) {
+      console.error('[AUTO] Failed to build a legal timeout move.');
+      return;
+    }
 
     if (currentPlayerIndex === myPlayerIndex && isPremium) {
       pendingGameThoughtRef.current = null;
@@ -1142,7 +1163,7 @@ function App() {
     if (isOnlineGame && roomId) {
       socket.emit('game_action', { roomId, action });
     }
-  }, [currentPlayerIndex, gameState, isOnlineGame, isPremium, myPlayerIndex, phase, roomId]);
+  }, [buildProAutoAction, currentPlayerIndex, gameState, isOnlineGame, isPremium, myPlayerIndex, phase, roomId]);
 
   useEffect(() => {
     if (phase !== 'playing' || showDiceAnimation) return;
