@@ -265,8 +265,9 @@
 }
 
 .record-board-wrap .shared-board {
-    --record-slot-height: clamp(16px, 10.4cqh, 46px);
-    width: min(100%, 520px) !important;
+    --record-slot-height: min(13cqh, 22cqw);
+    width: 100% !important;
+    height: 100% !important;
     max-width: 100% !important;
     max-height: 100% !important;
     padding: clamp(5px, 1.5cqh, 9px) !important;
