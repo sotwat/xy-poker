@@ -195,9 +195,27 @@
 
 .hand-header {
     display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 6px;
+}
+
+.rules-hand-score {
+    margin-left: auto;
+    white-space: nowrap;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.x-score-note {
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.ranking-column {
+    min-width: 0;
 }
 
 .hand-title {

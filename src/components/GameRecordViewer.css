@@ -6,15 +6,23 @@
 
 .mypage-content.record-open .mypage-body {
     padding: 0;
-    overflow-y: auto !important;
+    min-height: 0;
+    overflow: hidden !important;
 }
 
 .record-viewer {
     width: 100%;
+    height: 100%;
     min-width: 0;
-    display: grid;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     gap: clamp(7px, 1.3cqh, 11px);
     padding-bottom: 2px;
+}
+
+.record-viewer > :not(.record-stage) {
+    flex-shrink: 0;
 }
 
 .record-viewer-header {
@@ -144,11 +152,15 @@
 
 .record-stage {
     min-width: 0;
-    display: grid;
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     gap: 6px;
 }
 
 .record-hand-panel {
+    flex-shrink: 0;
     min-width: 0;
     display: grid;
     gap: 4px;
@@ -241,7 +253,7 @@
 .record-board-wrap {
     container-type: size;
     width: 100%;
-    height: clamp(238px, 43cqh, 370px);
+    flex: 1;
     min-height: 0;
     display: flex;
     align-items: center;
@@ -253,6 +265,7 @@
 }
 
 .record-board-wrap .shared-board {
+    --record-slot-height: clamp(16px, 10.4cqh, 46px);
     width: min(100%, 520px) !important;
     max-width: 100% !important;
     max-height: 100% !important;
@@ -271,15 +284,18 @@
 }
 
 .record-board-wrap .card-slot {
-    height: clamp(27px, 10.4cqh, 46px) !important;
+    height: var(--record-slot-height) !important;
 }
 
 .record-board-wrap .dice-row {
-    padding: 2px !important;
+    padding: 1px !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 .record-board-wrap .dice-row .dice {
-    font-size: clamp(7px, 1.9cqw, 9px) !important;
+    /* Match the live table's 6cqh die / 13.5cqh card ratio. */
+    font-size: calc(var(--record-slot-height) / 9) !important;
 }
 
 .record-move-copy {
@@ -384,13 +400,22 @@
     font-size: 0.67rem;
 }
 
+@container (max-width: 600px) {
+    .record-viewer-header {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .record-viewer-header time {
+        display: none;
+    }
+}
+
 @container (max-width: 370px) {
     .record-viewer {
         gap: 7px;
     }
 
     .record-viewer-header {
-        grid-template-columns: auto minmax(0, 1fr);
         padding-right: 50px;
     }
 
@@ -420,9 +445,6 @@
         max-width: 31px;
     }
 
-    .record-board-wrap {
-        height: clamp(230px, 42cqh, 278px);
-    }
 }
 
 @container (max-height: 650px) {
@@ -442,9 +464,6 @@
         max-width: 24px;
     }
 
-    .record-board-wrap {
-        height: 200px;
-    }
 
     .record-move-copy {
         min-height: 40px;

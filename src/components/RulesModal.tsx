@@ -1,6 +1,7 @@
 import React from 'react';
 import './RulesModal.css';
 import { Card } from './Card';
+import { getXHandBaseScore } from '../logic/scoring';
 import type { Suit, Rank } from '../logic/types';
 import { formatHandName, translate, useI18n } from '../i18n';
 import { Modal } from './Modal';
@@ -20,10 +21,11 @@ const c = (rank: number, suit: Suit) => ({
 });
 
 // Hand Example Component
-const HandExample: React.FC<{ title: string; cards: ReturnType<typeof c>[] }> = ({ title, cards }) => (
+const HandExample: React.FC<{ title: string; score?: string; cards: ReturnType<typeof c>[] }> = ({ title, score, cards }) => (
     <div className="hand-example">
         <div className="hand-header">
             <span className="hand-title">{title}</span>
+            {score !== undefined && <span className="rules-hand-score">{score}</span>}
         </div>
         <div className="hand-cards">
             {cards.map((card, i) => (
@@ -87,45 +89,56 @@ export const RulesModal: React.FC<RulesModalProps> = ({ onClose }) => {
                             {/* X-AXIS HANDS */}
                             <div className="ranking-column">
                                 <h4>{t('rules.xHeading')}</h4>
+                                <p className="x-score-note">{t('rules.xScoring')}</p>
                                 <div className="hand-list-visual">
                                     <HandExample
                                         title={handName('RoyalFlush')}
+                                        score={t('rules.royalWin')}
                                         cards={[c(10, 'spades'), c(11, 'spades'), c(12, 'spades'), c(13, 'spades'), c(14, 'spades')]}
                                     />
                                     <HandExample
                                         title={handName('StraightFlush')}
+                                        score={`${getXHandBaseScore('StraightFlush')} ${t('rules.pointsUnit')}`}
                                         cards={[c(5, 'hearts'), c(6, 'hearts'), c(7, 'hearts'), c(8, 'hearts'), c(9, 'hearts')]}
                                     />
                                     <HandExample
                                         title={handName('FourOfAKind')}
+                                        score={`${getXHandBaseScore('FourOfAKind')} ${t('rules.pointsUnit')}`}
                                         cards={[c(8, 'clubs'), c(8, 'diamonds'), c(8, 'hearts'), c(8, 'spades'), c(13, 'clubs')]}
                                     />
                                     <HandExample
                                         title={handName('FullHouse')}
+                                        score={`${getXHandBaseScore('FullHouse')} ${t('rules.pointsUnit')}`}
                                         cards={[c(12, 'diamonds'), c(12, 'clubs'), c(12, 'hearts'), c(9, 'spades'), c(9, 'clubs')]}
                                     />
                                     <HandExample
-                                        title={handName('Flush')}
-                                        cards={[c(2, 'diamonds'), c(5, 'diamonds'), c(8, 'diamonds'), c(11, 'diamonds'), c(13, 'diamonds')]}
-                                    />
-                                    <HandExample
                                         title={handName('Straight')}
+                                        score={`${getXHandBaseScore('Straight')} ${t('rules.pointsUnit')}`}
                                         cards={[c(3, 'clubs'), c(4, 'diamonds'), c(5, 'hearts'), c(6, 'spades'), c(7, 'clubs')]}
                                     />
                                     <HandExample
+                                        title={handName('Flush')}
+                                        score={`${getXHandBaseScore('Flush')} ${t('rules.pointsUnit')}`}
+                                        cards={[c(2, 'diamonds'), c(5, 'diamonds'), c(8, 'diamonds'), c(11, 'diamonds'), c(13, 'diamonds')]}
+                                    />
+                                    <HandExample
                                         title={handName('ThreeOfAKind')}
+                                        score={`${getXHandBaseScore('ThreeOfAKind')} ${t('rules.pointsUnit')}`}
                                         cards={[c(7, 'spades'), c(7, 'hearts'), c(7, 'clubs'), c(2, 'diamonds'), c(12, 'clubs')]}
                                     />
                                     <HandExample
                                         title={handName('TwoPair')}
+                                        score={`${getXHandBaseScore('TwoPair')} ${t('rules.pointsUnit')}`}
                                         cards={[c(11, 'hearts'), c(11, 'clubs'), c(4, 'diamonds'), c(4, 'spades'), c(14, 'clubs')]}
                                     />
                                     <HandExample
                                         title={handName('OnePair')}
+                                        score={`${getXHandBaseScore('OnePair')} ${t('rules.pointsUnit')}`}
                                         cards={[c(9, 'clubs'), c(9, 'spades'), c(2, 'hearts'), c(5, 'diamonds'), c(13, 'clubs')]}
                                     />
                                     <HandExample
                                         title={handName('HighCard')}
+                                        score={`${getXHandBaseScore('HighCard')} ${t('rules.pointsUnit')}`}
                                         cards={[c(14, 'spades'), c(11, 'hearts'), c(8, 'clubs'), c(5, 'diamonds'), c(2, 'spades')]}
                                     />
                                 </div>

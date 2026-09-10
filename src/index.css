@@ -38,6 +38,20 @@ button {
   cursor: pointer;
 }
 
+:is(button, [role="button"], .card, img) {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+:is(button, [role="button"], .card) :is(img, svg) {
+  pointer-events: none;
+}
+
 button:disabled {
   cursor: not-allowed;
 }
