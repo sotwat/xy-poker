@@ -13,8 +13,9 @@ const flag = (name: string, fallback: number) => {
 };
 const games = flag('games', 1000), seed = flag('seed', 10826541);
 const search = process.argv.includes('--search');
+const responseBounds = process.argv.includes('--response-bounds');
 const output = process.argv.find(arg => arg.startsWith('--output='))?.slice(9);
-const params = { ...DEFAULT_AI_PARAMS, policyGeneration: 'a7' as const, timeBudgetMs: 1000, mcSimulations: 64 };
+const params = { ...DEFAULT_AI_PARAMS, policyGeneration: responseBounds ? 'a8' as const : 'a7' as const, timeBudgetMs: 1000, mcSimulations: 64 };
 let rng = seed >>> 0;
 function random() {
     rng = (rng + 0x6d2b79f5) >>> 0;
@@ -69,9 +70,9 @@ for (let game = 0; game < games; game++) {
         if (terminal) {
             const samples = getLastAiDecisionDiagnostics().completedBeliefSamples;
             const before = performance.now();
-            const analysis = solveFinalMove(state, actor, before + 900);
+            const analysis = solveFinalMove(state, actor, before + 900, responseBounds);
             const ms = performance.now() - before;
-            const certified = analysis ? certifiedEndgameReplacement(analysis, move.cardId) : undefined;
+            const certified = analysis ? certifiedEndgameReplacement(analysis, move.cardId, responseBounds) : undefined;
             const candidate = certified ? { cardId: certified.cardId, colIndex: certified.colIndex, isHidden: move.isHidden } : move;
             const delta = certified ? resultAfter(state, candidate) - resultAfter(state, move) : 0;
             if (delta < 0) throw new Error('Certificate allowed a worse actual outcome');
@@ -93,11 +94,12 @@ function summarize(rows: typeof results) {
     return { decisions: rows.length, completed: rows.filter(row => row.worlds > 0).length,
         changed: rows.filter(row => row.changed).length, benefits: rows.filter(row => row.delta > 0).length,
         harms: rows.filter(row => row.delta < 0).length, meanUtilityImprovement: mean,
-        lower95: mean - 1.96 * se, upper95: mean + 1.96 * se,
+        lower95: Number.isFinite(se) && se > 0 ? mean - 1.96 * se : null,
+        upper95: Number.isFinite(se) && se > 0 ? mean + 1.96 * se : null,
         averageMs: rows.reduce((sum, row) => sum + row.ms, 0) / rows.length, maximumMs: Math.max(...rows.map(row => row.ms)),
     };
 }
-const report = { seed, games, search, params,
+const report = { seed, games, search, responseBounds, params,
     finalMove: summarize(results.filter(row => !row.response)),
     penultimateMove: summarize(results.filter(row => row.response)),
     runtimeSeconds: (performance.now() - started) / 1000, results, examples };

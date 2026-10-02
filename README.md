@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `09051702` (2026-09-05 17:02)
-- **Status:** **INK saturation and contrast refinement**
+- **Current Version:** `10021807` (2026-10-02 18:07)
+- **Status:** **A9 certified continuations and response bounds**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ AUTO/Surrender separation checked at 320×568, 390×844, and 1440×900; full account ID fits the narrow screen
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 74 passing
-    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~360 kB, no 500 kB warning
+    - Automated tests: ✅ 85 passing
+    - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~365 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: `v09051702` refines INK on Cloudflare Pages and Render. Other color candidates remain development-only; A8 remains the default AI policy
+    - Deployment: `v10021807` selects A9 as the default AI policy. Publish both Cloudflare Pages and Render with `npm run deploy`.
 
 ### Local deployment input
 
@@ -93,6 +93,8 @@ graph TD
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
+
+1. **v10021807** (2026-10-02): **Certified Continuations A9** - Added forced-win plans for the final two or three placements, retaining the proven continuation across turns and timeout fallbacks. Added conditional response bounds for the final opponent move. Both extensions preserve A8's search and certificate when no new proof completes within the existing 1,000 ms budget. Independent late-game analysis recovered one A8 loss in 1,000 trajectories; full-game win-rate improvement remains unproven. Added exhaustive scoring-oracle tests, reproducible audits, and failure fixtures. See [the A9 research report](GTO_A9_REPORT.md).
 
 1. **v09051702** (2026-09-05): **Stronger INK Contrast** - Slightly increased the saturation of the vermilion accent and player colors, deepened dark surfaces, and brightened text and borders. Raised the visibility of the existing diagonal background lines without changing their geometry. Updated the comparison swatches to match.
 

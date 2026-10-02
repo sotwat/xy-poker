@@ -77,7 +77,7 @@ app.get('/api/lettering/:kind', async (request, response) => {
     }
 });
 
-const SERVER_VERSION = '09051702';
+const SERVER_VERSION = '10021807';
 
 app.get('/api/health', async (_request, response) => {
     try {
@@ -107,7 +107,7 @@ const games = new Map();
 const matchmakingQueue = [];
 const recentStatUpdates = new Map();
 const recentAiUpdates = new Map();
-const RUNTIME_AI_POLICY_ID = 'xy-gto-a8';
+const RUNTIME_AI_POLICY_ID = 'xy-gto-a9';
 const RUNTIME_AI_THINK_TIME_MS = 1_000;
 
 function acknowledge(callback, payload) {

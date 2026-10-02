@@ -69,7 +69,7 @@ function readDiceFlag(): number[] | null {
 function readOpponent(): {
     name: string;
     weights: readonly Readonly<GtoPolicyWeights>[];
-    policyGeneration?: 'a6' | 'a7' | 'a8';
+    policyGeneration?: 'a6' | 'a7' | 'a8' | 'a9';
 } {
     const argument = process.argv.find(value => value.startsWith('--opponent='));
     const id = argument?.slice('--opponent='.length) ?? 'a2';
@@ -91,6 +91,11 @@ function readOpponent(): {
         weights: [XY_GTO_A7],
         policyGeneration: 'a8',
     };
+    if (id === 'a9') return {
+        name: 'XY-GTO-A9 certified continuation search',
+        weights: [XY_GTO_A7],
+        policyGeneration: 'a9',
+    };
     if (id === 'solver-base') return {
         name: 'XY-GTO-A4 solver-base one-step policy',
         weights: [XY_GTO_A4_SOLVER_BASE],
@@ -99,14 +104,14 @@ function readOpponent(): {
         name: 'A4 / solver-base / A3 / A2 rotating one-step ensemble',
         weights: [XY_GTO_A4, XY_GTO_A4_SOLVER_BASE, XY_GTO_A3, XY_GTO_A2],
     };
-    throw new Error('--opponent must be a2, a3, a4, a6, a7, a8, solver-base, or ensemble.');
+    throw new Error('--opponent must be a2, a3, a4, a6, a7, a8, a9, solver-base, or ensemble.');
 }
 
-function readPolicyGeneration(): 'a6' | 'a7' | 'a8' {
+function readPolicyGeneration(): 'a6' | 'a7' | 'a8' | 'a9' {
     const argument = process.argv.find(value => value.startsWith('--policy='));
     const generation = argument?.slice('--policy='.length) ?? DEFAULT_AI_PARAMS.policyGeneration;
-    if (generation === 'a6' || generation === 'a7' || generation === 'a8') return generation;
-    throw new Error('--policy must be a6, a7, or a8.');
+    if (generation === 'a6' || generation === 'a7' || generation === 'a8' || generation === 'a9') return generation;
+    throw new Error('--policy must be a6, a7, a8, or a9.');
 }
 
 function readSearchMode(): { generalizedSearch: boolean; multiPolicyRollouts: boolean; name: string } {
@@ -246,8 +251,8 @@ function playMatch(
     opponentBeliefSamples: number,
     opponentWeights: Readonly<GtoPolicyWeights>,
     searchMode: ReturnType<typeof readSearchMode>,
-    policyGeneration: 'a6' | 'a7' | 'a8',
-    searchOpponentGeneration: 'a6' | 'a7' | 'a8' | null,
+    policyGeneration: 'a6' | 'a7' | 'a8' | 'a9',
+    searchOpponentGeneration: 'a6' | 'a7' | 'a8' | 'a9' | null,
 ): MatchResult {
     const random = seededRandom(seed);
     const originalRandom = Math.random;
@@ -347,7 +352,7 @@ const searchOpponentGeneration = process.argv.includes('--search-opponent')
     ? opponent.policyGeneration ?? null
     : null;
 if (process.argv.includes('--search-opponent') && !searchOpponentGeneration) {
-    throw new Error('--search-opponent requires --opponent=a6, a7, or a8.');
+    throw new Error('--search-opponent requires --opponent=a6, a7, a8, or a9.');
 }
 const results: MatchResult[] = [];
 const startedAt = performance.now();

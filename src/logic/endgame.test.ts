@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import example from './fixtures/endgame.json';
 import replyExample from './fixtures/endgame-reply.json';
+import responseExample from './fixtures/response-bounds.json';
 import { certifiedEndgameReplacement, solveFinalMove } from './endgame';
 import { DEFAULT_AI_PARAMS, getBestMove, getLastAiDecisionDiagnostics } from './ai';
 import { createDeck } from './deck';
@@ -27,11 +28,15 @@ test('A8 preserves A7 opening decisions and discards certificates when its budge
     const params = { ...DEFAULT_AI_PARAMS, mcSimulations: 1, timeBudgetMs: 2000 };
     assert.deepEqual(getBestMove(state, 0, { ...params, policyGeneration: 'a7' }),
         getBestMove(state, 0, { ...params, policyGeneration: 'a8' }));
+    assert.deepEqual(getBestMove(state, 0, { ...params, policyGeneration: 'a8' }),
+        getBestMove(state, 0, { ...params, policyGeneration: 'a9' }));
     const last = fixture(), actor = last.currentPlayerIndex;
     assert.deepEqual(getBestMove(last, actor, { ...params, timeBudgetMs: 1, policyGeneration: 'a7' }),
         getBestMove(last, actor, { ...params, timeBudgetMs: 1, policyGeneration: 'a8' }));
     assert.equal(getLastAiDecisionDiagnostics().usedDominanceOverride, false);
     assert.equal(getLastAiDecisionDiagnostics().exactEndgameWorlds, 0);
+    assert.deepEqual(getBestMove(last, actor, { ...params, timeBudgetMs: 1, policyGeneration: 'a8' }),
+        getBestMove(last, actor, { ...params, timeBudgetMs: 1, policyGeneration: 'a9' }));
 });
 
 test('every certified final replacement agrees with exhaustive real-reducer outcomes', () => {
@@ -110,6 +115,74 @@ test('a final opponent reply requires a forced win, not just pointwise dominance
     assert.equal(certifiedEndgameReplacement({ moves: values, worlds: 2, opponentCanRespond: false }, 'base')?.cardId, 'better');
     values[1].minimumUtility = 1;
     assert.equal(certifiedEndgameReplacement({ moves: values, worlds: 2, opponentCanRespond: true }, 'base')?.cardId, 'better');
+});
+
+test('response bounds dominate every baseline reply under each fixed hidden board', () => {
+    const state = structuredClone(replyExample.state) as GameState;
+    const actor = state.currentPlayerIndex as 0 | 1;
+    const own = state.players[actor], opponent = state.players[1 - actor];
+    let hiddenPosition: [number, number] | undefined;
+    let replyPosition: [number, number] | undefined;
+    opponent.board.forEach((row, r) => row.forEach((card, c) => {
+        if (!card) replyPosition = [r, c];
+        else if (card.isHidden) {
+            if (!hiddenPosition) hiddenPosition = [r, c];
+            else card.isHidden = false;
+        }
+    }));
+    assert.ok(hiddenPosition && replyPosition);
+    const analysis = solveFinalMove(state, actor, Infinity, true)!;
+    const known = new Set([...own.hand, ...own.board.flat(), ...opponent.board.flat().filter(card => !card?.isHidden)]
+        .filter((card): card is Card => card !== null).map(card => card.id));
+    const unseen = createDeck().filter(card => !known.has(card.id));
+    const expected = own.hand.map(() => own.hand.map(() => true));
+    let worlds = 0;
+    for (const hidden of unseen) {
+        opponent.board[hiddenPosition[0]][hiddenPosition[1]] = { ...hidden, isHidden: true };
+        const minimum = own.hand.map(() => 1), maximum = own.hand.map(() => -1);
+        for (const reply of unseen) if (reply.id !== hidden.id) {
+            opponent.board[replyPosition[0]][replyPosition[1]] = reply;
+            own.hand.forEach((card, index) => {
+                const utility = outcome(state, card.id);
+                minimum[index] = Math.min(minimum[index], utility);
+                maximum[index] = Math.max(maximum[index], utility);
+            });
+            worlds++;
+        }
+        minimum.forEach((low, candidate) => maximum.forEach((high, baseline) => {
+            if (low < high) expected[candidate][baseline] = false;
+        }));
+    }
+    assert.equal(analysis.worlds, worlds);
+    own.hand.forEach((card, i) => assert.deepEqual(analysis.moves.find(move => move.cardId === card.id)!.responseDominates,
+        own.hand.filter((_, j) => expected[i][j]).map(card => card.id)));
+});
+
+test('response certificates can improve losses to draws without claiming a forced win', () => {
+    const values = [
+        { cardId: 'base', colIndex: 0, utility: -0.5, scoreDifference: -1, dominates: ['base'], minimumUtility: -1 },
+        { cardId: 'safe', colIndex: 0, utility: 0, scoreDifference: 0, dominates: ['base', 'safe'], minimumUtility: 0,
+            responseDominates: ['base'] },
+    ];
+    const analysis = { moves: values, worlds: 2, opponentCanRespond: true };
+    assert.equal(certifiedEndgameReplacement(analysis, 'base'), undefined);
+    assert.equal(certifiedEndgameReplacement(analysis, 'base', true)?.cardId, 'safe');
+    values[1].responseDominates = [];
+    assert.equal(certifiedEndgameReplacement(analysis, 'base', true), undefined);
+});
+
+test('A9 applies a conditional response certificate that A8 cannot accept', () => {
+    const state = structuredClone(responseExample.state) as GameState;
+    const actor = state.currentPlayerIndex as 0 | 1;
+    const analysis = solveFinalMove(state, actor, Infinity, true)!;
+    const replacement = certifiedEndgameReplacement(analysis, responseExample.baseline.cardId, true)!;
+    assert.equal(replacement.cardId, responseExample.candidate.cardId);
+    assert.equal(replacement.minimumUtility, -1);
+    assert.equal(certifiedEndgameReplacement(analysis, responseExample.baseline.cardId), undefined);
+    const params = { ...DEFAULT_AI_PARAMS, timeBudgetMs: 2000 };
+    assert.deepEqual(getBestMove(state, actor, { ...params, policyGeneration: 'a8' }), responseExample.baseline);
+    assert.deepEqual(getBestMove(state, actor, { ...params, policyGeneration: 'a9' }), responseExample.candidate);
+    assert.equal(getLastAiDecisionDiagnostics().usedDominanceOverride, true);
 });
 
 test('a certified forced win survives every unseen reply under the real scoring rules', () => {

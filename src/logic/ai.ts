@@ -1,5 +1,6 @@
 import { createDeck } from './deck';
 import { certifiedEndgameReplacement, solveFinalMove } from './endgame';
+import { continueForcedWinPlan, findForcedWinPlan, type ForcedWinPlan } from './forcedWin';
 import { gameReducer } from './game';
 import {
     getGtoHideProbability,
@@ -35,7 +36,7 @@ export interface AiParams {
     /** False isolates broad root actions from multi-policy opponent modeling. */
     multiPolicyRollouts?: boolean;
     /** Retains the previous generation for reproducible head-to-head audits. */
-    policyGeneration?: 'a6' | 'a7' | 'a8';
+    policyGeneration?: 'a6' | 'a7' | 'a8' | 'a9';
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
@@ -54,7 +55,7 @@ export const DEFAULT_AI_PARAMS: AiParams = {
     timeBudgetMs: 1_000,
     generalizedSearch: true,
     multiPolicyRollouts: false,
-    policyGeneration: 'a8',
+    policyGeneration: 'a9',
 };
 
 export interface AiDecisionDiagnostics {
@@ -65,6 +66,8 @@ export interface AiDecisionDiagnostics {
     usedRollout: boolean;
     exactEndgameWorlds: number;
     usedDominanceOverride: boolean;
+    forcedWinPlanLength: number;
+    usedForcedWinContinuation: boolean;
 }
 
 interface ScoredMove {
@@ -96,7 +99,11 @@ let lastDecisionDiagnostics: AiDecisionDiagnostics = {
     usedRollout: false,
     exactEndgameWorlds: 0,
     usedDominanceOverride: false,
+    forcedWinPlanLength: 0,
+    usedForcedWinContinuation: false,
 };
+
+const forcedWinPlans: Partial<Record<0 | 1, ForcedWinPlan>> = {};
 
 export function getLastAiDecisionDiagnostics(): AiDecisionDiagnostics {
     return { ...lastDecisionDiagnostics };
@@ -125,6 +132,18 @@ export function getBestMove(
 ): { cardId: string; colIndex: number; isHidden: boolean } {
     const startedAt = now();
     const player = gameState.players[playerIndex];
+    if (params.policyGeneration === 'a9') {
+        const actor = playerIndex as 0 | 1;
+        const saved = forcedWinPlans[actor];
+        const move = saved ? continueForcedWinPlan(gameState, saved) : null;
+        if (move) {
+            setDiagnostics(startedAt, 0, 0, 0);
+            lastDecisionDiagnostics.forcedWinPlanLength = saved!.moves.length;
+            lastDecisionDiagnostics.usedForcedWinContinuation = true;
+            return { cardId: move.cardId, colIndex: move.colIndex, isHidden: false };
+        }
+        delete forcedWinPlans[actor];
+    }
     const policyWeights = params.policyGeneration === 'a6' ? XY_GTO_A6 : XY_GTO_A7;
     const generalizedSearch = params.generalizedSearch !== false;
     const profiles = generalizedSearch && params.multiPolicyRollouts !== false
@@ -280,13 +299,24 @@ export function getBestMove(
         selected = candidates[bestIndex];
     }
 
-    const exact = params.policyGeneration === 'a8'
+    const exact = params.policyGeneration === 'a8' || params.policyGeneration === 'a9'
         ? solveFinalMove(gameState, playerIndex as 0 | 1, deadline)
         : null;
     const certified = exact ? certifiedEndgameReplacement(exact, selected.cardId) : undefined;
     if (certified) selected = { ...certified, gtoScore: selected.gtoScore, isHidden: selected.isHidden };
+    const responseAnalysis = params.policyGeneration === 'a9' && exact?.opponentCanRespond
+        && exact.moves.find(move => move.cardId === selected.cardId)?.minimumUtility !== 1
+        ? solveFinalMove(gameState, playerIndex as 0 | 1, deadline, true) : null;
+    const responseCertified = responseAnalysis ? certifiedEndgameReplacement(responseAnalysis, selected.cardId, true) : undefined;
+    if (responseCertified) selected = { ...responseCertified, gtoScore: selected.gtoScore, isHidden: selected.isHidden };
+    const plan = params.policyGeneration === 'a9'
+        ? findForcedWinPlan(gameState, playerIndex as 0 | 1, deadline) : null;
+    if (plan) {
+        forcedWinPlans[playerIndex as 0 | 1] = plan;
+        selected = { ...plan.moves[0], gtoScore: selected.gtoScore };
+    }
     const selectedCard = player.hand.find(card => card.id === selected.cardId);
-    const selectedHidden = generalizedSearch
+    const selectedHidden = plan ? false : generalizedSearch
         ? selected.isHidden
         : Boolean(selectedCard && Math.random() < getGtoHideProbability(
             gameState,
@@ -297,7 +327,8 @@ export function getBestMove(
         ));
     setDiagnostics(startedAt, legalMoves.length, candidates.length, completedSamples);
     lastDecisionDiagnostics.exactEndgameWorlds = exact?.worlds ?? 0;
-    lastDecisionDiagnostics.usedDominanceOverride = Boolean(certified);
+    lastDecisionDiagnostics.usedDominanceOverride = Boolean(certified || responseCertified);
+    lastDecisionDiagnostics.forcedWinPlanLength = plan?.moves.length ?? 0;
     return {
         cardId: selected.cardId,
         colIndex: selected.colIndex,
@@ -621,5 +652,7 @@ function setDiagnostics(
         usedRollout: completedBeliefSamples > 0,
         exactEndgameWorlds: 0,
         usedDominanceOverride: false,
+        forcedWinPlanLength: 0,
+        usedForcedWinContinuation: false,
     };
 }

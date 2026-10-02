@@ -18,6 +18,7 @@ export interface EndgameValue {
     scoreDifference: number;
     dominates: string[];
     minimumUtility: number;
+    responseDominates?: string[];
 }
 
 export interface FinalMoveAnalysis {
@@ -27,7 +28,7 @@ export interface FinalMoveAnalysis {
 }
 
 /** Certify terminal dominance, or a forced win against every possible final reply. */
-export function solveFinalMove(state: GameState, playerIndex: 0 | 1, deadline = Infinity): FinalMoveAnalysis | null {
+export function solveFinalMove(state: GameState, playerIndex: 0 | 1, deadline = Infinity, certifyResponses = false): FinalMoveAnalysis | null {
     const own = state.players[playerIndex], opponent = state.players[1 - playerIndex];
     if (state.phase !== 'playing' || state.currentPlayerIndex !== playerIndex
         || own.board.flat().filter(card => card === null).length !== 1) return null;
@@ -43,9 +44,15 @@ export function solveFinalMove(state: GameState, playerIndex: 0 | 1, deadline = 
         if (opponent.board[row][col]?.isHidden || opponent.board[row][col] === null) hidden.push({ row, column: col });
     }
     if (hidden.length > 3 + opponentEmpty || unseen.length < hidden.length) return null;
+    if (certifyResponses && opponentEmpty === 1) {
+        // Group all replies under the same hidden board before comparing response envelopes.
+        hidden.sort((a, b) => Number(opponent.board[a.row][a.column] === null) - Number(opponent.board[b.row][b.column] === null));
+    }
     const values: EndgameValue[] = own.hand.map(card => ({ cardId: card.id, colIndex: column, utility: 0,
         scoreDifference: 0, dominates: [], minimumUtility: 1 }));
     const dominance = own.hand.map(() => own.hand.map(() => true));
+    const responseDominance = certifyResponses && opponentEmpty === 1 ? own.hand.map(() => own.hand.map(() => true)) : null;
+    const responseMin = own.hand.map(() => 1), responseMax = own.hand.map(() => -1);
     const ownY = own.board[0].map((_, col) => col === column ? null : evaluateYHand(own.board.map(row => row[col]!), 1));
     const candidateY = own.hand.map(card => evaluateYHand([own.board[0][column]!, own.board[1][column]!, card], 1));
     const candidateX = own.hand.map(card => evaluateXHand(own.board[2].map((value, col) => col === column ? card : value!)));
@@ -77,6 +84,10 @@ export function solveFinalMove(state: GameState, playerIndex: 0 | 1, deadline = 
                 ? 1 : opponentX!.type === 'RoyalFlush' ? -1 : null;
             const utility = royalWinner ?? Math.sign(difference);
             value.minimumUtility = Math.min(value.minimumUtility, utility);
+            if (responseDominance) {
+                responseMin[index] = Math.min(responseMin[index], utility);
+                responseMax[index] = Math.max(responseMax[index], utility);
+            }
             value.utility += utility;
             value.scoreDifference += royalWinner === null ? difference : 0;
             return utility;
@@ -90,6 +101,8 @@ export function solveFinalMove(state: GameState, playerIndex: 0 | 1, deadline = 
         if (timedOut) return;
         if (slot === hidden.length) { visit(); return; }
         const position = hidden[slot];
+        const responseGroup = responseDominance !== null && slot === hidden.length - 1;
+        if (responseGroup) { responseMin.fill(1); responseMax.fill(-1); }
         for (let index = 0; index < unseen.length; index++) {
             if (used[index]) continue;
             used[index] = 1;
@@ -98,6 +111,9 @@ export function solveFinalMove(state: GameState, playerIndex: 0 | 1, deadline = 
             used[index] = 0;
             if (timedOut) return;
         }
+        if (responseGroup) responseMin.forEach((minimum, candidate) => responseMax.forEach((maximum, baseline) => {
+            if (minimum < maximum) responseDominance![candidate][baseline] = false;
+        }));
     };
     enumerate(0);
     if (timedOut || evaluated === 0) return null;
@@ -105,15 +121,20 @@ export function solveFinalMove(state: GameState, playerIndex: 0 | 1, deadline = 
         value.dominates = own.hand.flatMap((card, other) => dominance[index][other] ? [card.id] : []);
         value.utility /= evaluated;
         value.scoreDifference /= evaluated;
+        if (responseDominance) value.responseDominates = own.hand.flatMap((card, other) => responseDominance[index][other] ? [card.id] : []);
     });
     return { moves: values.sort((a, b) => b.utility - a.utility || b.scoreDifference - a.scoreDifference),
         worlds: evaluated, opponentCanRespond: opponentEmpty === 1 };
 }
 
-export function certifiedEndgameReplacement(analysis: FinalMoveAnalysis, baselineCardId: string): EndgameValue | undefined {
+export function certifiedEndgameReplacement(analysis: FinalMoveAnalysis, baselineCardId: string, useResponseBounds = false): EndgameValue | undefined {
     const baseline = analysis.moves.find(move => move.cardId === baselineCardId);
     if (!baseline) return undefined;
     if (analysis.opponentCanRespond) {
+        if (useResponseBounds) {
+            // Even a signal-dependent reply cannot beat its best response envelope.
+            return analysis.moves.find(move => move.utility > baseline.utility && move.responseDominates?.includes(baselineCardId));
+        }
         // Pointwise dominance is insufficient when revealing a different card can change the reply.
         return baseline.minimumUtility < 1 ? analysis.moves.find(move => move.minimumUtility === 1) : undefined;
     }
