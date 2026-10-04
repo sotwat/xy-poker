@@ -1,0 +1,569 @@
+{
+  "date": "2026-10-05",
+  "publishedBaselineCommit": "42dacb4",
+  "commonRules": "Current local corrected scoring and joint-completion certificates",
+  "scorePilot": {
+    "seed": 100503101,
+    "pairedDeals": 16,
+    "samples": 12,
+    "timeBudgetMs": 1000,
+    "models": [
+      {
+        "scoreWeight": 1,
+        "wins": 11,
+        "losses": 20,
+        "draws": 1,
+        "utilityVersusControl": {
+          "mean": 0.0,
+          "lower95": null,
+          "upper95": null
+        },
+        "pairedUtilities": [
+          -0.5,
+          -1,
+          1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          1,
+          -1,
+          0,
+          -1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "elapsedSeconds": 222.416242667,
+        "averageCompletedBeliefSamples": 11.925
+      },
+      {
+        "scoreWeight": 0,
+        "wins": 9,
+        "losses": 22,
+        "draws": 1,
+        "utilityVersusControl": {
+          "mean": -0.125,
+          "lower95": -0.5097878203200651,
+          "upper95": 0.2597878203200651
+        },
+        "pairedUtilities": [
+          -1,
+          0,
+          -1,
+          -1,
+          0,
+          0,
+          -1,
+          0,
+          1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0.5
+        ],
+        "elapsedSeconds": 225.415207541,
+        "averageCompletedBeliefSamples": 11.925
+      },
+      {
+        "scoreWeight": 0.25,
+        "wins": 9,
+        "losses": 22,
+        "draws": 1,
+        "utilityVersusControl": {
+          "mean": -0.125,
+          "lower95": -0.42837820180977626,
+          "upper95": 0.17837820180977626
+        },
+        "pairedUtilities": [
+          -0.5,
+          0,
+          0,
+          -1,
+          -1,
+          -1,
+          0,
+          -1,
+          0,
+          -1,
+          -1,
+          -1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "elapsedSeconds": 230.071493833,
+        "averageCompletedBeliefSamples": 11.95
+      }
+    ],
+    "selectedForConfirmation": 0.25
+  },
+  "bonusPilot": {
+    "seed": 100503201,
+    "pairedDeals": 1500,
+    "phase": "three-candidate pilot",
+    "baseline": "A7 lightweight placements, corrected current reducer/evaluator; no belief search",
+    "sourceHashes": {
+      "src/logic/game.ts": "6ef47a4ebbb03d06e7d7628b01dcd91a4f3a55c82577fc43577a8e5d4fe3854a",
+      "src/logic/evaluation.ts": "f4eae893683f513780287e1149b20c5313581ebdd166f3012aa92bae0aef079e",
+      "src/logic/gtoPolicy.ts": "77910a7a60a74da638ebe91fb33086ff30729a8e4bda5e156f97f618e094bbad",
+      "scripts/analyze_bonus_timing.ts": "b0252b8e44a0306e26f3ec04e8f167d8a69c3ff72c22f5038409f4fdbb77ff9b"
+    },
+    "candidates": [
+      {
+        "id": "shadow-4",
+        "weight": 4,
+        "race": false,
+        "utility": {
+          "mean": -0.02666666666666667,
+          "lower95": -0.07638698336437996,
+          "upper95": 0.02305365003104663
+        },
+        "versusControl": {
+          "mean": -0.020666666666666667,
+          "lower95": -0.0648451693578742,
+          "upper95": 0.023511836024540864
+        },
+        "meanBonusGain": 0.21466666666666667
+      },
+      {
+        "id": "shadow-12",
+        "weight": 12,
+        "race": false,
+        "utility": {
+          "mean": -0.21333333333333335,
+          "lower95": -0.2616383882371065,
+          "upper95": -0.1650282784295602
+        },
+        "versusControl": {
+          "mean": -0.20733333333333334,
+          "lower95": -0.2668390815973947,
+          "upper95": -0.14782758506927193
+        },
+        "meanBonusGain": 0.5233333333333333
+      },
+      {
+        "id": "race-12",
+        "weight": 12,
+        "race": true,
+        "utility": {
+          "mean": -0.078,
+          "lower95": -0.12746090141404884,
+          "upper95": -0.02853909858595116
+        },
+        "versusControl": {
+          "mean": -0.072,
+          "lower95": -0.1245810124694737,
+          "upper95": -0.019418987530526288
+        },
+        "meanBonusGain": 0.44666666666666666
+      }
+    ],
+    "elapsedSeconds": 15.978855625,
+    "limits": [
+      "Pilot selection intervals are descriptive, with no multiplicity correction.",
+      "Lightweight policy gains do not establish runtime A9 improvement or a GTO equilibrium."
+    ]
+  },
+  "bonusConfirmation": {
+    "seed": 100503202,
+    "pairedDeals": 3000,
+    "phase": "independent selected-candidate check",
+    "baseline": "A7 lightweight placements, corrected current reducer/evaluator; no belief search",
+    "sourceHashes": {
+      "src/logic/game.ts": "6ef47a4ebbb03d06e7d7628b01dcd91a4f3a55c82577fc43577a8e5d4fe3854a",
+      "src/logic/evaluation.ts": "f4eae893683f513780287e1149b20c5313581ebdd166f3012aa92bae0aef079e",
+      "src/logic/gtoPolicy.ts": "77910a7a60a74da638ebe91fb33086ff30729a8e4bda5e156f97f618e094bbad",
+      "scripts/analyze_bonus_timing.ts": "b0252b8e44a0306e26f3ec04e8f167d8a69c3ff72c22f5038409f4fdbb77ff9b"
+    },
+    "candidates": [
+      {
+        "id": "shadow-4",
+        "weight": 4,
+        "race": false,
+        "utility": {
+          "mean": -0.0033333333333333335,
+          "lower95": -0.038388342973372694,
+          "upper95": 0.031721676306706026
+        },
+        "versusControl": {
+          "mean": -0.017,
+          "lower95": -0.049920346596765315,
+          "upper95": 0.015920346596765313
+        },
+        "meanBonusGain": 0.216
+      }
+    ],
+    "elapsedSeconds": 16.1757855,
+    "limits": [
+      "Pilot selection intervals are descriptive, with no multiplicity correction.",
+      "Lightweight policy gains do not establish runtime A9 improvement or a GTO equilibrium."
+    ]
+  },
+  "xKickerAudit": {
+    "generatedAt": "2026-10-04T18:34:46.226Z",
+    "rankProfiles": 6175,
+    "flushProfiles": 1287,
+    "evaluations": 63037,
+    "scope": "Independent rank-multiplicity/straight-table reference for every legal rank multiset; mixed-suit and flush representatives, rotations and suit rotation.",
+    "limits": [
+      "Representative tests do not themselves enumerate every suit assignment or all120 card permutations.",
+      "This verifies evaluator tuples, not global equilibrium."
+    ]
+  },
+  "jointOracle": {
+    "generatedAt": "2026-10-04T18:34:46.510Z",
+    "fixtureHash": "c76343c5b293a420d2df6092efb599521b54a47add22a506070a17359be18d69",
+    "scoringRulesVersion": "xy-2026-10-02-wheel-split-pair",
+    "actor": 1,
+    "plan": {
+      "playerIndex": 1,
+      "moves": [
+        {
+          "row": 1,
+          "colIndex": 0,
+          "cardId": "spades-10",
+          "isHidden": false
+        },
+        {
+          "row": 2,
+          "colIndex": 0,
+          "cardId": "spades-13",
+          "isHidden": false
+        },
+        {
+          "row": 2,
+          "colIndex": 3,
+          "cardId": "diamonds-5",
+          "isHidden": false
+        }
+      ],
+      "royalWin": false,
+      "scoreLowerBound": 1,
+      "rulesVersion": "xy-2026-10-02-wheel-split-pair",
+      "evaluatedHands": 16209,
+      "knownOwnIds": [
+        "diamonds-2",
+        "diamonds-5",
+        "spades-10",
+        "hearts-4",
+        "hearts-7",
+        "spades-13",
+        "spades-8",
+        "spades-12",
+        "clubs-11",
+        "spades-11",
+        "spades-4",
+        "diamonds-7",
+        "diamonds-12",
+        "clubs-10",
+        "spades-5",
+        "spades-7",
+        "diamonds-13",
+        "hearts-9",
+        "clubs-7"
+      ],
+      "unseenIds": [
+        "hearts-2",
+        "hearts-3",
+        "hearts-6",
+        "hearts-8",
+        "hearts-10",
+        "hearts-11",
+        "hearts-14",
+        "diamonds-4",
+        "diamonds-6",
+        "diamonds-8",
+        "diamonds-11",
+        "clubs-2",
+        "clubs-3",
+        "clubs-4",
+        "clubs-6",
+        "clubs-9",
+        "clubs-14",
+        "spades-2",
+        "spades-3",
+        "spades-9",
+        "spades-14"
+      ],
+      "ownBoard": [
+        [
+          "spades-12",
+          "clubs-11",
+          "spades-11",
+          "spades-4",
+          "diamonds-7"
+        ],
+        [
+          null,
+          "diamonds-12",
+          "clubs-10",
+          "spades-5",
+          "spades-7"
+        ],
+        [
+          null,
+          "diamonds-13",
+          "hearts-9",
+          null,
+          "clubs-7"
+        ]
+      ],
+      "opponentVisible": [
+        [
+          "diamonds-9",
+          "clubs-12",
+          "diamonds-14",
+          "hearts-5",
+          "spades-6"
+        ],
+        [
+          "clubs-8",
+          "clubs-13",
+          "hearts-13",
+          "clubs-5",
+          null
+        ],
+        [
+          "diamonds-10",
+          null,
+          "hearts-12",
+          "diamonds-3",
+          null
+        ]
+      ],
+      "dice": [
+        6,
+        5,
+        5,
+        4,
+        2
+      ],
+      "boundMethod": "joint-completions",
+      "opponentCompletions": 7980,
+      "expectedOpponentCompletions": 7980,
+      "fullyEnumerated": true
+    },
+    "leaves": 7980,
+    "independentMinimumY": [
+      6,
+      -5,
+      -5,
+      4,
+      2
+    ],
+    "independentMinimumX": -4,
+    "independentlyRelaxedMargin": -2,
+    "jointMinimumMargin": 1,
+    "worstBoard": [
+      [
+        "diamonds-9",
+        "clubs-12",
+        "diamonds-14",
+        "hearts-5",
+        "spades-6"
+      ],
+      [
+        "clubs-8",
+        "clubs-13",
+        "hearts-13",
+        "clubs-5",
+        "hearts-2"
+      ],
+      [
+        "diamonds-10",
+        "hearts-14",
+        "hearts-12",
+        "diamonds-3",
+        "clubs-14"
+      ]
+    ],
+    "scope": "Selected non-Royal fixture, simultaneous reducer score audit over every labelled injective completion."
+  },
+  "runtimeConfirmation": {
+    "status": "complete",
+    "releaseVersion": "10050345",
+    "selectionFrozenBeforeConfirmation": true,
+    "adoptionRule": "Paired utility difference versus same-deal control: normal-approximation 95% lower bound > 0",
+    "control": {
+      "sourceHashes": {
+        "ai": "cc952c0572e277b65d6ce4992867bd0b248ffc18d53a5b7a9010470719f570b8",
+        "game": "6ef47a4ebbb03d06e7d7628b01dcd91a4f3a55c82577fc43577a8e5d4fe3854a",
+        "evaluation": "f4eae893683f513780287e1149b20c5313581ebdd166f3012aa92bae0aef079e",
+        "scoring": "25595feb8d46d9765ac437a38e3bc3effed85ffc93fc88f1efc4010746d6e86d",
+        "gtoPolicy": "77910a7a60a74da638ebe91fb33086ff30729a8e4bda5e156f97f618e094bbad",
+        "forcedWin": "31073f803f40704ed08fd8c06b8d3fe18386289ad8b8f63a20ae66d22312c256",
+        "jointForcedWin": "bf4f6ec5139fd782f15e5a0bd22bed47dc3ce3f2e0167d08416f48752b678ef6",
+        "certificateKnowledge": "b5eb4c3c57706ae0c9fe4e3085b03fd0750ad0311e612e2674fa83073cb9974e"
+      },
+      "pairedUtilities": [
+        1,
+        -0.5,
+        0,
+        1,
+        -0.5,
+        0,
+        0,
+        -1,
+        -1,
+        -0.5,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "opponent": "XY-GTO-A9 certified continuation search",
+      "opponentSearch": true,
+      "search": "A7 broad-action single-policy search (A9 policy)",
+      "dice": "random",
+      "seed": 100503102,
+      "pairedDeals": 16,
+      "games": 32,
+      "rolloutWins": 16,
+      "policyWins": 13,
+      "draws": 3,
+      "rolloutScore": 0.546875,
+      "candidate": {
+        "timeBudgetMs": 1000,
+        "beliefSamples": 64,
+        "scoreShapingWeight": 1
+      },
+      "searchOpponent": {
+        "timeBudgetMs": 1000,
+        "beliefSamples": 64,
+        "scoreShapingWeight": 1
+      },
+      "meanUtility": 0.09375,
+      "pairedUtility": {
+        "mean": 0.09375,
+        "standardError": 0.17806102652368,
+        "lower95": -0.25524961198641277,
+        "upper95": 0.44274961198641277
+      },
+      "averageScoreDifference": -0.625,
+      "averageDecisionMs": 655.5503308145833,
+      "p90DecisionMs": 988.7077910000226,
+      "averageCompletedBeliefSamples": 55.90208333333333,
+      "minimumCompletedBeliefSamples": 0,
+      "cachedContinuationDecisions": 3,
+      "minimumUncachedBeliefSamples": 22,
+      "maximumDecisionMs": 994.4493329999968,
+      "opponentAverageDecisionMs": 632.7213100770826,
+      "opponentAverageCompletedBeliefSamples": 56.0375,
+      "leverageAudit": null,
+      "runtimeSeconds": 618.389700208
+    },
+    "candidate": {
+      "sourceHashes": {
+        "ai": "cc952c0572e277b65d6ce4992867bd0b248ffc18d53a5b7a9010470719f570b8",
+        "game": "6ef47a4ebbb03d06e7d7628b01dcd91a4f3a55c82577fc43577a8e5d4fe3854a",
+        "evaluation": "f4eae893683f513780287e1149b20c5313581ebdd166f3012aa92bae0aef079e",
+        "scoring": "25595feb8d46d9765ac437a38e3bc3effed85ffc93fc88f1efc4010746d6e86d",
+        "gtoPolicy": "77910a7a60a74da638ebe91fb33086ff30729a8e4bda5e156f97f618e094bbad",
+        "forcedWin": "31073f803f40704ed08fd8c06b8d3fe18386289ad8b8f63a20ae66d22312c256",
+        "jointForcedWin": "bf4f6ec5139fd782f15e5a0bd22bed47dc3ce3f2e0167d08416f48752b678ef6",
+        "certificateKnowledge": "b5eb4c3c57706ae0c9fe4e3085b03fd0750ad0311e612e2674fa83073cb9974e"
+      },
+      "pairedUtilities": [
+        1,
+        0,
+        0.5,
+        0,
+        0.5,
+        -1,
+        1,
+        0,
+        -1,
+        0,
+        -1,
+        -1,
+        -0.5,
+        -0.5,
+        1,
+        -1
+      ],
+      "opponent": "XY-GTO-A9 certified continuation search",
+      "opponentSearch": true,
+      "search": "A7 broad-action single-policy search (A9 policy)",
+      "dice": "random",
+      "seed": 100503102,
+      "pairedDeals": 16,
+      "games": 32,
+      "rolloutWins": 12,
+      "policyWins": 16,
+      "draws": 4,
+      "rolloutScore": 0.4375,
+      "candidate": {
+        "timeBudgetMs": 1000,
+        "beliefSamples": 64,
+        "scoreShapingWeight": 0.25
+      },
+      "searchOpponent": {
+        "timeBudgetMs": 1000,
+        "beliefSamples": 64,
+        "scoreShapingWeight": 1
+      },
+      "meanUtility": -0.125,
+      "pairedUtility": {
+        "mean": -0.125,
+        "standardError": 0.19094065395649334,
+        "lower95": -0.49924368175472694,
+        "upper95": 0.24924368175472694
+      },
+      "averageScoreDifference": -0.9375,
+      "averageDecisionMs": 652.5219920874987,
+      "p90DecisionMs": 988.8092500000494,
+      "averageCompletedBeliefSamples": 55.43541666666667,
+      "minimumCompletedBeliefSamples": 0,
+      "cachedContinuationDecisions": 4,
+      "minimumUncachedBeliefSamples": 23,
+      "maximumDecisionMs": 997.0690839999988,
+      "opponentAverageDecisionMs": 626.3661270729161,
+      "opponentAverageCompletedBeliefSamples": 55.75416666666667,
+      "leverageAudit": null,
+      "runtimeSeconds": 613.891698125
+    },
+    "pairedDifferences": [
+      0,
+      0.5,
+      0.5,
+      -1,
+      1.0,
+      -1,
+      1,
+      1,
+      0,
+      0.5,
+      -1,
+      -1,
+      -1.5,
+      -1.5,
+      0,
+      -1
+    ],
+    "utilityVersusControl": {
+      "mean": -0.21875,
+      "standardError": 0.22807505160947933,
+      "lower95": -0.6657771011545794,
+      "upper95": 0.2282771011545795
+    },
+    "adopted": false,
+    "defaultScoreShapingWeight": 1,
+    "reason": "Independent fixed-sample confirmation did not meet the adoption rule."
+  },
+  "limits": [
+    "Selection-pilot intervals are descriptive.",
+    "All score candidates use the same corrected rule implementation; old scoring results are not pooled.",
+    "A seat-exchanged pair keeps each strategy initial hand fixed; same-deal controls account for the hand advantage in candidate deltas.",
+    "Bonus experiments use lightweight A7 moves and cannot establish runtime A9 strength.",
+    "Joint fixture certifies a fixed plan, not global equilibrium or a general win-rate gain."
+  ]
+}

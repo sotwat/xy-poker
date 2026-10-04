@@ -1,7 +1,8 @@
-import { createDeck } from './deck';
+import { certificateKnowledge } from './certificateKnowledge';
 import { evaluateXHand, evaluateYHand } from './evaluation';
-import { calculateXHandScores, getXHandBaseScore } from './scoring';
+import { calculateXHandScores, getXHandBaseScore, SCORING_RULES_VERSION } from './scoring';
 import type { Card, GameState, XHandResult, YHandResult } from './types';
+import { findJointForcedWinPlan } from './jointForcedWin';
 
 interface Placement {
     cardId: string;
@@ -11,6 +12,11 @@ interface Placement {
 }
 
 export interface ForcedWinPlan {
+    rulesVersion: string;
+    boundMethod?: 'independent-hands' | 'joint-completions';
+    opponentCompletions?: number;
+    expectedOpponentCompletions?: number;
+    fullyEnumerated?: true;
     playerIndex: 0 | 1;
     moves: Placement[];
     scoreLowerBound: number | null;
@@ -32,9 +38,19 @@ function compare(a: YHandResult | XHandResult, b: YHandResult | XHandResult): nu
     return 0;
 }
 
-/** Bound each opponent hand independently; incompatible maxima only make the certificate stricter. */
+/** Use inexpensive independent bounds before enumerating a small whole-board uncertainty set. */
 export function findForcedWinPlan(state: GameState, playerIndex: 0 | 1, deadline = Infinity): ForcedWinPlan | null {
+    const independent = findIndependentForcedWinPlan(state, playerIndex, deadline);
+    if (independent || performance.now() >= deadline) return independent;
+    return findJointForcedWinPlan(state, playerIndex, deadline);
+}
+
+/** Bound each opponent hand independently; incompatible maxima only make the certificate stricter. */
+export function findIndependentForcedWinPlan(state: GameState, playerIndex: 0 | 1, deadline = Infinity): ForcedWinPlan | null {
     if (state.phase !== 'playing' || state.currentPlayerIndex !== playerIndex || performance.now() >= deadline) return null;
+    const knowledge = certificateKnowledge(state, playerIndex);
+    if (!knowledge) return null;
+    const { knownOwnIds, unseen } = knowledge;
     const own = state.players[playerIndex], opponent = state.players[1 - playerIndex];
     const slots: Array<{ row: number; colIndex: number }> = [];
     for (let colIndex = 0; colIndex < 5; colIndex++) for (let row = 0; row < 3; row++) {
@@ -42,10 +58,6 @@ export function findForcedWinPlan(state: GameState, playerIndex: 0 | 1, deadline
     }
     if (slots.length < 2 || slots.length > 3 || own.hand.length < slots.length
         || opponent.board.flat().filter(card => card === null).length > 3) return null;
-    const knownOwnIds = [...own.hand, ...own.board.flat()].filter((card): card is Card => card !== null).map(card => card.id);
-    const visible = opponent.board.flat().filter((card): card is Card => card !== null && !card.isHidden);
-    const known = new Set([...knownOwnIds, ...visible.map(card => card.id)]);
-    const unseen = createDeck().filter(card => !known.has(card.id));
     let evaluatedHands = 0;
     let timedOut = false;
     const checkTime = () => {
@@ -121,7 +133,7 @@ export function findForcedWinPlan(state: GameState, playerIndex: 0 | 1, deadline
             + x.p1Score - x.p2Score;
         if (!royalWin && lowerBound <= 0) return;
         result = {
-            playerIndex, moves: [...moves], scoreLowerBound: royalWin ? null : lowerBound, royalWin,
+            playerIndex, moves: [...moves], scoreLowerBound: royalWin ? null : lowerBound, royalWin, boundMethod: 'independent-hands', rulesVersion: SCORING_RULES_VERSION,
             evaluatedHands, knownOwnIds, unseenIds: unseen.map(card => card.id),
             ownBoard: own.board.map(row => row.map(card => card?.id ?? null)),
             opponentVisible: opponent.board.map(row => row.map(card => card && !card.isHidden ? card.id : null)),
@@ -135,7 +147,9 @@ export function findForcedWinPlan(state: GameState, playerIndex: 0 | 1, deadline
 /** Keep a proven continuation even when the next turn has no search budget. */
 export function continueForcedWinPlan(state: GameState, plan: ForcedWinPlan): Placement | null {
     if (state.phase !== 'playing' || state.currentPlayerIndex !== plan.playerIndex
+        || plan.rulesVersion !== SCORING_RULES_VERSION
         || state.players[0].dice.some((die, index) => die !== plan.dice[index])) return null;
+    if (!certificateKnowledge(state, plan.playerIndex)) return null;
     const own = state.players[plan.playerIndex], opponent = state.players[1 - plan.playerIndex];
     const expected = plan.ownBoard.map(row => [...row]);
     let next = 0;

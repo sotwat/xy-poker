@@ -48,6 +48,7 @@ function isCard(value: unknown): value is Card {
     if (!value || typeof value !== 'object') return false;
     const card = value as Partial<Card>;
     return typeof card.id === 'string'
+        && card.id === `${card.suit}-${card.rank}`
         && card.id.length <= 40
         && ['hearts', 'diamonds', 'clubs', 'spades'].includes(card.suit || '')
         && Number.isInteger(card.rank)
@@ -62,27 +63,33 @@ export function isValidGameState(value: unknown): value is GameState {
     if (!Array.isArray(state.players) || state.players.length !== 2) return false;
     if (state.currentPlayerIndex !== 0 && state.currentPlayerIndex !== 1) return false;
     if (!state.phase || !PHASES.has(state.phase)) return false;
-    if (!Array.isArray(state.deck) || state.deck.length > 52 || !state.deck.every(isCard)) return false;
+    if (!Array.isArray(state.deck) || state.deck.length > 52 || !Array.from(state.deck).every(isCard)) return false;
     if (!Number.isInteger(state.turnCount) || Number(state.turnCount) < 0 || Number(state.turnCount) > 100) return false;
     if (![null, 'p1', 'p2', 'draw'].includes(state.winner ?? null)) return false;
 
-    return state.players.every(player => {
+    const playersValid = Array.from(state.players).every(player => {
         if (!player || typeof player !== 'object') return false;
         if (typeof player.id !== 'string' || player.id.length > 128) return false;
-        if (!Array.isArray(player.hand) || player.hand.length > 20 || !player.hand.every(isCard)) return false;
+        if (!Array.isArray(player.hand) || player.hand.length > 20 || !Array.from(player.hand).every(isCard)) return false;
         if (!Array.isArray(player.dice)) return false;
         const validDiceLength = state.phase === 'setup' ? player.dice.length === 0 : player.dice.length === 5;
         if (!validDiceLength
-            || !player.dice.every(die => Number.isInteger(die) && die >= 1 && die <= 6)) return false;
+            || !Array.from(player.dice).every(die => Number.isInteger(die) && die >= 1 && die <= 6)) return false;
         if (!Number.isFinite(player.score) || player.score < 0) return false;
         if (!Number.isInteger(player.hiddenCardsCount) || player.hiddenCardsCount < 0 || player.hiddenCardsCount > 3) return false;
         if (!Number.isInteger(player.bonusesClaimed) || player.bonusesClaimed < 0 || player.bonusesClaimed > 5) return false;
         if (player.isPremium !== undefined && typeof player.isPremium !== 'boolean') return false;
         if (!Array.isArray(player.board) || player.board.length !== 3) return false;
-        return player.board.every(row => Array.isArray(row)
+        return Array.from(player.board).every(row => Array.isArray(row)
             && row.length === 5
-            && row.every(card => card === null || isCard(card)));
+            && Array.from(row).every(card => card === null || isCard(card)));
     });
+    if (!playersValid) return false;
+    const opponentDice = state.players[1].dice;
+    if (state.players[0].dice.some((die, index) => die !== opponentDice[index])) return false;
+    const cards = [...state.deck, ...state.players.flatMap(player => [...player.hand,
+        ...player.board.flat().filter((card): card is Card => card !== null)])];
+    return cards.length <= 52 && new Set(cards.map(card => card.id)).size === cards.length;
 }
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -91,6 +98,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             // Use provided deck (Synced Online) or create new shuffled one (Local/Fallback)
             const suppliedDeck = action.payload?.initialDeck;
             const deck = suppliedDeck?.length === 52 && suppliedDeck.every(isCard)
+                && new Set(suppliedDeck.map(card => card.id)).size === 52
                 ? [...suppliedDeck]
                 : shuffleDeck(createDeck());
 

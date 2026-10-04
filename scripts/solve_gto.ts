@@ -1,7 +1,9 @@
-import { writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { basename, dirname, join, resolve } from 'node:path';
 import { createDeck } from '../src/logic/deck';
 import { gameReducer, INITIAL_GAME_STATE } from '../src/logic/game';
-import { solveSymmetricZeroSum } from '../src/logic/gto';
+import { boundedPopulationConfidence, solveSymmetricZeroSum } from '../src/logic/gto';
 import {
     firstEmptyRow,
     getGtoHideProbability,
@@ -694,9 +696,40 @@ function main(): void {
     const searchRounds = parsePositiveInteger('--search-rounds', DEFAULT_SEARCH_ROUNDS);
     const responseCandidates = parsePositiveInteger('--response-candidates', DEFAULT_RESPONSE_CANDIDATES);
     const seed = parsePositiveInteger('--seed', DEFAULT_SEED);
+    const outputPath = process.argv.find(arg => arg.startsWith('--output='))?.slice('--output='.length) ?? OUTPUT_PATH;
+    const frozenPopulationPath = process.argv.find(arg => arg.startsWith('--frozen-population='))?.slice('--frozen-population='.length);
+    if (!outputPath.trim()) throw new Error('Output path must not be empty.');
+    if (frozenPopulationPath !== undefined && !frozenPopulationPath.trim()) throw new Error('Frozen population path must not be empty.');
+    const frozenPopulationBytes = frozenPopulationPath ? readFileSync(frozenPopulationPath) : null;
+    const frozenPopulationSourceHash = frozenPopulationBytes ? createHash('sha256').update(frozenPopulationBytes).digest('hex') : null;
+    if (frozenPopulationPath) {
+        const sourceRealPath = realpathSync(frozenPopulationPath);
+        const outputRealPath = existsSync(outputPath) ? realpathSync(outputPath)
+            : join(realpathSync(dirname(resolve(outputPath))), basename(outputPath));
+        const sameFile = existsSync(outputPath) && statSync(outputPath).dev === statSync(frozenPopulationPath).dev
+            && statSync(outputPath).ino === statSync(frozenPopulationPath).ino;
+        if (sourceRealPath === outputRealPath || sameFile) throw new Error('Output must differ from the frozen population source.');
+    }
+    const sourceHashes = Object.fromEntries(['evaluation', 'scoring', 'game', 'gtoPolicy', 'gto', 'deck', 'types'].map(name => [
+        name, createHash('sha256').update(readFileSync(new URL(`../src/logic/${name}.ts`, import.meta.url))).digest('hex'),
+    ]));
+    if (frozenPopulationPath) {
+        const source = JSON.parse(frozenPopulationBytes!.toString('utf8'));
+        const required = ['yWeight', 'xWeight', 'tempoWeight', 'diceWeight', 'flexibilityWeight', 'row3Delay', 'concealment', 'firstBias', 'temperature'];
+        if (!Array.isArray(source.strategies) || source.strategies.length === 0) throw new Error('Frozen population must contain strategies.');
+        const profiles: StrategyProfile[] = source.strategies.map((entry: { id: string; name: string; description: string; parameters: Record<string, number> }) => {
+            if (typeof entry.id !== 'string' || typeof entry.name !== 'string' || typeof entry.description !== 'string'
+                || !entry.parameters || required.some(key => !Number.isFinite(entry.parameters[key]))
+                || Object.values(entry.parameters).some(value => !Number.isFinite(value))) throw new Error('Invalid frozen strategy.');
+            return { ...entry.parameters, id: entry.id, name: entry.name, description: entry.description } as StrategyProfile;
+        });
+        if (new Set(profiles.map(profile => profile.id)).size !== profiles.length) throw new Error('Frozen strategy IDs must be unique.');
+        STRATEGIES.splice(0, STRATEGIES.length, ...profiles);
+        console.log(`Auditing frozen population from ${frozenPopulationPath}; response expansion disabled.`);
+    }
     const startedAt = Date.now();
-    console.log(`Searching for best responses (${searchRounds} rounds, ${STRATEGIES.length} base strategies)...`);
-    const responseSearch = discoverBestResponses(
+    if (!frozenPopulationPath) console.log(`Searching for best responses (${searchRounds} rounds, ${STRATEGIES.length} base strategies)...`);
+    const responseSearch = frozenPopulationPath ? [] : discoverBestResponses(
         searchRounds,
         searchDeals,
         candidateDeals,
@@ -713,6 +746,7 @@ function main(): void {
     const { matrix, cells } = solvePayoffMatrix(pairedDeals, seed);
     const equilibrium = solveSymmetricZeroSum(matrix, 300_000);
     const confidence = equilibriumConfidenceBound(cells, equilibrium.averageStrategy, equilibrium.bestResponseValues);
+    const simultaneousConfidence = boundedPopulationConfidence(matrix, equilibrium.averageStrategy, pairedDeals);
     const probes = validateProbes(equilibrium.averageStrategy, probeDeals, seed);
     const equilibriumPlay = estimateEquilibriumPlay(equilibrium.averageStrategy, probeDeals, seed);
 
@@ -720,14 +754,21 @@ function main(): void {
         schemaVersion: 4,
         generatedAt: new Date().toISOString(),
         solver: {
-            method: 'PSRO-style response expansion + paired self-play payoff matrix + regret-matching+',
+            method: frozenPopulationPath
+                ? 'Frozen policy population + paired self-play payoff matrix + regret-matching+'
+                : 'PSRO-style response expansion + paired self-play payoff matrix + regret-matching+',
             utility: '+1 win, 0 draw, -1 loss',
             seed,
+            frozenPopulationSource: frozenPopulationPath ?? null,
+            frozenPopulationSourceHash,
+            populationParameterHash: createHash('sha256').update(JSON.stringify(STRATEGIES)).digest('hex'),
+            sourceHashes,
+            pairedSampleDefinition: 'One seat-exchanged pair of two games; utility is half the difference of the two seat-1 win/loss utilities.',
             pairedDealsPerCell: pairedDeals,
             probePairedDeals: probeDeals,
             searchDealsPerCell: searchDeals,
             candidateDeals,
-            searchRoundsRequested: searchRounds,
+            searchRoundsRequested: frozenPopulationPath ? 0 : searchRounds,
             responseCandidatesPerRound: responseCandidates,
             regretIterations: equilibrium.iterations,
             runtimeSeconds: round((Date.now() - startedAt) / 1000, 3),
@@ -760,9 +801,29 @@ function main(): void {
             responseStandardError: round(confidence.responseStandardErrors[index]),
         })),
         payoffMatrix: matrix.map(row => row.map(value => round(value))),
+        numericalCertificate: {
+            payoffMatrix: matrix,
+            mixture: equilibrium.averageStrategy,
+            mixtureHash: createHash('sha256').update(JSON.stringify(equilibrium.averageStrategy)).digest('hex'),
+            bestResponseIndex: equilibrium.bestResponseIndex,
+            upper: equilibrium.bestResponseUpperValue,
+            lower: equilibrium.bestResponseLowerValue,
+            gap: equilibrium.dualityGap,
+        },
         payoffStandardErrors: cells.map(row => row.map(cell => round(cell.standardError))),
         populationExploitability: round(equilibrium.exploitability),
-        populationExploitabilityUpper95: round(confidence.upper95),
+        populationBestResponseUpperValue: round(equilibrium.bestResponseUpperValue),
+        populationBestResponseLowerValue: round(equilibrium.bestResponseLowerValue),
+        populationDualityGap: round(equilibrium.dualityGap),
+        populationExploitabilityUpper95: simultaneousConfidence.upper,
+        populationDualityGapUpper95: simultaneousConfidence.gap,
+        populationExploitabilityNormalApproximationUpper95: round(confidence.upper95),
+        populationConfidenceMethod: {
+            method: 'Hoeffding two-sided cell bounds with a union bound over distinct off-diagonal cells',
+            confidenceLevel: 0.95,
+            cellErrorRadius: simultaneousConfidence.cellErrorRadius,
+            assumptions: 'Independent bounded paired-deal samples within each cell, fixed policy population before final evaluation, and an exactly skew-symmetric population game. Seeded PRNG simulation approximates the sampling assumption.',
+        },
         bestResponse: STRATEGIES[equilibrium.bestResponseIndex].id,
         responseSearch: responseSearch.map(entry => ({
             ...entry,
@@ -800,11 +861,14 @@ function main(): void {
             'This is an approximate equilibrium over the declared policy population, not an exact equilibrium of the full extensive-form game.',
             'The exploitability value only tests best responses inside the population; probe policies are additional stress tests, not an exhaustive best response.',
             'Policies never inspect the identity of an opponent hidden card, but they use public placement and hidden/visible status.',
+            'The normal approximation is descriptive; it does not account for mixture selection or simultaneous best-response selection. The Hoeffding bound does, under its stated sampling assumptions.',
+            'Matrix bounds concern the seat-averaged restricted meta-game. They do not certify each seat separately or the runtime A9 search bot.',
+            'The equilibrium mixture selects one fixed policy per player before each game; resampling policies each turn is a different strategy.',
         ],
     };
 
-    writeFileSync(OUTPUT_PATH, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
-    console.log(`Wrote ${OUTPUT_PATH} in ${result.solver.runtimeSeconds}s.`);
+    writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+    console.log(`Wrote ${outputPath} in ${result.solver.runtimeSeconds}s.`);
     console.log('Equilibrium mixture:');
     result.strategies
         .filter(strategy => strategy.equilibriumProbability >= 0.001)

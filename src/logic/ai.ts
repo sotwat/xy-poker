@@ -37,6 +37,8 @@ export interface AiParams {
     multiPolicyRollouts?: boolean;
     /** Retains the previous generation for reproducible head-to-head audits. */
     policyGeneration?: 'a6' | 'a7' | 'a8' | 'a9';
+    /** Research control for the score-margin term in terminal rollouts. */
+    scoreShapingWeight?: number;
 }
 
 export const DEFAULT_AI_PARAMS: AiParams = {
@@ -173,6 +175,7 @@ export function getBestMove(
         96,
         DEFAULT_AI_PARAMS.mcSimulations,
     ));
+    const scoreShapingWeight = clampFinite(params.scoreShapingWeight ?? 1, 0, 1, 1);
     const totals = candidates.map(() => 0);
     const squaredTotals = candidates.map(() => 0);
     const sampleCounts = candidates.map(() => 0);
@@ -224,6 +227,7 @@ export function getBestMove(
                 deadline,
                 profile,
                 policyWeights,
+                scoreShapingWeight,
             );
             if (result === null) {
                 complete = false;
@@ -454,6 +458,7 @@ function rolloutToEnd(
     deadline: number,
     profile: RolloutProfile,
     rootWeights: Readonly<GtoPolicyWeights>,
+    scoreShapingWeight: number,
 ): number | null {
     let state = initialState;
     let safety = 0;
@@ -473,7 +478,7 @@ function rolloutToEnd(
     const opponentId = rootPlayerIndex === 0 ? 'p2' : 'p1';
     const winUtility = state.winner === rootId ? 1 : state.winner === opponentId ? -1 : 0;
     const scoreDifference = state.players[rootPlayerIndex].score - state.players[1 - rootPlayerIndex].score;
-    return winUtility + Math.max(-0.45, Math.min(0.45, scoreDifference / 40));
+    return winUtility + scoreShapingWeight * Math.max(-0.45, Math.min(0.45, scoreDifference / 40));
 }
 
 function selectRolloutMove(

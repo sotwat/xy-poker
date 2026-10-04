@@ -1,4 +1,6 @@
 import { performance } from 'node:perf_hooks';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import {
     DEFAULT_AI_PARAMS,
     getBestMove,
@@ -29,6 +31,8 @@ interface MatchResult {
     beliefSamples: number[];
     opponentDecisionMs: number[];
     opponentCompletedSamples: number[];
+    continuationFlags: boolean[];
+    opponentContinuationFlags: boolean[];
     leverageAudit: LeverageMatchAudit | null;
 }
 
@@ -64,6 +68,14 @@ function readDiceFlag(): number[] | null {
         throw new Error('--dice must contain five comma-separated integers from 1 to 6.');
     }
     return dice.sort((a, b) => b - a);
+}
+
+function readUnitFlag(name: string, fallback: number): number {
+    const argument = process.argv.find(value => value.startsWith(`${name}=`));
+    if (!argument) return fallback;
+    const value = Number(argument.slice(name.length + 1));
+    if (!Number.isFinite(value) || value < 0 || value > 1) throw new Error(`${name} must be between zero and one.`);
+    return value;
 }
 
 function readOpponent(): {
@@ -277,6 +289,8 @@ function playMatch(
         const completedBeliefs: number[] = [];
         const opponentDecisionMs: number[] = [];
         const opponentCompletedSamples: number[] = [];
+        const continuationFlags: boolean[] = [];
+        const opponentContinuationFlags: boolean[] = [];
         const leverageDecisions: LeverageDecision[] = [];
         while (state.phase === 'playing') {
             const actor = state.currentPlayerIndex as 0 | 1;
@@ -293,12 +307,14 @@ function playMatch(
                     generalizedSearch: searchMode.generalizedSearch,
                     multiPolicyRollouts: searchMode.multiPolicyRollouts,
                     policyGeneration: actorGeneration,
+                    scoreShapingWeight: actor === rolloutSeat ? scoreShapingWeight : opponentScoreShapingWeight,
                 })
                 : policyMove(state, actor, random, opponentWeights);
             if (actor === rolloutSeat) {
                 const diagnostics = getLastAiDecisionDiagnostics();
                 decisionMs.push(diagnostics.elapsedMs);
                 completedBeliefs.push(diagnostics.completedBeliefSamples);
+                continuationFlags.push(diagnostics.usedForcedWinContinuation);
                 if (auditLeverage) {
                     const occupied = state.players[actor].board.flat().filter(Boolean).length;
                     const stage = occupied < 5 ? 'opening' : occupied < 10 ? 'middle' : 'closing';
@@ -314,6 +330,7 @@ function playMatch(
                 const diagnostics = getLastAiDecisionDiagnostics();
                 opponentDecisionMs.push(diagnostics.elapsedMs);
                 opponentCompletedSamples.push(diagnostics.completedBeliefSamples);
+                opponentContinuationFlags.push(diagnostics.usedForcedWinContinuation);
             }
             const nextState = gameReducer(state, { type: 'PLACE_AND_DRAW', payload: move });
             if (nextState === state) throw new Error(`Illegal benchmark move: ${JSON.stringify(move)}`);
@@ -329,6 +346,8 @@ function playMatch(
             beliefSamples: completedBeliefs,
             opponentDecisionMs,
             opponentCompletedSamples,
+            continuationFlags,
+            opponentContinuationFlags,
             leverageAudit: auditLeverage
                 ? terminalLeverageAudit(state, rolloutSeat, leverageDecisions)
                 : null,
@@ -341,6 +360,8 @@ function playMatch(
 const deals = readPositiveFlag('--deals', 20);
 const timeBudgetMs = readPositiveFlag('--time-ms', DEFAULT_AI_PARAMS.timeBudgetMs);
 const beliefSamples = readPositiveFlag('--samples', DEFAULT_AI_PARAMS.mcSimulations);
+const scoreShapingWeight = readUnitFlag('--score-weight', 1);
+const opponentScoreShapingWeight = readUnitFlag('--opponent-score-weight', 1);
 const opponentTimeBudgetMs = readPositiveFlag('--opponent-time-ms', timeBudgetMs);
 const opponentBeliefSamples = readPositiveFlag('--opponent-samples', beliefSamples);
 const benchmarkSeed = readPositiveFlag('--seed', 0x58594232);
@@ -355,6 +376,9 @@ if (process.argv.includes('--search-opponent') && !searchOpponentGeneration) {
     throw new Error('--search-opponent requires --opponent=a6, a7, a8, or a9.');
 }
 const results: MatchResult[] = [];
+const sourceHashes = Object.fromEntries(['ai', 'game', 'evaluation', 'scoring', 'gtoPolicy', 'forcedWin', 'jointForcedWin', 'certificateKnowledge'].map(name => [
+    name, createHash('sha256').update(readFileSync(new URL(`../src/logic/${name}.ts`, import.meta.url))).digest('hex'),
+]));
 const startedAt = performance.now();
 
 for (let deal = 0; deal < deals; deal++) {
@@ -464,6 +488,7 @@ const pairedLeverageVariance = pairedLeverageLifts.length > 1
     : 0;
 const pairedLeverageStandardError = Math.sqrt(pairedLeverageVariance / pairedLeverageLifts.length);
 console.log(JSON.stringify({
+    sourceHashes,
     pairedUtilities,
     opponent: opponent.name,
     opponentSearch: searchOpponentGeneration !== null,
@@ -476,10 +501,11 @@ console.log(JSON.stringify({
     policyWins: losses,
     draws,
     rolloutScore: (wins + draws * 0.5) / results.length,
-    candidate: { timeBudgetMs, beliefSamples },
+    candidate: { timeBudgetMs, beliefSamples, scoreShapingWeight },
     searchOpponent: searchOpponentGeneration === null ? null : {
         timeBudgetMs: opponentTimeBudgetMs,
         beliefSamples: opponentBeliefSamples,
+        scoreShapingWeight: opponentScoreShapingWeight,
     },
     meanUtility: results.reduce((sum, result) => sum + result.utility, 0) / results.length,
     pairedUtility: {
@@ -493,6 +519,9 @@ console.log(JSON.stringify({
     p90DecisionMs: decisionTimes[Math.floor(decisionTimes.length * 0.9)],
     averageCompletedBeliefSamples: completedBeliefs.reduce((sum, value) => sum + value, 0) / completedBeliefs.length,
     minimumCompletedBeliefSamples: Math.min(...completedBeliefs),
+    cachedContinuationDecisions: results.reduce((sum, result) => sum + result.continuationFlags.filter(Boolean).length, 0),
+    minimumUncachedBeliefSamples: Math.min(...results.flatMap(result => result.beliefSamples.filter((_, index) => !result.continuationFlags[index]))),
+    maximumDecisionMs: Math.max(...decisionTimes),
     opponentAverageDecisionMs: searchOpponentGeneration
         ? results.flatMap(result => result.opponentDecisionMs).reduce((sum, value) => sum + value, 0) / decisionTimes.length
         : null,

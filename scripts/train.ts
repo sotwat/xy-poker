@@ -14,6 +14,7 @@ function mutateParams(params: AiParams, mutationRate: number = 0.1): AiParams {
             || key === 'gtoPriorWeight'
             || key === 'generalizedSearch'
             || key === 'multiPolicyRollouts'
+            || key === 'scoreShapingWeight'
             || key === 'policyGeneration') continue;
         
         if (Math.random() < mutationRate) {

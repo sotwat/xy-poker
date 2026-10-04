@@ -202,6 +202,21 @@ test('multi-move royal certificates respect Player 1 precedence for either seat'
         const plan = findForcedWinPlan(state, actor);
         if (actor === 0) {
             assert.ok(plan?.royalWin);
+            let prefix = structuredClone(state);
+            const replyCard = prefix.deck.find(card => card.id === 'spades-14')!;
+            assert.ok(replyCard);
+            prefix.players[1].hand = [replyCard];
+            prefix.deck = prefix.deck.filter(card => card.id !== replyCard.id);
+            prefix = gameReducer(prefix, { type: 'PLACE_AND_DRAW', payload: plan.moves[0] });
+            prefix = gameReducer(prefix, { type: 'PLACE_AND_DRAW', payload: { cardId: replyCard.id, colIndex: 4, isHidden: false } });
+            assert.equal(prefix.phase, 'playing');
+            assert.equal(prefix.winner, null);
+            const continuation = continueForcedWinPlan(prefix, plan)!;
+            assert.ok(continuation);
+            prefix = gameReducer(prefix, { type: 'PLACE_AND_DRAW', payload: continuation });
+            assert.equal(prefix.phase, 'scoring');
+            prefix = gameReducer(prefix, { type: 'CALCULATE_SCORE' });
+            assert.equal(prefix.winner, 'p1');
             verifyAllCompletions(state, plan);
         } else assert.equal(plan, null);
     }

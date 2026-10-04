@@ -421,9 +421,25 @@ test('runtime AI decision cannot depend on the true deck order or hidden identit
     const originalRandom = Math.random;
     Math.random = () => 0.99;
     try {
-        const params = { ...DEFAULT_AI_PARAMS, mcSimulations: 2, timeBudgetMs: 2_000 };
-        assert.deepEqual(getBestMove(stateA, 0, params), getBestMove(stateB, 0, params));
+        for (const scoreShapingWeight of [undefined, 0]) {
+            const params = { ...DEFAULT_AI_PARAMS, mcSimulations: 2, timeBudgetMs: 2_000, scoreShapingWeight };
+            const move = getBestMove(stateA, 0, params);
+            assert.equal(getLastAiDecisionDiagnostics().completedBeliefSamples, 2);
+            assert.deepEqual(move, getBestMove(stateB, 0, params));
+            assert.equal(getLastAiDecisionDiagnostics().completedBeliefSamples, 2);
+        }
     } finally {
         Math.random = originalRandom;
+    }
+});
+
+test('score-margin research controls preserve the existing default and reject non-finite tuning', () => {
+    const state = gameReducer(startedState(), { type: 'CHOOSE_TURN_ORDER', payload: { startingPlayer: 0 } });
+    const params = { ...DEFAULT_AI_PARAMS, mcSimulations: 2, timeBudgetMs: 2_000 };
+    const baseline = getBestMove(state, 0, params);
+    assert.equal(getLastAiDecisionDiagnostics().completedBeliefSamples, 2);
+    for (const scoreShapingWeight of [1, NaN, Infinity]) {
+        assert.deepEqual(getBestMove(state, 0, { ...params, scoreShapingWeight }), baseline);
+        assert.equal(getLastAiDecisionDiagnostics().completedBeliefSamples, 2);
     }
 });

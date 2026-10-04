@@ -130,8 +130,8 @@ export function evaluateYHand(originalCards: Card[], diceValue: number): YHandRe
     // 8. One Pair
     // Split Pair (0 and 2)
     if (isPair) {
-        const pairRank = ranks[0]; // 0 and 2 match
-        const kicker = ranks[1];
+        const pairRank = cards[0].rank;
+        const kicker = cards[1].rank;
         return { type: 'OnePair', score: diceValue, rankValue: 2, kickers: [pairRank, kicker] };
     }
 
@@ -179,7 +179,7 @@ export function evaluateXHand(originalCards: Card[]): XHandResult {
 
         // Straight Flush
         if (isFlush && isStraight) {
-            return { type: 'StraightFlush', kickers: [ranks[4]] }; // Highest card
+            return { type: 'StraightFlush', kickers: [ranks[0] === 2 && ranks[4] === 14 ? 5 : ranks[4]] };
         }
 
         // Four of a Kind

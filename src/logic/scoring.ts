@@ -1,5 +1,8 @@
 import type { XHandResult, XHandType } from './types';
 
+// Bump when scoring or hand comparison semantics change; saved plans require this version.
+export const SCORING_RULES_VERSION = 'xy-2026-10-02-wheel-split-pair';
+
 export function getXHandBaseScore(type: XHandType): number {
     switch (type) {
         case 'RoyalFlush': return 1000; // Special Win
