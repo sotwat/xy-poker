@@ -10,7 +10,7 @@ const cases = [
     { name: 'independent-three-move', state: load('forced-win') },
     { name: 'independent-holdout', state: load('forced-win-holdout') },
     { name: 'joint-three-unknown', state: joint },
-    { name: 'four-unknown-cap', state: capped },
+    { name: 'four-unknown-branches', state: capped },
     { name: 'final-move-out-of-scope', state: load('endgame') },
 ];
 const rows = [];
@@ -19,7 +19,7 @@ for (const entry of cases) {
     for (let warmup = 0; warmup < 2; warmup++) findForcedWinPlan(entry.state, actor, performance.now() + 100);
     for (const budgetMs of [1, 5, 10, 25, 50, 100]) {
         const elapsed = [];
-        let certified = 0, jointCertified = 0;
+        let certified = 0, jointCertified = 0, branchCertified = 0;
         for (let repeat = 0; repeat < 10; repeat++) {
             const started = performance.now();
             const plan = findForcedWinPlan(entry.state, actor, started + budgetMs);
@@ -27,10 +27,11 @@ for (const entry of cases) {
             if (plan) {
                 certified++;
                 if (plan.boundMethod === 'joint-completions') jointCertified++;
+                if (plan.boundMethod === 'joint-branches') branchCertified++;
             }
         }
         elapsed.sort((a, b) => a - b);
-        rows.push({ fixture: entry.name, budgetMs, repetitions: elapsed.length, certified, jointCertified,
+        rows.push({ fixture: entry.name, budgetMs, repetitions: elapsed.length, certified, jointCertified, branchCertified,
             medianMs: elapsed[5], p95Ms: elapsed[9], maximumMs: elapsed[9], elapsedMs: elapsed });
     }
 }

@@ -77,7 +77,7 @@ app.get('/api/lettering/:kind', async (request, response) => {
     }
 });
 
-const SERVER_VERSION = '10050345';
+const SERVER_VERSION = '10051618';
 
 app.get('/api/health', async (_request, response) => {
     try {

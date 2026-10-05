@@ -3,6 +3,7 @@ import { evaluateXHand, evaluateYHand } from './evaluation';
 import { calculateXHandScores, getXHandBaseScore, SCORING_RULES_VERSION } from './scoring';
 import type { Card, GameState, XHandResult, YHandResult } from './types';
 import { findJointForcedWinPlan } from './jointForcedWin';
+import { findSharedForcedWinPlan } from './sharedCardProof';
 
 interface Placement {
     cardId: string;
@@ -13,10 +14,13 @@ interface Placement {
 
 export interface ForcedWinPlan {
     rulesVersion: string;
-    boundMethod?: 'independent-hands' | 'joint-completions';
+    boundMethod?: 'independent-hands' | 'joint-completions' | 'joint-branches';
     opponentCompletions?: number;
     expectedOpponentCompletions?: number;
     fullyEnumerated?: true;
+    fullyCovered?: true;
+    prunedBranches?: number;
+    visitedLeaves?: number;
     playerIndex: 0 | 1;
     moves: Placement[];
     scoreLowerBound: number | null;
@@ -42,7 +46,9 @@ function compare(a: YHandResult | XHandResult, b: YHandResult | XHandResult): nu
 export function findForcedWinPlan(state: GameState, playerIndex: 0 | 1, deadline = Infinity): ForcedWinPlan | null {
     const independent = findIndependentForcedWinPlan(state, playerIndex, deadline);
     if (independent || performance.now() >= deadline) return independent;
-    return findJointForcedWinPlan(state, playerIndex, deadline);
+    const joint = findJointForcedWinPlan(state, playerIndex, deadline);
+    if (joint || performance.now() >= deadline) return joint;
+    return findSharedForcedWinPlan(state, playerIndex, deadline);
 }
 
 /** Bound each opponent hand independently; incompatible maxima only make the certificate stricter. */

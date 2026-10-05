@@ -69,17 +69,17 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `10050345` (2026-10-05 03:45)
-- **Status:** **A9 corrected scoring and joint-completion certificates**
+- **Current Version:** `10051618` (2026-10-05 16:18)
+- **Status:** **A9 with shared-card branch certificates for four unknown cards**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ AUTO/Surrender separation checked at 320×568, 390×844, and 1440×900; full account ID fits the narrow screen
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 104 passing
+    - Automated tests: ✅ 112 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~370 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: `v10050345` selects A9 as the default AI policy. Publish both Cloudflare Pages and Render with `npm run deploy`.
+    - Deployment: `v10051618` selects A9 as the default AI policy. Publish both Cloudflare Pages and Render with `npm run deploy`.
 
 ### Local deployment input
 
@@ -94,6 +94,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v10051618** (2026-10-05): **Four-Unknown Endgame Certificates** - Added held-plan search with reusable opposing counterexamples and shared-card branch bounds. The existing A9 certificates run first; the new stage covers exactly four unknown opponent cards and uses at most 50ms within the same decision deadline. An independent 400-deal-pair corpus yielded 28 additional certificates, all checked against 4,808,160 reducer-scored completions. Global match win-rate improvement remains unmeasured. See [the adoption test](GTO_RESEARCH_20261005.md).
 1. **v10050345** (2026-10-05): **Correct Scoring and Shared-Card Endgame Proofs** - Corrected wheel Straight Flush and split Y-pair comparison. Added a bounded joint-completion proof that preserves shared-card constraints, with independent scoring-oracle tests. Added reproducible score-margin and bonus-timing research controls; candidate changes to default strategic evaluation require independent runtime confirmation. See [the continuing research](GTO_RESEARCH_20261005.md) and [the correctness audit](GTO_CORRECTNESS_20261002.md).
 
 1. **v10021807** (2026-10-02): **Certified Continuations A9** - Added forced-win plans for the final two or three placements, retaining the proven continuation across turns and timeout fallbacks. Added conditional response bounds for the final opponent move. Both extensions preserve A8's search and certificate when no new proof completes within the existing 1,000 ms budget. Independent late-game analysis recovered one A8 loss in 1,000 trajectories; full-game win-rate improvement remains unproven. Added exhaustive scoring-oracle tests, reproducible audits, and failure fixtures. See [the A9 research report](GTO_A9_REPORT.md).

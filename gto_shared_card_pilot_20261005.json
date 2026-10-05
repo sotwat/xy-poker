@@ -1,0 +1,353 @@
+{
+  "phase": "exploratory public-board coarsenings of selected fixture",
+  "budgetMs": 100,
+  "sourceHashes": {
+    "scripts/shared_card_proof.ts": "32db00192321667bf83765f8d42e4224fa3a21961661554110715749a2df9f5b",
+    "src/logic/evaluation.ts": "f4eae893683f513780287e1149b20c5313581ebdd166f3012aa92bae0aef079e",
+    "src/logic/scoring.ts": "25595feb8d46d9765ac437a38e3bc3effed85ffc93fc88f1efc4010746d6e86d",
+    "src/logic/certificateKnowledge.ts": "b5eb4c3c57706ae0c9fe4e3085b03fd0750ad0311e612e2674fa83073cb9974e"
+  },
+  "rows": [
+    {
+      "hiddenPosition": [
+        0,
+        0
+      ],
+      "elapsedMs": 5.149874999999994,
+      "proof": {
+        "status": "proved",
+        "lowerBound": 1,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 175560,
+        "prunedBranches": 462,
+        "visitedLeaves": 0,
+        "work": 115821,
+        "counterexample": null
+      }
+    },
+    {
+      "hiddenPosition": [
+        0,
+        1
+      ],
+      "elapsedMs": 1.4814169999999933,
+      "proof": {
+        "status": "refuted",
+        "lowerBound": null,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 0,
+        "prunedBranches": 0,
+        "visitedLeaves": 1,
+        "work": 2633,
+        "counterexample": [
+          [
+            "diamonds-9",
+            "hearts-14",
+            "diamonds-14",
+            "hearts-5",
+            "spades-6"
+          ],
+          [
+            "clubs-8",
+            "clubs-13",
+            "hearts-13",
+            "clubs-5",
+            "hearts-2"
+          ],
+          [
+            "diamonds-10",
+            "clubs-12",
+            "hearts-12",
+            "diamonds-3",
+            "hearts-3"
+          ]
+        ]
+      }
+    },
+    {
+      "hiddenPosition": [
+        0,
+        2
+      ],
+      "elapsedMs": 1.0088750000000033,
+      "proof": {
+        "status": "proved",
+        "lowerBound": 1,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 175560,
+        "prunedBranches": 22,
+        "visitedLeaves": 0,
+        "work": 6453,
+        "counterexample": null
+      }
+    },
+    {
+      "hiddenPosition": [
+        0,
+        3
+      ],
+      "elapsedMs": 1.01400000000001,
+      "proof": {
+        "status": "proved",
+        "lowerBound": 1,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 175560,
+        "prunedBranches": 22,
+        "visitedLeaves": 0,
+        "work": 6453,
+        "counterexample": null
+      }
+    },
+    {
+      "hiddenPosition": [
+        0,
+        4
+      ],
+      "elapsedMs": 6.0363749999999925,
+      "proof": {
+        "status": "refuted",
+        "lowerBound": null,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 0,
+        "prunedBranches": 0,
+        "visitedLeaves": 1,
+        "work": 11423,
+        "counterexample": [
+          [
+            "diamonds-9",
+            "clubs-12",
+            "diamonds-14",
+            "hearts-5",
+            "clubs-2"
+          ],
+          [
+            "clubs-8",
+            "clubs-13",
+            "hearts-13",
+            "clubs-5",
+            "clubs-3"
+          ],
+          [
+            "diamonds-10",
+            "hearts-14",
+            "hearts-12",
+            "diamonds-3",
+            "clubs-4"
+          ]
+        ]
+      }
+    },
+    {
+      "hiddenPosition": [
+        1,
+        0
+      ],
+      "elapsedMs": 0.5962079999999901,
+      "proof": {
+        "status": "refuted",
+        "lowerBound": null,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 0,
+        "prunedBranches": 0,
+        "visitedLeaves": 1,
+        "work": 2193,
+        "counterexample": [
+          [
+            "diamonds-9",
+            "clubs-12",
+            "diamonds-14",
+            "hearts-5",
+            "spades-6"
+          ],
+          [
+            "diamonds-8",
+            "clubs-13",
+            "hearts-13",
+            "clubs-5",
+            "hearts-2"
+          ],
+          [
+            "diamonds-10",
+            "hearts-14",
+            "hearts-12",
+            "diamonds-3",
+            "hearts-3"
+          ]
+        ]
+      }
+    },
+    {
+      "hiddenPosition": [
+        1,
+        1
+      ],
+      "elapsedMs": 2.9944579999999945,
+      "proof": {
+        "status": "proved",
+        "lowerBound": 1,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 175560,
+        "prunedBranches": 462,
+        "visitedLeaves": 0,
+        "work": 111281,
+        "counterexample": null
+      }
+    },
+    {
+      "hiddenPosition": [
+        1,
+        2
+      ],
+      "elapsedMs": 1.0848330000000033,
+      "proof": {
+        "status": "proved",
+        "lowerBound": 1,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 175560,
+        "prunedBranches": 22,
+        "visitedLeaves": 0,
+        "work": 6453,
+        "counterexample": null
+      }
+    },
+    {
+      "hiddenPosition": [
+        1,
+        3
+      ],
+      "elapsedMs": 0.6102499999999935,
+      "proof": {
+        "status": "refuted",
+        "lowerBound": null,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 0,
+        "prunedBranches": 0,
+        "visitedLeaves": 1,
+        "work": 2193,
+        "counterexample": [
+          [
+            "diamonds-9",
+            "clubs-12",
+            "diamonds-14",
+            "hearts-5",
+            "spades-6"
+          ],
+          [
+            "clubs-8",
+            "clubs-13",
+            "hearts-13",
+            "diamonds-4",
+            "hearts-2"
+          ],
+          [
+            "diamonds-10",
+            "hearts-14",
+            "hearts-12",
+            "diamonds-3",
+            "hearts-3"
+          ]
+        ]
+      }
+    },
+    {
+      "hiddenPosition": [
+        2,
+        0
+      ],
+      "elapsedMs": 4.656666999999999,
+      "proof": {
+        "status": "refuted",
+        "lowerBound": null,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 7990,
+        "prunedBranches": 21,
+        "visitedLeaves": 11,
+        "work": 61455,
+        "counterexample": [
+          [
+            "diamonds-9",
+            "clubs-12",
+            "diamonds-14",
+            "hearts-5",
+            "spades-6"
+          ],
+          [
+            "clubs-8",
+            "clubs-13",
+            "hearts-13",
+            "clubs-5",
+            "hearts-2"
+          ],
+          [
+            "hearts-3",
+            "hearts-14",
+            "hearts-12",
+            "diamonds-3",
+            "clubs-3"
+          ]
+        ]
+      }
+    },
+    {
+      "hiddenPosition": [
+        2,
+        2
+      ],
+      "elapsedMs": 4.884666999999993,
+      "proof": {
+        "status": "proved",
+        "lowerBound": 1,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 175560,
+        "prunedBranches": 142,
+        "visitedLeaves": 0,
+        "work": 233985,
+        "counterexample": null
+      }
+    },
+    {
+      "hiddenPosition": [
+        2,
+        3
+      ],
+      "elapsedMs": 3.078125,
+      "proof": {
+        "status": "refuted",
+        "lowerBound": null,
+        "expectedCompletions": 175560,
+        "coveredCompletions": 0,
+        "prunedBranches": 0,
+        "visitedLeaves": 1,
+        "work": 11565,
+        "counterexample": [
+          [
+            "diamonds-9",
+            "clubs-12",
+            "diamonds-14",
+            "hearts-5",
+            "spades-6"
+          ],
+          [
+            "clubs-8",
+            "clubs-13",
+            "hearts-13",
+            "clubs-5",
+            "hearts-2"
+          ],
+          [
+            "diamonds-10",
+            "hearts-14",
+            "hearts-12",
+            "hearts-6",
+            "hearts-3"
+          ]
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "One fixed held plan; not a policy strength comparison.",
+    "Selected fixture family is not independent holdout.",
+    "No production adoption."
+  ]
+}
