@@ -1752,13 +1752,15 @@ function App() {
                       (isOnlineGame && playerRole === 'guest' && currentPlayerIndex === 1) ||
                       (mode === 'local' && currentPlayerIndex === 0)
                     }
-                    onResync={playerRole === 'guest' ? () => {
-                      if (isOnlineGame && roomIdRef.current) {
-                        playClickSound();
-                        socket.emit('request_sync', { roomId: roomIdRef.current });
-                      }
-                    } : undefined}
                   />
+                  <button
+                    type="button"
+                    className="game-rules-btn"
+                    aria-haspopup="dialog"
+                    onClick={() => { playClickSound(); setShowRules(true); }}
+                  >
+                    RULES
+                  </button>
                 </div>
               )}
               <main className="game-board">

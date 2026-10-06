@@ -753,10 +753,19 @@ body {
 }
 
 .game-status-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
   flex: 0 0 auto;
   width: 100%;
   padding: 5px 9px 0;
   background: var(--bg);
+}
+
+.game-status-bar .turn-timer {
+  flex: 1;
+  min-width: 0;
+  width: auto;
 }
 
 .turn-timer {
@@ -804,14 +813,16 @@ body {
   color: var(--danger) !important;
 }
 
-.resync-btn {
-  min-height: 22px !important;
-  margin-left: 7px;
-  padding: 1px 5px !important;
-  border-color: currentColor !important;
-  color: inherit !important;
-  background: transparent !important;
-  font-size: 0.7rem !important;
+.game-rules-btn {
+  flex: 0 0 auto;
+  min-height: 30px !important;
+  margin: 0;
+  padding: 5px 10px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary) !important;
+  background: var(--surface) !important;
+  font-size: 0.66rem !important;
 }
 
 /* Board */
