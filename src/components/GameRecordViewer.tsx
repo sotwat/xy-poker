@@ -47,7 +47,7 @@ const ReplayHand: React.FC<ReplayHandProps> = ({
                 <span className="record-player-dot" aria-hidden="true" />
                 <strong>{name}</strong>
                 <span>{t('common.cards', { count: cards.length })}</span>
-                {isNext && <em>{t('record.next')}</em>}
+                <em className={isNext ? '' : 'record-next-placeholder'} aria-hidden={!isNext}>{t('record.next')}</em>
             </div>
             <div className="record-hand-cards" aria-label={t('record.handAria', { name })}>
                 {cards.map(card => (
@@ -79,6 +79,7 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
     const currentThought = record.schemaVersion === 3 && moveCount > 0
         ? record.moves[moveCount - 1].thought
         : undefined;
+    const hasThoughts = record.schemaVersion === 3 && record.moves.some(move => move.thought);
     const result = getGameRecordResult(record);
     const viewerName = record.playerNames[viewerIndex];
     const opponentName = record.playerNames[opponentIndex];
@@ -186,8 +187,8 @@ export const GameRecordViewer: React.FC<GameRecordViewerProps> = ({
                 <strong>{moveDescription}</strong>
             </div>
 
-            {currentThought && (
-                <div className="record-thought-note">
+            {hasThoughts && (
+                <div className={`record-thought-note ${currentThought ? '' : 'record-thought-placeholder'}`} aria-hidden={!currentThought}>
                     <span><Brain aria-hidden="true" /> PRO</span>
                     <div>
                         <strong>{t('record.thought')}</strong>
