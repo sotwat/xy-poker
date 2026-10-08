@@ -67,24 +67,29 @@ export function RulesModal({ onClose }: RulesModalProps) {
                     ))}
                 </nav>
                 <div className="rulebook-body" id="rulebook-body" ref={bodyRef} tabIndex={0} role="region" aria-label={t(`rules.${page}Tab`)}>
-                    {page === 'basics' && <dl className="rulebook-basics">
-                        {['turn', 'bonus', 'hidden', 'y', 'x', 'end'].map(item => {
-                            const text = t(`rules.${item}Text`);
-                            const paragraphs = rulesLanguage === 'ja' ? text.split(/(?<=。)/).filter(Boolean) : [text];
-                            return <div key={item}>
-                                <dt>{t(`rules.${item}Label`)}</dt>
-                                <dd>{paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}</dd>
-                            </div>;
-                        })}
-                    </dl>}
-                    {page === 'y' && <article>
-                        <div className="rulebook-notes">
-                            <p>{t('rules.yScoring')}</p>
-                            <p>{t('rules.yTie')}</p>
-                            <p>{t('rules.pureStraight')}</p>
-                            <p>{t('rules.purePair')}</p>
-                            <p>{t('rules.orderNote')}</p>
+                    {page === 'basics' && <>
+                        <dl className="rulebook-basics">
+                            {['turn', 'bonus', 'hidden', 'y', 'x', 'end'].map(item => {
+                                const text = t(`rules.${item}Text`);
+                                const paragraphs = rulesLanguage === 'ja' ? text.split(/(?<=。)/).filter(Boolean) : [text];
+                                return <div key={item}>
+                                    <dt>{t(`rules.${item}Label`)}</dt>
+                                    <dd>{paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}</dd>
+                                </div>;
+                            })}
+                        </dl>
+                        <div className="rulebook-details">
+                            <details>
+                                <summary>{t('rules.pureLabel')}</summary>
+                                <p>{t('rules.pureText')}</p>
+                            </details>
+                            <details>
+                                <summary>{t('rules.tieLabel')}</summary>
+                                <p>{t('rules.tieText')}</p>
+                            </details>
                         </div>
+                    </>}
+                    {page === 'y' && <article>
                         <ol className="rulebook-hands" aria-label={t('rules.rankings')}>
                             <HandExample
                                 title={handName('PureStraightFlush')}
@@ -125,12 +130,6 @@ export function RulesModal({ onClose }: RulesModalProps) {
                         </ol>
                     </article>}
                     {page === 'x' && <article>
-                        <div className="rulebook-notes">
-                            <p>{t('rules.xScoring')}</p>
-                            <p>{t('rules.xTie')}</p>
-                            <p>{t('rules.xExact')}</p>
-                            <p>{t('rules.xOrder')}</p>
-                        </div>
                         <ol className="rulebook-hands" aria-label={t('rules.rankings')}>
                             <HandExample
                                 title={handName('RoyalFlush')}

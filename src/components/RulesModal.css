@@ -116,6 +116,8 @@
     overscroll-behavior: contain;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
+    scrollbar-gutter: stable;
+    padding-right: 18px;
     padding-top: 20px;
 }
 
@@ -135,9 +137,10 @@
 .rulebook-basics dd { margin: 0; text-wrap: pretty; }
 .rulebook-basics dd p { margin: 0; }
 
-.rulebook-notes { margin-bottom: 16px; }
-.rulebook-notes p { margin: 0 0 6px; text-wrap: pretty; }
-.rulebook-notes p:last-child { margin-bottom: 0; }
+.rulebook-details details { border-top: 1px solid var(--border); }
+.rulebook-details summary { padding: 12px 0; cursor: pointer; color: var(--text); }
+.rulebook-details p { margin: 0 0 16px; text-wrap: pretty; }
+.rulebook-details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 .rulebook-hands {
     list-style: none;
