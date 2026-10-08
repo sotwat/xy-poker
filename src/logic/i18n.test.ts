@@ -36,7 +36,7 @@ test('game UI is English while the default rules remain Japanese', () => {
         assert.equal(t('game.yourSide'), 'YOU');
         assert.equal(t('gameInfo.yourTurn'), 'YOUR TURN');
         assert.equal(handName('PureStraight'), 'Pure Straight');
-        assert.equal(translate(rulesLanguage, 'rules.goal'), '目的');
+        assert.equal(translate(rulesLanguage, 'rules.turnLabel'), '手番');
         return null;
     }
     renderToStaticMarkup(createElement(I18nProvider, { manageDocumentMetadata: false, children: createElement(Probe) }));

@@ -1,299 +1,186 @@
-.rules-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.85);
+.app .rules-overlay {
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.app .modal-native > .rules-content.rulebook {
+    width: min(100%, 640px) !important;
+    height: min(820px, 100%) !important;
+    padding: 24px !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.7;
+    line-break: strict;
+    word-break: normal;
+    text-align: left;
+}
+
+.rulebook-header {
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 1000;
-    animation: fadeIn 0.2s ease-out;
+    gap: 12px;
+    flex-shrink: 0;
+    padding-bottom: 20px;
 }
 
-.rules-content {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    border: 1px solid #4da8da;
-    border-radius: 16px;
-    padding: 24px;
-    width: 90%;
-    max-width: 600px;
-    max-height: calc(100% - 32px);
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 0 30px rgba(77, 168, 218, 0.3);
-    position: relative;
-    color: #e0e0e0;
-}
-
-.rules-content h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #4da8da;
-    border-bottom: 2px solid rgba(77, 168, 218, 0.2);
-    padding-bottom: 10px;
-}
-
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: #888;
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 0;
+.app .rulebook-header h2 {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
     line-height: 1;
-    transition: color 0.2s;
 }
 
-.close-btn:hover {
-    color: #fff;
+.rulebook-header h2 img {
+    display: block;
+    width: 104px;
+    height: 26px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
 }
 
-.rules-scroll-area {
-    overflow-y: auto;
-    padding-right: 10px;
+.app .rulebook-header select {
+    margin-left: auto;
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 96px;
+    min-height: 44px;
+    padding: 6px 10px;
+    font: inherit;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    background: var(--surface);
 }
 
-/* Scrollbar styling */
-.rules-scroll-area::-webkit-scrollbar {
-    width: 6px;
+.app .rulebook-close {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    flex: 0 0 44px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--text-secondary);
+    background: transparent;
+    font: 28px/1 Arial, sans-serif;
 }
 
-.rules-scroll-area::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-}
-
-.rules-scroll-area::-webkit-scrollbar-thumb {
-    background: #4da8da;
-    border-radius: 3px;
-}
-
-.rules-content section {
-    margin-bottom: 24px;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.rules-content h3 {
-    margin-top: 0;
-    color: #ffcc00;
-    /* Use a distinct color for subheaders */
-    display: flex;
-    align-items: center;
+.rulebook-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
     gap: 8px;
 }
 
-.rules-content .rules-list,
-.rules-content ol {
-    padding-left: 20px;
-    line-height: 1.6;
+.app .rulebook-nav button {
+    min-height: 44px;
+    padding: 8px 4px;
+    margin-bottom: -1px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    box-shadow: none;
+    font: inherit;
+    font-weight: 600;
+    letter-spacing: normal;
+    color: var(--text-muted);
+    background: transparent;
 }
 
-.score-explanation {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.score-item {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 10px;
-    border-radius: 6px;
-    border-left: 3px solid #ffcc00;
-}
-
-.score-item strong {
-    color: #fff;
-    display: block;
-    margin-bottom: 4px;
-}
-
-.score-item p {
-    margin: 4px 0;
-    font-size: 0.95rem;
-    color: #ccc;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@media (max-width: 600px) {
-    .rules-content {
-        padding: 16px;
-        max-height: calc(100% - 20px);
-    }
-
-    .rules-content h2 {
-        font-size: 1.5rem;
-    }
-
-    .rankings-grid {
-        flex-direction: column;
-    }
-}
-
-.rankings-grid {
-    display: flex;
-    gap: 20px;
-}
-
-.ranking-column {
-    flex: 1;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.ranking-column h4 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #4da8da;
-    border-bottom: 1px solid rgba(77, 168, 218, 0.3);
-    padding-bottom: 5px;
-    font-size: 1rem;
-}
-
-.hand-list {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.hand-list li {
-    margin-bottom: 4px;
-    font-size: 0.9rem;
-    color: #ddd;
-}
-
-/* Fix missing brace */
-.note {
-    font-size: 0.8em;
-    color: #888;
-    margin-left: 4px;
-}
-
-.hand-example {
-    margin-bottom: 12px;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 8px;
-    border-radius: 6px;
-}
-
-.hand-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 12px;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-}
-
-.rules-hand-score {
-    margin-left: auto;
-    white-space: nowrap;
-    font-weight: 700;
+.app .rulebook-nav button[aria-pressed="true"] {
+    border-bottom-color: var(--accent);
     color: var(--text);
 }
 
-.x-score-note {
-    font-size: 0.9rem;
-    line-height: 1.7;
+.app .rulebook-nav button:hover,
+.app .rulebook-close:hover { color: var(--accent); }
+
+.rulebook button:focus-visible,
+.rulebook select:focus-visible,
+.rulebook-body:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
 }
 
-.ranking-column {
-    min-width: 0;
+.rulebook-body {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    padding-top: 20px;
 }
 
-.hand-title {
-    color: #e0e0e0;
-    font-weight: bold;
-    font-size: 0.95rem;
+.rulebook-basics { margin: 0; }
+
+.rulebook-basics > div {
+    display: grid;
+    grid-template-columns: 6em minmax(0, 1fr);
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
 }
 
-.hand-cards {
+.rulebook-basics > div:first-child { padding-top: 0; }
+.rulebook-basics > div:last-child { border-bottom: 0; }
+.rulebook-basics dt { font-weight: 600; color: var(--text); }
+.rulebook-basics dd { margin: 0; text-wrap: pretty; }
+.rulebook-basics dd p { margin: 0; }
+
+.rulebook-notes { margin-bottom: 16px; }
+.rulebook-notes p { margin: 0 0 6px; text-wrap: pretty; }
+.rulebook-notes p:last-child { margin-bottom: 0; }
+
+.rulebook-hands {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.rulebook-hand {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+}
+
+.rulebook-hand-heading {
     display: flex;
-    gap: 4px;
-    justify-content: flex-start;
     flex-wrap: wrap;
-    /* Allow wrapping if small screen */
+    align-items: baseline;
+    gap: 4px 12px;
+    color: var(--text);
+    font-weight: 600;
+    text-wrap: pretty;
 }
 
-/* --- Premium Structural Unification --- */
-.rules-overlay {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: rgb(24 34 44 / 72%) !important;
-    z-index: 2000 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 16px !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-}
-.rules-content {
-    flex: 0 1 auto !important;
-    width: min(100%, 780px) !important;
-    max-width: 780px !important;
-    height: min(100%, 760px) !important;
-    max-height: 100% !important;
-    color: var(--text-secondary) !important;
-    background: var(--surface) !important;
-    backdrop-filter: none !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 14px !important;
-    padding: clamp(18px, 4cqw, 26px) !important;
-    box-shadow: var(--shadow) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 14px !important;
-    box-sizing: border-box !important;
-    overflow-y: auto !important;
-    margin: 0 !important;
+.rulebook-score {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    font-weight: 400;
+    color: var(--text-secondary);
 }
 
-.rules-content h2,
-.rules-content h3,
-.rules-content h4,
-.rules-content strong,
-.rules-content .hand-title { color: var(--text) !important; }
-.rules-content section,
-.rules-content .ranking-column,
-.rules-content .hand-example {
-    background: transparent !important;
-    border-color: var(--border) !important;
-}
-.rules-content .score-item {
-    background: #0d141d !important;
-    border-left-color: var(--warning) !important;
-}
-.rules-content .score-item p,
-.rules-content .hand-list li { color: var(--text-secondary) !important; }
+.rulebook-cards { display: flex; gap: 4px; }
+.rulebook-cards .card.xs { flex: 0 0 30px; cursor: default; }
+.rulebook-cards .card:hover { transform: none; }
 
-.rules-heading { display: flex; align-items: center; gap: 12px; padding-right: 52px; }
-.rules-heading h2 { margin: 0; padding: 0; border: 0; text-align: left; }
-.rules-language { margin-left: auto; }
-.rules-language select { min-height: 44px; padding: 6px 10px; color: var(--text); background: var(--surface); border: 1px solid var(--border); }
-.rules-language .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-
-@media (max-width: 620px) {
-    .rules-overlay { padding: 0 !important; }
-    .rules-content { border-radius: 0 !important; }
+@media (max-width: 480px) {
+    .app .modal-native > .rules-content.rulebook { padding: 16px !important; }
+    .rulebook-header { gap: 8px; padding-bottom: 12px; }
+    .rulebook-header h2 img { width: 88px; height: 22px; }
+    .rulebook-basics > div { grid-template-columns: 1fr; gap: 4px; padding: 14px 0; }
+    .rulebook-hand { grid-template-columns: 1fr; gap: 8px; }
+    .rulebook-hand-heading { justify-content: space-between; }
+    .rulebook-body { padding-top: 16px; }
 }
