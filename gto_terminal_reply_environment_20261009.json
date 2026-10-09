@@ -1,0 +1,57 @@
+{
+  "experiment": "terminal-reply-100509402",
+  "recordedDate": "2026-10-09",
+  "anomaly": {
+    "deal": 8,
+    "variant": "candidate",
+    "swap": 1,
+    "decisionIndex": 23,
+    "actor": 0,
+    "policy": "unchanged A9 opponent",
+    "elapsedMs": 971268.550541,
+    "completedBeliefSamples": 48,
+    "candidateReplyCalls": 0
+  },
+  "powerLogEvidence": {
+    "source": "local pmset -g log; only relevant event summary retained",
+    "timezone": "Asia/Tokyo",
+    "sleepAt": "2026-10-09T16:12:05+09:00",
+    "wakeAt": "2026-10-09T16:28:18+09:00",
+    "reason": "Maintenance Sleep",
+    "wakeType": "DarkWake",
+    "reportedSleepSeconds": 973
+  },
+  "interpretation": "The sleep duration closely matches the long decision; per-decision UTC start times were not recorded, so exact attribution is not proven.",
+  "continuationProtocol": {
+    "firstDeal": 9,
+    "lastDeal": 15,
+    "seed": 100509402,
+    "sameSourceHashes": true,
+    "keepOriginalNineDeals": true,
+    "rerunCompletedDeals": false,
+    "excludeAnomalyFromAdoption": false,
+    "adoptionAllowedFromThisRun": false,
+    "purpose": "Complete the fixed 16-pair descriptive comparison without changing the original latency gate.",
+    "command": "caffeinate -i -s nice -n 10 node --import tsx scripts/benchmark_terminal_reply.ts --confirm --selection=gto_terminal_reply_selection_20261009.json --run-minutes=17 --output=gto_terminal_reply_confirmation_20261009.json",
+    "powerSourceAtStart": "AC",
+    "temporaryAssertionsVerified": [
+      "PreventSystemSleep",
+      "PreventUserIdleSystemSleep"
+    ],
+    "persistentPowerSettingsChanged": false
+  },
+  "status": "complete",
+  "confirmationComplete": true,
+  "completedNewPairs": 7,
+  "newDecisions": 840,
+  "newMaximumElapsedMs": 996.1267089999747,
+  "newOver1020ms": 0,
+  "exitCode": 0,
+  "assertionProcessesExited": true,
+  "recordingPhase": {
+    "clockObservationBefore": "2026-10-09T13:19:55Z",
+    "clockObservationAfter": "2026-10-09T14:11:27Z",
+    "observation": "A further clock gap after the benchmark ended exceeded the per-turn wall-time target. The new diagnostic had stopped at type checking and had not run.",
+    "mitigation": "A separate 300-second temporary caffeinate assertion covers final validation and recording; terminate at task end."
+  }
+}
