@@ -1,0 +1,70 @@
+{
+  "observedStartUtc": "2026-10-12T09:34:44Z",
+  "observedFinishUtc": "2026-10-12T11:06:32Z",
+  "power": "Battery Power, 78% at start",
+  "observedSleep": "Maintenance Sleep logged at 2026-10-12T10:05:46Z despite temporary caffeinate -i -s",
+  "status": "Incomplete: two of sixteen pairs; process exited 0 at next-pair UTC deadline check; interrupt request arrived after natural completion",
+  "timingViolations": [
+    {
+      "deal": 0,
+      "variant": "candidate",
+      "swap": 0,
+      "turn": 19,
+      "actor": 0,
+      "startedUtc": "2026-10-12T09:52:42.298Z",
+      "elapsedMs": 738775.416875,
+      "samples": 30
+    },
+    {
+      "deal": 0,
+      "variant": "control",
+      "swap": 1,
+      "turn": 1,
+      "actor": 1,
+      "startedUtc": "2026-10-12T10:05:47.718Z",
+      "elapsedMs": 5285.158916999935,
+      "samples": 3
+    },
+    {
+      "deal": 1,
+      "variant": "control",
+      "swap": 1,
+      "turn": 3,
+      "actor": 1,
+      "startedUtc": "2026-10-12T10:06:39.844Z",
+      "elapsedMs": 951180.569333,
+      "samples": 1
+    },
+    {
+      "deal": 1,
+      "variant": "candidate",
+      "swap": 0,
+      "turn": 14,
+      "actor": 1,
+      "startedUtc": "2026-10-12T10:23:05.361Z",
+      "elapsedMs": 943898.7568750002,
+      "samples": 26
+    },
+    {
+      "deal": 1,
+      "variant": "candidate",
+      "swap": 0,
+      "turn": 29,
+      "actor": 0,
+      "startedUtc": "2026-10-12T10:38:54.138Z",
+      "elapsedMs": 898061.8063750002,
+      "samples": 64
+    },
+    {
+      "deal": 1,
+      "variant": "candidate",
+      "swap": 1,
+      "turn": 6,
+      "actor": 0,
+      "startedUtc": "2026-10-12T10:53:57.078Z",
+      "elapsedMs": 724093.3774579996,
+      "samples": 6
+    }
+  ],
+  "sourceHashesMatch": true
+}

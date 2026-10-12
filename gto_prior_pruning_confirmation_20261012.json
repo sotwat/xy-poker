@@ -1,0 +1,4046 @@
+{
+  "seed": 100512902,
+  "deals": 16,
+  "sourceHashes": {
+    "scripts/benchmark_prior_pruning.ts": "5617a23e3546eca6689d6e63cca29ce6cc8111c4e825edaa9bd83e6cd84dd9ea",
+    "scripts/prior_pruning.ts": "1af4f2584f99cdf7934786d68ba3fa0c00922e6ba52f341f2d6e9a1b99634316",
+    "scripts/prior_pruning.test.ts": "93ce9a6f0ad119096737a38082612dca0fe67657d9392a13f07c0bf0b6fc01f6",
+    "src/logic/ai.ts": "37e0a1669740ea437d8ae005b49812ab1f833cb28955772ff7597a4ae9f45ac8",
+    "src/logic/certificateKnowledge.ts": "b5eb4c3c57706ae0c9fe4e3085b03fd0750ad0311e612e2674fa83073cb9974e",
+    "src/logic/game.ts": "6ef47a4ebbb03d06e7d7628b01dcd91a4f3a55c82577fc43577a8e5d4fe3854a",
+    "src/logic/deck.ts": "504fadd30cef8a2f3c78a6f3d92922e10f7b54c1cb5392a3c0cf3748f212aea0",
+    "src/logic/gtoPolicy.ts": "77910a7a60a74da638ebe91fb33086ff30729a8e4bda5e156f97f618e094bbad",
+    "src/logic/endgame.ts": "1914fec70b72ce557358bef70669ddde99f58d06eafe5a908c12b8e98d602c51",
+    "src/logic/forcedWin.ts": "77511e353befbfa6da54da30f7ed16c75fe014113c286167cd720bcd92638dc7",
+    "src/logic/jointForcedWin.ts": "bf4f6ec5139fd782f15e5a0bd22bed47dc3ce3f2e0167d08416f48752b678ef6",
+    "src/logic/sharedCardProof.ts": "c9fa4e980710d79b446d288b69b382ac7503edbc7a3cf80e68b0384fd692e82b",
+    "src/logic/evaluation.ts": "f4eae893683f513780287e1149b20c5313581ebdd166f3012aa92bae0aef079e",
+    "src/logic/scoring.ts": "25595feb8d46d9765ac437a38e3bc3effed85ffc93fc88f1efc4010746d6e86d"
+  },
+  "pairs": [
+    {
+      "deal": 0,
+      "matches": [
+        {
+          "variant": "candidate",
+          "swap": 0,
+          "dice": [
+            5,
+            5,
+            3,
+            2,
+            1
+          ],
+          "utility": -1,
+          "scoreDifference": -2,
+          "decisions": [
+            {
+              "actor": 0,
+              "elapsedMs": 985.6321659999999,
+              "samples": 33,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T09:52:25.305Z",
+              "move": {
+                "cardId": "spades-5",
+                "colIndex": 3,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 988.9907089999997,
+              "samples": 27,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:26.296Z",
+              "move": {
+                "cardId": "hearts-9",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 987.745625,
+              "samples": 12,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T09:52:27.285Z",
+              "move": {
+                "cardId": "clubs-5",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 933.8323330000003,
+              "samples": 7,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:28.273Z",
+              "move": {
+                "cardId": "clubs-6",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 976.418917,
+              "samples": 8,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:29.207Z",
+              "move": {
+                "cardId": "spades-7",
+                "colIndex": 4,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 977.0215829999997,
+              "samples": 18,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:30.184Z",
+              "move": {
+                "cardId": "diamonds-10",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 968.3996249999991,
+              "samples": 31,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T09:52:31.161Z",
+              "move": {
+                "cardId": "diamonds-12",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 970.0503339999996,
+              "samples": 24,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:32.129Z",
+              "move": {
+                "cardId": "clubs-12",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 958.9598750000005,
+              "samples": 28,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T09:52:33.099Z",
+              "move": {
+                "cardId": "spades-6",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 986.7202500000003,
+              "samples": 34,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:34.058Z",
+              "move": {
+                "cardId": "hearts-13",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 982.2006249999995,
+              "samples": 35,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:35.045Z",
+              "move": {
+                "cardId": "clubs-4",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 983.0651670000007,
+              "samples": 40,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:36.027Z",
+              "move": {
+                "cardId": "clubs-9",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 977.9123330000002,
+              "samples": 42,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:37.010Z",
+              "move": {
+                "cardId": "spades-14",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 978.9126660000002,
+              "samples": 43,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:37.988Z",
+              "move": {
+                "cardId": "hearts-7",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 973.0719999999983,
+              "samples": 40,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:38.967Z",
+              "move": {
+                "cardId": "hearts-2",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 977.7833749999991,
+              "samples": 48,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:39.940Z",
+              "move": {
+                "cardId": "clubs-2",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 731.8235840000016,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:40.918Z",
+              "move": {
+                "cardId": "spades-3",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 648.5774999999994,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:41.650Z",
+              "move": {
+                "cardId": "diamonds-9",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 738775.416875,
+              "samples": 30,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T09:52:42.298Z",
+              "move": {
+                "cardId": "spades-8",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 606.8067909999518,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:01.030Z",
+              "move": {
+                "cardId": "diamonds-8",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 487.486333000008,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:01.636Z",
+              "move": {
+                "cardId": "diamonds-13",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 435.9779170000693,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:02.124Z",
+              "move": {
+                "cardId": "spades-9",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 374.0539169999538,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:02.560Z",
+              "move": {
+                "cardId": "clubs-14",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 269.9910829999717,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:02.934Z",
+              "move": {
+                "cardId": "clubs-11",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 159.5257499999134,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:03.204Z",
+              "move": {
+                "cardId": "clubs-8",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 133.04350000002887,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:03.364Z",
+              "move": {
+                "cardId": "diamonds-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 50.21250000002328,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:03.497Z",
+              "move": {
+                "cardId": "hearts-6",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 42.61766699992586,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:03.547Z",
+              "move": {
+                "cardId": "hearts-4",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 414.34291700005997,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:03.589Z",
+              "move": {
+                "cardId": "hearts-14",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 0.18449999997392297,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:04.004Z",
+              "move": {
+                "cardId": "spades-4",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            }
+          ]
+        },
+        {
+          "variant": "candidate",
+          "swap": 1,
+          "dice": [
+            5,
+            5,
+            3,
+            2,
+            1
+          ],
+          "utility": -1,
+          "scoreDifference": -12,
+          "decisions": [
+            {
+              "actor": 1,
+              "elapsedMs": 969.9070409999695,
+              "samples": 31,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 4,
+              "startedUtc": "2026-10-12T10:05:04.004Z",
+              "move": {
+                "cardId": "clubs-4",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 964.5730409999378,
+              "samples": 15,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:04.974Z",
+              "move": {
+                "cardId": "hearts-9",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 813.6853750000009,
+              "samples": 2,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:05.939Z",
+              "move": {
+                "cardId": "spades-7",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 717.5941250000615,
+              "samples": 2,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:06.752Z",
+              "move": {
+                "cardId": "hearts-13",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 905.9734579999931,
+              "samples": 5,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:07.470Z",
+              "move": {
+                "cardId": "spades-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 888.9165829999838,
+              "samples": 7,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:08.376Z",
+              "move": {
+                "cardId": "hearts-4",
+                "colIndex": 2,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 947.7842089999467,
+              "samples": 11,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 2,
+              "startedUtc": "2026-10-12T10:05:09.265Z",
+              "move": {
+                "cardId": "spades-5",
+                "colIndex": 4,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 966.5806669999147,
+              "samples": 22,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:10.213Z",
+              "move": {
+                "cardId": "diamonds-10",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 985.9999159999425,
+              "samples": 15,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 2,
+              "startedUtc": "2026-10-12T10:05:11.180Z",
+              "move": {
+                "cardId": "spades-6",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 992.9713749999646,
+              "samples": 37,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:12.166Z",
+              "move": {
+                "cardId": "clubs-12",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 976.5097079999978,
+              "samples": 31,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:05:13.159Z",
+              "move": {
+                "cardId": "clubs-5",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 980.045083999983,
+              "samples": 38,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:14.135Z",
+              "move": {
+                "cardId": "clubs-9",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 969.8300419999287,
+              "samples": 30,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 2,
+              "startedUtc": "2026-10-12T10:05:15.115Z",
+              "move": {
+                "cardId": "diamonds-12",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 968.0541250000242,
+              "samples": 33,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:16.085Z",
+              "move": {
+                "cardId": "clubs-6",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 987.4950419999659,
+              "samples": 33,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:05:17.053Z",
+              "move": {
+                "cardId": "hearts-2",
+                "colIndex": 4,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 981.7523340000771,
+              "samples": 55,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:18.041Z",
+              "move": {
+                "cardId": "spades-4",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 983.3440839999821,
+              "samples": 57,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:19.022Z",
+              "move": {
+                "cardId": "spades-8",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 975.2770409999648,
+              "samples": 55,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:20.006Z",
+              "move": {
+                "cardId": "clubs-7",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 985.6832919999724,
+              "samples": 57,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:20.981Z",
+              "move": {
+                "cardId": "diamonds-9",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 951.0543339999858,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:21.967Z",
+              "move": {
+                "cardId": "diamonds-8",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 718.8927090000361,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:22.918Z",
+              "move": {
+                "cardId": "diamonds-13",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 593.200957999914,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:23.636Z",
+              "move": {
+                "cardId": "hearts-10",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 491.1334999999963,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:24.230Z",
+              "move": {
+                "cardId": "spades-3",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 378.24762499995995,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:24.721Z",
+              "move": {
+                "cardId": "clubs-11",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 284.05395800003316,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:25.099Z",
+              "move": {
+                "cardId": "clubs-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 174.97354199993424,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:25.383Z",
+              "move": {
+                "cardId": "spades-9",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 115.32854100002442,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:25.558Z",
+              "move": {
+                "cardId": "spades-2",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 54.4191250000149,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:25.674Z",
+              "move": {
+                "cardId": "clubs-2",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 643.1880830000155,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:25.728Z",
+              "move": {
+                "cardId": "diamonds-7",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 0.1364159999648109,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:26.371Z",
+              "move": {
+                "cardId": "hearts-7",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            }
+          ]
+        },
+        {
+          "variant": "control",
+          "swap": 0,
+          "dice": [
+            5,
+            5,
+            3,
+            2,
+            1
+          ],
+          "utility": 1,
+          "scoreDifference": 5,
+          "decisions": [
+            {
+              "actor": 0,
+              "elapsedMs": 973.8981659999117,
+              "samples": 16,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:26.371Z",
+              "move": {
+                "cardId": "spades-5",
+                "colIndex": 3,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 916.1697919999715,
+              "samples": 8,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:27.345Z",
+              "move": {
+                "cardId": "hearts-4",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 912.3231249999953,
+              "samples": 5,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:28.262Z",
+              "move": {
+                "cardId": "clubs-5",
+                "colIndex": 2,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 838.4965000000084,
+              "samples": 5,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:29.174Z",
+              "move": {
+                "cardId": "hearts-9",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 984.594167000032,
+              "samples": 12,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:30.013Z",
+              "move": {
+                "cardId": "clubs-4",
+                "colIndex": 2,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 984.0840830000816,
+              "samples": 23,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:30.998Z",
+              "move": {
+                "cardId": "clubs-6",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 977.9876249999506,
+              "samples": 34,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:31.982Z",
+              "move": {
+                "cardId": "diamonds-12",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 973.6847909999778,
+              "samples": 20,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:32.960Z",
+              "move": {
+                "cardId": "diamonds-10",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 981.2190829999745,
+              "samples": 31,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:33.933Z",
+              "move": {
+                "cardId": "spades-6",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 977.8625829999801,
+              "samples": 19,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:34.914Z",
+              "move": {
+                "cardId": "clubs-9",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 985.2641670000739,
+              "samples": 39,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:35.892Z",
+              "move": {
+                "cardId": "spades-7",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 982.6563750000205,
+              "samples": 32,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:36.878Z",
+              "move": {
+                "cardId": "spades-9",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 991.6952079999028,
+              "samples": 44,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:37.860Z",
+              "move": {
+                "cardId": "spades-14",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 978.7269170000218,
+              "samples": 33,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:38.852Z",
+              "move": {
+                "cardId": "clubs-12",
+                "colIndex": 2,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 985.0816249999916,
+              "samples": 51,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:39.831Z",
+              "move": {
+                "cardId": "hearts-2",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 983.5197499999776,
+              "samples": 52,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:40.816Z",
+              "move": {
+                "cardId": "hearts-13",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 978.1334999999963,
+              "samples": 43,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:41.799Z",
+              "move": {
+                "cardId": "diamonds-9",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 980.7186249999795,
+              "samples": 45,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:42.777Z",
+              "move": {
+                "cardId": "clubs-14",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 984.3970419999678,
+              "samples": 63,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:43.758Z",
+              "move": {
+                "cardId": "clubs-8",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 793.656500000041,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:44.742Z",
+              "move": {
+                "cardId": "spades-8",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 697.343292000005,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:45.536Z",
+              "move": {
+                "cardId": "diamonds-13",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 420.90775000001304,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:46.233Z",
+              "move": {
+                "cardId": "clubs-7",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 336.89958299999125,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:46.654Z",
+              "move": {
+                "cardId": "hearts-7",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 276.0675830000546,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:46.991Z",
+              "move": {
+                "cardId": "diamonds-8",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 199.51237500004936,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:47.267Z",
+              "move": {
+                "cardId": "diamonds-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 122.42374999995809,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:47.467Z",
+              "move": {
+                "cardId": "spades-2",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 75.76733299996704,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:47.589Z",
+              "move": {
+                "cardId": "spades-3",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 36.58437499997672,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:47.665Z",
+              "move": {
+                "cardId": "hearts-10",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 0.06841700000222772,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:47.701Z",
+              "move": {
+                "cardId": "clubs-3",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 16.83454199996777,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:47.702Z",
+              "move": {
+                "cardId": "hearts-14",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            }
+          ]
+        },
+        {
+          "variant": "control",
+          "swap": 1,
+          "dice": [
+            5,
+            5,
+            3,
+            2,
+            1
+          ],
+          "utility": 1,
+          "scoreDifference": 5,
+          "decisions": [
+            {
+              "actor": 1,
+              "elapsedMs": 5285.158916999935,
+              "samples": 3,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:47.718Z",
+              "move": {
+                "cardId": "clubs-4",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 977.2267500000307,
+              "samples": 29,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:53.003Z",
+              "move": {
+                "cardId": "hearts-4",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 985.3549159999238,
+              "samples": 37,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:53.980Z",
+              "move": {
+                "cardId": "clubs-5",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 987.1987919999519,
+              "samples": 36,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:54.966Z",
+              "move": {
+                "cardId": "spades-4",
+                "colIndex": 4,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 985.998292000033,
+              "samples": 33,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:55.953Z",
+              "move": {
+                "cardId": "diamonds-12",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 972.3334589999868,
+              "samples": 13,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:56.939Z",
+              "move": {
+                "cardId": "hearts-9",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 850.3819999999832,
+              "samples": 6,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:57.911Z",
+              "move": {
+                "cardId": "hearts-2",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 929.6604579999112,
+              "samples": 7,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:58.762Z",
+              "move": {
+                "cardId": "hearts-13",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 982.8397499999264,
+              "samples": 19,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:05:59.691Z",
+              "move": {
+                "cardId": "spades-7",
+                "colIndex": 2,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 974.7606249999953,
+              "samples": 27,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:00.674Z",
+              "move": {
+                "cardId": "clubs-8",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 981.6248749999795,
+              "samples": 36,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:01.649Z",
+              "move": {
+                "cardId": "spades-6",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 976.9590829999652,
+              "samples": 37,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:02.631Z",
+              "move": {
+                "cardId": "clubs-9",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 993.6310000000522,
+              "samples": 43,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:03.607Z",
+              "move": {
+                "cardId": "hearts-7",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 987.3953749999637,
+              "samples": 47,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:04.601Z",
+              "move": {
+                "cardId": "diamonds-10",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 984.3481670001056,
+              "samples": 47,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:05.588Z",
+              "move": {
+                "cardId": "spades-5",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 982.4759590000613,
+              "samples": 47,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:06.573Z",
+              "move": {
+                "cardId": "clubs-6",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 954.7335830000229,
+              "samples": 20,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:07.555Z",
+              "move": {
+                "cardId": "spades-9",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 997.3862080000108,
+              "samples": 26,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:08.510Z",
+              "move": {
+                "cardId": "clubs-14",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 990.1337910000002,
+              "samples": 39,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:09.507Z",
+              "move": {
+                "cardId": "diamonds-8",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 967.2179999999935,
+              "samples": 45,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:10.498Z",
+              "move": {
+                "cardId": "spades-2",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 996.8529170000693,
+              "samples": 37,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:11.465Z",
+              "move": {
+                "cardId": "diamonds-13",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 985.7881659999257,
+              "samples": 59,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:12.462Z",
+              "move": {
+                "cardId": "hearts-10",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 586.2515419999836,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:13.448Z",
+              "move": {
+                "cardId": "spades-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 619.0172079999465,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:14.034Z",
+              "move": {
+                "cardId": "clubs-11",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 433.5842919999268,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:14.653Z",
+              "move": {
+                "cardId": "hearts-5",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 257.79766599996947,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:15.087Z",
+              "move": {
+                "cardId": "clubs-3",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 149.29883300000802,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:15.344Z",
+              "move": {
+                "cardId": "clubs-2",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 63.32124999992084,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:15.494Z",
+              "move": {
+                "cardId": "spades-3",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 0.09195799997542053,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:15.557Z",
+              "move": {
+                "cardId": "clubs-7",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 59.02845799992792,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:15.557Z",
+              "move": {
+                "cardId": "spades-13",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            }
+          ]
+        }
+      ],
+      "difference": -2
+    },
+    {
+      "deal": 1,
+      "matches": [
+        {
+          "variant": "control",
+          "swap": 0,
+          "dice": [
+            5,
+            4,
+            2,
+            1,
+            1
+          ],
+          "utility": -1,
+          "scoreDifference": -1,
+          "decisions": [
+            {
+              "actor": 0,
+              "elapsedMs": 970.076417000033,
+              "samples": 8,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:15.626Z",
+              "move": {
+                "cardId": "clubs-8",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 896.7674579999875,
+              "samples": 8,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:16.596Z",
+              "move": {
+                "cardId": "spades-12",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 965.9270840000827,
+              "samples": 11,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:17.492Z",
+              "move": {
+                "cardId": "diamonds-11",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 960.6316670000087,
+              "samples": 12,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:18.458Z",
+              "move": {
+                "cardId": "hearts-13",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 982.8959589999868,
+              "samples": 11,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:19.419Z",
+              "move": {
+                "cardId": "hearts-3",
+                "colIndex": 3,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 957.4888750000391,
+              "samples": 13,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:20.402Z",
+              "move": {
+                "cardId": "spades-4",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 986.03125,
+              "samples": 18,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:21.359Z",
+              "move": {
+                "cardId": "clubs-3",
+                "colIndex": 3,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 988.7833340000361,
+              "samples": 29,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:22.345Z",
+              "move": {
+                "cardId": "diamonds-14",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 985.4928329999093,
+              "samples": 38,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:23.334Z",
+              "move": {
+                "cardId": "clubs-13",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 971.375624999986,
+              "samples": 30,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:24.320Z",
+              "move": {
+                "cardId": "clubs-4",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 977.0839160000905,
+              "samples": 41,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:25.291Z",
+              "move": {
+                "cardId": "spades-2",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 992.4804999999469,
+              "samples": 39,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:26.268Z",
+              "move": {
+                "cardId": "spades-8",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 982.2086670000572,
+              "samples": 50,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:27.260Z",
+              "move": {
+                "cardId": "spades-7",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 994.7475410000188,
+              "samples": 43,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:28.243Z",
+              "move": {
+                "cardId": "clubs-5",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 984.8691669999389,
+              "samples": 55,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:29.237Z",
+              "move": {
+                "cardId": "clubs-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 989.0542080000741,
+              "samples": 49,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:30.222Z",
+              "move": {
+                "cardId": "diamonds-7",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 986.6915840000147,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:31.211Z",
+              "move": {
+                "cardId": "spades-3",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 983.828582999995,
+              "samples": 61,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:32.198Z",
+              "move": {
+                "cardId": "clubs-6",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 819.6624160000356,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:33.182Z",
+              "move": {
+                "cardId": "spades-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 884.1326660000486,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:34.001Z",
+              "move": {
+                "cardId": "hearts-6",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 622.0278750000289,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:34.886Z",
+              "move": {
+                "cardId": "spades-10",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 624.4937500000233,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:35.508Z",
+              "move": {
+                "cardId": "spades-11",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 461.8654589999933,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:36.132Z",
+              "move": {
+                "cardId": "clubs-9",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 427.12812500004657,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:36.594Z",
+              "move": {
+                "cardId": "clubs-11",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 288.6473330000881,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:37.021Z",
+              "move": {
+                "cardId": "hearts-2",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 294.93524999998044,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:37.310Z",
+              "move": {
+                "cardId": "diamonds-6",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 129.17145899997558,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:37.605Z",
+              "move": {
+                "cardId": "spades-9",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 107.24495800002478,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:37.734Z",
+              "move": {
+                "cardId": "diamonds-8",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 31.315208000014536,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:37.841Z",
+              "move": {
+                "cardId": "diamonds-9",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 0.09287499997299165,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:37.873Z",
+              "move": {
+                "cardId": "clubs-2",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            }
+          ]
+        },
+        {
+          "variant": "control",
+          "swap": 1,
+          "dice": [
+            5,
+            4,
+            2,
+            1,
+            1
+          ],
+          "utility": -1,
+          "scoreDifference": -9,
+          "decisions": [
+            {
+              "actor": 1,
+              "elapsedMs": 980.2732090000063,
+              "samples": 28,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:37.873Z",
+              "move": {
+                "cardId": "diamonds-11",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 990.51645799994,
+              "samples": 38,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:38.853Z",
+              "move": {
+                "cardId": "spades-12",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 951180.569333,
+              "samples": 1,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:06:39.844Z",
+              "move": {
+                "cardId": "clubs-8",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 976.7642500000075,
+              "samples": 33,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:30.967Z",
+              "move": {
+                "cardId": "hearts-13",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 981.0790829998441,
+              "samples": 29,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:34.249Z",
+              "move": {
+                "cardId": "spades-7",
+                "colIndex": 3,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 971.8823329999577,
+              "samples": 22,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:35.229Z",
+              "move": {
+                "cardId": "diamonds-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 968.9412499999162,
+              "samples": 13,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:36.201Z",
+              "move": {
+                "cardId": "hearts-3",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 967.5288750000764,
+              "samples": 19,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:37.169Z",
+              "move": {
+                "cardId": "diamonds-7",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 973.8605829998851,
+              "samples": 26,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:38.137Z",
+              "move": {
+                "cardId": "clubs-3",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 983.0189590000082,
+              "samples": 35,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:39.111Z",
+              "move": {
+                "cardId": "spades-4",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 984.5788749998901,
+              "samples": 37,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:40.094Z",
+              "move": {
+                "cardId": "clubs-4",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 978.4924580000807,
+              "samples": 44,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:41.078Z",
+              "move": {
+                "cardId": "hearts-2",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 982.9172090000939,
+              "samples": 49,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:42.057Z",
+              "move": {
+                "cardId": "spades-8",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 984.5689579998143,
+              "samples": 49,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:43.040Z",
+              "move": {
+                "cardId": "clubs-5",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 991.7440410000272,
+              "samples": 56,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:44.024Z",
+              "move": {
+                "cardId": "diamonds-5",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 996.094000000041,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:45.016Z",
+              "move": {
+                "cardId": "diamonds-6",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 979.4305409998633,
+              "samples": 63,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:46.012Z",
+              "move": {
+                "cardId": "spades-3",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 840.0266670000274,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:46.991Z",
+              "move": {
+                "cardId": "spades-10",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 833.0527090001851,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:47.831Z",
+              "move": {
+                "cardId": "spades-2",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 778.8071669999044,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:48.664Z",
+              "move": {
+                "cardId": "spades-11",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 682.8377090001013,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:49.443Z",
+              "move": {
+                "cardId": "clubs-2",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 499.18075000005774,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:50.126Z",
+              "move": {
+                "cardId": "clubs-6",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 468.80620900006033,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:50.625Z",
+              "move": {
+                "cardId": "clubs-10",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 398.529291999992,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:51.094Z",
+              "move": {
+                "cardId": "diamonds-13",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 328.12129199993797,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:51.493Z",
+              "move": {
+                "cardId": "diamonds-9",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 235.97970799985342,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:51.821Z",
+              "move": {
+                "cardId": "clubs-14",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 89.79937499994412,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:52.057Z",
+              "move": {
+                "cardId": "spades-9",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 0.07012499985285103,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:52.147Z",
+              "move": {
+                "cardId": "spades-14",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 646.5982919998933,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:52.147Z",
+              "move": {
+                "cardId": "clubs-9",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 0.07016699993982911,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:52.793Z",
+              "move": {
+                "cardId": "clubs-11",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            }
+          ]
+        },
+        {
+          "variant": "candidate",
+          "swap": 0,
+          "dice": [
+            5,
+            4,
+            2,
+            1,
+            1
+          ],
+          "utility": -1,
+          "scoreDifference": -13,
+          "decisions": [
+            {
+              "actor": 0,
+              "elapsedMs": 959.9439580000471,
+              "samples": 15,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 3,
+              "startedUtc": "2026-10-12T10:22:52.794Z",
+              "move": {
+                "cardId": "clubs-8",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 983.6359590000939,
+              "samples": 18,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:53.753Z",
+              "move": {
+                "cardId": "spades-12",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 983.0064580000471,
+              "samples": 20,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 4,
+              "startedUtc": "2026-10-12T10:22:54.737Z",
+              "move": {
+                "cardId": "diamonds-11",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 961.982124999864,
+              "samples": 20,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:55.720Z",
+              "move": {
+                "cardId": "hearts-13",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 966.7516660001129,
+              "samples": 16,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:22:56.682Z",
+              "move": {
+                "cardId": "spades-7",
+                "colIndex": 4,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 970.6005410000216,
+              "samples": 26,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:57.649Z",
+              "move": {
+                "cardId": "diamonds-14",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 981.109375,
+              "samples": 30,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:58.619Z",
+              "move": {
+                "cardId": "clubs-3",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 979.7902500000782,
+              "samples": 28,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:22:59.600Z",
+              "move": {
+                "cardId": "clubs-5",
+                "colIndex": 4,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 988.4686249999795,
+              "samples": 40,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 2,
+              "startedUtc": "2026-10-12T10:23:00.580Z",
+              "move": {
+                "cardId": "hearts-3",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 992.4893749998882,
+              "samples": 33,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:23:01.569Z",
+              "move": {
+                "cardId": "diamonds-6",
+                "colIndex": 2,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 978.0256670000963,
+              "samples": 45,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:23:02.561Z",
+              "move": {
+                "cardId": "clubs-14",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 987.5044579999521,
+              "samples": 63,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:23:03.539Z",
+              "move": {
+                "cardId": "spades-8",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 834.1104999999516,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:23:04.527Z",
+              "move": {
+                "cardId": "clubs-13",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 943898.7568750002,
+              "samples": 26,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:23:05.361Z",
+              "move": {
+                "cardId": "spades-4",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 746.1754580000415,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:38:49.203Z",
+              "move": {
+                "cardId": "spades-14",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 634.3863750002347,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:49.949Z",
+              "move": {
+                "cardId": "diamonds-5",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 657.5792079996318,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:38:50.583Z",
+              "move": {
+                "cardId": "hearts-6",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 534.5677080000751,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:51.241Z",
+              "move": {
+                "cardId": "diamonds-9",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 532.9554579998367,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:38:51.776Z",
+              "move": {
+                "cardId": "spades-10",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 441.02837500022724,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:52.308Z",
+              "move": {
+                "cardId": "diamonds-8",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 444.7866670000367,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:52.749Z",
+              "move": {
+                "cardId": "clubs-9",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 304.71891700010747,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:53.194Z",
+              "move": {
+                "cardId": "diamonds-7",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 269.3467089999467,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:53.499Z",
+              "move": {
+                "cardId": "clubs-6",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 161.93545900005847,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:53.768Z",
+              "move": {
+                "cardId": "clubs-4",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 116.77445900021121,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:53.930Z",
+              "move": {
+                "cardId": "spades-2",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 52.64462499972433,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:54.047Z",
+              "move": {
+                "cardId": "spades-11",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 38.11991700017825,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:54.100Z",
+              "move": {
+                "cardId": "hearts-4",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 0.047666999977082014,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:54.138Z",
+              "move": {
+                "cardId": "clubs-11",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 898061.8063750002,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:38:54.138Z",
+              "move": {
+                "cardId": "spades-9",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 0.1442920002155006,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:53:52.163Z",
+              "move": {
+                "cardId": "diamonds-4",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            }
+          ]
+        },
+        {
+          "variant": "candidate",
+          "swap": 1,
+          "dice": [
+            5,
+            4,
+            2,
+            1,
+            1
+          ],
+          "utility": -1,
+          "scoreDifference": -7,
+          "decisions": [
+            {
+              "actor": 1,
+              "elapsedMs": 986.3335839998908,
+              "samples": 32,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 3,
+              "startedUtc": "2026-10-12T10:53:52.164Z",
+              "move": {
+                "cardId": "diamonds-11",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 982.5736670000479,
+              "samples": 37,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:53:53.152Z",
+              "move": {
+                "cardId": "spades-12",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 973.6263330001384,
+              "samples": 38,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:53:54.137Z",
+              "move": {
+                "cardId": "spades-7",
+                "colIndex": 2,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 979.4710829998367,
+              "samples": 44,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:53:55.112Z",
+              "move": {
+                "cardId": "hearts-13",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 983.716791999992,
+              "samples": 40,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T10:53:56.093Z",
+              "move": {
+                "cardId": "spades-2",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 724093.3774579996,
+              "samples": 6,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T10:53:57.078Z",
+              "move": {
+                "cardId": "diamonds-14",
+                "colIndex": 0,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 988.220958000049,
+              "samples": 42,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 2,
+              "startedUtc": "2026-10-12T11:06:01.143Z",
+              "move": {
+                "cardId": "clubs-8",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 984.8072500005364,
+              "samples": 51,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:02.132Z",
+              "move": {
+                "cardId": "diamonds-7",
+                "colIndex": 1,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 985.332041000016,
+              "samples": 50,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 3,
+              "startedUtc": "2026-10-12T11:06:03.119Z",
+              "move": {
+                "cardId": "hearts-3",
+                "colIndex": 3,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 982.7859160006046,
+              "samples": 60,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:04.105Z",
+              "move": {
+                "cardId": "clubs-5",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 949.3282500002533,
+              "samples": 20,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:05.089Z",
+              "move": {
+                "cardId": "clubs-14",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 683.1514170002192,
+              "samples": 1,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:06.123Z",
+              "move": {
+                "cardId": "clubs-4",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 850.8078339993954,
+              "samples": 5,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:06.807Z",
+              "move": {
+                "cardId": "clubs-13",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 973.7755829999223,
+              "samples": 23,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:07.658Z",
+              "move": {
+                "cardId": "spades-8",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 930.8183329999447,
+              "samples": 14,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 2,
+              "startedUtc": "2026-10-12T11:06:08.632Z",
+              "move": {
+                "cardId": "hearts-6",
+                "colIndex": 4,
+                "isHidden": true
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 977.3836670005694,
+              "samples": 24,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:09.563Z",
+              "move": {
+                "cardId": "diamonds-9",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 983.6846660003066,
+              "samples": 34,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:10.541Z",
+              "move": {
+                "cardId": "clubs-6",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 976.0563329998404,
+              "samples": 41,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:11.524Z",
+              "move": {
+                "cardId": "diamonds-6",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 987.3369580004364,
+              "samples": 43,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:12.500Z",
+              "move": {
+                "cardId": "spades-11",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 986.9253340000287,
+              "samples": 38,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:13.488Z",
+              "move": {
+                "cardId": "spades-10",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 979.7407919997349,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:14.475Z",
+              "move": {
+                "cardId": "clubs-2",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 780.858750000596,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:15.454Z",
+              "move": {
+                "cardId": "diamonds-5",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 578.0587919997051,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 1,
+              "retainedChanges": 1,
+              "startedUtc": "2026-10-12T11:06:16.235Z",
+              "move": {
+                "cardId": "clubs-9",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 371.50995799992234,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:16.813Z",
+              "move": {
+                "cardId": "diamonds-13",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 393.30587499961257,
+              "samples": 64,
+              "pruningCalls": 1,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:17.185Z",
+              "move": {
+                "cardId": "hearts-12",
+                "colIndex": 1,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 275.55141699966043,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:17.578Z",
+              "move": {
+                "cardId": "spades-4",
+                "colIndex": 2,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": false
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 143.43679099995643,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:17.854Z",
+              "move": {
+                "cardId": "clubs-11",
+                "colIndex": 0,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 0.07854200061410666,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:17.997Z",
+              "move": {
+                "cardId": "spades-3",
+                "colIndex": 3,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            },
+            {
+              "actor": 1,
+              "elapsedMs": 791.6672920007259,
+              "samples": 64,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:17.997Z",
+              "move": {
+                "cardId": "spades-14",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": false,
+              "continuation": false
+            },
+            {
+              "actor": 0,
+              "elapsedMs": 0.062375000678002834,
+              "samples": 0,
+              "pruningCalls": 0,
+              "changedPrunings": 0,
+              "retainedChanges": 0,
+              "startedUtc": "2026-10-12T11:06:18.789Z",
+              "move": {
+                "cardId": "hearts-2",
+                "colIndex": 4,
+                "isHidden": false
+              },
+              "proof": true,
+              "continuation": true
+            }
+          ]
+        }
+      ],
+      "difference": 0
+    }
+  ],
+  "complete": false,
+  "checks": [
+    "Disabled wrapper equals original A9 on an 8-belief opening decision including pruning",
+    "Original production sources untouched; all source hashes fixed",
+    "Every real move recorded and passed through actual reducer"
+  ],
+  "protocol": {
+    "timeBudgetMs": 1000,
+    "requestedSamples": 64,
+    "pruningWithinDecisionBudget": true,
+    "finalists": 16,
+    "firstStageSamples": 8,
+    "change": "Rank the 16 early finalists by the same normalized outcome/prior blend used in the final decision, keeping prior weight unchanged",
+    "scope": "Early pruning only on candidate decisions; unchanged weights, sampled worlds, rollout, final ranking, proofs, opponent and A9 control",
+    "seats": "Swap initial hands, candidate role and turn selector; same remaining deck and dice",
+    "gate": "Complete selection, positive paired utility difference, retained finalist sets change. Confirmation lower normal95 >0, all decision times <=1020ms, all checks. No zero-variance inference.",
+    "productionAdoption": false
+  },
+  "summary": {
+    "completedPairs": 2,
+    "meanUtilityDifference": -1,
+    "normal95": [
+      -2.96,
+      0.96
+    ],
+    "candidate": {
+      "games": 4,
+      "wins": 0,
+      "losses": 4,
+      "draws": 0,
+      "roleDecisions": 60,
+      "meanMs": 28010.773129850004,
+      "maxMs": 943898.7568750002,
+      "meanSamples": 43.583333333333336,
+      "changedDecisions": 25,
+      "changedPrunings": 25,
+      "pruningCalls": 46
+    },
+    "control": {
+      "games": 4,
+      "wins": 2,
+      "losses": 2,
+      "draws": 0,
+      "roleDecisions": 60,
+      "meanMs": 16674.517431299995,
+      "maxMs": 951180.569333,
+      "meanSamples": 41.2,
+      "changedDecisions": 0,
+      "changedPrunings": 0,
+      "pruningCalls": 0
+    }
+  }
+}
