@@ -12,7 +12,7 @@ engine.io and proxy-addr production dependency advisories were fixed in both roo
 
 ## Validation
 
-npm run check: 114 tests, 113 passed, 1 pre-existing private-font integration skip; lint/typecheck/build passed with the updated installed dependency tree. Production dependency audits for root and server report zero known advisories. No customer data was modified.
+npm run check: 116 tests, 115 passed, 1 pre-existing private-font integration skip; lint/typecheck/build passed with the updated installed dependency tree. Production dependency audits for root and server report zero known advisories. No customer data was modified.
 
 ## Deployment dependency
 
@@ -22,4 +22,4 @@ Backend expiry/dependency patch may ship independently. The local server env use
 
 ## Remaining boundary
 
-Contact submission has a per-socket rate limit, not a distributed account/IP abuse control. This does not expose contact records, but reconnect-based spam protection remains incomplete. Check the production proxy trust boundary before introducing an IP-based limit.
+Contact submission now reserves process-wide account, network-peer and global quotas before writing, preventing reconnect and concurrent-request bypass. Forwarded headers are not trusted. Shared proxies may share a network quota; limits are per server process, not a distributed anti-abuse service.

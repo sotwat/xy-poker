@@ -20,3 +20,22 @@ export function installSessionExpiry(socket, expiresAt, now = Date.now, schedule
     timer.unref?.();
     socket.once('disconnect', () => clearTimeout(timer));
 }
+
+export function createContactLimiter(now = Date.now) {
+    const buckets = new Map();
+    return (userId, address) => {
+        const time = now();
+        for (const [key, bucket] of buckets) {
+            if (bucket.until <= time) buckets.delete(key);
+        }
+        const limits = [['global', 60], [`ip:${address || 'unknown'}`, 5]];
+        if (userId) limits.push([`user:${userId}`, 1]);
+        if (limits.some(([key, limit]) => (buckets.get(key)?.count || 0) >= limit)) return false;
+        for (const [key] of limits) {
+            const bucket = buckets.get(key) || { count: 0, until: time + 60_000 };
+            bucket.count += 1;
+            buckets.set(key, bucket);
+        }
+        return true;
+    };
+}

@@ -1,4 +1,4 @@
-import { verifiedTokenExpiry, installSessionExpiry } from './session-security.js';
+import { verifiedTokenExpiry, installSessionExpiry, createContactLimiter } from './session-security.js';
 import express from 'express';
 import { createServer } from 'node:http';
 import path from 'node:path';
@@ -339,6 +339,8 @@ io.use(async (socket, next) => {
     }
 });
 
+const consumeContactQuota = createContactLimiter();
+
 io.on('connection', socket => {
     if (socket.data.authExpiresAt) installSessionExpiry(socket, socket.data.authExpiresAt);
     socket.data.rateWindowStartedAt = Date.now();
@@ -448,7 +450,9 @@ io.on('connection', socket => {
             }
             if (typeof contactInfo !== 'string' || contactInfo.length > 120) throw new Error('Invalid contact');
             if (typeof deviceInfo !== 'string' || deviceInfo.length > 200) throw new Error('Invalid device info');
-            if (Date.now() - (socket.data.lastContactAt || 0) < 60_000) throw new Error('Contact rate limit exceeded');
+            if (!consumeContactQuota(socket.data.userId, socket.handshake.address)) {
+                throw new Error('Contact rate limit exceeded');
+            }
 
             const userContact = contactInfo.trim()
                 || (socket.data.userId ? `User:${socket.data.userId}` : 'Anonymous');

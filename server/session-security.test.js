@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { verifiedTokenExpiry, installSessionExpiry } from './session-security.js';
+import { verifiedTokenExpiry, installSessionExpiry, createContactLimiter } from './session-security.js';
 const token = payload => `header.${Buffer.from(JSON.stringify(payload)).toString('base64url')}.signature`;
 test('rejects missing/invalid/expired token lifetime after identity verification', () => {
     for (const payload of [{}, { exp: '100' }, { exp: 1 }, { exp: 2 }]) {
@@ -22,4 +22,20 @@ test('existing socket cannot act after expiry even if timer is delayed', () => {
     disconnected = false;
     timer();
     assert.equal(disconnected, true);
+});
+
+test('contact quota survives reconnects and concurrent requests', () => {
+    let now = 0;
+    const consume = createContactLimiter(() => now);
+    assert.equal(consume('user', 'ip'), true);
+    assert.equal(consume('user', 'different-ip'), false);
+    for (let i = 0; i < 4; i++) assert.equal(consume(null, 'ip'), true);
+    assert.equal(consume(null, 'ip'), false);
+    now = 60_000;
+    assert.equal(consume('user', 'ip'), true);
+});
+test('contact global quota bounds anonymous address rotation', () => {
+    const consume = createContactLimiter(() => 0);
+    for (let i = 0; i < 60; i++) assert.equal(consume(null, `ip${i}`), true);
+    assert.equal(consume(null, 'another'), false);
 });
