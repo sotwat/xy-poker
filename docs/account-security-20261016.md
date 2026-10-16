@@ -23,3 +23,7 @@ Backend expiry/dependency patch may ship independently. The local server env use
 ## Remaining boundary
 
 Contact submission now reserves process-wide account, network-peer and global quotas before writing, preventing reconnect and concurrent-request bypass. Forwarded headers are not trusted. Shared proxies may share a network quota; limits are per server process, not a distributed anti-abuse service.
+
+## Registration regression found during browser testing
+
+BrowserOS neo registration with a disposable mailbox returned `Database error saving new user`. The deployed `handle_new_user` trigger still assigned every new account the same zero UUID browser_id, already present in the database. Migration v12 generates a fresh UUID per account and pins the security-definer search path; existing account records and privileges are unchanged. It was applied successfully in production on 2026-10-16. Retesting confirmed registration, delivery of the verification email, email confirmation, sign-in, private account statistics and the public ranking. The test account contains no personal information or purchases.
