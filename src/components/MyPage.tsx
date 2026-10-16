@@ -96,7 +96,7 @@ export const MyPage: React.FC<MyPageProps> = ({
 
                 if (activeTab === 'ranking') {
                     const { data, error } = await supabase
-                        .from('players')
+                        .from('public_players')
                         .select('id, rating, username')
                         .order('rating', { ascending: false })
                         .limit(50);

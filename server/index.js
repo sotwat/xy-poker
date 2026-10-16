@@ -1,3 +1,4 @@
+import { verifiedTokenExpiry, installSessionExpiry } from './session-security.js';
 import express from 'express';
 import { createServer } from 'node:http';
 import path from 'node:path';
@@ -330,6 +331,7 @@ io.use(async (socket, next) => {
             const { data: { user }, error } = await supabase.auth.getUser(token);
             if (error || !user) return next(new Error('Invalid authentication token'));
             socket.data.userId = user.id;
+            socket.data.authExpiresAt = verifiedTokenExpiry(token);
         }
         return next();
     } catch {
@@ -338,6 +340,7 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', socket => {
+    if (socket.data.authExpiresAt) installSessionExpiry(socket, socket.data.authExpiresAt);
     socket.data.rateWindowStartedAt = Date.now();
     socket.data.rateEventCount = 0;
 
