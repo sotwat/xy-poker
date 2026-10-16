@@ -16,7 +16,7 @@ npm run check: 116 tests, 115 passed, 1 pre-existing private-font integration sk
 
 ## Deployment dependency
 
-The database migration and matching ranking frontend MUST be deployed together. Supabase dashboard currently requires the owner to log in. Do not deploy the ranking client before the view exists. After SQL application verify: anonymous players read denied; public_players exposes exactly three fields; authenticated account reads only its own row; store and account page work.
+The database migration and matching ranking frontend MUST be deployed together. The owner logged into Supabase in the Codex browser and the migration was applied on 2026-10-16. Anonymous players reads now return 401/42501, public_players returns only id/username/rating, and a transaction under authenticated with a synthetic UID returned zero other accounts. Cloudflare Pages deployment 883076fc contains the matching client and licensed private lettering renderer. Do not deploy the ranking client before the view exists. After SQL application verify: anonymous players read denied; public_players exposes exactly three fields; authenticated account reads only its own row; store and account page work.
 
 Backend expiry/dependency patch may ship independently. The local server env uses an anon fallback, but production privileged-key configuration was not available for inspection; do not silently replace it or infer that production also uses that fallback.
 
