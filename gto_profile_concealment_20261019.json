@@ -1,0 +1,598 @@
+{
+  "kind": "posthoc-placement-concealment-partition-not-strength",
+  "source": "gto_profile_stages_20261018.json",
+  "sourceSha256": "225fefc363fd78aff2a22143b3d24c0ab0d9860d556797291bf0e23bc0b68ae4",
+  "scriptSha256": "46ce9d8c743c56e9fafe67a3d5ab437ab81e7d7b6d43c0f3b1c827a598c7250d",
+  "profiles": [
+    "A7",
+    "A6",
+    "A4",
+    "A3"
+  ],
+  "newGames": 0,
+  "newTerminalScores": 0,
+  "groups": [
+    {
+      "phase": "selection",
+      "seed": 100518501,
+      "worlds": 96,
+      "pairs": [
+        {
+          "a": 0,
+          "b": 1,
+          "same": 86,
+          "placement_only": 10,
+          "hidden_only": 0,
+          "both": 0,
+          "hiddenOnlyWorldIndices": []
+        },
+        {
+          "a": 0,
+          "b": 2,
+          "same": 84,
+          "placement_only": 12,
+          "hidden_only": 0,
+          "both": 0,
+          "hiddenOnlyWorldIndices": []
+        },
+        {
+          "a": 0,
+          "b": 3,
+          "same": 48,
+          "placement_only": 38,
+          "hidden_only": 8,
+          "both": 2,
+          "hiddenOnlyWorldIndices": [
+            1,
+            5,
+            26,
+            30,
+            51,
+            55,
+            73,
+            77
+          ]
+        },
+        {
+          "a": 1,
+          "b": 2,
+          "same": 94,
+          "placement_only": 2,
+          "hidden_only": 0,
+          "both": 0,
+          "hiddenOnlyWorldIndices": []
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "same": 52,
+          "placement_only": 34,
+          "hidden_only": 8,
+          "both": 2,
+          "hiddenOnlyWorldIndices": [
+            1,
+            5,
+            26,
+            30,
+            51,
+            55,
+            73,
+            77
+          ]
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "same": 54,
+          "placement_only": 32,
+          "hidden_only": 8,
+          "both": 2,
+          "hiddenOnlyWorldIndices": [
+            1,
+            5,
+            26,
+            30,
+            51,
+            55,
+            73,
+            77
+          ]
+        }
+      ],
+      "stages": [
+        {
+          "ply": 6,
+          "worlds": 32,
+          "pairs": [
+            {
+              "a": 0,
+              "b": 1,
+              "same": 30,
+              "placement_only": 2,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 2,
+              "same": 30,
+              "placement_only": 2,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 3,
+              "same": 8,
+              "placement_only": 14,
+              "hidden_only": 8,
+              "both": 2,
+              "hiddenOnlyWorldIndices": [
+                1,
+                5,
+                10,
+                14,
+                19,
+                23,
+                25,
+                29
+              ]
+            },
+            {
+              "a": 1,
+              "b": 2,
+              "same": 32,
+              "placement_only": 0,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 3,
+              "same": 8,
+              "placement_only": 14,
+              "hidden_only": 8,
+              "both": 2,
+              "hiddenOnlyWorldIndices": [
+                1,
+                5,
+                10,
+                14,
+                19,
+                23,
+                25,
+                29
+              ]
+            },
+            {
+              "a": 2,
+              "b": 3,
+              "same": 8,
+              "placement_only": 14,
+              "hidden_only": 8,
+              "both": 2,
+              "hiddenOnlyWorldIndices": [
+                1,
+                5,
+                10,
+                14,
+                19,
+                23,
+                25,
+                29
+              ]
+            }
+          ]
+        },
+        {
+          "ply": 14,
+          "worlds": 32,
+          "pairs": [
+            {
+              "a": 0,
+              "b": 1,
+              "same": 26,
+              "placement_only": 6,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 2,
+              "same": 24,
+              "placement_only": 8,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 3,
+              "same": 18,
+              "placement_only": 14,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 2,
+              "same": 30,
+              "placement_only": 2,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 3,
+              "same": 24,
+              "placement_only": 8,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 2,
+              "b": 3,
+              "same": 26,
+              "placement_only": 6,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            }
+          ]
+        },
+        {
+          "ply": 22,
+          "worlds": 32,
+          "pairs": [
+            {
+              "a": 0,
+              "b": 1,
+              "same": 30,
+              "placement_only": 2,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 2,
+              "same": 30,
+              "placement_only": 2,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 3,
+              "same": 22,
+              "placement_only": 10,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 2,
+              "same": 32,
+              "placement_only": 0,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 3,
+              "same": 20,
+              "placement_only": 12,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 2,
+              "b": 3,
+              "same": 20,
+              "placement_only": 12,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "seed": 100518502,
+      "worlds": 96,
+      "pairs": [
+        {
+          "a": 0,
+          "b": 1,
+          "same": 74,
+          "placement_only": 16,
+          "hidden_only": 0,
+          "both": 6,
+          "hiddenOnlyWorldIndices": []
+        },
+        {
+          "a": 0,
+          "b": 2,
+          "same": 74,
+          "placement_only": 16,
+          "hidden_only": 0,
+          "both": 6,
+          "hiddenOnlyWorldIndices": []
+        },
+        {
+          "a": 0,
+          "b": 3,
+          "same": 48,
+          "placement_only": 36,
+          "hidden_only": 6,
+          "both": 6,
+          "hiddenOnlyWorldIndices": [
+            2,
+            6,
+            25,
+            29,
+            72,
+            76
+          ]
+        },
+        {
+          "a": 1,
+          "b": 2,
+          "same": 96,
+          "placement_only": 0,
+          "hidden_only": 0,
+          "both": 0,
+          "hiddenOnlyWorldIndices": []
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "same": 64,
+          "placement_only": 26,
+          "hidden_only": 6,
+          "both": 0,
+          "hiddenOnlyWorldIndices": [
+            2,
+            6,
+            25,
+            29,
+            72,
+            76
+          ]
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "same": 64,
+          "placement_only": 26,
+          "hidden_only": 6,
+          "both": 0,
+          "hiddenOnlyWorldIndices": [
+            2,
+            6,
+            25,
+            29,
+            72,
+            76
+          ]
+        }
+      ],
+      "stages": [
+        {
+          "ply": 6,
+          "worlds": 32,
+          "pairs": [
+            {
+              "a": 0,
+              "b": 1,
+              "same": 26,
+              "placement_only": 4,
+              "hidden_only": 0,
+              "both": 2,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 2,
+              "same": 26,
+              "placement_only": 4,
+              "hidden_only": 0,
+              "both": 2,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 3,
+              "same": 12,
+              "placement_only": 12,
+              "hidden_only": 6,
+              "both": 2,
+              "hiddenOnlyWorldIndices": [
+                2,
+                6,
+                9,
+                13,
+                24,
+                28
+              ]
+            },
+            {
+              "a": 1,
+              "b": 2,
+              "same": 32,
+              "placement_only": 0,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 3,
+              "same": 14,
+              "placement_only": 12,
+              "hidden_only": 6,
+              "both": 0,
+              "hiddenOnlyWorldIndices": [
+                2,
+                6,
+                9,
+                13,
+                24,
+                28
+              ]
+            },
+            {
+              "a": 2,
+              "b": 3,
+              "same": 14,
+              "placement_only": 12,
+              "hidden_only": 6,
+              "both": 0,
+              "hiddenOnlyWorldIndices": [
+                2,
+                6,
+                9,
+                13,
+                24,
+                28
+              ]
+            }
+          ]
+        },
+        {
+          "ply": 14,
+          "worlds": 32,
+          "pairs": [
+            {
+              "a": 0,
+              "b": 1,
+              "same": 26,
+              "placement_only": 4,
+              "hidden_only": 0,
+              "both": 2,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 2,
+              "same": 26,
+              "placement_only": 4,
+              "hidden_only": 0,
+              "both": 2,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 3,
+              "same": 18,
+              "placement_only": 12,
+              "hidden_only": 0,
+              "both": 2,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 2,
+              "same": 32,
+              "placement_only": 0,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 3,
+              "same": 22,
+              "placement_only": 10,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 2,
+              "b": 3,
+              "same": 22,
+              "placement_only": 10,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            }
+          ]
+        },
+        {
+          "ply": 22,
+          "worlds": 32,
+          "pairs": [
+            {
+              "a": 0,
+              "b": 1,
+              "same": 22,
+              "placement_only": 8,
+              "hidden_only": 0,
+              "both": 2,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 2,
+              "same": 22,
+              "placement_only": 8,
+              "hidden_only": 0,
+              "both": 2,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 0,
+              "b": 3,
+              "same": 18,
+              "placement_only": 12,
+              "hidden_only": 0,
+              "both": 2,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 2,
+              "same": 32,
+              "placement_only": 0,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 1,
+              "b": 3,
+              "same": 28,
+              "placement_only": 4,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            },
+            {
+              "a": 2,
+              "b": 3,
+              "same": 28,
+              "placement_only": 4,
+              "hidden_only": 0,
+              "both": 0,
+              "hiddenOnlyWorldIndices": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
