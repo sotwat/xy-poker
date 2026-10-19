@@ -1,0 +1,6942 @@
+{
+  "kind": "local-information-invariance-not-strength",
+  "source": "gto_profile_stages_20261018.json",
+  "sourceSha256": "225fefc363fd78aff2a22143b3d24c0ab0d9860d556797291bf0e23bc0b68ae4",
+  "scriptSha256": "4536759a0e4f0f79c9c3195bdb1a91a23eb4b59d39ec87418ab274e7cb3a9fd3",
+  "startedUtc": "2026-10-19T08:15:21.902Z",
+  "endedUtc": "2026-10-19T08:15:22.204Z",
+  "groups": [
+    {
+      "phase": "selection",
+      "seed": 100518501,
+      "rows": [
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 56,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 60,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        }
+      ],
+      "mutations": 384,
+      "compared": 27776,
+      "changedScores": 0,
+      "changedHide": 0
+    },
+    {
+      "phase": "confirmation",
+      "seed": 100518502,
+      "rows": [
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 0,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 0,
+          "swap": 1,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 0,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 1,
+          "swap": 1,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 72,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 48,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 80,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "world": 0,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "world": 1,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "world": 2,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        },
+        {
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "world": 3,
+          "tests": [
+            {
+              "shift": 1,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 2,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 3,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            },
+            {
+              "shift": 4,
+              "positiveControl": true,
+              "compared": 64,
+              "changedScores": 0,
+              "changedHide": 0
+            }
+          ]
+        }
+      ],
+      "mutations": 384,
+      "compared": 28672,
+      "changedScores": 0,
+      "changedHide": 0
+    }
+  ]
+}
