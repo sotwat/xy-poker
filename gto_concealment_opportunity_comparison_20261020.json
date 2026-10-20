@@ -1,0 +1,118 @@
+{
+  "kind": "restricted-policy-interaction-not-quota-price",
+  "sourceHashes": {
+    "gto_concealment_continuation_20261019.json": "18b24281aafe8ae98382603536520670ccd0e6dab1d70663390c4aa12bcab73a",
+    "gto_concealment_opportunity_20261020.json": "2eb2e51154c2b0580dbcb0765e04ddb0bd16ed373a708ea7f2c5e7fddf4d6ffb",
+    "/Users/aaa/Documents/ChatGPT/XY\u30dd\u30fc\u30ab\u30fc/scripts/compare_concealment_opportunity.py": "a98c08a3cb2e7e245d4cd3794a22340767ec4a79dc1e09742995d0cf0a78d184"
+  },
+  "groups": [
+    {
+      "phase": "selection",
+      "seed": 100518501,
+      "pairs": 192,
+      "sumOldDelta": -6,
+      "sumNewDelta": -2,
+      "changedDelta": 10,
+      "oldWorseStillWorse": 4,
+      "oldWorseNowEqual": 4,
+      "oldWorseNowBetter": 0,
+      "oldNonworseNowWorse": 2,
+      "table": [
+        {
+          "oldDelta": -2,
+          "newDelta": -2,
+          "pairs": 4
+        },
+        {
+          "oldDelta": -2,
+          "newDelta": 0,
+          "pairs": 4
+        },
+        {
+          "oldDelta": 0,
+          "newDelta": -2,
+          "pairs": 2
+        },
+        {
+          "oldDelta": 0,
+          "newDelta": 0,
+          "pairs": 174
+        },
+        {
+          "oldDelta": 0,
+          "newDelta": 2,
+          "pairs": 2
+        },
+        {
+          "oldDelta": 1,
+          "newDelta": 1,
+          "pairs": 2
+        },
+        {
+          "oldDelta": 2,
+          "newDelta": 0,
+          "pairs": 2
+        },
+        {
+          "oldDelta": 2,
+          "newDelta": 2,
+          "pairs": 2
+        }
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "seed": 100518502,
+      "pairs": 288,
+      "sumOldDelta": 2,
+      "sumNewDelta": 16,
+      "changedDelta": 16,
+      "oldWorseStillWorse": 10,
+      "oldWorseNowEqual": 2,
+      "oldWorseNowBetter": 0,
+      "oldNonworseNowWorse": 0,
+      "table": [
+        {
+          "oldDelta": -2,
+          "newDelta": -2,
+          "pairs": 6
+        },
+        {
+          "oldDelta": -1,
+          "newDelta": -1,
+          "pairs": 4
+        },
+        {
+          "oldDelta": -1,
+          "newDelta": 0,
+          "pairs": 2
+        },
+        {
+          "oldDelta": 0,
+          "newDelta": 0,
+          "pairs": 254
+        },
+        {
+          "oldDelta": 0,
+          "newDelta": 1,
+          "pairs": 8
+        },
+        {
+          "oldDelta": 0,
+          "newDelta": 2,
+          "pairs": 4
+        },
+        {
+          "oldDelta": 2,
+          "newDelta": 0,
+          "pairs": 2
+        },
+        {
+          "oldDelta": 2,
+          "newDelta": 2,
+          "pairs": 8
+        }
+      ]
+    }
+  ]
+}
