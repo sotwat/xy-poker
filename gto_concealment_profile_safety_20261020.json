@@ -1,0 +1,3681 @@
+{
+  "kind": "finite-profile-concealment-comparison-not-safety-proof",
+  "startedUtc": "2026-10-20T09:55:42.172789+00:00",
+  "endedUtc": "2026-10-20T09:55:42.205392+00:00",
+  "absoluteDeadlineUtc": "2026-10-20T10:25:25+00:00",
+  "sourceHashes": {
+    "gto_concealment_continuation_20261019.json": "18b24281aafe8ae98382603536520670ccd0e6dab1d70663390c4aa12bcab73a",
+    "gto_concealment_opportunity_20261020.json": "2eb2e51154c2b0580dbcb0765e04ddb0bd16ed373a708ea7f2c5e7fddf4d6ffb",
+    "/Users/aaa/Documents/ChatGPT/XY\u30dd\u30fc\u30ab\u30fc/scripts/audit_concealment_profile_safety.py": "89012c8f6df73feeb5723591ef27b2aa9220df130d3e1bffd48456a6d937dfa6"
+  },
+  "groups": [
+    {
+      "source": "gto_concealment_continuation_20261019.json",
+      "phase": "selection",
+      "seed": 100518501,
+      "worlds": [
+        {
+          "rowIndex": 0,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            -2,
+            1
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            -2,
+            1
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 8,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 8,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            -2,
+            0,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 8,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 8,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 9,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 9,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            -2,
+            0,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 9,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 9,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        }
+      ],
+      "summary": {
+        "worlds": 48,
+        "classes": {
+          "equal": 36,
+          "hideNonworse": 4,
+          "publicNonworse": 6,
+          "conflict": 2
+        },
+        "positiveMeanWithLoss": 0
+      }
+    },
+    {
+      "source": "gto_concealment_continuation_20261019.json",
+      "phase": "confirmation",
+      "seed": 100518502,
+      "worlds": [
+        {
+          "rowIndex": 0,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 2,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            -2,
+            0,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 2,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 2,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 2,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 3,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            -2,
+            0,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 3,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 3,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 3,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            2,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            -2,
+            0,
+            0,
+            2
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            2,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            -2,
+            0,
+            0,
+            2
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            -1,
+            0
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": true
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            -1,
+            0
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": true
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 14,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -1
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 14,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 14,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -1
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 14,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 15,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -1
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 15,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 15,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -1
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 15,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 16,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 16,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 16,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 16,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 17,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 17,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 17,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 17,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 22,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 22,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 22,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 22,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 23,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 23,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 23,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 23,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        }
+      ],
+      "summary": {
+        "worlds": 72,
+        "classes": {
+          "equal": 54,
+          "hideNonworse": 6,
+          "publicNonworse": 8,
+          "conflict": 4
+        },
+        "positiveMeanWithLoss": 2
+      }
+    },
+    {
+      "source": "gto_concealment_opportunity_20261020.json",
+      "phase": "selection",
+      "seed": 100518501,
+      "worlds": [
+        {
+          "rowIndex": 0,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 8,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 8,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            -2,
+            0,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 8,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 8,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 9,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 9,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            -2,
+            0,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 9,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 9,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            -2,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            -2,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        }
+      ],
+      "summary": {
+        "worlds": 48,
+        "classes": {
+          "equal": 36,
+          "hideNonworse": 6,
+          "publicNonworse": 6,
+          "conflict": 0
+        },
+        "positiveMeanWithLoss": 0
+      }
+    },
+    {
+      "source": "gto_concealment_opportunity_20261020.json",
+      "phase": "confirmation",
+      "seed": 100518502,
+      "worlds": [
+        {
+          "rowIndex": 0,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            1,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 0,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            1,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 1,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 2,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            -2,
+            0,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 2,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 2,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 2,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 3,
+          "worldIndex": 0,
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            -2,
+            0,
+            0
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 3,
+          "worldIndex": 1,
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 3,
+          "worldIndex": 2,
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 3,
+          "worldIndex": 3,
+          "deal": 0,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            -2,
+            0,
+            0,
+            2
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 6,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 0,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 1,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            -2,
+            0,
+            0,
+            2
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 2,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 7,
+          "worldIndex": 3,
+          "deal": 1,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            -1,
+            0
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": true
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 12,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            -1,
+            0
+          ],
+          "classification": "conflict",
+          "positiveMeanWithLoss": true
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 13,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 14,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 14,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 14,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -1
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 14,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 15,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 15,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -2
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 15,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            -1
+          ],
+          "classification": "publicNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 15,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 16,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 16,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 16,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 16,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 17,
+          "worldIndex": 0,
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 17,
+          "worldIndex": 1,
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 17,
+          "worldIndex": 2,
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 17,
+          "worldIndex": 3,
+          "deal": 2,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            1,
+            1,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 18,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            1,
+            1,
+            0
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 19,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 6,
+          "deltas": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "classification": "hideNonworse",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 20,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 21,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 14,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 22,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 22,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 22,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 22,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 0,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 23,
+          "worldIndex": 0,
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 23,
+          "worldIndex": 1,
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 23,
+          "worldIndex": 2,
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        },
+        {
+          "rowIndex": 23,
+          "worldIndex": 3,
+          "deal": 3,
+          "swap": 1,
+          "ply": 22,
+          "deltas": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "classification": "equal",
+          "positiveMeanWithLoss": false
+        }
+      ],
+      "summary": {
+        "worlds": 72,
+        "classes": {
+          "equal": 50,
+          "hideNonworse": 12,
+          "publicNonworse": 6,
+          "conflict": 4
+        },
+        "positiveMeanWithLoss": 2
+      }
+    }
+  ]
+}
