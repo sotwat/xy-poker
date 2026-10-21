@@ -1,5 +1,6 @@
 import React from 'react';
 import type { GameState } from '../logic/types';
+import { LetteringText } from './LetteringText';
 import { PremiumBadge } from './PremiumBadge';
 import { AnimatedScore } from './AnimatedScore';
 import './GameInfo.css';
@@ -10,6 +11,8 @@ interface GameInfoProps {
     isOnlineMode?: boolean;
     playerRole?: 'host' | 'guest' | null;
     playerName?: string;
+    playerTitle?: string;
+    opponentTitle?: string;
     opponentName?: string;
     onSurrender?: () => void;
     isPremium?: boolean; // Prop named isPremium to match App.tsx usage
@@ -22,6 +25,8 @@ export const GameInfo: React.FC<GameInfoProps> = ({
     isOnlineMode = false,
     playerRole = null,
     playerName = 'Player 1',
+    playerTitle,
+    opponentTitle,
     opponentName = 'Player 2',
     onSurrender,
     isPremium = false,
@@ -93,14 +98,14 @@ export const GameInfo: React.FC<GameInfoProps> = ({
             <div className="scores">
                 <div className="player-score-row player-1">
                     <div className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
-                        <span className="score-player-name"><i aria-hidden="true" />{p1Name} {((myIndex === 0 && isPremium) || p1.isPremium) && <PremiumBadge />}</span>
+                        <span className="score-player-name"><i aria-hidden="true" /><span className="score-name-copy">{p1Name}{(myIndex === 0 ? playerTitle : opponentTitle) && <small className="player-title"><LetteringText>{(myIndex === 0 ? playerTitle : opponentTitle)!}</LetteringText></small>}</span> {((myIndex === 0 && isPremium) || p1.isPremium) && <PremiumBadge />}</span>
                         <span className="score-total"><AnimatedScore value={p1.score} className="score-number" /><small>pt</small></span>
                     </div>
                     <span className="bonus-item">{t('gameInfo.bonus', { count: p1.bonusesClaimed })}</span>
                 </div>
                 <div className="player-score-row player-2">
                     <div className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
-                        <span className="score-player-name"><i aria-hidden="true" />{p2Name} {((myIndex === 1 && isPremium) || p2.isPremium) && <PremiumBadge />}</span>
+                        <span className="score-player-name"><i aria-hidden="true" /><span className="score-name-copy">{p2Name}{(myIndex === 1 ? playerTitle : opponentTitle) && <small className="player-title"><LetteringText>{(myIndex === 1 ? playerTitle : opponentTitle)!}</LetteringText></small>}</span> {((myIndex === 1 && isPremium) || p2.isPremium) && <PremiumBadge />}</span>
                         <span className="score-total"><AnimatedScore value={p2.score} className="score-number" /><small>pt</small></span>
                     </div>
                     <span className="bonus-item">{t('gameInfo.bonus', { count: p2.bonusesClaimed })}</span>

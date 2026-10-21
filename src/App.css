@@ -2138,3 +2138,7 @@ body {
 .skin-store-modal .skin-name { font-size: 12px; line-height: 1.4; text-wrap: balance; }
 .skin-store-modal .lock-icon { width: 13px; height: 13px; color: var(--text-muted); }
 .skin-store-modal .check-icon svg { width: 14px; height: 14px; }
+
+.board-theme-earned-champion { background: #152c38 !important; border-color: #b6a36c !important; }
+.board-theme-earned-veteran { background: #263f38 !important; border-color: #7faaa0 !important; }
+.player-title { display: block; color: var(--text-secondary); font-size: .65rem; line-height: 1.4; }

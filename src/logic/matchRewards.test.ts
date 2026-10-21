@@ -7,6 +7,8 @@ import { createDeck, shuffleDeck } from './deck';
 import { beginGameRecording, captureGameRecordMoves, finalizeGameRecord } from './gameRecord';
 import { evaluateYHandForAchievement, evaluateXHandForAchievement, getGameRecordAchievementTypes } from '../../server/game-utils.js';
 import { scoreMatch, verifyRewardRecord } from '../../server/match-rewards.js';
+import { ACHIEVEMENT_TYPES } from './achievements';
+import { levelReward } from './progression';
 import { advancedAchievements, awardGuestMatch, getGuestGameAchievements, type MatchRewards } from './matchRewards';
 
 export function playedMatch(starter: 0 | 1 = 0, hidden = false) {
@@ -56,7 +58,8 @@ test('guest rewards persist once, reset streak on defeat, and award recurring th
     const {record} = playedMatch();
     const win = {...record,winner:'p1' as const,scores:[20,10] as [number,number]};
     const first=awardGuestMatch(win);
-    assert.equal(first.coins.change,50);
+    assert.equal(first.coins.change,50 + (first.breakdown.achievement ?? 0) + (first.breakdown.levelUp ?? 0));
+    assert.ok(first.achievementRewards!.some(a => a.id === 'first_win' && a.coins === 50 && a.xp === 100));
     assert.deepEqual(awardGuestMatch(win),first);
     const second=awardGuestMatch({...win,id:randomUUID()});
     assert.equal(second.breakdown.streak,5);
@@ -66,7 +69,7 @@ test('guest rewards persist once, reset streak on defeat, and award recurring th
     assert.ok(third.unlocked.includes('win_streak_3'));
     const loss=awardGuestMatch({...win,id:randomUUID(),winner:'p2'});
     assert.equal(loss.after.currentWinStreak,0);
-    assert.equal(loss.coins.change,10);
+    assert.equal(loss.coins.change,10 + (loss.breakdown.levelUp ?? 0));
     assert.equal(loss.xp.change,40);
     assert.equal(loss.breakdown.margin,0);
 });
@@ -90,9 +93,9 @@ test('level coins include milestones and every crossed level, once per match', (
     Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:(k:string)=>values.get(k)??null,setItem:(k:string,v:string)=>values.set(k,v)}});
     const {record} = playedMatch();
     const loss = {...record,winner:'p2' as const};
-    for (const [level,xp,expectedLevel,bonus] of [[1,149,2,100],[4,1199,5,300],[5,1200,5,0],[4,5000,10,1000]]) {
+    for (const [level,xp,expectedLevel,bonus] of [[1,149,2,100],[4,1199,5,450],[5,1200,5,0],[4,5000,10,2650]]) {
         values.clear();
-        values.set('xypoker_guest_progress',JSON.stringify({stats:{gamesPlayed:0,wins:0,currentWinStreak:0},xp,level,rating:1500,achievements:[],receipts:[]}));
+        values.set('xypoker_guest_progress',JSON.stringify({stats:{gamesPlayed:0,wins:0,currentWinStreak:0},xp,level,rating:1500,achievements:ACHIEVEMENT_TYPES,receipts:[]}));
         values.set('xypoker_guest_coins','50');
         const receipt=awardGuestMatch(loss);
         assert.equal(receipt.level.new,expectedLevel);
@@ -103,4 +106,12 @@ test('level coins include milestones and every crossed level, once per match', (
         assert.deepEqual(awardGuestMatch(loss),receipt);
         assert.equal(values.get('xypoker_guest_coins'),String(60+bonus));
     }
+});
+
+ test('level rewards grow at each ordinary level and retain milestone bonuses', () => {
+    assert.equal(levelReward(1,2),100);
+    assert.equal(levelReward(2,3),150);
+    assert.equal(levelReward(4,5),450);
+    assert.equal(levelReward(9,10),700);
+    assert.equal(levelReward(4,10),2650);
 });
