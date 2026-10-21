@@ -101,7 +101,13 @@ def main():
     parser.add_argument("--keep-recent", type=int, default=5, help="Keep most recent N checkpoints")
     parser.add_argument("--protected", nargs="*", default=["model-00002.pt"], help="Protected checkpoint filenames")
     parser.add_argument("--adopt-pid", type=int, default=0, help="PID of already running training process to adopt")
+    parser.add_argument("--a9-every", type=int, default=2000, help="Self-play games between A9 tests")
+    parser.add_argument("--a9-pairs", type=int, default=50, help="Seat-swapped deals per A9 test")
     args = parser.parse_args()
+    if args.a9_every < 1 or args.a9_pairs < 1:
+        parser.error("A9 evaluation interval and pairs must be positive")
+    from scheduled_evaluation import next_action
+    from train import load_checkpoint
 
     workdir = Path.cwd()
     output_dir = (workdir / args.output).resolve()
@@ -190,6 +196,8 @@ def main():
             if pruned:
                 log_event(supervisor_log_file, "pruned_checkpoints", count=len(pruned), files=pruned)
 
+            saved = load_checkpoint(output_dir / "latest.pt")
+            action, amount = next_action(output_dir, args.a9_every, saved)
             # Start training session
             python_bin = workdir / ".venv-selfplay" / "bin" / "python"
             train_script = workdir / "selfplay" / "train.py"
@@ -198,7 +206,7 @@ def main():
                 str(python_bin), str(train_script), "train",
                 "--output", str(output_dir),
                 "--resume",
-                "--iterations", str(args.iterations),
+                "--iterations", str(min(args.iterations, amount)),
                 "--games", str(args.games),
                 "--simulations", str(args.simulations),
                 "--steps", str(args.steps),
@@ -206,7 +214,16 @@ def main():
                 "--minutes", str(args.minutes)
             ]
 
-            log_event(supervisor_log_file, "launching_session", command=" ".join(cmd))
+            if action == 'evaluate':
+                cmd = ["nice", "-n", "10", str(python_bin),
+                       str(workdir / "selfplay" / "scheduled_evaluation.py"),
+                       "--output", str(output_dir), "--milestone", str(amount),
+                       "--pairs", str(args.a9_pairs), "--simulations", str(args.simulations),
+                       "--minutes", str(args.minutes)]
+                log_event(supervisor_log_file, "a9_evaluation_scheduled", milestone=amount,
+                          pairs=args.a9_pairs, training_games=saved['total_games'])
+            del saved
+            log_event(supervisor_log_file, "launching_session", kind=action, command=" ".join(cmd))
             with continuation_log_file.open("a", encoding="utf-8") as stdout_f:
                 current_child = subprocess.Popen(
                     cmd,
