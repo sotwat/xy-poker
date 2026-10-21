@@ -29,6 +29,22 @@ npm run selfplay:train -- --output .selfplay/my-ai --minutes 30 --resume
 
 再開時は学習設定を揃えます。`--iterations` は再開後に追加する世代数です。世代途中で終わった場合は残りの対局から進みます。実行中の対局は破棄し、同じ配札・乱数でやり直します。学習更新中に停止した場合も更新前へ戻して保存します。完了した対局と直前までの世代は失いません。
 
+## 継続監督と停止
+
+30分枠ごとの安全保存と再開を自動で繰り返します。既存の学習PIDがあれば引き継ぎ、空き容量不足や連続3回のエラーで安全停止します。基準モデル（`model-00002.pt`）、最新世代、10世代ごとの節目モデルを保持し、古い中間世代を整理します。
+
+```sh
+npm run selfplay:supervise -- --output .selfplay/final-verification --minutes 30
+```
+
+停止方法：
+
+```sh
+npm run selfplay:stop -- .selfplay/final-verification
+```
+
+または出力先に `stop.flag` を作成します。実行中のセッションが安全に保存されて終了します。
+
 短い動作確認：
 
 ```sh
