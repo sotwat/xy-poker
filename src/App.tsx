@@ -18,7 +18,7 @@ import { Lobby } from './components/Lobby';
 import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { TurnTimer } from './components/TurnTimer';
 import type { PopupData } from './components/ShowdownPopup';
-import { updatePlayerStats } from './logic/gamification';
+import { awardGuestMatch, type MatchRewards } from './logic/matchRewards';
 import { socket, connectSocket } from './logic/online';
 import { QUICK_MATCH_BOT_FALLBACK_MS, QUICK_MATCH_BOT_FALLBACK_SECONDS } from './logic/matchmaking';
 import {
@@ -30,6 +30,7 @@ import {
   saveLocalGameRecord,
   type ActiveGameRecording,
   type GameRecordMode,
+  type GameRecordData,
   type PendingGameRecordThought,
 } from './logic/gameRecord';
 import { supabase, updateGlobalAiParameters } from './supabase';
@@ -76,6 +77,7 @@ import './Table.css';
 import './Angular.css';
 import './Palette.css';
 
+const ForfeitResult = lazy(() => import('./components/GameResult').then(module => ({ default: module.ForfeitResult })));
 const GameResult = lazy(() => import('./components/GameResult').then(module => ({ default: module.GameResult })));
 const SkinStore = lazy(() => import('./components/SkinStore').then(module => ({ default: module.SkinStore })));
 const ContactForm = lazy(() => import('./components/ContactForm'));
@@ -97,6 +99,7 @@ interface RatingUpdates {
 
 interface GameStartPayload {
   roomId: string;
+  matchId: string;
   initialDice: number[];
   initialDeck: Card[];
   p1Name: string;
@@ -127,7 +130,7 @@ type FullscreenElement = HTMLElement & {
   webkitRequestFullscreen?: () => Promise<void> | void;
 };
 
-const SKIN_EXPIRY_MS = 3 * 60 * 60 * 1000;
+
 
 const HOME_CARDS: Card[] = [
   { id: 'home-10', rank: 10, suit: 'clubs' },
@@ -147,45 +150,9 @@ function readStoredJson<T>(key: string, fallback: T): T {
   }
 }
 
-function loadSkins<T extends string>(storageKey: string, timeKey: string, defaults: T[]): T[] {
-  const storedSkins = readStoredJson<unknown>(storageKey, defaults);
-  const skins = Array.isArray(storedSkins) ? storedSkins.filter((skin): skin is T => typeof skin === 'string') : defaults;
-  const storedTimes = readStoredJson<unknown>(timeKey, {});
-  const times = storedTimes && typeof storedTimes === 'object' ? storedTimes as Record<string, number> : {};
-
-  const now = Date.now();
-  let hasChanges = false;
-  const nextSkins: T[] = [];
-  const nextTimes = { ...times };
-
-  skins.forEach(skin => {
-    if (defaults.includes(skin)) {
-      nextSkins.push(skin);
-      return;
-    }
-
-    if (!nextTimes[skin]) {
-      nextTimes[skin] = now;
-      hasChanges = true;
-    }
-
-    if (now - nextTimes[skin] < SKIN_EXPIRY_MS) {
-      nextSkins.push(skin);
-    } else {
-      delete nextTimes[skin];
-      hasChanges = true;
-    }
-  });
-
-  defaults.forEach(defaultSkin => {
-    if (!nextSkins.includes(defaultSkin)) nextSkins.push(defaultSkin);
-  });
-
-  if (hasChanges) {
-    localStorage.setItem(storageKey, JSON.stringify(nextSkins));
-    localStorage.setItem(timeKey, JSON.stringify(nextTimes));
-  }
-  return nextSkins;
+function loadSkins<T extends string>(storageKey: string, _timeKey: string, defaults: T[]): T[] {
+  const stored = readStoredJson<unknown>(storageKey, defaults);
+  return [...new Set([...defaults, ...(Array.isArray(stored) ? stored.filter((s): s is T => typeof s === 'string') : [])])];
 }
 
 function loadSelectedSkin<T extends string>(key: string, defaultSkin: T, unlockedList: T[]): T {
@@ -196,14 +163,15 @@ function loadSelectedSkin<T extends string>(key: string, defaultSkin: T, unlocke
 function unlockSkinGeneric<T extends string>(
   skinId: T,
   currentList: T[],
-  setList: (list: T[]) => void,
+  setList: React.Dispatch<React.SetStateAction<T[]>>,
   listKey: string,
   timeKey: string,
   setSelected: (skin: T) => void,
   selectedKey: string,
 ) {
-  const nextUnlocked = Array.from(new Set([...currentList, skinId]));
-  setList(nextUnlocked);
+  const persisted = readStoredJson<T[]>(listKey, currentList);
+  const nextUnlocked = Array.from(new Set([...persisted, ...currentList, skinId]));
+  setList(previous => Array.from(new Set([...previous, ...nextUnlocked])));
   localStorage.setItem(listKey, JSON.stringify(nextUnlocked));
 
   const currentTimes = readStoredJson<Record<string, number>>(timeKey, {});
@@ -250,6 +218,14 @@ function App() {
 
   // Rating State
   const [myRating, setMyRating] = useState<number | null>(null);
+  const [matchRewards, setMatchRewards] = useState<MatchRewards | null>(null);
+  const [rewardError, setRewardError] = useState(false);
+  const [forfeitWon, setForfeitWon] = useState<boolean | null>(null);
+  useEffect(() => {
+    if ((phase !== 'ended' && forfeitWon === null) || matchRewards || rewardError) return;
+    const timeout = window.setTimeout(() => setRewardError(true), 15000);
+    return () => window.clearTimeout(timeout);
+  }, [phase, forfeitWon, matchRewards, rewardError]);
   const [ratingUpdates, setRatingUpdates] = useState<RatingUpdates | null>(null);
   const [isBotDisguise, setIsBotDisguise] = useState(false);
   const processedGameRef = useRef<string | null>(null); // Guard for scoring animation
@@ -441,13 +417,46 @@ function App() {
   const lastActionTimeRef = useRef<number>(0);
   const isAIActingRef = useRef<boolean>(false); // Guard against double AI moves
   const isProAutoActingRef = useRef<boolean>(false);
+  const activeRewardIdRef = useRef<string | null>(null);
   const localGameTokenRef = useRef<string | null>(null);
+  const localStartInFlightRef = useRef(false);
+  const pendingRewardRecordRef = useRef<GameRecordData | null>(null);
+  const retryRewards = () => {
+    const matchId = activeRewardIdRef.current;
+    if (!matchId || !socket.connected) { setRewardError(true); return; }
+    setRewardError(false);
+    socket.timeout(15000).emit('get_match_rewards', { matchId }, (error: Error | null, response: { rewards?: MatchRewards }) => {
+      if (activeRewardIdRef.current !== matchId) return;
+      if (response?.rewards) { setMatchRewards(response.rewards); return; }
+      const record = pendingRewardRecordRef.current;
+      if (error || !record || record.mode !== 'bot') { setRewardError(true); return; }
+      socket.timeout(15000).emit('save_game_record', { record, gameToken: localGameTokenRef.current }, (err: Error | null, res: { rewards?: MatchRewards }) => {
+        if (activeRewardIdRef.current !== matchId) return;
+        if (res?.rewards) setMatchRewards(res.rewards);
+        setRewardError(Boolean(err || !res?.rewards));
+      });
+    });
+  };
 
-  const beginTrackedLocalGame = useCallback(() => {
+  const beginTrackedLocalGame = useCallback(async () => {
+    const requestId = quickMatchRequestRef.current;
+    pendingRewardRecordRef.current = null;
     localGameTokenRef.current = null;
-    if (!dbPlayerId || !socket.connected) return;
-    socket.emit('start_local_game', {}, (response: { success: boolean; token?: string }) => {
-      if (response.success && response.token) localGameTokenRef.current = response.token;
+    activeRewardIdRef.current = null;
+    setMatchRewards(null);
+    setRewardError(false);
+    if (!dbPlayerId || !socket.connected) return undefined;
+    return new Promise<{ initialDeck: Card[]; initialDice: number[]; startingPlayer: number } | undefined>((resolve) => {
+      let settled = false;
+      const timeout = window.setTimeout(() => { settled = true; setRewardError(true); resolve(undefined); }, 10000);
+      socket.emit('start_local_game', {}, (response: { success: boolean; token?: string; initialDeck: Card[]; initialDice: number[]; startingPlayer: number }) => {
+        if (settled) return;
+        if (requestId !== quickMatchRequestRef.current) { window.clearTimeout(timeout); settled = true; resolve(undefined); return; }
+        settled = true;
+        window.clearTimeout(timeout);
+        if (response.success && response.token) { localGameTokenRef.current = response.token; activeRewardIdRef.current = response.token; resolve(response); }
+        else resolve(undefined);
+      });
     });
   }, [dbPlayerId]);
 
@@ -516,7 +525,7 @@ function App() {
 
     socket.on('game_start', (data: GameStartPayload) => {
       const {
-        roomId, initialDice, initialDeck, p1Name, p2Name, p1Id, p2Id,
+        roomId, matchId, initialDice, initialDeck, p1Name, p2Name, p1Id, p2Id,
         isRanked, p1IsPremium, p2IsPremium, startingPlayer, showdownVoices
       } = data;
 
@@ -526,6 +535,10 @@ function App() {
         quickMatchTimeoutRef.current = null;
       }
 
+      activeRewardIdRef.current = matchId;
+      setForfeitWon(null);
+      setMatchRewards(null);
+      setRewardError(false);
       setMode('online');
       setRoomId(roomId);
       setIsQuickMatch(false); // Clear quick match status
@@ -576,6 +589,12 @@ function App() {
       }
     });
 
+    socket.on('match_rewards', (rewards: MatchRewards) => {
+      if (rewards.matchId !== activeRewardIdRef.current) return;
+      setMatchRewards(rewards);
+      setRewardError(false);
+    });
+
     socket.on('rating_update', (updates: RatingUpdates) => {
       setRatingUpdates(updates);
 
@@ -591,28 +610,10 @@ function App() {
       dispatch(action);
     });
 
-    socket.on('game_end_surrender', () => {
-      // Ignore if we are in local mode (bot match)
+    socket.on('game_end_surrender', ({ winner }: { winner: 'p1' | 'p2' }) => {
       if (modeRef.current === 'local') return;
-
-      // Handle surrender ending the game
-
-      // Return to lobby after 1 second (showing winner briefly)
-      setTimeout(() => {
-        // Reset all state at once using functional updates
-        setMode(() => 'online');
-        setRoomId(() => null);
-        setPlayerRole(() => null);
-        setIsOnlineGame(() => false);
-        setIsQuickMatch(() => false);
-        setOpponentName(() => 'Player 2');
-        setRatingUpdates(null); // Clear rating updates
-        setRematchRequested(false);
-        setRematchInvited(false);
-
-        // Reset game state to initial
-        dispatch({ type: 'SYNC_STATE', payload: INITIAL_GAME_STATE });
-      }, 1000);
+      const myWinner = playerRoleRef.current === 'guest' ? 'p2' : 'p1';
+      setForfeitWon(winner === myWinner);
     });
 
     socket.on('player_left', () => {
@@ -640,6 +641,7 @@ function App() {
       socket.off('game_start');
       socket.off('player_data'); // Clean up
       socket.off('rating_update');
+      socket.off('match_rewards');
       socket.off('player_joined');
       socket.off('sync_state');
       socket.off('request_sync');
@@ -873,11 +875,17 @@ function App() {
     if (!record) return;
 
     saveLocalGameRecord(record);
+    pendingRewardRecordRef.current = record;
     if (dbPlayerId && socket.connected) {
-      socket.emit('save_game_record', { record }, (response: { success?: boolean; error?: string }) => {
-        if (!response?.success) console.error('Unable to save cloud game record:', response?.error);
+      const rewardId = activeRewardIdRef.current;
+      socket.timeout(15000).emit('save_game_record', { record, gameToken: localGameTokenRef.current }, (error: Error | null, response: { success?: boolean; error?: string; rewards?: MatchRewards }) => {
+        if (activeRewardIdRef.current !== rewardId) return;
+        if (error || !response?.success) { console.error('Unable to save cloud game record:', response?.error); setRewardError(true); }
+        if (response?.rewards) setMatchRewards(response.rewards);
       });
-    }
+    } else if (!dbPlayerId && mode === 'local') {
+      window.setTimeout(() => setMatchRewards(awardGuestMatch(record)), 0);
+    } else window.setTimeout(() => setRewardError(true), 0);
   }, [dbPlayerId, gameState, isOnlineGame, isRankedGame, mode, p1DisplayName, p2DisplayName, phase, playerRole]);
 
   const announceTurnOrder = useEffectEvent(() => {
@@ -1105,19 +1113,7 @@ function App() {
           updateGlobalAiParameters(aiWon, isDraw, gameToken);
         }
 
-        // Update Gamification Stats (Only if logged in and I am Player 1 against AI)
-        if (dbPlayerId && gameToken) {
-          let resultStr: 'win' | 'loss' | 'draw' = 'draw';
-          if (!aiWon && !isDraw) resultStr = 'win';
-          else if (aiWon) resultStr = 'loss';
 
-          updatePlayerStats(dbPlayerId, resultStr, gameToken).then(res => {
-            if (res?.leveledUp) {
-              alert(t('game.levelUp', { level: res.newLevel ?? '' }));
-            }
-          });
-        }
-        localGameTokenRef.current = null;
       }
     }
   }, [dbPlayerId, gameState, isBotDisguise, mode, opponentName, phase, roomId, t, triggerShowdownSequence]);
@@ -1186,20 +1182,27 @@ function App() {
     };
   }, [currentPlayerIndex, handleAutoPlay, phase, showDiceAnimation]);
 
-  const handleStartGame = () => {
+  const handleStartGame = async () => {
+    if (localStartInFlightRef.current) return;
+    localStartInFlightRef.current = true;
+    const requestId = ++quickMatchRequestRef.current;
     playClickSound();
     warmupAudio(); // Resume AudioContext
     beginShowdownVoiceMatch();
 
+    let trackedDeal;
     // Explicitly reset disguise for manual local starts (e.g. from Setup screen)
     if (mode === 'local') {
-      beginTrackedLocalGame();
+      trackedDeal = await beginTrackedLocalGame();
+      localStartInFlightRef.current = false;
+      if (requestId !== quickMatchRequestRef.current) return;
       setIsBotDisguise(false);
       setOpponentName('AI');
 
     }
 
-    dispatch({ type: 'START_GAME' });
+    localStartInFlightRef.current = false;
+    dispatch({ type: 'START_GAME', payload: trackedDeal });
     setIsTossingCoin(false);
     setTossResult(null);
     setTurnSelectionTimeLeft(null);
@@ -1211,13 +1214,14 @@ function App() {
     setCurrentShowdownPopup(null);
   };
 
-  const startBotMatch = () => {
-    quickMatchRequestRef.current += 1;
+  const startBotMatch = async () => {
+    const requestId = ++quickMatchRequestRef.current;
     if (quickMatchTimeoutRef.current) {
       clearTimeout(quickMatchTimeoutRef.current);
       quickMatchTimeoutRef.current = null;
     }
-    beginTrackedLocalGame();
+    const trackedDeal = await beginTrackedLocalGame();
+    if (quickMatchRequestRef.current !== requestId) return;
     beginShowdownVoiceMatch();
 
     // Get current roomId using ref
@@ -1245,7 +1249,7 @@ function App() {
     // Slight delay to allow state updates before starting
     setTimeout(() => {
       playSuccessSound();
-      dispatch({ type: 'START_GAME' });
+      dispatch({ type: 'START_GAME', payload: trackedDeal });
       setIsTossingCoin(false);
       setTossResult(null);
       setTurnSelectionTimeLeft(null);
@@ -1884,7 +1888,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v10051618</LetteringText></div>
+                          <div className="home-version"><LetteringText>v10212015</LetteringText></div>
                         </div>
                       </div>
                     )}
@@ -2175,12 +2179,16 @@ function App() {
           localStorage.setItem('xypoker_playerName_v2', newName);
         }}
       />}
-      {phase === 'ended' && showResultsModal && (
+      {forfeitWon !== null && <ForfeitResult won={matchRewards ? matchRewards.result === 'win' : forfeitWon} rewards={matchRewards} error={rewardError} onRetry={retryRewards} onClose={() => { setForfeitWon(null); returnToHome(); }} />}
+      {phase === 'ended' && showResultsModal && forfeitWon === null && (
         <GameResult
           gameState={gameState}
           p1Name={p1DisplayName}
           p2Name={p2DisplayName}
           ratingUpdates={ratingUpdates}
+          rewards={matchRewards}
+          onRetryRewards={retryRewards}
+          rewardError={rewardError}
           onRestart={handleRestart}
           onViewBoard={() => setShowResultsModal(false)}
           backLabel={mode === 'online' ? t('game.backLobby') : t('game.backHome')}

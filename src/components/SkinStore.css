@@ -684,3 +684,6 @@
 
 .skin-store-modal .gacha-option { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px; }
 .skin-store-modal .gacha-label { margin: 0; }
+.skin-buy-price { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; margin-top: 8px; color: var(--text-secondary); }
+.purchase-error { color: var(--text-primary); font-size: 13px; }
+.skin-item.locked { cursor: pointer; }

@@ -277,7 +277,7 @@ export function evaluateYHandForAchievement(cards) {
     }
 
     if (isStraight) return { type: 'Straight', rankValue: 3, kickers: [straightHigh] };
-    if (isPair) return { type: 'OnePair', rankValue: 2, kickers: [ranks[0], ranks[1]] };
+    if (isPair) return { type: 'OnePair', rankValue: 2, kickers: [cards[0].rank, cards[1].rank] };
     return { type: 'HighCard', rankValue: 1, kickers: sortedRanks };
 }
 
@@ -309,7 +309,7 @@ export function evaluateXHandForAchievement(cards) {
     if (isFlush && isStraight && ranks[0] === 10 && ranks[4] === 14) {
         type = 'RoyalFlush'; kickers = [];
     } else if (isFlush && isStraight) {
-        type = 'StraightFlush'; kickers = [ranks[4]];
+        type = 'StraightFlush'; kickers = [isWheel ? 5 : ranks[4]];
     } else if (countValues[0] === 4) {
         const fourRank = [...counts].find(([, count]) => count === 4)[0];
         const kicker = [...counts].find(([, count]) => count === 1)[0];

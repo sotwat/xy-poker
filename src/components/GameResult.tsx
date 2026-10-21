@@ -1,4 +1,7 @@
+import { LetteringText } from './LetteringText';
 import { Modal } from './Modal';
+import { MatchRewards } from './MatchRewards';
+import type { MatchRewards as Rewards } from '../logic/matchRewards';
 import React, { useState, useEffect } from 'react';
 import type { GameState, Card } from '../logic/types';
 import { evaluateYHand, evaluateXHand } from '../logic/evaluation';
@@ -9,6 +12,9 @@ import { useI18n } from '../i18n';
 
 interface GameResultProps {
     gameState: GameState;
+    rewards?: Rewards | null;
+    rewardError?: boolean;
+    onRetryRewards?: () => void;
     onRestart: () => void;
     onClose: () => void;
     onViewBoard: () => void; // New prop
@@ -29,7 +35,7 @@ export const GameResult: React.FC<GameResultProps> = ({
     backLabel,
     p1Name = 'Player 1',
     p2Name = 'Player 2',
-    ratingUpdates
+    ratingUpdates, rewards, rewardError, onRetryRewards
 }) => {
     const { t, handName } = useI18n();
     const { players, winner } = gameState;
@@ -137,6 +143,7 @@ export const GameResult: React.FC<GameResultProps> = ({
     return (
         <Modal className="game-result-overlay" label={t('game.showDetails')} onClose={onViewBoard}>
             <div className="game-result-modal">
+                <div className="result-scroll">
                 <div className={`winner-announcement winner-${winner ?? 'draw'}`}>
                     {winner === 'draw' ? (
                         <span className="draw-text">{t('result.tie')}</span>
@@ -149,6 +156,44 @@ export const GameResult: React.FC<GameResultProps> = ({
                     )}
                 </div>
 
+                <div className="final-scores">
+                    <div className={`score-box p1 ${winner === 'p1' ? 'winner-box' : ''}`}>
+                        <h3>{p1Name}</h3>
+                        <div className="score-val">{p1DisplayScore}</div>
+                        <div className="bonus-val">{t('result.bonuses', { count: p1.bonusesClaimed })}</div>
+                        {ratingUpdates && !rewards && ratingUpdates.p1 && (
+                            <div className="rating-update">
+                                <div>{t('common.rating')}</div>
+                                <div className="rating-values">
+                                    {ratingUpdates.p1.old} → <span className="rating-new">{ratingUpdates.p1.new}</span>
+                                </div>
+                                <div className={`rating-change ${ratingUpdates.p1.change >= 0 ? 'pos' : 'neg'}`}>
+                                    {ratingUpdates.p1.change >= 0 ? '+' : ''}{ratingUpdates.p1.change}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    <div className={`score-box p2 ${winner === 'p2' ? 'winner-box' : ''}`}>
+                        <h3>{p2Name}</h3>
+                        <div className="score-val">{p2DisplayScore}</div>
+                        <div className="bonus-val">{t('result.bonuses', { count: p2.bonusesClaimed })}</div>
+                        {ratingUpdates && !rewards && ratingUpdates.p2 && (
+                            <div className="rating-update">
+                                <div>{t('common.rating')}</div>
+                                <div className="rating-values">
+                                    {ratingUpdates.p2.old} → <span className="rating-new">{ratingUpdates.p2.new}</span>
+                                </div>
+                                <div className={`rating-change ${ratingUpdates.p2.change >= 0 ? 'pos' : 'neg'}`}>
+                                    {ratingUpdates.p2.change >= 0 ? '+' : ''}{ratingUpdates.p2.change}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <MatchRewards rewards={rewards ?? null} error={rewardError} onRetry={onRetryRewards} />
+
+                <details className="result-hand-details"><summary><LetteringText>HANDS</LetteringText></summary>
                 <div className="results-table">
                     <div className="table-header">
                         <div>{t('result.dice')}</div>
@@ -180,39 +225,7 @@ export const GameResult: React.FC<GameResultProps> = ({
                     </div>
                 </div>
 
-                <div className="final-scores">
-                    <div className={`score-box p1 ${winner === 'p1' ? 'winner-box' : ''}`}>
-                        <h3>{p1Name}</h3>
-                        <div className="score-val">{p1DisplayScore}</div>
-                        <div className="bonus-val">{t('result.bonuses', { count: p1.bonusesClaimed })}</div>
-                        {ratingUpdates && ratingUpdates.p1 && (
-                            <div className="rating-update">
-                                <div>{t('common.rating')}</div>
-                                <div className="rating-values">
-                                    {ratingUpdates.p1.old} → <span className="rating-new">{ratingUpdates.p1.new}</span>
-                                </div>
-                                <div className={`rating-change ${ratingUpdates.p1.change >= 0 ? 'pos' : 'neg'}`}>
-                                    {ratingUpdates.p1.change >= 0 ? '+' : ''}{ratingUpdates.p1.change}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    <div className={`score-box p2 ${winner === 'p2' ? 'winner-box' : ''}`}>
-                        <h3>{p2Name}</h3>
-                        <div className="score-val">{p2DisplayScore}</div>
-                        <div className="bonus-val">{t('result.bonuses', { count: p2.bonusesClaimed })}</div>
-                        {ratingUpdates && ratingUpdates.p2 && (
-                            <div className="rating-update">
-                                <div>{t('common.rating')}</div>
-                                <div className="rating-values">
-                                    {ratingUpdates.p2.old} → <span className="rating-new">{ratingUpdates.p2.new}</span>
-                                </div>
-                                <div className={`rating-change ${ratingUpdates.p2.change >= 0 ? 'pos' : 'neg'}`}>
-                                    {ratingUpdates.p2.change >= 0 ? '+' : ''}{ratingUpdates.p2.change}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                </details>
                 </div>
 
                 <div className="button-group">
@@ -230,3 +243,15 @@ export const GameResult: React.FC<GameResultProps> = ({
         </Modal>
     );
 };
+
+export function ForfeitResult({ won, rewards, error, onRetry, onClose }: { won: boolean; rewards: Rewards | null; error: boolean; onRetry: () => void; onClose: () => void }) {
+    return <Modal className="game-result-overlay" label="Results" onClose={onClose}>
+        <div className="game-result-modal">
+            <div className="result-scroll">
+                <div className="winner-announcement"><LetteringText>{won ? 'YOU WIN' : 'YOU LOSE'}</LetteringText></div>
+                <MatchRewards rewards={rewards} error={error} onRetry={onRetry} />
+            </div>
+            <button className="btn-primary" onClick={onClose}><LetteringText>HOME</LetteringText></button>
+        </div>
+    </Modal>;
+}

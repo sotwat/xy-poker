@@ -69,23 +69,24 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `10051618` (2026-10-05 16:18)
-- **Status:** **A9 with shared-card branch certificates for four unknown cards**
+- **Current Version:** `10212015` (2026-10-21)
+- **Status:** **Match rewards and permanent skin purchases; A9 policy retained**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
     - Online Match: ✅ Responsive lobby and connection state verified locally
     - Responsive UI: ✅ AUTO/Surrender separation checked at 320×568, 390×844, and 1440×900; full account ID fits the narrow screen
     - Repository lint: ✅ 0 errors / 0 warnings
-    - Automated tests: ✅ 112 passing
+    - Automated tests: ✅ 121 passing
     - Production Build: ✅ TypeScript and Vite build passing; largest app chunk ~370 kB, no 500 kB warning
     - Dependency audit: ✅ 0 known vulnerabilities in root and server packages
-    - Deployment: `v10051618` selects A9 as the default AI policy. Publish both Cloudflare Pages and Render with `npm run deploy`.
+    - Deployment: publish both Cloudflare Pages and Render with `npm run deploy`; A9 remains the default policy.
 
 ### Local deployment input
 
 `npm run deploy` requires `XYPOKER_FONT_PACK` in the ignored `.env.local` file or the process environment. It prepares `.private/vectura.bin` for the Pages Function. The font is never copied into `dist` or Git. `npm run build` still works without the private pack; use `npm run prepare:lettering` followed by `npx wrangler pages dev dist` to check the complete local production runtime. Public font use must satisfy [the creator's terms](docs/font-selection.md). Unselected comparison images stay local and can be regenerated with `scripts/render_home_lettering.py`.
 
 ### Database status
+- `supa_schema_v13_match_rewards.sql` applied on 2026-10-21. See [reward rules and verification](docs/match-rewards.md).
 - `supa_schema_v9_game_records.sql` applied to production with owner-only RLS.
 - `supa_schema_v10_achievement_progress.sql` applied to production with cumulative milestone backfill and server-authoritative streak tracking.
 - Render uses the server-side Supabase client for validated game-record writes.
@@ -93,6 +94,8 @@ graph TD
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
+
+1. **v10212015** (2026-10-21): **Match Rewards** - Result receipts show separate AI/ranked rating, coins, XP, unlocks and advancing milestones. Score margin, streaks and every third win increase rewards. Added permanent skins and direct 300-coin purchases; server validates outcomes and stores idempotent transactions. Corrected server split-pair/wheel comparisons to match the client.
 
 1. **v10051618** (2026-10-05): **Four-Unknown Endgame Certificates** - Added held-plan search with reusable opposing counterexamples and shared-card branch bounds. The existing A9 certificates run first; the new stage covers exactly four unknown opponent cards and uses at most 50ms within the same decision deadline. An independent 400-deal-pair corpus yielded 28 additional certificates, all checked against 4,808,160 reducer-scored completions. Global match win-rate improvement remains unmeasured. See [the adoption test](GTO_RESEARCH_20261005.md).
 1. **v10050345** (2026-10-05): **Correct Scoring and Shared-Card Endgame Proofs** - Corrected wheel Straight Flush and split Y-pair comparison. Added a bounded joint-completion proof that preserves shared-card constraints, with independent scoring-oracle tests. Added reproducible score-margin and bonus-timing research controls; candidate changes to default strategic evaluation require independent runtime confirmation. See [the continuing research](GTO_RESEARCH_20261005.md) and [the correctness audit](GTO_CORRECTNESS_20261002.md).
