@@ -129,6 +129,12 @@ dist
 .wrangler/
 .dev.vars*
 
+# Local self-play environments, checkpoints and trajectories
+.venv-selfplay/
+.selfplay/
+__pycache__/
+*.pyc
+
 # Unselected lettering studies stay local; ship only the adopted design.
 src/assets/lettering/*
 !src/assets/lettering/vectura-*.png

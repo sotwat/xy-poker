@@ -356,3 +356,10 @@ Schema migrations are tracked as incremental SQL files at the root:
 - `supa_schema_v8_hardening.sql` — Required server-authoritative write policies and transactional RPCs
 
 Apply in order when setting up a new Supabase project.
+
+### Local self-play learning
+
+The optional [self-play tool](selfplay/README.md) uses OpenSpiel IS-MCTS and a
+PyTorch policy/value network. It runs locally without paid APIs. Run
+`npm run selfplay:setup`, then `npm run selfplay:train`. Training does not replace
+the production AI; checkpoint evaluation and move selection are separate commands.
