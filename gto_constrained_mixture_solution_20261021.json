@@ -1,0 +1,459 @@
+{
+  "kind": "finite-profile-baseline-constrained-mixture-not-strength",
+  "startedUtc": "2026-10-21T10:17:21.058233+00:00",
+  "endedUtc": "2026-10-21T10:17:23.340122+00:00",
+  "sourceHashes": {
+    "gto_constrained_mixture_worlds_20261021.json": "228a4467a06079238bf7a230fd3e98f8e9b052d7099f2d93df1f698ef6f06868",
+    "scripts/analyze_constrained_mixture.py": "f319ffda93feba8cd43858708ab840f43c80511f43b8c295ef0892c8f8bd5540"
+  },
+  "rows": [
+    {
+      "phase": "selection",
+      "row": 0,
+      "deal": 0,
+      "swap": 0,
+      "weights": [
+        "0",
+        "2/7",
+        "0",
+        "5/7"
+      ],
+      "fitValue": "23/56",
+      "fitPureValue": "3/8",
+      "strictMixedGain": "1/28",
+      "heldoutMixed": [
+        "1/7",
+        "55/112",
+        "61/112",
+        "15/28"
+      ],
+      "heldoutDelta": [
+        "-3/28",
+        "5/28",
+        "5/112",
+        "2/7"
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 1,
+      "deal": 0,
+      "swap": 1,
+      "weights": [
+        "0",
+        "2/7",
+        "0",
+        "5/7"
+      ],
+      "fitValue": "23/56",
+      "fitPureValue": "3/8",
+      "strictMixedGain": "1/28",
+      "heldoutMixed": [
+        "1/7",
+        "55/112",
+        "61/112",
+        "15/28"
+      ],
+      "heldoutDelta": [
+        "-3/28",
+        "5/28",
+        "5/112",
+        "2/7"
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 2,
+      "deal": 1,
+      "swap": 0,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "1/16",
+      "fitPureValue": "1/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "0",
+        "1/4",
+        "3/16",
+        "0"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 3,
+      "deal": 1,
+      "swap": 1,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "1/16",
+      "fitPureValue": "1/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "0",
+        "1/4",
+        "3/16",
+        "0"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 4,
+      "deal": 2,
+      "swap": 0,
+      "weights": [
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "fitValue": "1/8",
+      "fitPureValue": "1/8",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "5/16",
+        "3/8",
+        "3/8",
+        "1/4"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 5,
+      "deal": 2,
+      "swap": 1,
+      "weights": [
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "fitValue": "1/8",
+      "fitPureValue": "1/8",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "5/16",
+        "3/8",
+        "3/8",
+        "1/4"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 6,
+      "deal": 3,
+      "swap": 0,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "5/16",
+      "fitPureValue": "5/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "9/16",
+        "7/16",
+        "9/16",
+        "3/4"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 7,
+      "deal": 3,
+      "swap": 1,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "5/16",
+      "fitPureValue": "5/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "9/16",
+        "7/16",
+        "9/16",
+        "3/4"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "row": 0,
+      "deal": 0,
+      "swap": 0,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "-1/16",
+      "fitPureValue": "-1/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "1/8",
+        "-1/4",
+        "1/8",
+        "1/4"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "row": 1,
+      "deal": 0,
+      "swap": 1,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "-1/16",
+      "fitPureValue": "-1/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "1/8",
+        "-1/4",
+        "1/8",
+        "1/4"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "row": 2,
+      "deal": 1,
+      "swap": 0,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "-3/16",
+      "fitPureValue": "-3/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "0",
+        "1/4",
+        "1/8",
+        "0"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "row": 3,
+      "deal": 1,
+      "swap": 1,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "-3/16",
+      "fitPureValue": "-3/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "0",
+        "1/4",
+        "1/8",
+        "0"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "row": 4,
+      "deal": 2,
+      "swap": 0,
+      "weights": [
+        "0",
+        "0",
+        "1",
+        "0"
+      ],
+      "fitValue": "1/16",
+      "fitPureValue": "1/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "-9/16",
+        "-5/16",
+        "0",
+        "-1/8"
+      ],
+      "heldoutDelta": [
+        "-3/16",
+        "-5/16",
+        "3/8",
+        "0"
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "row": 5,
+      "deal": 2,
+      "swap": 1,
+      "weights": [
+        "0",
+        "0",
+        "1",
+        "0"
+      ],
+      "fitValue": "1/16",
+      "fitPureValue": "1/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "-9/16",
+        "-5/16",
+        "0",
+        "-1/8"
+      ],
+      "heldoutDelta": [
+        "-3/16",
+        "-5/16",
+        "3/8",
+        "0"
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "row": 6,
+      "deal": 3,
+      "swap": 0,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "1/16",
+      "fitPureValue": "1/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "0",
+        "1/16",
+        "1/4",
+        "7/16"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "row": 7,
+      "deal": 3,
+      "swap": 1,
+      "weights": [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "fitValue": "1/16",
+      "fitPureValue": "1/16",
+      "strictMixedGain": "0",
+      "heldoutMixed": [
+        "0",
+        "1/16",
+        "1/4",
+        "7/16"
+      ],
+      "heldoutDelta": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "phase": "selection",
+      "deals": 4,
+      "strictMixedDeals": 1,
+      "heldoutNonworseStrictDeals": 0,
+      "supported": false
+    },
+    {
+      "phase": "confirmation",
+      "deals": 4,
+      "strictMixedDeals": 0,
+      "heldoutNonworseStrictDeals": 0,
+      "supported": false
+    }
+  ]
+}
