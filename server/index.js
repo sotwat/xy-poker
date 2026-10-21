@@ -529,7 +529,7 @@ io.on('connection', socket => {
             if (!isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
             const roomId = normalizeRoomId(rawRoomId);
             const room = roomId ? rooms.get(roomId) : null;
-            if (!room || room.players.length !== 1 || room.players[0].id === socket.id) {
+            if (!room || room.players.length !== 1 || room.players[0].id === socket.id || room.players[0].dbId === userId) {
                 return acknowledge(callback, { success: false, message: 'Room not found or unavailable' });
             }
 
@@ -555,13 +555,14 @@ io.on('connection', socket => {
 
             let waitingRoomId = null;
             let waitingRoom = null;
-            while (matchmakingQueue.length > 0 && !waitingRoom) {
-                const candidateId = matchmakingQueue.shift();
-                const candidate = rooms.get(candidateId);
-                if (candidate?.isQuickMatch && candidate.players.length === 1 && candidate.players[0].id !== socket.id) {
-                    waitingRoomId = candidateId;
-                    waitingRoom = candidate;
-                }
+            const candidateIndex = matchmakingQueue.findIndex(id => {
+                const candidate = rooms.get(id);
+                return candidate?.isQuickMatch && candidate.players.length === 1
+                    && candidate.players[0].id !== socket.id && candidate.players[0].dbId !== player.id;
+            });
+            if (candidateIndex !== -1) {
+                [waitingRoomId] = matchmakingQueue.splice(candidateIndex, 1);
+                waitingRoom = rooms.get(waitingRoomId);
             }
 
             if (waitingRoom && waitingRoomId) {
