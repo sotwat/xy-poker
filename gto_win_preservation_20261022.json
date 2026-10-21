@@ -1,0 +1,1310 @@
+{
+  "kind": "posthoc-finite-world-win-preservation-not-production-safety",
+  "startedUtc": "2026-10-21T22:35:39.806980+00:00",
+  "endedUtc": "2026-10-21T22:35:39.912824+00:00",
+  "deadlineUtc": "2026-10-21T23:04:03+00:00",
+  "newGames": 0,
+  "actualA9Games": 0,
+  "sourceHashes": {
+    "gto_constrained_mixture_worlds_20261021.json": "228a4467a06079238bf7a230fd3e98f8e9b052d7099f2d93df1f698ef6f06868",
+    "/Users/aaa/Documents/ChatGPT/XY\u30dd\u30fc\u30ab\u30fc/scripts/analyze_win_preservation.py": "304e823c6a65a4f4d61ee70fc9563243d6888315d5f3152f4db8d1de025a2abd"
+  },
+  "rows": [
+    {
+      "phase": "selection",
+      "row": 0,
+      "deal": 0,
+      "swap": 0,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0,
+          1
+        ],
+        "witnesses": [
+          null,
+          null,
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": false
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 7,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 23,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": [
+        1
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 1,
+      "deal": 0,
+      "swap": 1,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0,
+          1
+        ],
+        "witnesses": [
+          null,
+          null,
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": false
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 7,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 23,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": [
+        1
+      ]
+    },
+    {
+      "phase": "selection",
+      "row": 2,
+      "deal": 1,
+      "swap": 0,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 10,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 10,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 2,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 10,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 10,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "selection",
+      "row": 3,
+      "deal": 1,
+      "swap": 1,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 10,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 10,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 2,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 10,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 10,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "selection",
+      "row": 4,
+      "deal": 2,
+      "swap": 0,
+      "baseline": 1,
+      "fit": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 0,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 7,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 0,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "selection",
+      "row": 5,
+      "deal": 2,
+      "swap": 1,
+      "baseline": 1,
+      "fit": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 0,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 7,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 0,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "selection",
+      "row": 6,
+      "deal": 3,
+      "swap": 0,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 12,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 1,
+            "profile": 0,
+            "candidateWin": 0
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 5,
+            "profile": 0,
+            "candidateWin": 0
+          },
+          {
+            "world": 3,
+            "profile": 2,
+            "candidateWin": -1
+          },
+          {
+            "world": 3,
+            "profile": 2,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 12,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 1,
+            "profile": 0,
+            "candidateWin": 0
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "selection",
+      "row": 7,
+      "deal": 3,
+      "swap": 1,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 12,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 1,
+            "profile": 0,
+            "candidateWin": 0
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 5,
+            "profile": 0,
+            "candidateWin": 0
+          },
+          {
+            "world": 3,
+            "profile": 2,
+            "candidateWin": -1
+          },
+          {
+            "world": 3,
+            "profile": 2,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 12,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 1,
+            "profile": 0,
+            "candidateWin": 0
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "confirmation",
+      "row": 0,
+      "deal": 0,
+      "swap": 0,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": 0
+          },
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 0,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 1,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          {
+            "world": 1,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": 0
+          },
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "confirmation",
+      "row": 1,
+      "deal": 0,
+      "swap": 1,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": 0
+          },
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 0,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 1,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          {
+            "world": 1,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": 0
+          },
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          },
+          {
+            "world": 5,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "confirmation",
+      "row": 2,
+      "deal": 1,
+      "swap": 0,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 6,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 14,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 6,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "confirmation",
+      "row": 3,
+      "deal": 1,
+      "swap": 1,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 6,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 14,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 6,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 3,
+            "candidateWin": -1
+          },
+          {
+            "world": 0,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "confirmation",
+      "row": 4,
+      "deal": 2,
+      "swap": 0,
+      "baseline": 1,
+      "fit": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 1,
+            "profile": 2,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 4,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 1,
+            "profile": 1,
+            "candidateWin": 0
+          },
+          {
+            "world": 1,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 1,
+            "profile": 2,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "confirmation",
+      "row": 5,
+      "deal": 2,
+      "swap": 1,
+      "baseline": 1,
+      "fit": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 1,
+            "profile": 2,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 4,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 1,
+            "profile": 1,
+            "candidateWin": 0
+          },
+          {
+            "world": 1,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          1
+        ],
+        "witnesses": [
+          {
+            "world": 2,
+            "profile": 0,
+            "candidateWin": -1
+          },
+          null,
+          {
+            "world": 1,
+            "profile": 2,
+            "candidateWin": -1
+          },
+          {
+            "world": 2,
+            "profile": 1,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "confirmation",
+      "row": 6,
+      "deal": 3,
+      "swap": 0,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 1,
+            "profile": 1,
+            "candidateWin": 0
+          },
+          {
+            "world": 3,
+            "profile": 3,
+            "candidateWin": 0
+          },
+          {
+            "world": 2,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 3,
+            "profile": 3,
+            "candidateWin": 0
+          },
+          {
+            "world": 5,
+            "profile": 0,
+            "candidateWin": 0
+          },
+          {
+            "world": 3,
+            "profile": 3,
+            "candidateWin": 0
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 1,
+            "profile": 1,
+            "candidateWin": 0
+          },
+          {
+            "world": 3,
+            "profile": 3,
+            "candidateWin": 0
+          },
+          {
+            "world": 2,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    },
+    {
+      "phase": "confirmation",
+      "row": 7,
+      "deal": 3,
+      "swap": 1,
+      "baseline": 0,
+      "fit": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 1,
+            "profile": 1,
+            "candidateWin": 0
+          },
+          {
+            "world": 3,
+            "profile": 3,
+            "candidateWin": 0
+          },
+          {
+            "world": 2,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "heldout": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 3,
+            "profile": 3,
+            "candidateWin": 0
+          },
+          {
+            "world": 5,
+            "profile": 0,
+            "candidateWin": 0
+          },
+          {
+            "world": 3,
+            "profile": 3,
+            "candidateWin": 0
+          }
+        ],
+        "baselineOnly": true
+      },
+      "combined": {
+        "allowed": [
+          0
+        ],
+        "witnesses": [
+          null,
+          {
+            "world": 1,
+            "profile": 1,
+            "candidateWin": 0
+          },
+          {
+            "world": 3,
+            "profile": 3,
+            "candidateWin": 0
+          },
+          {
+            "world": 2,
+            "profile": 3,
+            "candidateWin": -1
+          }
+        ],
+        "baselineOnly": true
+      },
+      "fitAllowedBlockedInHeldout": []
+    }
+  ],
+  "summary": [
+    {
+      "phase": "selection",
+      "deals": 4,
+      "fitBaselineOnly": 3,
+      "heldoutBaselineOnly": 4,
+      "combinedBaselineOnly": 4,
+      "fitSurvivorsBlocked": 1
+    },
+    {
+      "phase": "confirmation",
+      "deals": 4,
+      "fitBaselineOnly": 4,
+      "heldoutBaselineOnly": 4,
+      "combinedBaselineOnly": 4,
+      "fitSurvivorsBlocked": 0
+    }
+  ]
+}
