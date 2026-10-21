@@ -1,6 +1,6 @@
 import { Modal } from './Modal';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Check, Clock3, Coins, LockKeyhole } from 'lucide-react';
+import { Check, Coins } from 'lucide-react';
 import {
     AVAILABLE_DICE_SKINS, AVAILABLE_CARD_SKINS, AVAILABLE_BOARD_SKINS,
     type DiceSkin, type CardSkin, type BoardSkin
@@ -12,7 +12,6 @@ import './SkinStore.css';
 import { supabase } from '../supabase';
 import { PremiumBadge } from './PremiumBadge';
 import { socket } from '../logic/online';
-import { getBrowserId } from '../utils/identity';
 import { useI18n } from '../i18n';
 
 interface SkinStoreProps {
@@ -45,7 +44,6 @@ import { GachaReveal } from './GachaReveal';
 type Tab = 'dice' | 'card' | 'board';
 type UnlockableItem = { type: 'dice' | 'card' | 'board', id: string };
 type PreviewProps = { id: string; color: string };
-type CoinDeductionResponse = { success: boolean; newBalance?: number; error?: string };
 
 const GACHA_COST_SINGLE = 100;
 const GACHA_COST_MULTI = 1000;
@@ -65,6 +63,8 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     const [gachaResults, setGachaResults] = useState<UnlockableItem[]>([]);
     const [showGachaReveal, setShowGachaReveal] = useState(false);
     const [isWatchingAd, setIsWatchingAd] = useState(false);
+    const [isPurchasing, setIsPurchasing] = useState(false);
+    const [purchaseError, setPurchaseError] = useState('');
 
     const fetchCoins = useCallback(async () => {
         if (!userId) return;
@@ -92,6 +92,20 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         return () => window.clearTimeout(timer);
     }, [fetchCoins, isOpen, userId]);
 
+    useEffect(() => {
+        if (!isOpen || !userId) return;
+        let cancelled = false;
+        void supabase.from('player_skins').select('kind,skin_id').eq('player_id', userId).then(({ data }) => {
+            if (cancelled) return;
+            for (const skin of data ?? []) {
+                if (skin.kind === 'dice' && !unlockedSkins.includes(skin.skin_id as DiceSkin)) onUnlock(skin.skin_id as DiceSkin);
+                if (skin.kind === 'card' && !unlockedCardSkins.includes(skin.skin_id as CardSkin)) onUnlockCard(skin.skin_id as CardSkin);
+                if (skin.kind === 'board' && !unlockedBoardSkins.includes(skin.skin_id as BoardSkin)) onUnlockBoard(skin.skin_id as BoardSkin);
+            }
+        });
+        return () => { cancelled = true; };
+    }, [isOpen, userId, unlockedSkins, unlockedCardSkins, unlockedBoardSkins, onUnlock, onUnlockCard, onUnlockBoard]);
+
     if (!isOpen) return null;
 
     // --- Gacha Logic ---
@@ -117,6 +131,39 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         return locked;
     };
 
+    const unlockItems = (results: UnlockableItem[]) => {
+        results.forEach(won => {
+            if (won.type === 'dice') onUnlock(won.id as DiceSkin);
+            if (won.type === 'card') onUnlockCard(won.id as CardSkin);
+            if (won.type === 'board') onUnlockBoard(won.id as BoardSkin);
+        });
+    };
+
+    const purchase = async (items: UnlockableItem[], cost: number, request: { kind?: Tab; id?: string; count?: number }) => {
+        if (isPurchasing) return;
+        if (userCoins < cost) { setPurchaseError(t('store.notEnough', { cost })); return; }
+        setIsPurchasing(true);
+        setPurchaseError('');
+        try {
+            let results = items;
+            let balance = userCoins - cost;
+            if (userId) {
+                const response = await new Promise<{ success: boolean; items: UnlockableItem[]; balance: number; error?: string }>((resolve, reject) => {
+                    const timeout = window.setTimeout(() => reject(new Error('Purchase timed out')), 15000);
+                    socket.emit('buy_skins', { ...request, requestId: crypto.randomUUID() }, (res: { success: boolean; items: UnlockableItem[]; balance: number; error?: string }) => { window.clearTimeout(timeout); resolve(res); });
+                });
+                if (!response.success) throw new Error(response.error || 'Purchase failed');
+                results = response.items;
+                balance = response.balance;
+            } else localStorage.setItem('xypoker_guest_coins', String(balance));
+            setUserCoins(balance);
+            unlockItems(results);
+            setGachaResults(results);
+            setShowGachaReveal(true);
+        } catch (error) { setPurchaseError(error instanceof Error ? error.message : 'Purchase failed'); }
+        finally { setIsPurchasing(false); }
+    };
+
     const handleGacha = async (count: 1 | 10, isFree: boolean = false) => {
         // if (!userId) { ... }  <-- Removed check to allow guests
 
@@ -134,31 +181,17 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
             return;
         }
 
-        playClickSound();
-
-        // Deduct Coins only if not free
         if (!isFree) {
-            if (userId) {
-                const success = await new Promise<boolean>((resolve) => {
-                    const timeout = window.setTimeout(() => resolve(false), 5000);
-                    socket.emit('deduct_coins', { amount: cost, browserId: getBrowserId(), userId }, (res: CoinDeductionResponse) => {
-                        window.clearTimeout(timeout);
-                        resolve(res.success);
-                    });
-                });
-                if (!success) {
-                    alert(t('store.deductFailed'));
-                    return; // Abort
-                }
+            const shuffled = [...locked];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
-            
-            const newBalance = userCoins - cost;
-            setUserCoins(newBalance);
-
-            if (!userId) {
-                localStorage.setItem('xypoker_guest_coins', newBalance.toString());
-            }
+            await purchase(shuffled.slice(0, pullCount), cost, { count });
+            return;
         }
+
+        playClickSound();
 
         const allItems = [...locked];
 
@@ -267,15 +300,15 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                             type="button"
                             key={item.id}
                             className={`skin-item ${isUnlocked ? 'unlocked' : 'locked'} ${isSelected ? 'selected' : ''}`}
-                            onClick={() => handleSkinClick(item.id, isUnlocked, selectFn)}
-                            disabled={!isUnlocked}
+                            onClick={() => isUnlocked ? handleSkinClick(item.id, true, selectFn) : void purchase([{ type: activeTab, id: item.id }], 300, { kind: activeTab, id: item.id })}
+                            disabled={isPurchasing}
                             aria-pressed={isSelected}
                         >
                             <div className="skin-preview">
                                 <PreviewComponent id={item.id} color={item.color} />
                             </div>
                             <div className="skin-name">{item.name}</div>
-                            {!isUnlocked && <LockKeyhole className="lock-icon" aria-hidden="true" />}
+                            {!isUnlocked && <span className="skin-buy-price"><Coins size={14} aria-hidden="true" /> 300</span>}
                             {isSelected && <span className="check-icon"><Check aria-hidden="true" /></span>}
                         </button>
                     );
@@ -308,17 +341,16 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                         </div>
                     </div>
                 </div>
-                <div className="expiry-notice">
-                    <Clock3 aria-hidden="true" /> {t('store.expiry')}
-                </div>
 
+
+                {purchaseError && <p role="alert" className="purchase-error">{purchaseError}</p>}
                 {/* Gacha Actions */}
                 <div className="gacha-actions">
-                    <button type="button" className="gacha-option" onClick={() => handleGacha(1)}>
+                    <button type="button" className="gacha-option" disabled={isPurchasing} onClick={() => handleGacha(1)}>
                         <div className="gacha-label">{t('store.single')}</div>
                         <div className="gacha-cost"><Coins aria-hidden="true" /> {GACHA_COST_SINGLE}</div>
                     </button>
-                    <button type="button" className="gacha-option special" onClick={() => handleGacha(10)}>
+                    <button type="button" className="gacha-option special" disabled={isPurchasing} onClick={() => handleGacha(10)}>
                         <div className="gacha-label">{t('store.multi')}</div>
                         <div className="gacha-cost"><Coins aria-hidden="true" /> {GACHA_COST_MULTI}</div>
                     </button>

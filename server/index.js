@@ -1,5 +1,8 @@
 import { verifiedTokenExpiry, installSessionExpiry, createContactLimiter } from './session-security.js';
 import express from 'express';
+import { randomUUID } from 'node:crypto';
+import { scoreMatch, verifyRewardRecord } from './match-rewards.js';
+import { selectSkinPurchase } from './skin-store.js';
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -78,7 +81,7 @@ app.get('/api/lettering/:kind', async (request, response) => {
     }
 });
 
-const SERVER_VERSION = '10051618';
+const SERVER_VERSION = '10212015';
 
 app.get('/api/health', async (_request, response) => {
     try {
@@ -106,7 +109,7 @@ const io = new Server(httpServer, {
 const rooms = new Map();
 const games = new Map();
 const matchmakingQueue = [];
-const recentStatUpdates = new Map();
+
 const recentAiUpdates = new Map();
 const RUNTIME_AI_POLICY_ID = 'xy-gto-a9';
 const RUNTIME_AI_THINK_TIME_MS = 1_000;
@@ -205,7 +208,9 @@ function startGame(roomId, room) {
     const initialDeck = shuffleDeck(createDeck());
     const showdownVoices = selectShowdownVoiceAssignment();
 
+    const initialDice = rollDice();
     games.set(roomId, {
+        matchId: randomUUID(), initialDeck, initialDice, moves: [],
         isRanked,
         processed: false,
         processing: false,
@@ -228,13 +233,14 @@ function startGame(roomId, room) {
 
     io.to(roomId).emit('game_start', {
         roomId,
+        matchId: games.get(roomId).matchId,
         p1Name: p1.name,
         p2Name: p2.name,
         p1Rating: p1.rating,
         p2Rating: p2.rating,
         p1Id: p1.id,
         p2Id: p2.id,
-        initialDice: rollDice(),
+        initialDice,
         initialDeck,
         startingPlayer,
         p1IsPremium: p1.isPremium,
@@ -251,7 +257,7 @@ function drawServerCard(game, playerIndex) {
 
 function validateAndApplyGameAction(socket, membership, action) {
     const game = games.get(membership.roomId);
-    if (!game) return false;
+    if (!game || game.processed || game.processing) return false;
 
     if (action.type === 'CHOOSE_TURN_ORDER') {
         const chooser = membership.room.players[game.choiceOwnerIndex];
@@ -270,6 +276,8 @@ function validateAndApplyGameAction(socket, membership, action) {
         return false;
     }
 
+    const card = game.initialDeck.find(card => card.id === cardId);
+    game.moves.push({ playerIndex, column: colIndex, row: game.columnCounts[playerIndex][colIndex], card: { ...card, isHidden } });
     game.hands[playerIndex].delete(cardId);
     game.columnCounts[playerIndex][colIndex] += 1;
     game.playerPlacementCounts[playerIndex] += 1;
@@ -293,35 +301,38 @@ function validateAndApplyGameAction(socket, membership, action) {
     return true;
 }
 
-async function processRankedResult(roomId, winner) {
+async function settlePlayer(playerId, matchId, mode, result, scores, opponentRating, achievementTypes = []) {
+    const { data, error } = await supabase.rpc('settle_match', {
+        p_player: playerId, p_match: matchId, p_mode: mode, p_result: result,
+        p_score: scores[0], p_opponent_score: scores[1], p_opponent_rating: opponentRating,
+        p_achievements: achievementTypes,
+    });
+    if (error) throw error;
+    return data;
+}
+
+async function settleOnlineMatch(roomId, forfeitedWinner) {
     const room = rooms.get(roomId);
     const game = games.get(roomId);
-    if (!room || room.players.length !== 2 || !game?.isRanked || game.processed || game.processing) return false;
-    if (!['p1', 'p2', 'draw'].includes(winner)) return false;
-
+    if (!room || room.players.length !== 2 || !game || game.processed || game.processing) return false;
+    const outcome = game.terminalOutcome || (game.placementCount === 30 ? scoreMatch(game.moves, game.initialDice) : { winner: forfeitedWinner, scores: [0, 0], bonuses: [0, 0] });
+    if (!['p1', 'p2', 'draw'].includes(outcome.winner)) return false;
+    game.terminalOutcome = outcome;
     game.processing = true;
     try {
-        const { data, error } = await supabase.rpc('record_ranked_result', {
-            p_player_one: game.p1DbId,
-            p_player_two: game.p2DbId,
-            p_winner: winner,
-        });
-        if (error) throw error;
-        const result = Array.isArray(data) ? data[0] : data;
-        if (!result) throw new Error('Rating transaction returned no result');
-
-        room.players[0].rating = result.p1_new;
-        room.players[1].rating = result.p2_new;
-
+        const ratings = room.players.map(p => p.rating);
+        const receipts = [];
+        for (const i of [0, 1]) {
+            const result = outcome.winner === 'draw' ? 'draw' : outcome.winner === `p${i + 1}` ? 'win' : 'loss';
+            const feats = game.placementCount === 30 ? getGameRecordAchievementTypes({ ...outcome, moves: game.moves, dice: game.initialDice, viewerPlayerIndex: i }) : [];
+            receipts[i] = await settlePlayer(room.players[i].dbId, game.matchId, game.isRanked ? 'ranked' : 'private', result, [outcome.scores[i], outcome.scores[1-i]], ratings[1-i], feats);
+            io.to(room.players[i].id).emit('match_rewards', receipts[i]);
+        }
         game.processed = true;
-        io.to(roomId).emit('rating_update', {
-            p1: { old: result.p1_old, new: result.p1_new, change: result.p1_change },
-            p2: { old: result.p2_old, new: result.p2_new, change: result.p2_change },
-        });
+        room.players.forEach((p,i) => { p.rating = receipts[i].rating.new; });
+        io.to(roomId).emit('rating_update', { p1: receipts[0].rating, p2: receipts[1].rating });
         return true;
-    } finally {
-        game.processing = false;
-    }
+    } finally { game.processing = false; }
 }
 
 io.use(async (socket, next) => {
@@ -382,7 +393,18 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('save_game_record', async ({ record } = {}, callback) => {
+    socket.on('get_match_rewards', async ({ matchId } = {}, callback) => {
+        try {
+            if (!socket.data.userId || typeof matchId !== 'string' || matchId.length > 100) throw new Error('Invalid match');
+            const membership = [...socket.rooms].filter(id => id !== socket.id).map(id => getRoomForSocket(socket, id)).find(Boolean);
+            const game = membership && games.get(membership.roomId);
+            if (game?.matchId === matchId && (game.placementCount === 30 || game.terminalOutcome)) await settleOnlineMatch(membership.roomId);
+            const { data, error } = await supabase.from('match_rewards').select('receipt').eq('player_id', socket.data.userId).eq('match_id', matchId).maybeSingle();
+            acknowledge(callback, { success: !error && Boolean(data), rewards: data?.receipt });
+        } catch { acknowledge(callback, { success: false }); }
+    });
+
+    socket.on('save_game_record', async ({ record, gameToken } = {}, callback) => {
         try {
             const userId = socket.data.userId;
             if (!userId) throw new Error('Authentication required');
@@ -398,6 +420,13 @@ io.on('connection', socket => {
                 .single();
             if (playerError || !player) throw new Error('Player profile unavailable');
             if (hasProThoughts && !player.is_premium) throw new Error('PRO membership required for thought notes');
+
+            if (record.mode === 'bot') {
+                const game = socket.data.localGame;
+                if (!game || game.token !== gameToken || Date.now() - game.startedAt < 30_000) throw new Error('Invalid game session');
+                if (record.viewerPlayerIndex !== 0) throw new Error('Invalid AI viewer');
+                verifyRewardRecord(record, game);
+            }
 
             const storedRecord = {
                 ...record,
@@ -423,19 +452,13 @@ io.on('connection', socket => {
             }, { onConflict: 'id', ignoreDuplicates: true });
             if (error) throw error;
 
-            const achievementTypes = getGameRecordAchievementTypes(record);
-            if (achievementTypes.length > 0) {
-                const { error: achievementError } = await supabase.from('achievements').upsert(
-                    achievementTypes.map(achievementType => ({
-                        player_id: userId,
-                        achievement_type: achievementType,
-                    })),
-                    { onConflict: 'player_id,achievement_type', ignoreDuplicates: true },
-                );
-                if (achievementError) throw achievementError;
+            let rewards;
+            if (record.mode === 'bot') {
+                const game = socket.data.localGame;
+                rewards = await settlePlayer(userId, game.token, 'bot', viewerWinner, [record.scores[0], record.scores[1]], 1500, getGameRecordAchievementTypes(record));
+                socket.emit('match_rewards', rewards);
             }
-
-            acknowledge(callback, { success: true, id: record.id, unlockedAchievements: achievementTypes });
+            acknowledge(callback, { success: true, id: record.id, rewards });
         } catch (error) {
             console.error('Unable to save game record:', error);
             acknowledge(callback, { success: false, error: 'Unable to save game record' });
@@ -477,10 +500,13 @@ io.on('connection', socket => {
         socket.data.localGame = {
             token,
             startedAt: Date.now(),
+            initialDeck: shuffleDeck(createDeck()),
+            initialDice: rollDice(),
+            startingPlayer: randomPlayerIndex(),
             statsRecorded: false,
             aiRecorded: false,
         };
-        acknowledge(callback, { success: true, token });
+        acknowledge(callback, { success: true, token, initialDeck: socket.data.localGame.initialDeck, initialDice: socket.data.localGame.initialDice, startingPlayer: socket.data.localGame.startingPlayer });
     });
 
     socket.on('create_room', async ({ playerName, browserId, userId } = {}, callback) => {
@@ -568,6 +594,25 @@ io.on('connection', socket => {
         removeSocketFromRoom(socket, roomId);
     });
 
+    socket.on('buy_skins', async ({ requestId, kind, id, count } = {}, callback) => {
+        try {
+            const userId = socket.data.userId;
+            if (!userId || !/^[a-f0-9-]{36}$/i.test(requestId || '')) throw new Error('Invalid purchase');
+            const { data: previous, error: receiptError } = await supabase.from('skin_purchases').select('receipt').eq('player_id', userId).eq('request_id', requestId).maybeSingle();
+            if (receiptError) throw receiptError;
+            if (previous) return acknowledge(callback, { success: true, ...previous.receipt });
+            const { data: owned, error } = await supabase.from('player_skins').select('kind,skin_id').eq('player_id', userId);
+            if (error) throw error;
+            const purchase = selectSkinPurchase(owned, kind, id, count);
+            const { data, error: buyError } = await supabase.rpc('buy_skins', { p_player: userId, p_request: requestId, p_items: purchase.items, p_cost: purchase.cost });
+            if (buyError) throw buyError;
+            acknowledge(callback, { success: true, ...data });
+        } catch (error) {
+            console.error('Unable to buy skins:', error);
+            acknowledge(callback, { success: false, error: 'Purchase failed. Check your balance and try again.' });
+        }
+    });
+
     socket.on('deduct_coins', async ({ amount, browserId, userId } = {}, callback) => {
         try {
             if (!userId || !isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
@@ -593,37 +638,7 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('update_player_stats', async ({ userId, result, gameToken } = {}, callback) => {
-        try {
-            if (!userId || !isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
-            if (!['win', 'loss', 'draw'].includes(result)) throw new Error('Invalid result');
-            const localGame = socket.data.localGame;
-            if (!localGame || localGame.token !== gameToken || localGame.statsRecorded) throw new Error('Invalid game session');
-            if (Date.now() - localGame.startedAt < 30_000) throw new Error('Game finished too quickly');
-            if (Date.now() - (recentStatUpdates.get(userId) || 0) < 30_000) throw new Error('Stats update too frequent');
-
-            const reward = result === 'win' ? 30 : result === 'draw' ? 20 : 10;
-            const { data, error } = await supabase.rpc('record_player_result', {
-                p_player_id: userId,
-                p_result: result,
-                p_reward: reward,
-            });
-            if (error) throw error;
-            const stats = Array.isArray(data) ? data[0] : data;
-            if (!stats) throw new Error('Stats transaction returned no result');
-            localGame.statsRecorded = true;
-            recentStatUpdates.set(userId, Date.now());
-            acknowledge(callback, {
-                success: true,
-                newLevel: stats.new_level,
-                leveledUp: stats.new_level > stats.old_level,
-                coinsEarned: reward,
-            });
-        } catch (error) {
-            console.error('Unable to update player stats:', error);
-            acknowledge(callback, { success: false, error: 'Unable to update stats' });
-        }
-    });
+    socket.on('update_player_stats', (_payload, callback) => acknowledge(callback, { success: false, error: 'Update the app to collect match rewards' }));
 
     socket.on('update_ai_parameters', async ({ aiWon, isDraw = false, gameToken } = {}, callback) => {
         try {
@@ -660,7 +675,7 @@ io.on('connection', socket => {
         const game = games.get(membership.roomId);
         if (socket.id !== game?.p1SocketId || game.placementCount !== 30) return;
         try {
-            await processRankedResult(membership.roomId, winner);
+            await settleOnlineMatch(membership.roomId, winner);
         } catch (error) {
             console.error('Unable to update ratings:', error);
         }
@@ -672,18 +687,21 @@ io.on('connection', socket => {
         const surrenderIndex = membership.room.players.findIndex(player => player.id === socket.id);
         const winner = surrenderIndex === 0 ? 'p2' : 'p1';
         try {
-            await processRankedResult(membership.roomId, winner);
+            await settleOnlineMatch(membership.roomId, winner);
         } catch (error) {
             console.error('Unable to update surrender rating:', error);
         }
         io.to(membership.roomId).emit('game_end_surrender', { winner, surrendererId: socket.id });
     });
 
-    socket.on('game_action', ({ roomId: rawRoomId, action } = {}) => {
+    socket.on('game_action', async ({ roomId: rawRoomId, action } = {}) => {
         const membership = getRoomForSocket(socket, rawRoomId);
         if (!membership || !isValidGameAction(action)) return;
         if (!validateAndApplyGameAction(socket, membership, action)) return;
         socket.to(membership.roomId).emit('game_action', action);
+        if (games.get(membership.roomId)?.placementCount === 30) {
+            try { await settleOnlineMatch(membership.roomId); } catch (error) { console.error('Unable to settle match:', error); }
+        }
     });
 
     socket.on('sync_state', ({ roomId: rawRoomId, state } = {}) => {
@@ -718,6 +736,7 @@ io.on('connection', socket => {
     socket.on('accept_rematch', ({ roomId: rawRoomId } = {}) => {
         const membership = getRoomForSocket(socket, rawRoomId);
         if (!membership || membership.room.players.length !== 2) return;
+        if (!games.get(membership.roomId)?.processed) return;
         if (!membership.room.rematchRequestedBy || membership.room.rematchRequestedBy === socket.id) return;
         membership.room.rematchRequestedBy = null;
         startGame(membership.roomId, membership.room);
@@ -735,10 +754,10 @@ io.on('connection', socket => {
             if (disconnectedIndex === -1) continue;
 
             const game = games.get(roomId);
-            if (game?.isRanked && room.players.length === 2 && !game.processed) {
+            if (game && room.players.length === 2 && !game.processed) {
                 const winner = disconnectedIndex === 0 ? 'p2' : 'p1';
                 try {
-                    await processRankedResult(roomId, winner);
+                    await settleOnlineMatch(roomId, winner);
                 } catch (error) {
                     console.error('Unable to update disconnect rating:', error);
                 }

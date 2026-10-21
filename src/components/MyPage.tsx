@@ -29,6 +29,7 @@ interface MyPageProps {
 interface Profile {
     id: string;
     rating: number;
+    ai_rating: number;
     xp: number;
     level: number;
     games_played: number;
@@ -82,7 +83,7 @@ export const MyPage: React.FC<MyPageProps> = ({
             try {
                 const { data: rawProfile, error: profileError } = await supabase
                     .from('players')
-                    .select('id, rating, xp, level, games_played, wins, current_win_streak, username')
+                    .select('id, rating, ai_rating, xp, level, games_played, wins, current_win_streak, username')
                     .eq('id', userId)
                     .single();
 
@@ -266,6 +267,7 @@ export const MyPage: React.FC<MyPageProps> = ({
                                 <label>{t('common.rating')}</label>
                                 <div className="value">{profile.rating}</div>
                             </div>
+                            <div className="stat-card"><label>AI RATING</label><div className="value">{profile.ai_rating}</div></div>
                             <div className="stat-card">
                                 <label>{t('mypage.games')}</label>
                                 <div className="value">{totalGames}</div>
