@@ -37,3 +37,5 @@
 }
 
 @media (max-width: 360px) { .reward-totals strong { font-size: 22px; } }
+.reward-cosmetics { display: grid; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.reward-cosmetics > div { display: flex; gap: 8px; align-items: center; color: #e8c47c; font-size: .8rem; }

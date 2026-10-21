@@ -42,21 +42,21 @@
 }
 
 /* 3. Blue Modern */
-.card-back-blue-modern {
+.card-back-blue-modern, .card-back-earned-cobalt {
   border-color: #bbdefb !important;
 }
 
-.card-back-blue-modern .card-back {
+.card-back-blue-modern .card-back, .card-back-earned-cobalt .card-back {
   background: linear-gradient(135deg, #1565c0 25%, #0d47a1 25%, #0d47a1 50%, #1565c0 50%, #1565c0 75%, #0d47a1 75%, #0d47a1 100%);
   background-size: 20px 20px;
 }
 
 /* 4. Luxury Gold */
-.card-back-gold-luxury {
+.card-back-gold-luxury, .card-back-earned-crown {
   border-color: #ffd700 !important;
 }
 
-.card-back-gold-luxury .card-back {
+.card-back-gold-luxury .card-back, .card-back-earned-crown .card-back {
   background: linear-gradient(45deg, #ffd700, #ffecb3, #ffb300, #ffd700);
   background-size: 200% 200%;
   animation: shimmer 5s ease infinite;
@@ -457,3 +457,6 @@
     background: transparent;
   }
 }
+
+.card-back-earned-cobalt .card-back { filter: brightness(1.3) saturate(.8); }
+.card-back-earned-crown .card-back { filter: brightness(.85) saturate(.7); }

@@ -67,9 +67,9 @@ export interface GameState {
     winner: 'p1' | 'p2' | 'draw' | null;
 }
 
-export type DiceSkin = 'white' | 'red' | 'blue' | 'green' | 'yellow' | 'purple' | 'black' | 'pink' | 'orange' | 'teal' | 'silver' | 'gold';
-export type CardSkin = 'classic' | 'red-modern' | 'blue-modern' | 'gold-luxury' | 'cyber-neon' | 'dark-matter' | 'wood-grain' | 'matrix' | 'sunset' | 'royal-purple' | 'cool-mint' | 'dragon-scale';
-export type BoardSkin = 'classic-green' | 'midnight-blue' | 'casino-red' | 'void-black' | 'neon-grid' | 'warm-wood' | 'ice-blue' | 'royal-gold' | 'cyber-punk' | 'minimal-grey' | 'space-station' | 'volcano';
+export type DiceSkin = 'white' | 'red' | 'blue' | 'green' | 'yellow' | 'purple' | 'black' | 'pink' | 'orange' | 'teal' | 'silver' | 'gold' | 'earned-copper' | 'earned-ember';
+export type CardSkin = 'classic' | 'red-modern' | 'blue-modern' | 'gold-luxury' | 'cyber-neon' | 'dark-matter' | 'wood-grain' | 'matrix' | 'sunset' | 'royal-purple' | 'cool-mint' | 'dragon-scale' | 'earned-cobalt' | 'earned-crown';
+export type BoardSkin = 'classic-green' | 'midnight-blue' | 'casino-red' | 'void-black' | 'neon-grid' | 'warm-wood' | 'ice-blue' | 'royal-gold' | 'cyber-punk' | 'minimal-grey' | 'space-station' | 'volcano' | 'earned-champion' | 'earned-veteran';
 
 export const AVAILABLE_DICE_SKINS: { id: DiceSkin; name: string; color: string }[] = [
     { id: 'white', name: 'Classic White', color: '#ffffff' },
@@ -84,6 +84,8 @@ export const AVAILABLE_DICE_SKINS: { id: DiceSkin; name: string; color: string }
     { id: 'teal', name: 'Aqua Teal', color: '#00796b' },
     { id: 'silver', name: 'Chrome Silver', color: '#c0c0c0' },
     { id: 'gold', name: 'Pure Gold', color: '#ffd700' },
+    { id: 'earned-copper', name: 'Copper', color: '#a95132' },
+    { id: 'earned-ember', name: 'Ember', color: '#872637' },
 ];
 
 export const AVAILABLE_CARD_SKINS: { id: CardSkin; name: string; color: string }[] = [
@@ -99,6 +101,8 @@ export const AVAILABLE_CARD_SKINS: { id: CardSkin; name: string; color: string }
     { id: 'royal-purple', name: 'Royal Velvet', color: '#6200ea' },
     { id: 'cool-mint', name: 'Cool Mint', color: '#a7ffeb' },
     { id: 'dragon-scale', name: 'Dragon Scale', color: '#bf360c' },
+    { id: 'earned-cobalt', name: 'Cobalt Foil', color: '#3463af' },
+    { id: 'earned-crown', name: 'Crown', color: '#d3ab62' },
 ];
 
 export const AVAILABLE_BOARD_SKINS: { id: BoardSkin; name: string; color: string }[] = [
@@ -114,4 +118,6 @@ export const AVAILABLE_BOARD_SKINS: { id: BoardSkin; name: string; color: string
     { id: 'minimal-grey', name: 'Minimalist', color: '#eeeeee' },
     { id: 'space-station', name: 'Space Station', color: '#cfd8dc' },
     { id: 'volcano', name: 'Volcano', color: '#3e2723' },
+    { id: 'earned-champion', name: 'Champion Table', color: '#152c38' },
+    { id: 'earned-veteran', name: 'Veteran Table', color: '#263f38' },
 ];

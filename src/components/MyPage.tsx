@@ -13,6 +13,9 @@ import { PremiumBadge } from './PremiumBadge';
 import { GameRecordViewer } from './GameRecordViewer';
 import './MyPage.css';
 import { useI18n, type Translate } from '../i18n';
+import { TitlePicker } from './TitlePicker';
+import { achievementReward } from '../logic/progression';
+import { LetteringText } from './LetteringText';
 import { buildAchievementCatalog } from '../logic/achievements';
 
 interface MyPageProps {
@@ -263,6 +266,7 @@ export const MyPage: React.FC<MyPageProps> = ({
 
                     {!loading && activeTab === 'stats' && profile && (
                         <div className="stats-view">
+                            <TitlePicker userId={userId} />
                             <div className="stat-card">
                                 <label>{t('common.rating')}</label>
                                 <div className="value">{profile.rating}</div>
@@ -382,6 +386,7 @@ export const MyPage: React.FC<MyPageProps> = ({
                                         <div className="icon" aria-hidden="true">{achievement ? '✓' : '◇'}</div>
                                         <div className="info">
                                             <div className="title">{title}</div>
+                                            <div className="achievement-payout"><LetteringText>{`＋${achievementReward(type).coins} COINS / ＋${achievementReward(type).xp} XP`}</LetteringText></div>
                                             {achievement ? (
                                                 <div className="date">
                                                     {t('mypage.unlockedOn', { date: new Date(achievement.unlocked_at).toLocaleDateString(locale) })}

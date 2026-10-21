@@ -1,3 +1,5 @@
+import { COSMETICS } from './logic/progression';
+import { loadProgression } from './logic/progressionStorage';
 import { lazy, Suspense, useCallback, useEffect, useEffectEvent, useReducer, useRef, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import {
@@ -103,6 +105,8 @@ interface GameStartPayload {
   initialDice: number[];
   initialDeck: Card[];
   p1Name: string;
+  p1Title?: string | null;
+  p2Title?: string | null;
   p2Name: string;
   p1Id: string;
   p2Id: string;
@@ -284,6 +288,7 @@ function App() {
     return saved || generateRandomPlayerName();
   });
   const [opponentName, setOpponentName] = useState('Player 2');
+  const [opponentTitle, setOpponentTitle] = useState<string | null>(null);
 
   // Refs for accessing reliable state in event listeners
   const modeRef = useRef(mode);
@@ -374,6 +379,36 @@ function App() {
   const [selectedBoardSkin, setSelectedBoardSkin] = useState<BoardSkin>(() => {
     return loadSelectedSkin<BoardSkin>('xypoker_selectedBoardSkin', 'classic-green', unlockedBoardSkins);
   });
+
+  const restoreSkins = useCallback((skins: { kind: string; skin_id: string }[]) => {
+    const merge = <T extends string,>(kind: string, key: string, set: React.Dispatch<React.SetStateAction<T[]>>) => {
+      const ids = skins.filter(s => s.kind === kind).map(s => s.skin_id as T);
+
+      set(previous => {
+        const next = [...new Set([...previous.filter(id => !COSMETICS.some(c => c.kind === kind && c.id === id)), ...ids])];
+        localStorage.setItem(key, JSON.stringify(next));
+        return next;
+      });
+    };
+    merge('dice', 'xypoker_unlockedSkins', setUnlockedSkins);
+    merge('card', 'xypoker_unlockedCardSkins', setUnlockedCardSkins);
+    merge('board', 'xypoker_unlockedBoardSkins', setUnlockedBoardSkins);
+    const valid = (kind: string, id: string) => !COSMETICS.some(c => c.kind === kind && c.id === id) || skins.some(s => s.kind === kind && s.skin_id === id);
+    setSelectedSkin(prev => valid('dice', prev) ? prev : 'white');
+    setSelectedCardSkin(prev => valid('card', prev) ? prev : 'classic');
+    setSelectedBoardSkin(prev => valid('board', prev) ? prev : 'classic-green');
+  }, []);
+  const [playerTitle, setPlayerTitle] = useState<string | null>(null);
+  useEffect(() => {
+    if (isSessionLoading) return;
+    let cancelled = false;
+    void loadProgression(session?.user.id).then(data => {
+      if (!cancelled) { restoreSkins(data.skins); setPlayerTitle(data.selectedTitle); }
+    }).catch(() => {});
+    const update = (event: Event) => setPlayerTitle((event as CustomEvent<string | null>).detail);
+    window.addEventListener('xypoker-title', update);
+    return () => { cancelled = true; window.removeEventListener('xypoker-title', update); };
+  }, [session, isSessionLoading, restoreSkins]);
 
   // -- UNLOCK HANDLERS --
   const handleUnlockSkin = (skinId: DiceSkin) => {
@@ -555,10 +590,12 @@ function App() {
       if (socket.id === p1Id) {
         setPlayerRole('host');
         setOpponentName(p2Name || 'Player 2');
+        setOpponentTitle(data.p2Title ?? null);
         setPlayerName(p1Name); // Host is always p1
       } else if (socket.id === p2Id) {
         setPlayerRole('guest');
         setOpponentName(p1Name || 'Player 1');
+        setOpponentTitle(data.p1Title ?? null);
         setPlayerName(p2Name); // Guest is always p2
       }
 
@@ -1697,6 +1734,8 @@ function App() {
           gameState={gameState}
           isOnlineMode={mode === 'online'}
           playerRole={playerRole}
+          opponentTitle={isOnlineGame ? COSMETICS.find(c => c.kind === 'title' && c.id === opponentTitle)?.name : undefined}
+          playerTitle={COSMETICS.find(c => c.kind === 'title' && c.id === playerTitle)?.name}
           playerName={playerName}
           opponentName={opponentName}
           onSurrender={handleSurrender}
@@ -1786,7 +1825,7 @@ function App() {
                           <div className="home-player-bar">
                             <HomeIcon name="account" className="home-player-icon" />
                             <div className="home-player-copy">
-                              <strong><LetteringText>{playerName || t('common.guest')}</LetteringText></strong>
+                              <strong><LetteringText>{playerName || t('common.guest')}</LetteringText>{playerTitle && <small className="player-title"><LetteringText>{COSMETICS.find(c => c.kind === 'title' && c.id === playerTitle)?.name ?? ''}</LetteringText></small>}</strong>
                             </div>
                           </div>
                           <div className="home-rating" aria-label={`RATING ${myRating || 1500}`}>
@@ -1888,7 +1927,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v10212200</LetteringText></div>
+                          <div className="home-version"><LetteringText>v10212228</LetteringText></div>
                         </div>
                       </div>
                     )}
@@ -2204,6 +2243,7 @@ function App() {
         onClose={() => setShowSkinStore(false)}
         userId={session?.user?.id}
         isPremium={isPremium}
+        onRestore={restoreSkins}
         unlockedSkins={unlockedSkins}
         selectedSkin={selectedSkin}
         onUnlock={handleUnlockSkin}

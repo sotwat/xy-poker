@@ -1,0 +1,106 @@
+[
+  {
+    "kind": "dice",
+    "id": "earned-copper",
+    "name": "Copper",
+    "color": "#a95132",
+    "level": 5,
+    "achievement": null
+  },
+  {
+    "kind": "card",
+    "id": "earned-cobalt",
+    "name": "Cobalt Foil",
+    "color": "#3463af",
+    "level": 10,
+    "achievement": null
+  },
+  {
+    "kind": "board",
+    "id": "earned-champion",
+    "name": "Champion Table",
+    "color": "#152c38",
+    "level": 20,
+    "achievement": null
+  },
+  {
+    "kind": "dice",
+    "id": "earned-ember",
+    "name": "Ember",
+    "color": "#872637",
+    "level": null,
+    "achievement": "win_streak_5"
+  },
+  {
+    "kind": "card",
+    "id": "earned-crown",
+    "name": "Crown",
+    "color": "#d3ab62",
+    "level": null,
+    "achievement": "perfect_game"
+  },
+  {
+    "kind": "board",
+    "id": "earned-veteran",
+    "name": "Veteran Table",
+    "color": "#263f38",
+    "level": null,
+    "achievement": "games_100"
+  },
+  {
+    "kind": "title",
+    "id": "challenger",
+    "name": "Challenger",
+    "level": 3,
+    "achievement": null
+  },
+  {
+    "kind": "title",
+    "id": "regular",
+    "name": "Regular",
+    "level": 10,
+    "achievement": null
+  },
+  {
+    "kind": "title",
+    "id": "elite",
+    "name": "Elite",
+    "level": 20,
+    "achievement": null
+  },
+  {
+    "kind": "title",
+    "id": "first-blood",
+    "name": "First Blood",
+    "level": null,
+    "achievement": "first_win"
+  },
+  {
+    "kind": "title",
+    "id": "on-fire",
+    "name": "On Fire",
+    "level": null,
+    "achievement": "win_streak_5"
+  },
+  {
+    "kind": "title",
+    "id": "royal",
+    "name": "Royal",
+    "level": null,
+    "achievement": "x_win_royal_flush"
+  },
+  {
+    "kind": "title",
+    "id": "flawless",
+    "name": "Flawless",
+    "level": null,
+    "achievement": "perfect_game"
+  },
+  {
+    "kind": "title",
+    "id": "veteran",
+    "name": "Veteran",
+    "level": null,
+    "achievement": "games_100"
+  }
+]

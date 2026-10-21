@@ -5,6 +5,10 @@ import {
     AVAILABLE_DICE_SKINS, AVAILABLE_CARD_SKINS, AVAILABLE_BOARD_SKINS,
     type DiceSkin, type CardSkin, type BoardSkin
 } from '../logic/types';
+import { earnedSkin, cosmeticCondition } from '../logic/progression';
+import { loadProgression } from '../logic/progressionStorage';
+import { LetteringText } from './LetteringText';
+import { TitlePicker } from './TitlePicker';
 import { Dice } from './Dice';
 import { playClickSound } from '../utils/sound';
 import './SkinStore.css';
@@ -20,6 +24,7 @@ interface SkinStoreProps {
     userId?: string; // Added userId
     isPremium?: boolean; // [NEW]
 
+    onRestore: (skins: { kind: string; skin_id: string }[]) => void;
     // Dice
     unlockedSkins: DiceSkin[];
     selectedSkin: DiceSkin;
@@ -41,7 +46,8 @@ interface SkinStoreProps {
 
 import { GachaReveal } from './GachaReveal';
 
-type Tab = 'dice' | 'card' | 'board';
+type SkinTab = 'dice' | 'card' | 'board';
+type Tab = SkinTab | 'title';
 type UnlockableItem = { type: 'dice' | 'card' | 'board', id: string };
 type PreviewProps = { id: string; color: string };
 
@@ -49,7 +55,7 @@ const GACHA_COST_SINGLE = 100;
 const GACHA_COST_MULTI = 1000;
 
 export const SkinStore: React.FC<SkinStoreProps> = ({
-    isOpen, onClose, userId, isPremium = false,
+    isOpen, onClose, userId, isPremium = false, onRestore,
     unlockedSkins, selectedSkin, onUnlock, onSelect,
     unlockedCardSkins, selectedCardSkin, onUnlockCard, onSelectCard,
     unlockedBoardSkins, selectedBoardSkin, onUnlockBoard, onSelectBoard
@@ -93,18 +99,13 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
     }, [fetchCoins, isOpen, userId]);
 
     useEffect(() => {
-        if (!isOpen || !userId) return;
+        if (!isOpen) return;
         let cancelled = false;
-        void supabase.from('player_skins').select('kind,skin_id').eq('player_id', userId).then(({ data }) => {
-            if (cancelled) return;
-            for (const skin of data ?? []) {
-                if (skin.kind === 'dice' && !unlockedSkins.includes(skin.skin_id as DiceSkin)) onUnlock(skin.skin_id as DiceSkin);
-                if (skin.kind === 'card' && !unlockedCardSkins.includes(skin.skin_id as CardSkin)) onUnlockCard(skin.skin_id as CardSkin);
-                if (skin.kind === 'board' && !unlockedBoardSkins.includes(skin.skin_id as BoardSkin)) onUnlockBoard(skin.skin_id as BoardSkin);
-            }
-        });
+        void loadProgression(userId).then(data => {
+            if (!cancelled) onRestore(data.skins);
+        }).catch(() => { if (!cancelled) setPurchaseError('Inventory unavailable'); });
         return () => { cancelled = true; };
-    }, [isOpen, userId, unlockedSkins, unlockedCardSkins, unlockedBoardSkins, onUnlock, onUnlockCard, onUnlockBoard]);
+    }, [isOpen, userId, onRestore]);
 
     if (!isOpen) return null;
 
@@ -114,17 +115,17 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         const defaults = ['white', 'classic', 'classic-green'];
 
         AVAILABLE_DICE_SKINS.forEach(s => {
-            if (!defaults.includes(s.id) && !unlockedSkins.includes(s.id as DiceSkin)) {
+            if (!earnedSkin('dice', s.id) && !defaults.includes(s.id) && !unlockedSkins.includes(s.id as DiceSkin)) {
                 locked.push({ type: 'dice', id: s.id });
             }
         });
         AVAILABLE_CARD_SKINS.forEach(s => {
-            if (!defaults.includes(s.id) && !unlockedCardSkins.includes(s.id as CardSkin)) {
+            if (!earnedSkin('card', s.id) && !defaults.includes(s.id) && !unlockedCardSkins.includes(s.id as CardSkin)) {
                 locked.push({ type: 'card', id: s.id });
             }
         });
         AVAILABLE_BOARD_SKINS.forEach(s => {
-            if (!defaults.includes(s.id) && !unlockedBoardSkins.includes(s.id as BoardSkin)) {
+            if (!earnedSkin('board', s.id) && !defaults.includes(s.id) && !unlockedBoardSkins.includes(s.id as BoardSkin)) {
                 locked.push({ type: 'board', id: s.id });
             }
         });
@@ -139,7 +140,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         });
     };
 
-    const purchase = async (items: UnlockableItem[], cost: number, request: { kind?: Tab; id?: string; count?: number }) => {
+    const purchase = async (items: UnlockableItem[], cost: number, request: { kind?: SkinTab; id?: string; count?: number }) => {
         if (isPurchasing) return;
         if (userCoins < cost) { setPurchaseError(t('store.notEnough', { cost })); return; }
         setIsPurchasing(true);
@@ -202,7 +203,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
         }
 
         // Take unique items
-        // If we want allow duplicates across user inventory but NOT in the single pull, 
+        // If we want allow duplicates across user inventory but NOT in the single pull,
         // we just take the first N from the shuffled list.
         // (Assuming pool size > 10, which it is: 12+12+12 = 36 - 3 = 33 items)
         const results = allItems.slice(0, pullCount);
@@ -253,6 +254,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
 
     // Render Tab Content
     const renderContent = () => {
+        if (activeTab === 'title') return <TitlePicker userId={userId} showHeading={false} />;
         let items: { id: string, name: string, color: string }[] = [];
         let unlocked: string[] = [];
         let selected: string = '';
@@ -294,6 +296,7 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                 {items.map((item) => {
                     const isUnlocked = unlocked.includes(item.id);
                     const isSelected = selected === item.id;
+                    const earned = earnedSkin(activeTab, item.id);
 
                     return (
                         <button
@@ -301,14 +304,15 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                             key={item.id}
                             className={`skin-item ${isUnlocked ? 'unlocked' : 'locked'} ${isSelected ? 'selected' : ''}`}
                             onClick={() => isUnlocked ? handleSkinClick(item.id, true, selectFn) : void purchase([{ type: activeTab, id: item.id }], 300, { kind: activeTab, id: item.id })}
-                            disabled={isPurchasing}
+                            disabled={isPurchasing || (!isUnlocked && Boolean(earned))}
                             aria-pressed={isSelected}
                         >
                             <div className="skin-preview">
                                 <PreviewComponent id={item.id} color={item.color} />
                             </div>
                             <div className="skin-name">{item.name}</div>
-                            {!isUnlocked && <span className="skin-buy-price"><Coins size={14} aria-hidden="true" /> 300</span>}
+                            {earned && <small className="skin-condition"><LetteringText>{cosmeticCondition(earned)}</LetteringText></small>}
+                            {!isUnlocked && !earned && <span className="skin-buy-price"><Coins size={14} aria-hidden="true" /> 300</span>}
                             {isSelected && <span className="check-icon"><Check aria-hidden="true" /></span>}
                         </button>
                     );
@@ -360,9 +364,11 @@ export const SkinStore: React.FC<SkinStoreProps> = ({
                     <button type="button" className={`tab-btn ${activeTab === 'dice' ? 'active' : ''}`} onClick={() => setActiveTab('dice')}>{t('store.dice')}</button>
                     <button type="button" className={`tab-btn ${activeTab === 'card' ? 'active' : ''}`} onClick={() => setActiveTab('card')}>{t('store.cards')}</button>
                     <button type="button" className={`tab-btn ${activeTab === 'board' ? 'active' : ''}`} onClick={() => setActiveTab('board')}>{t('store.boards')}</button>
+                    <button type="button" className={`tab-btn ${activeTab === 'title' ? 'active' : ''}`} onClick={() => setActiveTab('title')}><LetteringText>TITLES</LetteringText></button>
                 </div>
 
                 {renderContent()}
+
 
                 <button type="button" className="btn-close" onClick={() => { playClickSound(); onClose(); }}>{t('common.close')}</button>
             </div>

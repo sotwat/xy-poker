@@ -107,3 +107,4 @@
 .surrender-btn:hover {
     background: rgba(255, 88, 88, 0.3);
 }
+.score-name-copy { display: flex; flex-direction: column; min-width: 0; }

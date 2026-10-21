@@ -1,5 +1,6 @@
 import { Coins, Flame, Trophy, TrendingUp } from 'lucide-react';
 import { advancedAchievements, type MatchRewards as Rewards } from '../logic/matchRewards';
+import { COSMETICS } from '../logic/progression';
 import { LetteringText } from './LetteringText';
 import { useI18n } from '../i18n';
 import './MatchRewards.css';
@@ -24,9 +25,14 @@ export function MatchRewards({ rewards, error, onRetry }: { rewards: Rewards | n
             {(rewards.breakdown.levelUp ?? 0) > 0 && <span><TrendingUp size={14} aria-hidden="true" /><LetteringText>{`LEVEL UP ＋${rewards.breakdown.levelUp}`}</LetteringText></span>}
         </div>
         <div className="reward-challenge"><span><LetteringText>3 WINS</LetteringText></span><progress max={3} value={rewards.breakdown.challenge > 0 ? 3 : challengeProgress} aria-label="Three-win reward" /><span><LetteringText>{rewards.breakdown.challenge > 0 ? '3 / 3' : `${challengeProgress} / 3`}</LetteringText></span></div>
+        {(rewards.cosmetics?.length ?? 0) > 0 && <div className="reward-cosmetics">{rewards.cosmetics!.map(id => {
+            const item = COSMETICS.find(c => c.id === id);
+            return item && <div key={id}><Trophy size={16} aria-hidden="true" /><LetteringText>{`${item.kind.toUpperCase()} · ${item.name}`}</LetteringText></div>;
+        })}</div>}
         {progress.length > 0 && <div className="result-achievements">
             {progress.map(row => <div className={`result-achievement ${rewards.unlocked.includes(row.type) ? 'achievement-earned' : ''}`} key={row.type}>
                 <div><span>{rewards.unlocked.includes(row.type) && <Trophy size={15} aria-hidden="true" />}<LetteringText>{t(`achievement.${row.type}`)}</LetteringText></span><small><LetteringText>{rewards.unlocked.includes(row.type) ? 'UNLOCKED' : `${row.progress!.current} / ${row.progress!.target}`}</LetteringText></small></div>
+                {rewards.achievementRewards?.find(a => a.id === row.type) && <small><LetteringText>{`＋${rewards.achievementRewards.find(a => a.id === row.type)!.coins} COINS / ＋${rewards.achievementRewards.find(a => a.id === row.type)!.xp} XP`}</LetteringText></small>}
                 {row.progress && <progress max={row.progress.target} value={row.progress.current} aria-label={t(`achievement.${row.type}`)} />}
             </div>)}
         </div>}

@@ -1,4 +1,5 @@
 import { buildAchievementCatalog, type AchievementProgressStats } from './achievements';
+import { achievementReward, levelReward, unlockedCosmetics } from './progression';
 import { evaluateYHand, evaluateXHand } from './evaluation';
 import type { Card, YHandType, XHandType } from './types';
 import type { GameRecordData } from './gameRecord';
@@ -12,7 +13,9 @@ export interface MatchRewards {
     coins: RewardChange;
     xp: RewardChange;
     level: { old: number; new: number };
-    breakdown: { base: number; margin: number; streak: number; challenge: number; levelUp?: number };
+    breakdown: { base: number; margin: number; streak: number; challenge: number; levelUp?: number; achievement?: number };
+    achievementRewards?: { id: string; coins: number; xp: number }[];
+    cosmetics?: string[];
     before: AchievementProgressStats;
     after: AchievementProgressStats;
     unlocked: string[];
@@ -145,24 +148,29 @@ export function awardGuestMatch(record: GameRecordData): MatchRewards {
     const margin = won ? Math.min(20, Math.max(0, record.scores[0] - record.scores[1])) : 0;
     const streak = won ? Math.min(5, after.currentWinStreak - 1) : 0;
     const challenge = won && after.wins % 3 === 0 ? 1 : 0;
-    const breakdown = { base: won ? 30 : result === 'draw' ? 20 : 10, margin: margin * 2, streak: streak * 5, challenge: challenge * 25, levelUp: 0 };
-    const xp = (won ? 100 : result === 'draw' ? 60 : 40) + margin * 3 + streak * 10 + challenge * 50;
-    let level = old.level;
-    while (old.xp + xp >= level * 100 + level * level * 50) level++;
-    breakdown.levelUp = (level - old.level) * 100 + (Math.floor(level / 5) - Math.floor(old.level / 5)) * 200;
-    const coins = Object.values(breakdown).reduce((a, b) => a + b, 0);
     const ratingDelta = Math.round(32 * ((won ? 1 : result === 'draw' ? 0.5 : 0) - 1 / (1 + 10 ** ((1500 - old.rating) / 400))));
     const newRating = Math.max(0, old.rating + ratingDelta);
     const earned = buildAchievementCatalog([], after).filter(row => row.progress && row.progress.current === row.progress.target).map(row => row.type);
     if (won) earned.push('first_win');
     earned.push(...getGuestGameAchievements(record));
     const achievements = [...new Set([...old.achievements, ...earned])];
+    const unlocked = achievements.filter(type => !old.achievements.includes(type));
+    const achievementRewards = unlocked.map(id => ({ id, ...achievementReward(id) }));
+    const achievementCoins = achievementRewards.reduce((sum, reward) => sum + reward.coins, 0);
+    const achievementXp = achievementRewards.reduce((sum, reward) => sum + reward.xp, 0);
+    const breakdown = { base: won ? 30 : result === 'draw' ? 20 : 10, margin: margin * 2, streak: streak * 5, challenge: challenge * 25, levelUp: 0, achievement: achievementCoins };
+    const xp = (won ? 100 : result === 'draw' ? 60 : 40) + margin * 3 + streak * 10 + challenge * 50 + achievementXp;
+    let level = old.level;
+    while (old.xp + xp >= level * 100 + level * level * 50) level++;
+    breakdown.levelUp = levelReward(old.level, level);
+    const coins = Object.values(breakdown).reduce((a, b) => a + b, 0);
     const balance = Number(localStorage.getItem('xypoker_guest_coins')) || 0;
     const rewards: MatchRewards = {
         matchId: record.id, mode: 'bot', result, rating: { old: old.rating, new: newRating, change: newRating - old.rating },
         coins: { old: balance, new: balance + coins, change: coins }, xp: { old: old.xp, new: old.xp + xp, change: xp },
         level: { old: old.level, new: level }, breakdown, before: old.stats, after,
-        unlocked: achievements.filter(type => !old.achievements.includes(type)), achievements,
+        unlocked, achievements, achievementRewards,
+        cosmetics: unlockedCosmetics(level, achievements).filter(c => !unlockedCosmetics(old.level, old.achievements).some(p => p.id === c.id)).map(c => c.id),
     };
     localStorage.setItem('xypoker_guest_coins', String(balance + coins));
     localStorage.setItem(key, JSON.stringify({ stats: after, xp: rewards.xp.new, level, rating: newRating, achievements, receipts: [...old.receipts.slice(-49), rewards] }));

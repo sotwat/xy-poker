@@ -687,3 +687,7 @@
 .skin-buy-price { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; margin-top: 8px; color: var(--text-secondary); }
 .purchase-error { color: var(--text-primary); font-size: 13px; }
 .skin-item.locked { cursor: pointer; }
+.skin-condition { font-size: .65rem; line-height: 1.4; color: var(--text-secondary); }
+.skin-store-modal .skin-item:disabled { cursor: default; opacity: .65; }
+.skin-store-modal .store-tabs { gap: 6px; }
+.skin-store-modal .store-tabs .tab-btn { flex: 1; min-width: 0; padding: 10px 5px; font-size: 11px; }

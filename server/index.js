@@ -81,7 +81,7 @@ app.get('/api/lettering/:kind', async (request, response) => {
     }
 });
 
-const SERVER_VERSION = '10212200';
+const SERVER_VERSION = '10212228';
 
 app.get('/api/health', async (_request, response) => {
     try {
@@ -197,6 +197,7 @@ function toRoomPlayer(socket, player, playerName) {
         dbId: player.id,
         rating: Number(player.rating) || 1500,
         isPremium: Boolean(player.is_premium),
+        title: player.selected_title ?? null,
     };
 }
 
@@ -235,6 +236,8 @@ function startGame(roomId, room) {
         roomId,
         matchId: games.get(roomId).matchId,
         p1Name: p1.name,
+        p1Title: p1.title,
+        p2Title: p2.title,
         p2Name: p2.name,
         p1Rating: p1.rating,
         p2Rating: p2.rating,

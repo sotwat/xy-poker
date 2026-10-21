@@ -191,3 +191,7 @@
 
 .dice.geometry-angular { border-radius: 0; box-shadow: .2em .25em 0 rgb(0 0 0 / 28%); }
 .dice.geometry-angular .dot { width: .6em; height: .6em; border-radius: 0; }
+
+.dice.earned-copper { background: #a95132; border-color: #e8b99b; }
+.dice.earned-ember { background: #872637; border-color: #da7983; }
+.dice.earned-copper .dot, .dice.earned-ember .dot { background: #fff3de; }
