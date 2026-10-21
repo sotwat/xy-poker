@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `10212015` (2026-10-21)
+- **Current Version:** `10212200` (2026-10-21)
 - **Status:** **Match rewards and permanent skin purchases; A9 policy retained**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -95,6 +95,7 @@ graph TD
 
 ## 📜 Recent Changes (Last 10 Updates)
 
+1. **v10212200** (2026-10-21): **Level Rewards** - Each level grants 100 coins; levels divisible by five grant 300 coins. Saved result receipts include the level bonus for AI and online play. Apply v14 after v13.
 1. **v10212015** (2026-10-21): **Match Rewards** - Result receipts show separate AI/ranked rating, coins, XP, unlocks and advancing milestones. Score margin, streaks and every third win increase rewards. Added permanent skins and direct 300-coin purchases; server validates outcomes and stores idempotent transactions. Corrected server split-pair/wheel comparisons to match the client.
 
 1. **v10051618** (2026-10-05): **Four-Unknown Endgame Certificates** - Added held-plan search with reusable opposing counterexamples and shared-card branch bounds. The existing A9 certificates run first; the new stage covers exactly four unknown opponent cards and uses at most 50ms within the same decision deadline. An independent 400-deal-pair corpus yielded 28 additional certificates, all checked against 4,808,160 reducer-scored completions. Global match win-rate improvement remains unmeasured. See [the adoption test](GTO_RESEARCH_20261005.md).

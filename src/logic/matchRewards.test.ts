@@ -84,3 +84,23 @@ test('server comparison matches client for every ordered three-card hand and whe
     const wheel=deck.filter(c=>c.suit==='hearts' && [14,2,3,4,5].includes(c.rank));
     assert.deepEqual(evaluateXHandForAchievement(wheel).kickers, evaluateXHand(wheel).kickers);
 });
+
+test('level coins include milestones and every crossed level, once per match', () => {
+    const values = new Map<string,string>();
+    Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:(k:string)=>values.get(k)??null,setItem:(k:string,v:string)=>values.set(k,v)}});
+    const {record} = playedMatch();
+    const loss = {...record,winner:'p2' as const};
+    for (const [level,xp,expectedLevel,bonus] of [[1,149,2,100],[4,1199,5,300],[5,1200,5,0],[4,5000,10,1000]]) {
+        values.clear();
+        values.set('xypoker_guest_progress',JSON.stringify({stats:{gamesPlayed:0,wins:0,currentWinStreak:0},xp,level,rating:1500,achievements:[],receipts:[]}));
+        values.set('xypoker_guest_coins','50');
+        const receipt=awardGuestMatch(loss);
+        assert.equal(receipt.level.new,expectedLevel);
+        assert.equal(receipt.breakdown.levelUp,bonus);
+        assert.equal(receipt.coins.change,10+bonus);
+        assert.equal(receipt.coins.new,60+bonus);
+        assert.equal(receipt.xp.change,40);
+        assert.deepEqual(awardGuestMatch(loss),receipt);
+        assert.equal(values.get('xypoker_guest_coins'),String(60+bonus));
+    }
+});

@@ -21,6 +21,7 @@ export function MatchRewards({ rewards, error, onRetry }: { rewards: Rewards | n
             {rewards.breakdown.margin > 0 && <span><LetteringText>{`SCORE GAP ＋${rewards.breakdown.margin}`}</LetteringText></span>}
             {rewards.after.currentWinStreak > 1 && <span><Flame size={14} aria-hidden="true" /><LetteringText>{`${rewards.after.currentWinStreak} WIN STREAK ＋${rewards.breakdown.streak}`}</LetteringText></span>}
             {rewards.breakdown.challenge > 0 && <span><Trophy size={14} aria-hidden="true" /><LetteringText>{`3 WINS ＋${rewards.breakdown.challenge}`}</LetteringText></span>}
+            {(rewards.breakdown.levelUp ?? 0) > 0 && <span><TrendingUp size={14} aria-hidden="true" /><LetteringText>{`LEVEL UP ＋${rewards.breakdown.levelUp}`}</LetteringText></span>}
         </div>
         <div className="reward-challenge"><span><LetteringText>3 WINS</LetteringText></span><progress max={3} value={rewards.breakdown.challenge > 0 ? 3 : challengeProgress} aria-label="Three-win reward" /><span><LetteringText>{rewards.breakdown.challenge > 0 ? '3 / 3' : `${challengeProgress} / 3`}</LetteringText></span></div>
         {progress.length > 0 && <div className="result-achievements">

@@ -1888,7 +1888,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v10212015</LetteringText></div>
+                          <div className="home-version"><LetteringText>v10212200</LetteringText></div>
                         </div>
                       </div>
                     )}
