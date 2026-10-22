@@ -42,6 +42,7 @@ def run(directory, milestone, pairs, simulations, minutes):
         payload = {k: saved[k] for k in ('schema', 'features', 'actions', 'rules_sha256',
                                         'config', 'model', 'model_sha256', 'iteration', 'total_games')}
         payload['checkpoint_migrations'] = saved.get('checkpoint_migrations', [])
+        payload['training_method'] = saved.get('training_method', 'legacy-selfplay')
         temporary = snapshot.with_suffix('.pt.tmp')
         torch.save(payload, temporary)
         os.replace(temporary, snapshot)

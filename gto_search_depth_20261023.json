@@ -1,0 +1,128 @@
+{
+  "model_sha256": "b144764d2b6f3941cdf955a7c26a63b03f73816a70304d9336eeafa1427be6a7",
+  "simulations": 128,
+  "purpose": "diagnostic only; first-legal trajectory",
+  "rows": [
+    {
+      "seed": 100523101,
+      "ply": 1,
+      "legal": 40,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.29133859276771545
+    },
+    {
+      "seed": 100523101,
+      "ply": 6,
+      "legal": 40,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.06299212574958801
+    },
+    {
+      "seed": 100523101,
+      "ply": 14,
+      "legal": 24,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.5748031735420227
+    },
+    {
+      "seed": 100523101,
+      "ply": 22,
+      "legal": 16,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.7401574850082397
+    },
+    {
+      "seed": 100523101,
+      "ply": 28,
+      "legal": 8,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.4566929042339325
+    },
+    {
+      "seed": 100523101,
+      "ply": 29,
+      "legal": 16,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.22834645211696625
+    },
+    {
+      "seed": 100523102,
+      "ply": 1,
+      "legal": 40,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.18897637724876404
+    },
+    {
+      "seed": 100523102,
+      "ply": 6,
+      "legal": 40,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.5275590419769287
+    },
+    {
+      "seed": 100523102,
+      "ply": 14,
+      "legal": 24,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.5196850299835205
+    },
+    {
+      "seed": 100523102,
+      "ply": 22,
+      "legal": 16,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.5748031735420227
+    },
+    {
+      "seed": 100523102,
+      "ply": 28,
+      "legal": 8,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.7086614370346069
+    },
+    {
+      "seed": 100523102,
+      "ply": 29,
+      "legal": 16,
+      "terminal_leaves": 0,
+      "neural_leaves": 128,
+      "max_neural_depth": 1,
+      "mean_neural_depth": 0.9921875,
+      "policy_max": 0.6692913174629211
+    }
+  ],
+  "world_samples": -1
+}

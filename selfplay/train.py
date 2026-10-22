@@ -18,6 +18,31 @@ from torch import nn
 from environment import ACTIONS, CARDS, FEATURES, Bridge, XYState, features, resample, rules_digest
 
 SCHEMA = 1
+TRAINING_METHOD = 'mixed-a9-teacher-worlds8-v1'
+
+
+def episode_plan(total_games, population_size):
+    """Half self-play, quarter teacher, quarter past; both seats per opponent."""
+    if total_games < 0 or population_size < 0:
+        raise ValueError('Negative episode count or population size')
+    slot = total_games % 8
+    ordinal = (total_games // 8) * 2 + slot // 4
+    seat = ordinal % 2
+    if slot in (2, 6):
+        return 'baseline', None, seat
+    if slot in (3, 7) and population_size:
+        return 'past-model', (ordinal // 2) % population_size, seat
+    return 'self', None, total_games % 2
+
+
+def training_sample(state, policy, player, source):
+    mask = torch.zeros(ACTIONS, dtype=torch.bool)
+    mask[state.legal_actions()] = True
+    if (not np.isfinite(policy).all() or not np.isclose(policy.sum(), 1)
+            or np.any(policy < 0) or np.any(policy[~mask.numpy()] != 0)):
+        raise ValueError('Invalid training target')
+    return dict(x=torch.from_numpy(features(state.data, player)),
+                pi=torch.from_numpy(policy.copy()), mask=mask, player=player, source=source)
 
 
 class Stopped(Exception):
@@ -65,10 +90,11 @@ class Evaluator:
         return np.array([value, -value]) if state.current_player() == 0 else np.array([-value, value])
 
 
-def search(state, model, simulations, rng, check_stop=lambda: None, explore=False):
+def search(state, model, simulations, rng, check_stop=lambda: None, explore=False, world_samples=8):
     evaluator = Evaluator(model, check_stop, rng, state.observation_string() if explore else None)
     bot = ismcts.ISMCTSBot(state.get_game(), evaluator, uct_c=1.5,
                           max_simulations=simulations, random_state=rng,
+                          max_world_samples=world_samples,
                           use_observation_string=True, allow_inconsistent_action_sets=False,
                           final_policy_type=ismcts.ISMCTSFinalPolicyType.NORMALIZED_VISITED_COUNT,
                           child_selection_policy=ismcts.ChildSelectionPolicy.PUCT)
@@ -102,16 +128,17 @@ def play(bridge, model, seed, simulations, check_stop=lambda: None, opponent=Non
         if opponent == 'baseline' and player != model_seat:
             action = bridge.call('baseline', state=state.data, baseline=baseline,
                                  seed=int(rng.randint(2**31)))
+            if training:
+                policy = np.zeros(ACTIONS, dtype=np.float32)
+                policy[action] = 1
+                samples.append(training_sample(state, policy, player, 'teacher-' + baseline))
         elif opponent == 'random' and player != model_seat:
             action = int(rng.choice(state.legal_actions()))
         else:
             actor_model = opponent if isinstance(opponent, PolicyValue) and player != model_seat else model
             policy = search(state, actor_model, simulations, rng, check_stop, explore=training)
             if training and (opponent is None or player == model_seat):
-                mask = torch.zeros(ACTIONS, dtype=torch.bool)
-                mask[state.legal_actions()] = True
-                samples.append(dict(x=torch.from_numpy(features(state.data, player)),
-                                    pi=torch.from_numpy(policy), mask=mask, player=player))
+                samples.append(training_sample(state, policy, player, 'search'))
             if training:
                 probabilities = policy.astype(np.float64)
                 probabilities /= probabilities.sum()
@@ -256,6 +283,8 @@ def run_training(args, directory):
                                           'batch_size', 'replay_size', 'learning_rate')}
     if args.resume:
         saved = load_checkpoint(checkpoint)
+        if saved.get('training_method') not in (None, TRAINING_METHOD):
+            raise ValueError('Unknown checkpoint training method')
         if saved['config'] != config:
             raise ValueError('Resume learning settings must match checkpoint config')
         model.load_state_dict(saved['model'])
@@ -287,6 +316,7 @@ def run_training(args, directory):
                                     games_done=games_done, total_games=total_games,
                                     rng=rng_pack(rng), torch_rng=torch.get_rng_state(),
                                     model_sha256=fingerprint(model),
+                                    training_method=TRAINING_METHOD,
                                     checkpoint_migrations=checkpoint_migrations))
 
     prior_handlers = {sig: signal.signal(sig, handle_signal) for sig in (signal.SIGINT, signal.SIGTERM)}
@@ -294,6 +324,7 @@ def run_training(args, directory):
     start_iteration = iteration
     log = directory / 'events.jsonl'
     emit(log, dict(event='start', iteration=iteration, config=config, resume=args.resume,
+                   training_method=TRAINING_METHOD,
                    method='OpenSpiel IS-MCTS + policy/value network', device='cpu'))
     try:
         with Bridge() as bridge:
@@ -302,13 +333,15 @@ def run_training(args, directory):
                     check_stop()
                     game_seed = (args.seed + total_games * 104729) % (2**31)
                     old = None
-                    # Fixed episode schedule permits exact replay after interruption.
-                    if population and total_games % 4 == 3:
+                    opponent_kind, opponent_index, model_seat = episode_plan(total_games, len(population))
+                    if opponent_kind == 'past-model':
                         old = copy.deepcopy(model)
-                        old.load_state_dict(population[total_games % len(population)])
+                        old.load_state_dict(population[opponent_index])
                         old.eval()
+                    elif opponent_kind == 'baseline':
+                        old = 'baseline'
                     samples, match = play(bridge, model, game_seed, args.simulations, check_stop,
-                                          opponent=old, model_seat=total_games % 2, training=True)
+                                          opponent=old, model_seat=model_seat, training=True)
                     replay.extend(samples)
                     replay[:] = replay[-args.replay_size:]
                     games_done += 1
@@ -316,7 +349,9 @@ def run_training(args, directory):
                     save()
                     emit(log, dict(event='selfplay', iteration=iteration, games_done=games_done,
                                    total_games=total_games, samples=len(samples), replay=len(replay),
-                                   opponent='past-model' if old else 'self', match=match))
+                                   opponent=opponent_kind, opponent_index=opponent_index,
+                                   teacher_samples=sum(s.get('source') == 'teacher-a9' for s in samples),
+                                   training_method=TRAINING_METHOD, match=match))
                 check_stop()
                 before = copy.deepcopy(model.state_dict())
                 old_hash = fingerprint(model)
@@ -339,6 +374,7 @@ def run_training(args, directory):
                 atomic_save(directory / f'model-{iteration:05d}.pt',
                             dict(schema=SCHEMA, features=FEATURES, actions=ACTIONS, config=config,
                                  rules_sha256=rules_digest(),
+                                 training_method=TRAINING_METHOD,
                                  model=model.state_dict(), model_sha256=fingerprint(model),
                                  checkpoint_migrations=checkpoint_migrations))
                 emit(log, dict(event='learn', iteration=iteration, before=old_hash,

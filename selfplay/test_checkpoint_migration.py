@@ -46,6 +46,7 @@ class CheckpointMigrationTests(unittest.TestCase):
                                    iterations=1, eval_pairs=0, eval_seed=2**31)
             run_training(args, directory)
             resumed = load_checkpoint(path)
+            self.assertEqual(resumed.pop('training_method'), 'mixed-a9-teacher-worlds8-v1')
             verify_preserved(before, resumed)
             self.assertEqual(resumed['checkpoint_migrations'][0]['source_sha256'], 'source-hash')
             corrupted = copy.deepcopy(resumed)
