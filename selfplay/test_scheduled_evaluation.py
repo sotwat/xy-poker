@@ -35,7 +35,8 @@ class ScheduledEvaluationTests(unittest.TestCase):
             payload = dict(schema=SCHEMA, features=FEATURES, actions=ACTIONS,
                            rules_sha256=rules_digest(), config={'width': 16},
                            model=model.state_dict(), model_sha256=fingerprint(model),
-                           iteration=500, total_games=2000)
+                           iteration=500, total_games=2000,
+                           checkpoint_migrations=[{'migration': 'terminal-winner-returns-v1'}])
             atomic_save(directory / 'latest.pt', payload)
             calls = []
 
@@ -68,6 +69,10 @@ class ScheduledEvaluationTests(unittest.TestCase):
                 self.assertEqual(calls[1][1], 1)
                 self.assertEqual(calls[1][2], calls[0][2])
                 self.assertEqual(result['training_games'], 2000)
+                self.assertEqual(result['rules_sha256'], rules_digest())
+                from train import load_checkpoint
+                snapshot = load_checkpoint(directory / 'a9-milestones/games-00002000/model.pt')
+                self.assertEqual(snapshot['checkpoint_migrations'], payload['checkpoint_migrations'])
                 self.assertEqual(len({m[0]['seed'] for m in result['matches']}), 2)
                 run(directory, 2000, 2, 128, 1)
                 self.assertEqual(len(calls), 2)

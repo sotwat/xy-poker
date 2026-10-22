@@ -181,8 +181,11 @@ class XYState:
     def returns(self):
         if not self.is_terminal():
             raise ValueError('Only terminal states have returns')
-        diff = self.data['players'][0]['score'] - self.data['players'][1]['score']
-        value = float(np.sign(diff))
+        winner = self.data.get('winner')
+        if winner not in ('p1', 'p2', 'draw'):
+            raise ValueError('Terminal state has no valid winner')
+        # Royal-flush wins end before the reducer updates numerical scores.
+        value = {'p1': 1.0, 'p2': -1.0, 'draw': 0.0}[winner]
         return np.array([value, -value])
 
     def apply_action(self, action):
