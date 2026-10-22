@@ -1,0 +1,47 @@
+{
+  "snapshot_bytes": 4453597,
+  "input_sha256": "8771486dab284abf40d29958a85470beb7c7a4027bc69ba9a68f58b019aa30e4",
+  "groups": {
+    "before_migration": {
+      "episodes": 4772,
+      "past_model_episodes": 1189,
+      "observed_seats": [
+        1
+      ],
+      "code_implied_population_index_seat": [
+        {
+          "index": 3,
+          "seat": 1,
+          "count": 1189
+        }
+      ],
+      "first_game": 1,
+      "last_game": 4772
+    },
+    "after_migration": {
+      "episodes": 503,
+      "past_model_episodes": 125,
+      "observed_seats": [
+        1
+      ],
+      "code_implied_population_index_seat": [
+        {
+          "index": 3,
+          "seat": 1,
+          "count": 125
+        }
+      ],
+      "first_game": 4773,
+      "last_game": 5275
+    }
+  },
+  "synthetic_full_population_episodes": 32,
+  "legacy_unique_index_seats": 1,
+  "proposed_unique_index_seats": 8,
+  "proposed_count_per_cell": 4,
+  "candidate_applied": false,
+  "new_games": 0,
+  "production_changed": false,
+  "started_utc": "2026-10-22T10:55:15.263433+00:00",
+  "ended_utc": "2026-10-22T10:55:15.336267+00:00"
+}
