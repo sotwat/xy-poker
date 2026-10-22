@@ -1,0 +1,83 @@
+{
+  "pr": 8,
+  "merged_commit": "e3324d8c1d48b3e6a4a0947c93f99aae9c41f49b",
+  "old_rules": "3ae8806a36a2e169557da1c80ac11b0482fb6a3f05bd8fa5b011c9024c698618",
+  "new_rules": "d7a07ab1088a9717c258e19b1a014d481db2fefb5d67d09103bb9c4db1646fdd",
+  "migrated_files": 150,
+  "migration_complete": true,
+  "migration_completed_utc": "2026-10-22T05:01:19.034102+00:00",
+  "manifest_sha256": "a6ec8f26783a880818200ba09b263c31e780498693af60cefbfcf3499bafdf7f",
+  "frozen_audit": {
+    "started_utc": "2026-10-22T04:58:23.081138+00:00",
+    "ended_utc": "2026-10-22T04:58:49.714262+00:00",
+    "reports": [
+      {
+        "input_name": "final-verification",
+        "input_sha256": "987a61d169a45949c808459a0c44a2adc1bf8f6a98feec6d3aed9c0534457a00",
+        "snapshot_bytes": 4024131,
+        "complete": null,
+        "games": 4772,
+        "moves": 147932,
+        "unique_seed_seats": 4772,
+        "model_sha256": null,
+        "seed": null,
+        "mismatches": [],
+        "score_disagreements": 0
+      }
+    ]
+  },
+  "preserved": {
+    "iteration": 1192,
+    "games_done": 4,
+    "total_games": 4772,
+    "replay": 20000,
+    "population": 4,
+    "model_sha256": "b91416e507722466488a9bca39bb0de13e57250d6beeafc3e0bebe920f8ed7d5",
+    "fields": "all payload fields; tensors compared by dtype/shape/raw bytes"
+  },
+  "resume_start": {
+    "time": "2026-10-22T05:01:47Z",
+    "event": "start",
+    "iteration": 1192,
+    "config": {
+      "seed": 20261021,
+      "width": 128,
+      "simulations": 128,
+      "games": 4,
+      "steps": 32,
+      "batch_size": 64,
+      "replay_size": 20000,
+      "learning_rate": 0.001
+    },
+    "resume": true,
+    "method": "OpenSpiel IS-MCTS + policy/value network",
+    "device": "cpu"
+  },
+  "first_resumed_update": {
+    "time": "2026-10-22T05:01:49Z",
+    "event": "learn",
+    "iteration": 1193,
+    "before": "b91416e507722466488a9bca39bb0de13e57250d6beeafc3e0bebe920f8ed7d5",
+    "after": "f91b21b5b0df475e4c4e72552f603b430462f76d0ecf131cf52afb1bcc5bbc92",
+    "policy_loss": 2.601844847202301,
+    "value_loss": 0.12355988140916452
+  },
+  "historical_search_targets": "retained; not recomputed",
+  "production_changed": false,
+  "verified_resumed_checkpoint": {
+    "iteration": 1194,
+    "games_done": 3,
+    "total_games": 4779,
+    "model_sha256": "b873f87c9bc45c13d9190e2b7e9b89f4ce1a6146afc7ed028aa313f099d6daef",
+    "rules_sha256": "d7a07ab1088a9717c258e19b1a014d481db2fefb5d67d09103bb9c4db1646fdd",
+    "checkpoint_migrations": [
+      {
+        "migration": "terminal-winner-returns-v1",
+        "source_sha256": "5bda656aed9c235deb232247d2762cc9a63922806abb72942888d6b64ef0693d",
+        "from_rules": "3ae8806a36a2e169557da1c80ac11b0482fb6a3f05bd8fa5b011c9024c698618",
+        "to_rules": "d7a07ab1088a9717c258e19b1a014d481db2fefb5d67d09103bb9c4db1646fdd",
+        "historical_search_targets": "retained; not recomputed"
+      }
+    ]
+  }
+}
