@@ -41,6 +41,7 @@ def run(directory, milestone, pairs, simulations, minutes):
         saved = load_checkpoint(directory / 'latest.pt')
         payload = {k: saved[k] for k in ('schema', 'features', 'actions', 'rules_sha256',
                                         'config', 'model', 'model_sha256', 'iteration', 'total_games')}
+        payload['checkpoint_migrations'] = saved.get('checkpoint_migrations', [])
         temporary = snapshot.with_suffix('.pt.tmp')
         torch.save(payload, temporary)
         os.replace(temporary, snapshot)
@@ -76,6 +77,7 @@ def run(directory, milestone, pairs, simulations, minutes):
     def progress(partial):
         summary = evaluation_summary(matches + partial['matches'], pairs, 'a9')
         summary.update(model_sha256=model_hash, seed=seed, simulations=simulations,
+                       rules_sha256=saved['rules_sha256'],
                        milestone=milestone, training_games=saved['total_games'],
                        iteration=saved['iteration'], checkpoint=str(snapshot),
                        production_changed=False, updated_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()))

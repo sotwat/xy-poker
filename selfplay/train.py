@@ -251,6 +251,7 @@ def run_training(args, directory):
     model = PolicyValue(args.width)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=1e-4)
     replay, population, iteration, games_done, total_games = [], [], 0, 0, 0
+    checkpoint_migrations = []
     config = {k: getattr(args, k) for k in ('seed', 'width', 'simulations', 'games', 'steps',
                                           'batch_size', 'replay_size', 'learning_rate')}
     if args.resume:
@@ -260,6 +261,7 @@ def run_training(args, directory):
         model.load_state_dict(saved['model'])
         optimizer.load_state_dict(saved['optimizer'])
         replay, population = saved['replay'], saved['population']
+        checkpoint_migrations = saved.get('checkpoint_migrations', [])
         iteration, games_done, total_games = saved['iteration'], saved['games_done'], saved['total_games']
         state = saved['rng']
         rng.set_state((state[0], np.asarray(state[1], dtype=np.uint32), *state[2:]))
@@ -284,7 +286,8 @@ def run_training(args, directory):
                                     replay=replay, population=population, iteration=iteration,
                                     games_done=games_done, total_games=total_games,
                                     rng=rng_pack(rng), torch_rng=torch.get_rng_state(),
-                                    model_sha256=fingerprint(model)))
+                                    model_sha256=fingerprint(model),
+                                    checkpoint_migrations=checkpoint_migrations))
 
     prior_handlers = {sig: signal.signal(sig, handle_signal) for sig in (signal.SIGINT, signal.SIGTERM)}
     save()
@@ -336,7 +339,8 @@ def run_training(args, directory):
                 atomic_save(directory / f'model-{iteration:05d}.pt',
                             dict(schema=SCHEMA, features=FEATURES, actions=ACTIONS, config=config,
                                  rules_sha256=rules_digest(),
-                                 model=model.state_dict(), model_sha256=fingerprint(model)))
+                                 model=model.state_dict(), model_sha256=fingerprint(model),
+                                 checkpoint_migrations=checkpoint_migrations))
                 emit(log, dict(event='learn', iteration=iteration, before=old_hash,
                                after=fingerprint(model), **losses))
                 if args.eval_pairs:
