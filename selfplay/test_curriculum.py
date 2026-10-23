@@ -51,11 +51,37 @@ class CurriculumTests(unittest.TestCase):
                     for sample, action in zip(samples, match['actions']):
                         self.assertEqual(sample['pi'][action], 1)
                         self.assertTrue(sample['mask'][action])
-                        self.assertEqual(sample['source'] in ('search', 'teacher-a9'), True)
-                    for source, player in [('search', seat), ('teacher-a9', 1 - seat)]:
+                        self.assertEqual(sample['source'] in ('teacher-a9-advice', 'teacher-a9'), True)
+                    for source, player in [('teacher-a9-advice', seat), ('teacher-a9', 1 - seat)]:
                         subset = [s for s in samples if s['source'] == source]
                         self.assertGreaterEqual(len(subset), 15)
                         self.assertTrue(all(s['z'] == match['returns'][player] for s in subset))
+
+    def test_advice_changes_target_without_forcing_action_or_duplicating_value(self):
+        model = PolicyValue(16).eval()
+        def last_action_search(state, *_args, **_kwargs):
+            pi = np.zeros(ACTIONS, dtype=np.float32)
+            pi[state.legal_actions()[-1]] = 1
+            return pi
+        with Bridge() as bridge:
+            original = bridge.call
+            def call(op, **kwargs):
+                if op == 'baseline':
+                    from environment import legal_actions
+                    return legal_actions(kwargs['state'])[0]
+                return original(op, **kwargs)
+            with patch.object(bridge, 'call', side_effect=call), patch('train.search', last_action_search):
+                for seat in (0, 1):
+                    samples, match = play(bridge, model, 100523211, 4,
+                                          opponent='baseline', model_seat=seat, training=True)
+                    self.assertEqual(len(samples), 31)
+                    advice = [(s, a) for s, a in zip(samples, match['actions'])
+                              if s['source'] == 'teacher-a9-advice']
+                    self.assertGreaterEqual(len(advice), 15)
+                    self.assertTrue(any(s['pi'][a] == 0 for s, a in advice))
+                    for s, _ in advice:
+                        self.assertEqual(s['z'], match['returns'][seat])
+                        self.assertEqual(int(s['pi'].argmax()), int(torch.where(s['mask'])[0][0]))
 
 
 if __name__ == '__main__':

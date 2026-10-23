@@ -18,7 +18,8 @@ from torch import nn
 from environment import ACTIONS, CARDS, FEATURES, Bridge, XYState, features, resample, rules_digest
 
 SCHEMA = 1
-TRAINING_METHOD = 'mixed-a9-teacher-worlds8-v1'
+TRAINING_METHOD = 'mixed-a9-advice-worlds8-v2'
+PREVIOUS_TRAINING_METHOD = 'mixed-a9-teacher-worlds8-v1'
 
 
 def episode_plan(total_games, population_size):
@@ -138,7 +139,16 @@ def play(bridge, model, seed, simulations, check_stop=lambda: None, opponent=Non
             actor_model = opponent if isinstance(opponent, PolicyValue) and player != model_seat else model
             policy = search(state, actor_model, simulations, rng, check_stop, explore=training)
             if training and (opponent is None or player == model_seat):
-                samples.append(training_sample(state, policy, player, 'search'))
+                target, source = policy, 'search'
+                if opponent == 'baseline':
+                    check_stop()
+                    advice = bridge.call('baseline', state=state.data, baseline=baseline,
+                                         seed=int((seed ^ ((len(moves) + 1) * 104729)) % 2**31))
+                    check_stop()
+                    target = np.zeros(ACTIONS, dtype=np.float32)
+                    target[advice] = 1
+                    source = 'teacher-' + baseline + '-advice'
+                samples.append(training_sample(state, target, player, source))
             if training:
                 probabilities = policy.astype(np.float64)
                 probabilities /= probabilities.sum()
@@ -283,7 +293,7 @@ def run_training(args, directory):
                                           'batch_size', 'replay_size', 'learning_rate')}
     if args.resume:
         saved = load_checkpoint(checkpoint)
-        if saved.get('training_method') not in (None, TRAINING_METHOD):
+        if saved.get('training_method') not in (None, PREVIOUS_TRAINING_METHOD, TRAINING_METHOD):
             raise ValueError('Unknown checkpoint training method')
         if saved['config'] != config:
             raise ValueError('Resume learning settings must match checkpoint config')
@@ -350,7 +360,8 @@ def run_training(args, directory):
                     emit(log, dict(event='selfplay', iteration=iteration, games_done=games_done,
                                    total_games=total_games, samples=len(samples), replay=len(replay),
                                    opponent=opponent_kind, opponent_index=opponent_index,
-                                   teacher_samples=sum(s.get('source') == 'teacher-a9' for s in samples),
+                                   teacher_samples=sum(s.get('source', '').startswith('teacher-') for s in samples),
+                                   advice_samples=sum(s.get('source') == 'teacher-a9-advice' for s in samples),
                                    training_method=TRAINING_METHOD, match=match))
                 check_stop()
                 before = copy.deepcopy(model.state_dict())

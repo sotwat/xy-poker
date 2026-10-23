@@ -46,7 +46,7 @@ class CheckpointMigrationTests(unittest.TestCase):
                                    iterations=1, eval_pairs=0, eval_seed=2**31)
             run_training(args, directory)
             resumed = load_checkpoint(path)
-            self.assertEqual(resumed.pop('training_method'), 'mixed-a9-teacher-worlds8-v1')
+            self.assertEqual(resumed.pop('training_method'), 'mixed-a9-advice-worlds8-v2')
             verify_preserved(before, resumed)
             self.assertEqual(resumed['checkpoint_migrations'][0]['source_sha256'], 'source-hash')
             corrupted = copy.deepcopy(resumed)
@@ -66,6 +66,26 @@ class CheckpointMigrationTests(unittest.TestCase):
         with patch('migrate_terminal_returns.rules_digest', return_value='future-rules'):
             with self.assertRaises(ValueError):
                 converted(self.payload(), 'source')
+
+    def test_previous_curriculum_resume_retains_all_state_and_unknown_is_rejected(self):
+        before = converted(self.payload(), 'source-hash')
+        before['training_method'] = 'mixed-a9-teacher-worlds8-v1'
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            path = directory / 'latest.pt'
+            atomic_save(path, before)
+            args = SimpleNamespace(**before['config'], resume=True, minutes=1e-9,
+                                   iterations=1, eval_pairs=0, eval_seed=2**31)
+            run_training(args, directory)
+            after = load_checkpoint(path)
+            self.assertEqual(after['training_method'], 'mixed-a9-advice-worlds8-v2')
+            after['training_method'] = before['training_method']
+            self.assertTrue(identical(before, after))
+            before['training_method'] = 'unreviewed-future-method'
+            atomic_save(path, before)
+            with self.assertRaisesRegex(ValueError, 'Unknown checkpoint training method'):
+                run_training(args, directory)
+            self.assertTrue(identical(before, load_checkpoint(path)))
 
     def test_backup_and_all_checkpoint_kinds_and_audit_gate(self):
         with tempfile.TemporaryDirectory() as temporary:
