@@ -1,20 +1,21 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { letteringSource } from '../homeLettering';
 import './LetteringText.css';
 
 function EnglishSegment({ text, layout = 'text' }: { text: string; layout?: 'text' | 'card-rank' }) {
     const source = letteringSource(layout, text);
-    const [loaded, setLoaded] = useState('');
+    const [image, setImage] = useState({ source: '', aspect: 1 });
+    const loaded = image.source === source;
     return (
-        <span className="lettering-text">
-            <span className={loaded === source ? 'lettering-text-hidden' : undefined}>{text}</span>
+        <span className="lettering-text" data-lettering-ready={loaded || undefined} style={{ '--lettering-aspect': image.aspect } as CSSProperties}>
+            <span className={loaded ? 'lettering-text-hidden' : undefined}>{text}</span>
             {text.length <= 32 && <img
                 src={source}
                 alt=""
                 className="lettering-text-loader"
-                onLoad={() => setLoaded(source)}
+                onLoad={event => setImage({ source, aspect: event.currentTarget.naturalWidth / event.currentTarget.naturalHeight })}
             />}
-            {loaded === source && <span className="lettering-text-face" style={{ maskImage: `url("${source}")` }} aria-hidden="true" />}
+            {loaded && <span className="lettering-text-face" style={{ maskImage: `url("${source}")` }} aria-hidden="true" />}
         </span>
     );
 }

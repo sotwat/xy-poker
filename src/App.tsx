@@ -21,6 +21,7 @@ import { DiceRollOverlay } from './components/DiceRollOverlay';
 import { TurnTimer } from './components/TurnTimer';
 import type { PopupData } from './components/ShowdownPopup';
 import { awardGuestMatch, type MatchRewards } from './logic/matchRewards';
+import { submitRewardRecord } from './logic/rewardSubmission';
 import { socket, connectSocket } from './logic/online';
 import { QUICK_MATCH_BOT_FALLBACK_MS, QUICK_MATCH_BOT_FALLBACK_SECONDS } from './logic/matchmaking';
 import {
@@ -227,10 +228,12 @@ function App() {
   const [myRating, setMyRating] = useState<number | null>(null);
   const [matchRewards, setMatchRewards] = useState<MatchRewards | null>(null);
   const [rewardError, setRewardError] = useState(false);
+  const [isStartingLocalGame, setIsStartingLocalGame] = useState(false);
+  const [localStartError, setLocalStartError] = useState(false);
   const [forfeitWon, setForfeitWon] = useState<boolean | null>(null);
   useEffect(() => {
     if ((phase !== 'ended' && forfeitWon === null) || matchRewards || rewardError) return;
-    const timeout = window.setTimeout(() => setRewardError(true), 15000);
+    const timeout = window.setTimeout(() => setRewardError(true), 45000);
     return () => window.clearTimeout(timeout);
   }, [phase, forfeitWon, matchRewards, rewardError]);
   const [ratingUpdates, setRatingUpdates] = useState<RatingUpdates | null>(null);
@@ -459,6 +462,23 @@ function App() {
   const localGameTokenRef = useRef<string | null>(null);
   const localStartInFlightRef = useRef(false);
   const pendingRewardRecordRef = useRef<GameRecordData | null>(null);
+  const cancelRewardSubmissionRef = useRef<(() => void) | null>(null);
+  useEffect(() => () => cancelRewardSubmissionRef.current?.(), []);
+  const saveRewardRecord = useCallback((record: GameRecordData, matchId: string | null) => {
+    cancelRewardSubmissionRef.current?.();
+    if (record.mode !== 'bot') {
+      socket.timeout(15000).emit('save_game_record', { record }, (error: Error | null, response?: { success?: boolean }) => {
+        if (activeRewardIdRef.current === matchId && (error || !response?.success)) setRewardError(true);
+      });
+      return;
+    }
+    cancelRewardSubmissionRef.current = submitRewardRecord(
+      done => socket.timeout(15000).emit('save_game_record', { record, gameToken: localGameTokenRef.current }, done),
+      () => activeRewardIdRef.current === matchId,
+      rewards => { setMatchRewards(rewards); setRewardError(false); },
+      () => setRewardError(true),
+    );
+  }, []);
   const retryRewards = () => {
     const matchId = activeRewardIdRef.current;
     if (!matchId || !socket.connected) { setRewardError(true); return; }
@@ -468,35 +488,41 @@ function App() {
       if (response?.rewards) { setMatchRewards(response.rewards); return; }
       const record = pendingRewardRecordRef.current;
       if (error || !record || record.mode !== 'bot') { setRewardError(true); return; }
-      socket.timeout(15000).emit('save_game_record', { record, gameToken: localGameTokenRef.current }, (err: Error | null, res: { rewards?: MatchRewards }) => {
-        if (activeRewardIdRef.current !== matchId) return;
-        if (res?.rewards) setMatchRewards(res.rewards);
-        setRewardError(Boolean(err || !res?.rewards));
-      });
+      saveRewardRecord(record, matchId);
     });
   };
 
   const beginTrackedLocalGame = useCallback(async () => {
     const requestId = quickMatchRequestRef.current;
     pendingRewardRecordRef.current = null;
+    cancelRewardSubmissionRef.current?.();
     localGameTokenRef.current = null;
     activeRewardIdRef.current = null;
     setMatchRewards(null);
     setRewardError(false);
-    if (!dbPlayerId || !socket.connected) return undefined;
-    return new Promise<{ initialDeck: Card[]; initialDice: number[]; startingPlayer: number } | undefined>((resolve) => {
+    if (!session?.user.id && !dbPlayerId) return undefined;
+    if (!socket.connected) {
+      const connected = await new Promise<boolean>(resolve => {
+        const ready = () => { clearTimeout(timeout); resolve(true); };
+        const timeout = setTimeout(() => { socket.off('connect', ready); resolve(false); }, 10000);
+        socket.once('connect', ready);
+        connectSocket(session?.access_token);
+      });
+      if (!connected || requestId !== quickMatchRequestRef.current) return null;
+    }
+    return new Promise<{ initialDeck: Card[]; initialDice: number[]; startingPlayer: number } | null>((resolve) => {
       let settled = false;
-      const timeout = window.setTimeout(() => { settled = true; setRewardError(true); resolve(undefined); }, 10000);
+      const timeout = window.setTimeout(() => { settled = true; resolve(null); }, 10000);
       socket.emit('start_local_game', {}, (response: { success: boolean; token?: string; initialDeck: Card[]; initialDice: number[]; startingPlayer: number }) => {
         if (settled) return;
-        if (requestId !== quickMatchRequestRef.current) { window.clearTimeout(timeout); settled = true; resolve(undefined); return; }
+        if (requestId !== quickMatchRequestRef.current) { window.clearTimeout(timeout); settled = true; resolve(null); return; }
         settled = true;
         window.clearTimeout(timeout);
         if (response.success && response.token) { localGameTokenRef.current = response.token; activeRewardIdRef.current = response.token; resolve(response); }
-        else resolve(undefined);
+        else resolve(null);
       });
     });
-  }, [dbPlayerId]);
+  }, [dbPlayerId, session?.user.id, session?.access_token]);
 
   useEffect(() => {
     // Clear timeout if quick match ends (game starts or cancelled)
@@ -511,7 +537,13 @@ function App() {
   useEffect(() => {
     connectSocket(session?.access_token);
 
-    const onConnect = () => setIsConnected(true);
+    const onConnect = () => {
+      setIsConnected(true);
+      if (pendingRewardRecordRef.current?.mode === 'bot' && activeRewardIdRef.current) {
+        setRewardError(false);
+        saveRewardRecord(pendingRewardRecordRef.current, activeRewardIdRef.current);
+      }
+    };
     const onDisconnect = () => setIsConnected(false);
 
     socket.on('connect', onConnect);
@@ -691,7 +723,7 @@ function App() {
       socket.off('player_left');
       // Don't disconnect on cleanup - only when component unmounts
     };
-  }, [beginShowdownVoiceMatch, session?.access_token]);
+  }, [beginShowdownVoiceMatch, session?.access_token, saveRewardRecord]);
 
   // Rating: Handle Game End Report (Host only)
   useEffect(() => {
@@ -918,15 +950,11 @@ function App() {
     pendingRewardRecordRef.current = record;
     if (dbPlayerId && socket.connected) {
       const rewardId = activeRewardIdRef.current;
-      socket.timeout(15000).emit('save_game_record', { record, gameToken: localGameTokenRef.current }, (error: Error | null, response: { success?: boolean; error?: string; rewards?: MatchRewards }) => {
-        if (activeRewardIdRef.current !== rewardId) return;
-        if (error || !response?.success) { console.error('Unable to save cloud game record:', response?.error); setRewardError(true); }
-        if (response?.rewards) setMatchRewards(response.rewards);
-      });
+      saveRewardRecord(record, rewardId);
     } else if (!dbPlayerId && mode === 'local') {
       window.setTimeout(() => setMatchRewards(awardGuestMatch(record)), 0);
     } else window.setTimeout(() => setRewardError(true), 0);
-  }, [dbPlayerId, gameState, isOnlineGame, isRankedGame, mode, p1DisplayName, p2DisplayName, phase, playerRole]);
+  }, [dbPlayerId, gameState, isOnlineGame, isRankedGame, mode, p1DisplayName, p2DisplayName, phase, playerRole, saveRewardRecord]);
 
   const announceTurnOrder = useEffectEvent(() => {
     const firstIdx = gameState.currentPlayerIndex;
@@ -1225,6 +1253,8 @@ function App() {
   const handleStartGame = async () => {
     if (localStartInFlightRef.current) return;
     localStartInFlightRef.current = true;
+    setIsStartingLocalGame(true);
+    setLocalStartError(false);
     const requestId = ++quickMatchRequestRef.current;
     playClickSound();
     warmupAudio(); // Resume AudioContext
@@ -1235,13 +1265,16 @@ function App() {
     if (mode === 'local') {
       trackedDeal = await beginTrackedLocalGame();
       localStartInFlightRef.current = false;
+      setIsStartingLocalGame(false);
       if (requestId !== quickMatchRequestRef.current) return;
+      if (trackedDeal === null) { setLocalStartError(true); return; }
       setIsBotDisguise(false);
       setOpponentName('AI');
 
     }
 
     localStartInFlightRef.current = false;
+    setIsStartingLocalGame(false);
     dispatch({ type: 'START_GAME', payload: trackedDeal });
     setIsTossingCoin(false);
     setTossResult(null);
@@ -1262,6 +1295,16 @@ function App() {
     }
     const trackedDeal = await beginTrackedLocalGame();
     if (quickMatchRequestRef.current !== requestId) return;
+    if (trackedDeal === null) {
+      if (roomIdRef.current) socket.emit('cancel_matchmaking', { roomId: roomIdRef.current });
+      setRoomId(null);
+      setPlayerRole(null);
+      setIsOnlineGame(false);
+      setLocalStartError(true);
+      setIsQuickMatch(false);
+      setMode('local');
+      return;
+    }
     beginShowdownVoiceMatch();
 
     // Get current roomId using ref
@@ -1857,6 +1900,8 @@ function App() {
                               type="button"
                               className="home-mode home-mode-ai"
                               aria-label="AI MATCH"
+                              disabled={isStartingLocalGame || isSessionLoading}
+                              aria-busy={isStartingLocalGame}
                               onClick={() => {
                                 setIsAutoPlay(false);
                                 playClickSound();
@@ -1864,7 +1909,7 @@ function App() {
                               }}
                             >
                               <span className="home-mode-face">
-                                <span className="home-mode-title" aria-hidden="true"><img src={homeLettering.ai} alt="" /></span>
+                                <span className="home-mode-title" aria-hidden="true">{isStartingLocalGame ? <LetteringText>CONNECTING</LetteringText> : <img src={homeLettering.ai} alt="" />}</span>
                               </span>
                             </button>
 
@@ -1884,6 +1929,7 @@ function App() {
                               </span>
                             </button>
                           </div>
+                          {localStartError && <p role="alert"><LetteringText>Connection failed. Please retry.</LetteringText></p>}
                         </aside>
 
                         <nav className="lobby-footer-tabs" aria-label={t('home.menu')}>
@@ -1930,7 +1976,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v10230917</LetteringText></div>
+                          <div className="home-version"><LetteringText>v10232325</LetteringText></div>
                         </div>
                       </div>
                     )}

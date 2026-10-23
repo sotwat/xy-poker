@@ -78,7 +78,7 @@ function SavedMatchRewards({ rewards }: { rewards: Rewards }) {
     const challengeProgress = rewards.after.wins % 3;
     return <section ref={root} className="match-rewards" aria-label="Match rewards" aria-live="polite">
         <div className="reward-totals" style={{ '--reward-number-chars': Math.max(...[rewards.rating.change, rewards.coins.change, rewards.xp.change].map(n => String(Math.abs(n)).length + 1)) } as CSSProperties}>
-            <div><span><TrendingUp size={16} aria-hidden="true" /><LetteringText>{rewards.mode === 'bot' ? 'AI RATING' : 'RATING'}</LetteringText></span><strong className={rewards.rating.change < 0 ? 'reward-negative' : ''}><ResultNumber to={rewards.rating.change} signed /></strong><small><LetteringText>{`${rewards.rating.old} → ${rewards.rating.new}`}</LetteringText></small></div>
+            <div><span><TrendingUp size={16} aria-hidden="true" /><LetteringText>{rewards.mode === 'bot' ? 'AI RATING' : 'RATING'}</LetteringText></span><strong className={rewards.rating.change < 0 ? 'reward-negative' : ''}><ResultNumber to={rewards.rating.change} signed /></strong><small><LetteringText>{String(rewards.rating.old)}</LetteringText><span>→ <LetteringText>{String(rewards.rating.new)}</LetteringText></span></small></div>
             <div><span><Coins size={16} aria-hidden="true" /><LetteringText>COINS</LetteringText></span><strong><ResultNumber to={rewards.coins.change} signed /></strong><small><LetteringText>{`${rewards.coins.new}`}</LetteringText></small></div>
             <div><span><LetteringText>XP</LetteringText></span><strong><ResultNumber to={rewards.xp.change} signed /></strong><small><LetteringText>{`${rewards.xp.new} XP`}</LetteringText></small></div>
         </div>
