@@ -11,4 +11,3 @@ export function ResultNumber({ from = 0, to, signed = false }: { from?: number; 
         </span>)}
     </span>;
 }
-

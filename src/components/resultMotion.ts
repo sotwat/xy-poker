@@ -27,4 +27,3 @@ export function countResultNumber(timeline: gsap.core.Timeline, element: HTMLEle
         if (tick !== lastTick && from !== to) { lastTick = tick; onTick?.(); }
     } }, at);
 }
-
