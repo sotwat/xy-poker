@@ -15,6 +15,7 @@ import { recordGameResult } from './logic/aiLearning';
 import type { BoardSkin, Card, CardSkin, DiceSkin, GameState } from './logic/types';
 import { SharedBoard } from './components/SharedBoard';
 import { Hand } from './components/Hand';
+import { usePlayFeedback } from './components/usePlayFeedback';
 import { Card as PlayingCard } from './components/Card';
 import { Dice } from './components/Dice';
 import { GameInfo } from './components/GameInfo';
@@ -745,6 +746,7 @@ function App() {
   const { currentPlayerIndex, players } = gameState;
   const currentPlayer = players[currentPlayerIndex];
   const myPlayerIndex = getControlledPlayerIndex(isOnlineGame, playerRole);
+  const playSelectionFeedback = usePlayFeedback(gameState, myPlayerIndex);
   const isProAutoActive = isPremium && isAutoPlay;
   const canUseProThought = canUseProThoughtJournal({ isPremium, mode, phase });
   const isTurnTimerPaused = shouldPauseTurnTimerForProThought({
@@ -1581,6 +1583,7 @@ function App() {
   const handleCardSelect = (cardId: string) => {
     if (isProAutoActive) return;
     if (currentPlayerIndex !== myPlayerIndex) return;
+    playSelectionFeedback();
     if (selectedCardId === cardId) {
       setSelectedCardId(null);
     } else {
@@ -1973,7 +1976,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v10240208</LetteringText></div>
+                          <div className="home-version"><LetteringText>v10240244</LetteringText></div>
                         </div>
                       </div>
                     )}
@@ -2033,7 +2036,7 @@ function App() {
                 )}
                 {(phase === 'turn_selection' || phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
                   <div className="play-area" data-bottom-player={myPlayerIndex + 1}>
-                    <div className="table-seat table-seat-opponent"><span>{opponentName}</span></div>
+                    <div className={`table-seat table-seat-opponent ${phase === 'playing' && currentPlayerIndex !== myPlayerIndex ? 'is-active' : ''}`}><span>{opponentName}</span></div>
                     <div className="table-surface">
                     <SharedBoard
                       playerBoard={players[isOnlineGame && playerRole === 'guest' ? 1 : 0].board}
@@ -2051,9 +2054,10 @@ function App() {
                       selectedBoardSkin={selectedBoardSkin}
                       revealedCols={revealedCols}
                       showXHand={showXHand}
+                      animatePlacements={phase === 'playing'}
                     />
                     </div>
-                    <div className="table-seat table-seat-player"><span>{t('game.yourSide')}</span></div>
+                    <div className={`table-seat table-seat-player ${phase === 'playing' && currentPlayerIndex === myPlayerIndex ? 'is-active' : ''}`}><span>{t('game.yourSide')}</span></div>
                   </div>
                 )}
               </main>
@@ -2080,7 +2084,7 @@ function App() {
                               <input
                                 type="checkbox"
                                 checked={placeHidden}
-                                onChange={(e) => setPlaceHidden(e.target.checked)}
+                                onChange={(e) => { playSelectionFeedback(); setPlaceHidden(e.target.checked); }}
                                 disabled={
                                   currentPlayerIndex !== myPlayerIndex ||
                                   isProAutoActive ||

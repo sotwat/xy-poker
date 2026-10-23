@@ -96,14 +96,14 @@ export const GameInfo: React.FC<GameInfoProps> = ({
             </div>
 
             <div className="scores">
-                <div className="player-score-row player-1">
+                <div className={`player-score-row player-1 ${phase === 'playing' && currentPlayerIndex === 0 ? 'is-active' : ''}`}>
                     <div className={`score-item ${currentPlayerIndex === 0 ? 'active' : ''}`}>
                         <span className="score-player-name"><i aria-hidden="true" /><span className="score-name-copy">{p1Name}{(myIndex === 0 ? playerTitle : opponentTitle) && <small className="player-title"><LetteringText>{(myIndex === 0 ? playerTitle : opponentTitle)!}</LetteringText></small>}</span> {((myIndex === 0 && isPremium) || p1.isPremium) && <PremiumBadge />}</span>
                         <span className="score-total"><AnimatedScore value={p1.score} className="score-number" /><small>pt</small></span>
                     </div>
                     <span className="bonus-item">{t('gameInfo.bonus', { count: p1.bonusesClaimed })}</span>
                 </div>
-                <div className="player-score-row player-2">
+                <div className={`player-score-row player-2 ${phase === 'playing' && currentPlayerIndex === 1 ? 'is-active' : ''}`}>
                     <div className={`score-item ${currentPlayerIndex === 1 ? 'active' : ''}`}>
                         <span className="score-player-name"><i aria-hidden="true" /><span className="score-name-copy">{p2Name}{(myIndex === 1 ? playerTitle : opponentTitle) && <small className="player-title"><LetteringText>{(myIndex === 1 ? playerTitle : opponentTitle)!}</LetteringText></small>}</span> {((myIndex === 1 && isPremium) || p2.isPremium) && <PremiumBadge />}</span>
                         <span className="score-total"><AnimatedScore value={p2.score} className="score-number" /><small>pt</small></span>

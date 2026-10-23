@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { Card as CardType, DiceSkin, CardSkin, BoardSkin } from '../logic/types';
 import { Card } from './Card';
 import { Dice } from './Dice';
 import './SharedBoard.css';
+import gsap from 'gsap';
 import { useI18n } from '../i18n';
 
 interface SharedBoardProps {
@@ -21,6 +22,7 @@ interface SharedBoardProps {
     selectedBoardSkin: BoardSkin;
     revealedCols?: number[];
     showXHand?: boolean;
+    animatePlacements?: boolean;
 }
 
 export const SharedBoard: React.FC<SharedBoardProps> = ({
@@ -38,9 +40,28 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     selectedCardSkin,
     selectedBoardSkin,
     revealedCols = [],
-    showXHand = false
+    showXHand = false,
+    animatePlacements = false
 }) => {
     const { t } = useI18n();
+    const boardRef = useRef<HTMLDivElement>(null);
+    const previousCards = useRef(new Set<string>());
+
+    useLayoutEffect(() => {
+        const entries = [...(boardRef.current?.querySelectorAll<HTMLElement>('[data-board-card]') ?? [])];
+        const arriving = entries.filter(entry => !previousCards.current.has(entry.dataset.boardCard!));
+        previousCards.current = new Set(entries.map(entry => entry.dataset.boardCard!));
+        if (!animatePlacements || !arriving.length) return;
+        const media = gsap.matchMedia();
+        media.add('(prefers-reduced-motion: no-preference)', () => {
+            const timeline = gsap.timeline();
+            timeline.fromTo(arriving, {
+                y: (_, entry: HTMLElement) => entry.dataset.side === 'player' ? 24 : -24,
+                scale: 1.06, opacity: 0.3,
+            }, { y: 0, scale: 1, opacity: 1, duration: 0.26, ease: 'power3.out', clearProps: 'transform,opacity' });
+        });
+        return () => media.revert();
+    }, [playerBoard, opponentBoard, animatePlacements]);
     const [peekingCard, setPeekingCard] = useState<string | null>(null);
     const pressTimerRef = useRef<number | null>(null);
     const longPressTriggeredRef = useRef(false);
@@ -158,10 +179,12 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                             onClick={() => isAvailable && hasSelectedCard && onColumnClick(colIndex)}
                         >
                             {card ? (
+                                <div key={card.id} className="table-card-entry" data-board-card={card.id} data-side="opponent">
                                 <Card
                                     card={revealAll ? { ...card, isHidden: false } : card}
                                     skin={selectedCardSkin}
                                 />
+                                </div>
                             ) : <div className="empty-slot" />}
                         </div>
                     ))}
@@ -186,11 +209,13 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
                             onClick={() => handlePlayerSlotClick(card, colIndex)}
                         >
                             {card ? (
+                                <div key={card.id} className="table-card-entry" data-board-card={card.id} data-side="player">
                                 <Card
                                     card={revealAll ? { ...card, isHidden: false } : card}
                                     isPeeking={peekingCard === card.id}
                                     skin={selectedCardSkin}
                                 />
+                                </div>
                             ) : <div className="empty-slot">{isAvailable && hasSelectedCard && idx === nextSlot && <span className="placement-mark" aria-hidden="true">+</span>}</div>}
                         </div>
                     ))}
@@ -200,7 +225,7 @@ export const SharedBoard: React.FC<SharedBoardProps> = ({
     });
 
     return (
-        <div className={`shared-board board-theme-${selectedBoardSkin}`}>
+        <div ref={boardRef} className={`shared-board board-theme-${selectedBoardSkin}`}>
             {columns}
         </div>
     );
