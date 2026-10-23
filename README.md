@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `10240132` (2026-10-24)
+- **Current Version:** `10240208` (2026-10-24)
 - **Status:** **Match rewards and permanent skin purchases; A9 policy retained**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -94,6 +94,8 @@ graph TD
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
+
+1. **v10240208** (2026-10-24): **Match Profiles & Coin Toss** - Fresh ratings, combined win rates and match counts at match start; Blender-rendered coin, synchronized landing sound, responsive layouts and reduced-motion support. See `docs/match-intro.md`.
 
 1. **v10240132** (2026-10-24): **Readable Results** - Separate display lettering from result controls and data; reserve space for overlay scrollbars.
 

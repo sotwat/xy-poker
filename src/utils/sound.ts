@@ -126,23 +126,6 @@ export const playCoinTossSound = () => {
         playMetalPartial(now, 2250, 0.2, 0.22, 'triangle');
         playMetalPartial(now + 0.006, 3375, 0.15, 0.1, 'sine');
 
-        // Brief, separated edge sounds follow the visible 650 ms coin rotations.
-        const flipTimes = [0.18, 0.36, 0.53, 0.69, 0.84, 0.98];
-        const flipOscillator = ctx.createOscillator();
-        const flipGain = ctx.createGain();
-        flipOscillator.type = 'triangle';
-        flipGain.gain.setValueAtTime(0.0001, now);
-        flipTimes.forEach((offset, index) => {
-            const start = now + offset;
-            flipOscillator.frequency.setValueAtTime(index % 2 === 0 ? 1950 : 2320, start);
-            flipGain.gain.setValueAtTime(0.0001, start);
-            flipGain.gain.linearRampToValueAtTime(0.075, start + 0.003);
-            flipGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.034);
-        });
-        flipOscillator.connect(flipGain).connect(master);
-        flipOscillator.start(now + flipTimes[0] - 0.01);
-        flipOscillator.stop(now + flipTimes[flipTimes.length - 1] + 0.05);
-
         // Hard-surface landing: a small impact plus inharmonic coin-like ringing.
         const landing = now + 1.12;
         playContactNoise(landing, 0.045, 1750, 0.34);
@@ -161,7 +144,8 @@ export const playCoinTossSound = () => {
         landingBody.start(landing);
         landingBody.stop(landing + 0.14);
 
-        window.setTimeout(() => master.disconnect(), 1_700);
+        const cleanup = window.setTimeout(() => master.disconnect(), 1_700);
+        return () => { window.clearTimeout(cleanup); master.disconnect(); };
     } catch (error) {
         console.warn('Audio playback not supported:', error);
     }

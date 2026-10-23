@@ -1,3 +1,5 @@
+import { MatchIntro } from './components/MatchIntro';
+import type { MatchPlayerStats } from './logic/matchStats';
 import { COSMETICS } from './logic/progression';
 import { loadProgression } from './logic/progressionStorage';
 import { lazy, Suspense, useCallback, useEffect, useEffectEvent, useReducer, useRef, useState } from 'react';
@@ -57,7 +59,6 @@ import { generateRandomPlayerName } from './logic/nameGenerator';
 import {
   playClickSound,
   playSuccessSound,
-  playCoinTossSound,
   playShowdownStinger,
   playShowdownVoice,
   preloadShowdownVoices,
@@ -101,6 +102,8 @@ interface RatingUpdates {
 }
 
 interface GameStartPayload {
+  p1Stats?: MatchPlayerStats | null;
+  p2Stats?: MatchPlayerStats | null;
   roomId: string;
   matchId: string;
   initialDice: number[];
@@ -204,6 +207,7 @@ function App() {
   const [rematchInvited, setRematchInvited] = useState(false);
 
   // Coin Toss State
+  const [matchStats, setMatchStats] = useState<[MatchPlayerStats | null, MatchPlayerStats | null]>([null, null]);
   const [isTossingCoin, setIsTossingCoin] = useState(false);
   const [tossResult, setTossResult] = useState<0 | 1 | null>(null);
   const [turnSelectionTimeLeft, setTurnSelectionTimeLeft] = useState<number | null>(null);
@@ -500,6 +504,7 @@ function App() {
     activeRewardIdRef.current = null;
     setMatchRewards(null);
     setRewardError(false);
+    setMatchStats([null, null]);
     if (!session?.user.id && !dbPlayerId) return undefined;
     if (!socket.connected) {
       const connected = await new Promise<boolean>(resolve => {
@@ -513,12 +518,12 @@ function App() {
     return new Promise<{ initialDeck: Card[]; initialDice: number[]; startingPlayer: number } | null>((resolve) => {
       let settled = false;
       const timeout = window.setTimeout(() => { settled = true; resolve(null); }, 10000);
-      socket.emit('start_local_game', {}, (response: { success: boolean; token?: string; initialDeck: Card[]; initialDice: number[]; startingPlayer: number }) => {
+      socket.emit('start_local_game', {}, (response: { success: boolean; token?: string; stats?: MatchPlayerStats | null; initialDeck: Card[]; initialDice: number[]; startingPlayer: number }) => {
         if (settled) return;
         if (requestId !== quickMatchRequestRef.current) { window.clearTimeout(timeout); settled = true; resolve(null); return; }
         settled = true;
         window.clearTimeout(timeout);
-        if (response.success && response.token) { localGameTokenRef.current = response.token; activeRewardIdRef.current = response.token; resolve(response); }
+        if (response.success && response.token) { setMatchStats([response.stats ?? null, null]); localGameTokenRef.current = response.token; activeRewardIdRef.current = response.token; resolve(response); }
         else resolve(null);
       });
     });
@@ -610,6 +615,7 @@ function App() {
       setMatchRewards(null);
       setRewardError(false);
       setMode('online');
+      setMatchStats([data.p1Stats ?? null, data.p2Stats ?? null]);
       setRoomId(roomId);
       setIsQuickMatch(false); // Clear quick match status
       setIsOnlineGame(true); // Confirm online game status
@@ -656,7 +662,7 @@ function App() {
     });
 
     socket.on('player_data', (data: { rating?: number }) => {
-      if (data && data.rating) {
+      if (typeof data?.rating === 'number' && Number.isFinite(data.rating)) {
         setMyRating(data.rating);
       }
     });
@@ -808,32 +814,22 @@ function App() {
     }
   }, [phase]);
 
-  // Turn Selection Logic
   useEffect(() => {
-    let timer2: ReturnType<typeof setTimeout>;
-
     if (phase !== 'turn_selection' || showDiceAnimation) return;
-
-    const timer1 = setTimeout(() => {
-      const winner = currentPlayerIndex as 0 | 1;
+    const timer = window.setTimeout(() => {
       setIsTossingCoin(true);
-      playCoinTossSound();
-      setTossResult(winner);
+      setTossResult(currentPlayerIndex as 0 | 1);
+    }, 100);
+    return () => window.clearTimeout(timer);
+  }, [currentPlayerIndex, phase, showDiceAnimation]);
 
-      timer2 = setTimeout(() => {
-        setIsTossingCoin(false);
-        const isMyChoice = mode === 'local'
-          ? winner === 0
-          : (playerRole === 'host' && winner === 0) || (playerRole === 'guest' && winner === 1);
-        if (isMyChoice) setTurnSelectionTimeLeft(10);
-      }, 1400);
-    }, 500);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, [currentPlayerIndex, mode, phase, playerRole, showDiceAnimation]);
+  const completeCoinToss = useCallback(() => {
+    setIsTossingCoin(false);
+    const isMyChoice = mode === 'local'
+      ? currentPlayerIndex === 0
+      : (playerRole === 'host' && currentPlayerIndex === 0) || (playerRole === 'guest' && currentPlayerIndex === 1);
+    if (isMyChoice) setTurnSelectionTimeLeft(10);
+  }, [currentPlayerIndex, mode, playerRole]);
 
   // AI Turn Selection Logic (When AI wins the toss)
   useEffect(() => {
@@ -1874,9 +1870,9 @@ function App() {
                               <strong><LetteringText>{playerName || t('common.guest')}</LetteringText>{playerTitle && <small className="player-title"><LetteringText>{COSMETICS.find(c => c.kind === 'title' && c.id === playerTitle)?.name ?? ''}</LetteringText></small>}</strong>
                             </div>
                           </div>
-                          <div className="home-rating" aria-label={`RATING ${myRating || 1500}`}>
+                          <div className="home-rating" aria-label={`RATING ${myRating ?? 1500}`}>
                             <span className="home-rating-label"><img src={homeLettering.ratingLabel} alt="RATING" /></span>
-                            <HomeRating value={myRating || 1500} />
+                            <HomeRating value={myRating ?? 1500} />
                           </div>
                         </header>
 
@@ -1977,7 +1973,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v10240132</LetteringText></div>
+                          <div className="home-version"><LetteringText>v10240208</LetteringText></div>
                         </div>
                       </div>
                     )}
@@ -1985,26 +1981,15 @@ function App() {
                 )}
                 {phase === 'turn_selection' && (isTossingCoin || tossResult !== null) && (
                   <div className="turn-selection-overlay">
-                    <h2>{t('game.coinToss')}</h2>
-                    {isTossingCoin ? (
-                      <div className="coin-toss-motion">
-                        <div className="coin-container">
-                          <div className={`coin flipping winner-${tossResult ?? 0}`}>
-                            <div className="coin-front" />
-                            <div className="coin-back" />
-                          </div>
-                        </div>
-                        <p className="coin-toss-status">{t('game.choosingRandom')}</p>
-                      </div>
-                    ) : (
-                      <div className="coin-container">
-                        <div className={`coin flipped winner-${tossResult ?? 0}`}>
-                          <div className="coin-front" />
-                          <div className="coin-back" />
-                        </div>
-                      </div>
-                    )}
-
+                    <MatchIntro
+                      names={mode === 'online' && playerRole === 'guest' ? [opponentName, playerName] : [playerName, opponentName]}
+                      stats={matchStats}
+                      mySeat={myPlayerIndex}
+                      online={mode === 'online'}
+                      winner={tossResult ?? 0}
+                      onComplete={completeCoinToss}
+                    />
+                    <div className="toss-choice-slot">
                     {!isTossingCoin && tossResult !== null && (
                       <div className="toss-result-area">
                         <div className="toss-winner-text">
@@ -2043,6 +2028,7 @@ function App() {
                         )}
                       </div>
                     )}
+                    </div>
                   </div>
                 )}
                 {(phase === 'turn_selection' || phase === 'playing' || phase === 'scoring' || phase === 'ended') && (
