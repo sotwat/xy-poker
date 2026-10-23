@@ -1,0 +1,45 @@
+{
+  "backup": ".selfplay/pre-curriculum-20261023",
+  "backup_files": 211,
+  "all_backup_hashes_verified": true,
+  "pre_update_preservation": "all original fields identical, tensor raw bytes included",
+  "training_method": "mixed-a9-teacher-worlds8-v1",
+  "iteration": 1547,
+  "total_games": 6188,
+  "replay": 20000,
+  "population": 4,
+  "teacher_samples_in_replay": 16,
+  "teacher_targets_legal": true,
+  "first_update": {
+    "time": "2026-10-22T21:21:21Z",
+    "event": "learn",
+    "iteration": 1547,
+    "before": "b144764d2b6f3941cdf955a7c26a63b03f73816a70304d9336eeafa1427be6a7",
+    "after": "e659c5f38b302e27771ba5cdfd2ad488a50f429eb973f51550b87941c689c32a",
+    "policy_loss": 2.635585732758045,
+    "value_loss": 0.11567250546067953
+  },
+  "resumed_episodes": [
+    {
+      "total_games": 6186,
+      "opponent": "self",
+      "opponent_index": null,
+      "teacher_samples": 0
+    },
+    {
+      "total_games": 6187,
+      "opponent": "baseline",
+      "opponent_index": null,
+      "teacher_samples": 16
+    },
+    {
+      "total_games": 6188,
+      "opponent": "past-model",
+      "opponent_index": 1,
+      "teacher_samples": 0
+    }
+  ],
+  "supervisor_pid": 25640,
+  "trainer_pid": 25692,
+  "production_changed": false
+}

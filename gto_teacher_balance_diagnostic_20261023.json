@@ -1,0 +1,18 @@
+{
+  "search": {
+    "count": 17142,
+    "policy_ce": 2.6528857247366076,
+    "value_mse": 0.14460939463373773,
+    "mean_value": -0.14457473061321724,
+    "mean_return": -0.16865009917162524,
+    "target_argmax_agreement": 0.450939213627348
+  },
+  "teacher-a9": {
+    "count": 2858,
+    "policy_ce": 1.4790998584513622,
+    "value_mse": 0.16956188586142046,
+    "mean_value": 0.8350377683573389,
+    "mean_return": 0.9888033589923023,
+    "target_argmax_agreement": 0.6438068579426172
+  }
+}

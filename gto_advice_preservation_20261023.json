@@ -1,0 +1,24 @@
+{
+  "backup": ".selfplay/pre-teacher-balance-20261023",
+  "files": 234,
+  "iteration": 2044,
+  "games": 8178,
+  "games_done": 2,
+  "model_sha256": "49e15d8e75b6a3a6e9b0498eb7b022cdbc80f49975cefeb0f1d2790d9ec75d6f",
+  "all_fields_except_training_method_identical": true,
+  "source_method": "mixed-a9-teacher-worlds8-v1",
+  "target_method": "mixed-a9-advice-worlds8-v2",
+  "first_advice_game": {
+    "total_games": 8179,
+    "teacher_samples": 31,
+    "advice_samples": 15,
+    "training_method": "mixed-a9-advice-worlds8-v2"
+  },
+  "first_update": {
+    "iteration": 2045,
+    "before": "49e15d8e75b6a3a6e9b0498eb7b022cdbc80f49975cefeb0f1d2790d9ec75d6f",
+    "after": "6ae08871e58869d0969d9a3cf80d111b5e60a4287b0249d095fc869cc724c2ad"
+  },
+  "supervisor_pid": 62885,
+  "trainer_pid": 62888
+}
