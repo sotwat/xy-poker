@@ -1,0 +1,71 @@
+{
+  "total_games": 10064,
+  "iteration": 2516,
+  "games_done": 0,
+  "model_sha256": "11d8be5f0e24d3b3303cc1ab9ae2b3a731b4026bc7497bbf4fe51d3c04b1dc06",
+  "old_method": "mixed-a9-advice-worlds8-v2",
+  "new_method": "mixed-a9-expert-pairs-worlds8-v3",
+  "all_other_fields_identical": true,
+  "backup_files": 297,
+  "backup": ".selfplay/pre-review-10000-20261024",
+  "training_updates": 0,
+  "source_sha256": "594b30cf411d73c37ed53b03d1d01779434517d10f5a68b4588fa78b9b2fcd60",
+  "supervisor_pid": 17693,
+  "restart_updates": [
+    {
+      "time": "2026-10-23T17:52:41Z",
+      "event": "learn",
+      "iteration": 2517,
+      "before": "11d8be5f0e24d3b3303cc1ab9ae2b3a731b4026bc7497bbf4fe51d3c04b1dc06",
+      "after": "46e56d173cec50a4e268705f466c53a25d93f275fd1fd588da52400fb778936f",
+      "policy_loss": 2.4303302839398384,
+      "value_loss": 0.1551945591927506
+    },
+    {
+      "time": "2026-10-23T17:54:27Z",
+      "event": "learn",
+      "iteration": 2518,
+      "before": "46e56d173cec50a4e268705f466c53a25d93f275fd1fd588da52400fb778936f",
+      "after": "4ddd87731ff55a3a879c21c528df38fff5d3f1799a9a4cefb66fc7b3533b116b",
+      "policy_loss": 2.4259964302182198,
+      "value_loss": 0.17653022590093315
+    }
+  ],
+  "restart_expert_events": [
+    {
+      "time": "2026-10-23T17:53:28Z",
+      "event": "selfplay",
+      "iteration": 2517,
+      "games_done": 1,
+      "total_games": 10069,
+      "samples": 31,
+      "replay": 20000,
+      "opponent": "teacher-selfplay",
+      "opponent_index": null,
+      "teacher_samples": 31,
+      "advice_samples": 0,
+      "expert_pair_samples": 31,
+      "training_method": "mixed-a9-expert-pairs-worlds8-v3"
+    },
+    {
+      "time": "2026-10-23T17:53:55Z",
+      "event": "selfplay",
+      "iteration": 2517,
+      "games_done": 2,
+      "total_games": 10070,
+      "samples": 31,
+      "replay": 20000,
+      "opponent": "teacher-selfplay",
+      "opponent_index": null,
+      "teacher_samples": 31,
+      "advice_samples": 0,
+      "expert_pair_samples": 31,
+      "training_method": "mixed-a9-expert-pairs-worlds8-v3"
+    }
+  ],
+  "verified_locks": {
+    "run.lock": "held",
+    "supervisor.lock": "held"
+  },
+  "trainer_pid": 17702
+}
