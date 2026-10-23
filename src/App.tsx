@@ -1917,6 +1917,7 @@ function App() {
                               type="button"
                               className="home-mode home-mode-online"
                               aria-label="ONLINE MATCH"
+                              disabled={isStartingLocalGame || isSessionLoading}
                               onClick={() => {
                                 playClickSound();
                                 setMode('online');
@@ -1976,7 +1977,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v10232325</LetteringText></div>
+                          <div className="home-version"><LetteringText>v10232333</LetteringText></div>
                         </div>
                       </div>
                     )}
@@ -2258,6 +2259,7 @@ function App() {
         isOpen={showMyPage}
         onClose={() => setShowMyPage(false)}
         userId={dbPlayerId}
+        displayName={playerName}
         isPremium={isPremium}
         selectedSkin={selectedSkin}
         selectedCardSkin={selectedCardSkin}
