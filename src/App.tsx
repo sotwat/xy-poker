@@ -1917,6 +1917,7 @@ function App() {
                               type="button"
                               className="home-mode home-mode-online"
                               aria-label="ONLINE MATCH"
+                              disabled={isStartingLocalGame || isSessionLoading}
                               onClick={() => {
                                 playClickSound();
                                 setMode('online');
