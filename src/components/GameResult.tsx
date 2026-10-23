@@ -96,18 +96,18 @@ export const GameResult: React.FC<GameResultProps> = ({
     return (
         <Modal className="game-result-overlay" label={t('game.showDetails')} onClose={onViewBoard}>
             <ResultScene outcome={outcome} rewards={rewards} rewardError={rewardError}>
-                <div className="result-scroll">
+                <div className="result-scroll" tabIndex={0} role="region" aria-label="Result details">
                 <div className="result-outcome">
                     {outcome === 'win' ? <Trophy aria-hidden="true" /> : outcome === 'draw' ? <Minus aria-hidden="true" /> : <Swords aria-hidden="true" />}
                     <strong><LetteringText>{outcome === 'win' ? 'YOU WIN' : outcome === 'loss' ? 'YOU LOSE' : 'DRAW'}</LetteringText></strong>
-                    {winner !== 'draw' && <small><LetteringText>{winner === 'p1' ? p1Name : p2Name}</LetteringText></small>}
+                    {winner !== 'draw' && <small>{winner === 'p1' ? p1Name : p2Name}</small>}
                 </div>
 
                 <div className="final-scores">
                     <div className={`score-box p1 ${winner === 'p1' ? 'winner-box' : ''}`}>
-                        <h3><LetteringText>{p1Name}</LetteringText></h3>
+                        <h3>{p1Name}</h3>
                         <div className="score-val"><ResultNumber to={p1.score} /></div>
-                        <div className="bonus-val"><LetteringText>{t('result.bonuses', { count: p1.bonusesClaimed })}</LetteringText></div>
+                        <div className="bonus-val">{t('result.bonuses', { count: p1.bonusesClaimed })}</div>
                         {ratingUpdates && !rewards && ratingUpdates.p1 && (
                             <div className="rating-update">
                                 <div>{t('common.rating')}</div>
@@ -121,9 +121,9 @@ export const GameResult: React.FC<GameResultProps> = ({
                         )}
                     </div>
                     <div className={`score-box p2 ${winner === 'p2' ? 'winner-box' : ''}`}>
-                        <h3><LetteringText>{p2Name}</LetteringText></h3>
+                        <h3>{p2Name}</h3>
                         <div className="score-val"><ResultNumber to={p2.score} /></div>
-                        <div className="bonus-val"><LetteringText>{t('result.bonuses', { count: p2.bonusesClaimed })}</LetteringText></div>
+                        <div className="bonus-val">{t('result.bonuses', { count: p2.bonusesClaimed })}</div>
                         {ratingUpdates && !rewards && ratingUpdates.p2 && (
                             <div className="rating-update">
                                 <div>{t('common.rating')}</div>
@@ -140,18 +140,18 @@ export const GameResult: React.FC<GameResultProps> = ({
 
                 <MatchRewards rewards={rewards ?? null} error={rewardError} onRetry={onRetryRewards} />
 
-                <details className="result-hand-details"><summary><LetteringText>HANDS</LetteringText></summary>
+                <details className="result-hand-details"><summary>HANDS</summary>
                 <div className="results-table">
                     <div className="table-header">
-                        <div><LetteringText>{t('result.dice')}</LetteringText></div>
-                        <div className="result-player-heading player-one-heading"><LetteringText>{p1Name}</LetteringText></div>
-                        <div className="result-player-heading player-two-heading"><LetteringText>{p2Name}</LetteringText></div>
+                        <div>{t('result.dice')}</div>
+                        <div className="result-player-heading player-one-heading">{p1Name}</div>
+                        <div className="result-player-heading player-two-heading">{p2Name}</div>
                     </div>
                     {columnResults.map((res, idx) => (
                         <div key={idx} className="table-row">
-                            <div className="dice-val"><LetteringText>{String(res.dice)}</LetteringText></div>
-                            <div className={`hand-name player-one-hand ${res.winner === 'p1' ? 'winning-hand' : ''}`}><LetteringText>{res.p1Hand}</LetteringText></div>
-                            <div className={`hand-name player-two-hand ${res.winner === 'p2' ? 'winning-hand' : ''}`}><LetteringText>{res.p2Hand}</LetteringText></div>
+                            <div className="dice-val">{String(res.dice)}</div>
+                            <div className={`hand-name player-one-hand ${res.winner === 'p1' ? 'winning-hand' : ''}`}>{res.p1Hand}</div>
+                            <div className={`hand-name player-two-hand ${res.winner === 'p2' ? 'winning-hand' : ''}`}>{res.p2Hand}</div>
                         </div>
                     ))}
 
@@ -162,12 +162,12 @@ export const GameResult: React.FC<GameResultProps> = ({
                         role="row"
                         aria-label={`${t('result.xHand')}: ${p1Name} ${handName(p1XRes.type)} ${t('result.points', { points: p1XScore })}; ${p2Name} ${handName(p2XRes.type)} ${t('result.points', { points: p2XScore })}`}
                     >
-                        <div className="x-hand-label"><LetteringText>{t('result.xHand')}</LetteringText></div>
+                        <div className="x-hand-label">{t('result.xHand')}</div>
                         <div className={`hand-name player-one-hand ${xWinner === 'p1' ? 'winning-hand' : ''}`}>
-                            <LetteringText>{`${handName(p1XRes.type)} (${p1XScore})`}</LetteringText>
+                            {`${handName(p1XRes.type)} (${p1XScore})`}
                         </div>
                         <div className={`hand-name player-two-hand ${xWinner === 'p2' ? 'winning-hand' : ''}`}>
-                            <LetteringText>{`${handName(p2XRes.type)} (${p2XScore})`}</LetteringText>
+                            {`${handName(p2XRes.type)} (${p2XScore})`}
                         </div>
                     </div>
                 </div>
@@ -177,13 +177,13 @@ export const GameResult: React.FC<GameResultProps> = ({
 
                 <div className="button-group">
                     <button className="btn-secondary view-board-btn" aria-label={t('result.viewBoard')} onClick={() => { playClickSound(); onViewBoard(); }}>
-                        <LetteringText>BOARD</LetteringText>
+                        BOARD
                     </button>
                     <button className="btn-secondary quit-btn" onClick={onClose}>
-                        <LetteringText>{backLabel}</LetteringText>
+                        {backLabel}
                     </button>
                     <button className="btn-primary restart-btn" aria-label={t('result.playAgain')} onClick={() => { playClickSound(); onRestart(); }}>
-                        <LetteringText>AGAIN</LetteringText>
+                        AGAIN
                     </button>
                 </div>
             </ResultScene>
@@ -194,11 +194,11 @@ export const GameResult: React.FC<GameResultProps> = ({
 export function ForfeitResult({ won, rewards, error, onRetry, onClose }: { won: boolean; rewards: Rewards | null; error: boolean; onRetry: () => void; onClose: () => void }) {
     return <Modal className="game-result-overlay" label="Results" onClose={onClose}>
         <ResultScene outcome={won ? 'win' : 'loss'} rewards={rewards} rewardError={error}>
-            <div className="result-scroll">
+            <div className="result-scroll" tabIndex={0} role="region" aria-label="Result details">
                 <div className="result-outcome">{won ? <Trophy aria-hidden="true" /> : <Swords aria-hidden="true" />}<strong><LetteringText>{won ? 'YOU WIN' : 'YOU LOSE'}</LetteringText></strong></div>
                 <MatchRewards rewards={rewards} error={error} onRetry={onRetry} />
             </div>
-            <button className="btn-primary" onClick={onClose}><LetteringText>HOME</LetteringText></button>
+            <button className="btn-primary" onClick={onClose}>HOME</button>
         </ResultScene>
     </Modal>;
 }
