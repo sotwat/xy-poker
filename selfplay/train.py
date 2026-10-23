@@ -18,12 +18,12 @@ from torch import nn
 from environment import ACTIONS, CARDS, FEATURES, Bridge, XYState, features, resample, rules_digest
 
 SCHEMA = 1
-TRAINING_METHOD = 'mixed-a9-advice-worlds8-v2'
-PREVIOUS_TRAINING_METHOD = 'mixed-a9-teacher-worlds8-v1'
+TRAINING_METHOD = 'mixed-a9-expert-pairs-worlds8-v3'
+PREVIOUS_TRAINING_METHODS = ('mixed-a9-teacher-worlds8-v1', 'mixed-a9-advice-worlds8-v2')
 
 
 def episode_plan(total_games, population_size):
-    """Half self-play, quarter teacher, quarter past; both seats per opponent."""
+    """Equal self, expert-pair, advice and past games; both seats per opponent."""
     if total_games < 0 or population_size < 0:
         raise ValueError('Negative episode count or population size')
     slot = total_games % 8
@@ -33,6 +33,8 @@ def episode_plan(total_games, population_size):
         return 'baseline', None, seat
     if slot in (3, 7) and population_size:
         return 'past-model', (ordinal // 2) % population_size, seat
+    if slot in (4, 5):
+        return 'teacher-selfplay', None, seat
     return 'self', None, total_games % 2
 
 
@@ -126,13 +128,16 @@ def play(bridge, model, seed, simulations, check_stop=lambda: None, opponent=Non
     while not state.is_terminal():
         check_stop()
         player = state.current_player()
-        if opponent == 'baseline' and player != model_seat:
+        if opponent == 'teacher-selfplay' and not training:
+            raise ValueError('Teacher self-play is a data curriculum, not a learned-policy evaluation')
+        if opponent == 'teacher-selfplay' or (opponent == 'baseline' and player != model_seat):
             action = bridge.call('baseline', state=state.data, baseline=baseline,
                                  seed=int(rng.randint(2**31)))
             if training:
                 policy = np.zeros(ACTIONS, dtype=np.float32)
                 policy[action] = 1
-                samples.append(training_sample(state, policy, player, 'teacher-' + baseline))
+                source = 'teacher-' + baseline + ('-selfplay' if opponent == 'teacher-selfplay' else '')
+                samples.append(training_sample(state, policy, player, source))
         elif opponent == 'random' and player != model_seat:
             action = int(rng.choice(state.legal_actions()))
         else:
@@ -293,7 +298,7 @@ def run_training(args, directory):
                                           'batch_size', 'replay_size', 'learning_rate')}
     if args.resume:
         saved = load_checkpoint(checkpoint)
-        if saved.get('training_method') not in (None, PREVIOUS_TRAINING_METHOD, TRAINING_METHOD):
+        if saved.get('training_method') not in (None, *PREVIOUS_TRAINING_METHODS, TRAINING_METHOD):
             raise ValueError('Unknown checkpoint training method')
         if saved['config'] != config:
             raise ValueError('Resume learning settings must match checkpoint config')
@@ -350,6 +355,8 @@ def run_training(args, directory):
                         old.eval()
                     elif opponent_kind == 'baseline':
                         old = 'baseline'
+                    elif opponent_kind == 'teacher-selfplay':
+                        old = 'teacher-selfplay'
                     samples, match = play(bridge, model, game_seed, args.simulations, check_stop,
                                           opponent=old, model_seat=model_seat, training=True)
                     replay.extend(samples)
@@ -362,6 +369,7 @@ def run_training(args, directory):
                                    opponent=opponent_kind, opponent_index=opponent_index,
                                    teacher_samples=sum(s.get('source', '').startswith('teacher-') for s in samples),
                                    advice_samples=sum(s.get('source') == 'teacher-a9-advice' for s in samples),
+                                   expert_pair_samples=sum(s.get('source') == 'teacher-a9-selfplay' for s in samples),
                                    training_method=TRAINING_METHOD, match=match))
                 check_stop()
                 before = copy.deepcopy(model.state_dict())

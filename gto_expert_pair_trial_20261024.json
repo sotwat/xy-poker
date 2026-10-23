@@ -1,0 +1,109 @@
+{
+  "seed": 100524301,
+  "pairs": 1,
+  "games": 2,
+  "samples": 62,
+  "predicted_mean": 0.09134326325429062,
+  "target_mean": 0.0,
+  "positive": 31,
+  "negative": 31,
+  "draws": 0,
+  "model_sha256": "11d8be5f0e24d3b3303cc1ab9ae2b3a731b4026bc7497bbf4fe51d3c04b1dc06",
+  "matches": [
+    {
+      "seed": 100524301,
+      "swap": false,
+      "model_seat": 0,
+      "actions": [
+        520,
+        330,
+        42,
+        340,
+        442,
+        157,
+        79,
+        234,
+        255,
+        493,
+        219,
+        58,
+        316,
+        309,
+        452,
+        38,
+        184,
+        374,
+        98,
+        102,
+        510,
+        146,
+        500,
+        480,
+        66,
+        396,
+        470,
+        114,
+        466,
+        362,
+        124
+      ],
+      "returns": [
+        -1.0,
+        1.0
+      ],
+      "scores": [
+        7,
+        13
+      ]
+    },
+    {
+      "seed": 100524301,
+      "swap": true,
+      "model_seat": 0,
+      "actions": [
+        520,
+        337,
+        311,
+        200,
+        180,
+        346,
+        441,
+        498,
+        45,
+        234,
+        54,
+        422,
+        102,
+        215,
+        308,
+        153,
+        38,
+        96,
+        518,
+        508,
+        124,
+        470,
+        486,
+        12,
+        112,
+        438,
+        252,
+        174,
+        76,
+        450,
+        366
+      ],
+      "returns": [
+        -1.0,
+        1.0
+      ],
+      "scores": [
+        8,
+        19
+      ]
+    }
+  ],
+  "training_updates": 0,
+  "live_replay_changed": false,
+  "scope": "A9-default versus A9-default data-path diagnostic on one fresh deal, not adoption evidence"
+}

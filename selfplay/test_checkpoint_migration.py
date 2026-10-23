@@ -46,7 +46,7 @@ class CheckpointMigrationTests(unittest.TestCase):
                                    iterations=1, eval_pairs=0, eval_seed=2**31)
             run_training(args, directory)
             resumed = load_checkpoint(path)
-            self.assertEqual(resumed.pop('training_method'), 'mixed-a9-advice-worlds8-v2')
+            self.assertEqual(resumed.pop('training_method'), 'mixed-a9-expert-pairs-worlds8-v3')
             verify_preserved(before, resumed)
             self.assertEqual(resumed['checkpoint_migrations'][0]['source_sha256'], 'source-hash')
             corrupted = copy.deepcopy(resumed)
@@ -69,7 +69,7 @@ class CheckpointMigrationTests(unittest.TestCase):
 
     def test_previous_curriculum_resume_retains_all_state_and_unknown_is_rejected(self):
         before = converted(self.payload(), 'source-hash')
-        before['training_method'] = 'mixed-a9-teacher-worlds8-v1'
+        before['training_method'] = 'mixed-a9-advice-worlds8-v2'
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
             path = directory / 'latest.pt'
@@ -78,7 +78,7 @@ class CheckpointMigrationTests(unittest.TestCase):
                                    iterations=1, eval_pairs=0, eval_seed=2**31)
             run_training(args, directory)
             after = load_checkpoint(path)
-            self.assertEqual(after['training_method'], 'mixed-a9-advice-worlds8-v2')
+            self.assertEqual(after['training_method'], 'mixed-a9-expert-pairs-worlds8-v3')
             after['training_method'] = before['training_method']
             self.assertTrue(identical(before, after))
             before['training_method'] = 'unreviewed-future-method'
