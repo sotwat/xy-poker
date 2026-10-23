@@ -42,7 +42,7 @@
 
 .result-scene .match-rewards { padding-top: 12px; }
 .result-scene .reward-totals > div { border-left: 0; border-bottom: 2px solid var(--border-strong); padding: 10px 3px 12px; gap: 6px; }
-.result-scene .reward-totals strong { color: #ebc579; font-size: min(30px, calc(32cqw / var(--reward-number-chars, 5))); }
+.result-scene .reward-totals strong { color: #ebc579; font-size: min(30px, calc(25cqw / var(--reward-number-chars, 5))); }
 .result-scene .reward-totals strong.reward-negative { color: var(--text-secondary); }
 .reward-xp-track { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
 .reward-level { display: flex; align-items: center; gap: 4px; color: var(--text); font-size: 14px; flex-shrink: 0; }
@@ -61,3 +61,5 @@
     .reward-level-up { gap: 8px; padding: 12px 8px; }
     .reward-level-up strong { font-size: 20px; }
 }
+
+.result-scene .reward-totals small { display: flex; flex-wrap: wrap; gap: 4px 8px; }

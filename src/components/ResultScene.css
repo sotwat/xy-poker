@@ -1,4 +1,6 @@
 .result-scene { position: relative; }
+.result-scene .lettering-text[data-lettering-ready] { width: calc(.7em * var(--lettering-aspect)); height: 1em; line-height: 1; }
+.result-scene .lettering-text-face { inset: 0; mask-position: center; }
 .result-tools { display: flex; align-items: center; justify-content: flex-end; gap: 4px; flex-shrink: 0; }
 .result-tools button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 44px; min-height: 44px; padding: 6px 8px; border: 0; background: transparent; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
 .result-tools button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
@@ -13,10 +15,10 @@
 .result-scene .score-val { font-size: 36px; line-height: 1.2; }
 .result-scene .score-box.winner-box { box-shadow: none; }
 .result-number { display: inline-flex; vertical-align: middle; align-items: baseline; white-space: nowrap; }
-.result-digit { display: inline-block; position: relative; height: 1.25em; width: .72em; overflow: hidden; }
+.result-digit { display: inline-block; position: relative; height: 1.25em; width: .96em; overflow: hidden; }
 .result-digit-strip { display: flex; flex-direction: column; height: 12.5em; will-change: transform; }
 .result-digit-strip > span { display: flex; align-items: center; justify-content: center; height: 1.25em; flex: 0 0 1.25em; }
-.result-digit .lettering-text { line-height: 1.25; }
+.result-digit .lettering-text { flex-shrink: 0; max-width: none; }
 @media (prefers-reduced-motion: reduce) { .result-digit-strip { will-change: auto; } }
 .result-spotlights { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
 .result-spotlight { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgb(8 13 20 / 82%); opacity: 0; visibility: hidden; }

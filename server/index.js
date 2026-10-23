@@ -2,6 +2,7 @@ import { verifiedTokenExpiry, installSessionExpiry, createContactLimiter } from 
 import express from 'express';
 import { randomUUID } from 'node:crypto';
 import { scoreMatch, verifyRewardRecord } from './match-rewards.js';
+import { createLocalGameStore, localGameRetryDelay } from './local-games.js';
 import { selectSkinPurchase } from './skin-store.js';
 import { createServer } from 'node:http';
 import path from 'node:path';
@@ -81,7 +82,7 @@ app.get('/api/lettering/:kind', async (request, response) => {
     }
 });
 
-const SERVER_VERSION = '10230917';
+const SERVER_VERSION = '10232325';
 
 app.get('/api/health', async (_request, response) => {
     try {
@@ -108,6 +109,7 @@ const io = new Server(httpServer, {
 
 const rooms = new Map();
 const games = new Map();
+const localGames = createLocalGameStore();
 const matchmakingQueue = [];
 
 const recentAiUpdates = new Map();
@@ -425,10 +427,12 @@ io.on('connection', socket => {
             if (hasProThoughts && !player.is_premium) throw new Error('PRO membership required for thought notes');
 
             if (record.mode === 'bot') {
-                const game = socket.data.localGame;
-                if (!game || game.token !== gameToken || Date.now() - game.startedAt < 30_000) throw new Error('Invalid game session');
+                const game = localGames.get(userId, gameToken);
+                if (!game) throw new Error('Invalid game session');
                 if (record.viewerPlayerIndex !== 0) throw new Error('Invalid AI viewer');
                 verifyRewardRecord(record, game);
+                const retryAfterMs = localGameRetryDelay(game);
+                if (retryAfterMs) return acknowledge(callback, { success: false, retryAfterMs });
             }
 
             const storedRecord = {
@@ -457,7 +461,7 @@ io.on('connection', socket => {
 
             let rewards;
             if (record.mode === 'bot') {
-                const game = socket.data.localGame;
+                const game = localGames.get(userId, gameToken);
                 rewards = await settlePlayer(userId, game.token, 'bot', viewerWinner, [record.scores[0], record.scores[1]], 1500, getGameRecordAchievementTypes(record));
                 socket.emit('match_rewards', rewards);
             }
@@ -500,7 +504,7 @@ io.on('connection', socket => {
     socket.on('start_local_game', (_payload, callback) => {
         if (!socket.data.userId) return acknowledge(callback, { success: false, error: 'Authentication required' });
         const token = generateSessionToken();
-        socket.data.localGame = {
+        const game = {
             token,
             startedAt: Date.now(),
             initialDeck: shuffleDeck(createDeck()),
@@ -509,7 +513,8 @@ io.on('connection', socket => {
             statsRecorded: false,
             aiRecorded: false,
         };
-        acknowledge(callback, { success: true, token, initialDeck: socket.data.localGame.initialDeck, initialDice: socket.data.localGame.initialDice, startingPlayer: socket.data.localGame.startingPlayer });
+        localGames.set(socket.data.userId, game);
+        acknowledge(callback, { success: true, token, initialDeck: game.initialDeck, initialDice: game.initialDice, startingPlayer: game.startingPlayer });
     });
 
     socket.on('create_room', async ({ playerName, browserId, userId } = {}, callback) => {
@@ -649,7 +654,7 @@ io.on('connection', socket => {
             const userId = socket.data.userId;
             if (!userId) throw new Error('Authentication required');
             if (typeof aiWon !== 'boolean' || typeof isDraw !== 'boolean') throw new Error('Invalid result');
-            const localGame = socket.data.localGame;
+            const localGame = localGames.get(userId, gameToken);
             if (!localGame || localGame.token !== gameToken || localGame.aiRecorded) throw new Error('Invalid game session');
             if (Date.now() - localGame.startedAt < 30_000) throw new Error('Game finished too quickly');
             if (Date.now() - (recentAiUpdates.get(userId) || 0) < 30_000) throw new Error('Update too frequent');

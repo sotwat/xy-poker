@@ -141,15 +141,6 @@ export const MyPage: React.FC<MyPageProps> = ({
                         .map(row => row.record_data as unknown)
                         .filter(isGameRecordData);
                     if (!cancelled) setGameRecords(mergeGameRecords(cloudRecords, localRecords));
-
-                    if (socket.connected) {
-                        const cloudIds = new Set(cloudRecords.map(record => record.id));
-                        for (const localRecord of localRecords) {
-                            if (!cloudIds.has(localRecord.id)) {
-                                socket.emit('save_game_record', { record: localRecord });
-                            }
-                        }
-                    }
                 }
             } catch (err) {
                 console.error('Error fetching MyPage data:', err);

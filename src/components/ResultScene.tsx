@@ -8,7 +8,7 @@ import { ResultCelebrations } from './ResultCelebrations';
 import type { MatchRewards } from '../logic/matchRewards';
 import './ResultScene.css';
 
-export function ResultScene({ outcome, children, rewards }: { outcome: 'win' | 'loss' | 'draw'; children: ReactNode; rewards?: MatchRewards | null }) {
+export function ResultScene({ outcome, children, rewards, rewardError }: { outcome: 'win' | 'loss' | 'draw'; children: ReactNode; rewards?: MatchRewards | null; rewardError?: boolean }) {
     const root = useRef<HTMLDivElement>(null);
     const intro = useRef<gsap.core.Timeline | null>(null);
     const audio = useRef<ReturnType<typeof createResultAudio> | null>(null);
@@ -28,7 +28,9 @@ export function ResultScene({ outcome, children, rewards }: { outcome: 'win' | '
             const timeline = gsap.timeline();
             intro.current = timeline;
             timeline.call(() => sound.play(outcome), [], 0.08);
-            if (!reduced) {
+            if (reduced) {
+                element.querySelectorAll<HTMLElement>('.final-scores [data-number-to]').forEach(number => setResultNumber(number, Number(number.dataset.numberTo)));
+            } else {
                 timeline.from(element.querySelector('.result-outcome'), { autoAlpha: 0, scale: 1.16, y: -14, duration: 0.45, ease: 'power3.out' }, 0);
                 timeline.from(element.querySelectorAll('.score-box'), { autoAlpha: 0, y: 16, duration: 0.32, stagger: 0.08 }, 0.25);
                 element.querySelectorAll<HTMLElement>('.final-scores [data-number-to]').forEach((number, index) => countResultNumber(timeline, number, 0.38, 0.65, index === 0 ? () => sound.play('tick', 0.13) : undefined));
@@ -56,7 +58,7 @@ export function ResultScene({ outcome, children, rewards }: { outcome: 'win' | '
                     const value = !muted; muteRef.current = value; setMuted(value); audio.current?.mute(value);
                     try { localStorage.setItem('xypoker_result_muted', String(value)); } catch { /* Storage can be unavailable. */ }
                 }}>{muted ? <VolumeX size={17} /> : <Volume2 size={17} />}</button>
-                {!skipped && !finished && <button onClick={skip}><FastForward size={15} /><LetteringText>SKIP</LetteringText></button>}
+                {!skipped && !finished && !rewardError && <button onClick={skip}><FastForward size={15} /><LetteringText>SKIP</LetteringText></button>}
             </div>
             {children}
             <ResultCelebrations rewards={rewards} />
