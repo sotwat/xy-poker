@@ -1,3 +1,4 @@
+import { publicPlayerStats } from './player-stats.js';
 import { verifiedTokenExpiry, installSessionExpiry, createContactLimiter } from './session-security.js';
 import express from 'express';
 import { randomUUID } from 'node:crypto';
@@ -82,7 +83,7 @@ app.get('/api/lettering/:kind', async (request, response) => {
     }
 });
 
-const SERVER_VERSION = '10240132';
+const SERVER_VERSION = '10240208';
 
 app.get('/api/health', async (_request, response) => {
     try {
@@ -203,9 +204,24 @@ function toRoomPlayer(socket, player, playerName) {
     };
 }
 
-function startGame(roomId, room) {
-    if (room.players.length !== 2) return;
+async function startGame(roomId, room) {
+    if (room.players.length !== 2 || room.starting) return;
+    room.starting = true;
     const [p1, p2] = room.players;
+    const stats = await Promise.all([p1, p2].map(async player => {
+        try {
+            const { data, error } = await supabase.from('players')
+                .select('rating, ai_rating, games_played, wins').eq('id', player.dbId).maybeSingle().abortSignal(AbortSignal.timeout(5000));
+            if (error) throw error;
+            return publicPlayerStats(data);
+        } catch (error) {
+            console.error('Unable to fetch match stats:', error.message);
+            return null;
+        }
+    }));
+    room.starting = false;
+    if (rooms.get(roomId) !== room || room.players.length !== 2 || room.players[0] !== p1 || room.players[1] !== p2) return;
+    [p1, p2].forEach((player, index) => { if (stats[index]?.rating !== null && stats[index]?.rating !== undefined) player.rating = stats[index].rating; });
     const isRanked = Boolean(room.isQuickMatch);
     const startingPlayer = randomPlayerIndex();
     const initialDeck = shuffleDeck(createDeck());
@@ -241,8 +257,10 @@ function startGame(roomId, room) {
         p1Title: p1.title,
         p2Title: p2.title,
         p2Name: p2.name,
-        p1Rating: p1.rating,
-        p2Rating: p2.rating,
+        p1Rating: stats[0]?.rating ?? p1.rating,
+        p2Rating: stats[1]?.rating ?? p2.rating,
+        p1Stats: stats[0],
+        p2Stats: stats[1],
         p1Id: p1.id,
         p2Id: p2.id,
         initialDice,
@@ -377,7 +395,7 @@ io.on('connection', socket => {
         try {
             if (!isAuthorizedUser(socket, userId)) throw new Error('Unauthorized');
             const player = await getOrCreatePlayer(browserId, userId);
-            socket.emit('player_data', { rating: Number(player.rating) || 1500 });
+            socket.emit('player_data', { ...publicPlayerStats(player) });
         } catch (error) {
             console.error('Unable to fetch player data:', error);
             socket.emit('player_data_error', { message: 'Unable to fetch player data' });
@@ -501,8 +519,14 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('start_local_game', (_payload, callback) => {
+    socket.on('start_local_game', async (_payload, callback) => {
         if (!socket.data.userId) return acknowledge(callback, { success: false, error: 'Authentication required' });
+        let stats = null;
+        try {
+            const { data, error } = await supabase.from('players').select('rating, ai_rating, games_played, wins').eq('id', socket.data.userId).maybeSingle().abortSignal(AbortSignal.timeout(5000));
+            if (error) throw error;
+            stats = publicPlayerStats(data);
+        } catch (error) { console.error('Unable to fetch local match stats:', error.message); }
         const token = generateSessionToken();
         const game = {
             token,
@@ -514,7 +538,7 @@ io.on('connection', socket => {
             aiRecorded: false,
         };
         localGames.set(socket.data.userId, game);
-        acknowledge(callback, { success: true, token, initialDeck: game.initialDeck, initialDice: game.initialDice, startingPlayer: game.startingPlayer });
+        acknowledge(callback, { success: true, token, stats, initialDeck: game.initialDeck, initialDice: game.initialDice, startingPlayer: game.startingPlayer });
     });
 
     socket.on('create_room', async ({ playerName, browserId, userId } = {}, callback) => {

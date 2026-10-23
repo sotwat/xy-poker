@@ -1834,41 +1834,6 @@ body {
   font-size: 0.78rem;
 }
 
-.coin-container {
-  width: 90px;
-  height: 90px;
-  display: grid;
-  place-items: center;
-  perspective: 600px;
-}
-
-.coin {
-  width: 78px;
-  height: 78px;
-  position: relative;
-  transform-style: preserve-3d;
-  border-radius: 50%;
-}
-
-.coin-front,
-.coin-back {
-  position: absolute;
-  inset: 0;
-  border: 3px solid #d7dbe0;
-  border-radius: 50%;
-  backface-visibility: hidden;
-}
-
-.coin-front { background: var(--player-one); }
-.coin-back { background: var(--player-two); transform: rotateY(180deg); }
-.coin.flipping { animation: coin-flip 650ms linear infinite; }
-.coin.flipped.winner-0 { transform: rotateY(0); }
-.coin.flipped.winner-1 { transform: rotateY(180deg); }
-
-@keyframes coin-flip {
-  to { transform: rotateY(360deg); }
-}
-
 .toss-result-area,
 .turn-choice-container {
   display: grid;
