@@ -16,7 +16,7 @@ import {
 // Shared AudioContext to prevent "limit reached" errors
 let sharedAudioContext: AudioContext | null = null;
 
-const getAudioContext = () => {
+export const getAudioContext = () => {
     if (!sharedAudioContext) {
         sharedAudioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     }

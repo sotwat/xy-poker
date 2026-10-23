@@ -39,3 +39,25 @@
 @media (max-width: 360px) { .reward-totals strong { font-size: 22px; } }
 .reward-cosmetics { display: grid; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .reward-cosmetics > div { display: flex; gap: 8px; align-items: center; color: #e8c47c; font-size: .8rem; }
+
+.result-scene .match-rewards { padding-top: 12px; }
+.result-scene .reward-totals > div { border-left: 0; border-bottom: 2px solid var(--border-strong); padding: 10px 3px 12px; gap: 6px; }
+.result-scene .reward-totals strong { color: #ebc579; font-size: min(30px, calc(32cqw / var(--reward-number-chars, 5))); }
+.result-scene .reward-totals strong.reward-negative { color: var(--text-secondary); }
+.reward-xp-track { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
+.reward-level { display: flex; align-items: center; gap: 4px; color: var(--text); font-size: 14px; flex-shrink: 0; }
+.reward-xp-bar { height: 7px; flex: 1; overflow: hidden; background: var(--border); }
+.reward-xp-fill { display: block; width: 100%; height: 100%; background: #ebc579; transform-origin: left center; }
+.reward-level-up { display: flex; align-items: center; gap: 12px; padding: 14px 12px; margin: 12px 0; border-block: 1px solid #b79151; background: rgb(235 197 121 / 9%); color: #ebc579; }
+.reward-level-up > div { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.reward-level-up strong { font-size: 22px; line-height: 1.2; }
+.reward-level-up span { display: flex; align-items: center; gap: 5px; font-size: 13px; }
+.result-scene .reward-cosmetics { gap: 8px; }
+.result-scene .reward-cosmetics > div { padding: 12px; border: 1px solid #b79151; background: rgb(235 197 121 / 7%); font-size: 14px; }
+.result-scene .achievement-earned { padding: 12px; border: 1px solid #b79151; background: rgb(235 197 121 / 7%); }
+.result-scene .achievement-earned small, .result-scene .achievement-earned svg { color: #ebc579; }
+.result-scene .result-achievement > div > span { min-width: 0; }
+@media (max-width: 360px) {
+    .reward-level-up { gap: 8px; padding: 12px 8px; }
+    .reward-level-up strong { font-size: 20px; }
+}

@@ -188,6 +188,9 @@ function App() {
   const { language, t } = useI18n();
   const [gameState, dispatch] = useReducer(gameReducer, INITIAL_GAME_STATE);
   const phase = gameState.phase;
+  useEffect(() => {
+    if (phase === 'playing') void import('./utils/resultAudio').then(audio => audio.preloadResultAudio());
+  }, [phase]);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [placeHidden, setPlaceHidden] = useState(false);
   const [showDiceAnimation, setShowDiceAnimation] = useState(false);
@@ -1927,7 +1930,7 @@ function App() {
                             <HomeIcon name="support" />
                             <span><LetteringText>{t('home.support')}</LetteringText></span>
                           </a>
-                          <div className="home-version"><LetteringText>v10212228</LetteringText></div>
+                          <div className="home-version"><LetteringText>v10230917</LetteringText></div>
                         </div>
                       </div>
                     )}
@@ -2222,6 +2225,7 @@ function App() {
       {phase === 'ended' && showResultsModal && forfeitWon === null && (
         <GameResult
           gameState={gameState}
+          viewerPlayerIndex={myPlayerIndex}
           p1Name={p1DisplayName}
           p2Name={p2DisplayName}
           ratingUpdates={ratingUpdates}

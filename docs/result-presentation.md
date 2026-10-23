@@ -1,0 +1,11 @@
+# Result presentation
+
+Reference lock (2026-10-23): Summons Board's result screen separates earned currency, EXP/rank progress and acquired items (https://gameui.matme.info/blog/archives/748). Dark Tales places unlock progress beside battle rewards and allows leaving effects without waiting (https://gameui.matme.info/blog/archives/103244). These inform hierarchy and interruption, not copied artwork. The existing XY Poker INK palette, angular geometry, Vectura lettering and Lucide icons remain the visual source; no new illustration or image generation. Energy 3 / rhythm 3 / motion 3, with a readable static finish.
+
+Sequence: result impact → score count → rating and coins → XP fill → level-up → achievements and cosmetics. Each reward is the already saved receipt, never a new award triggered by playback. Skip completes the presentation silently; footer actions stay available. Reduced motion removes travel and counting. Closing stops result audio and timelines. Late/retried receipts begin their reward sequence only once available.
+
+Animation: GSAP (standard no-charge license; https://gsap.com/standard-license, package README). Sound: Kenney Interface Sounds and Music Jingles, CC0; original license files are retained in public/audio/results. Existing Lucide icons are ISC licensed. Reference screenshots are not shipped assets.
+
+Asset mapping (Kenney source → shipped PCM WAV for Safari): Pizzicato jingles/jingles_PIZZI07.ogg → win.wav; close_001.ogg → loss.wav; maximize_006.ogg → reveal.wav; tick_002.ogg → tick.wav; confirmation_004.ogg → level.wav; confirmation_002.ogg → unlock.wav. Source pages: https://kenney.nl/assets/interface-sounds and https://kenney.nl/assets/music-jingles.
+
+Verification: 126 logic/server tests, lint, TypeScript and production build; BrowserOS at 320×568 and 390×844; normal AI match through showdown/results; synthetic win/loss/draw/forfeit, delayed receipt and retry; rolling score/XP transforms and successive spotlights; Web Audio source starts; silent skip, persistent mute and early exit cleanup; reduced-motion final state. Audio scheduling was instrumented, not subjectively auditioned. Long English achievement labels now render word by word through the existing licensed lettering endpoint, preserving Vectura beyond its 32-character request limit. No backend reward calculations or persistence changed.
