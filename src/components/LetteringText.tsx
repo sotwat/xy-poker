@@ -22,6 +22,10 @@ function EnglishSegment({ text, layout = 'text' }: { text: string; layout?: 'tex
 export function LetteringText({ children, layout = 'text' }: { children: string; layout?: 'text' | 'card-rank' }) {
     if (layout === 'card-rank') return <EnglishSegment text={children} layout={layout} />;
     return children.split(/([\x20-\x7e]+)/).map((segment, index) => (
-        /[A-Za-z0-9]/.test(segment) ? <EnglishSegment key={index} text={segment} /> : segment
+        /[A-Za-z0-9]/.test(segment) ? segment.length <= 32
+            ? <EnglishSegment key={index} text={segment} />
+            : segment.split(/(\s+)/).map((word, part) => /\S/.test(word)
+                ? <EnglishSegment key={`${index}-${part}`} text={word} /> : word)
+            : segment
     ));
 }

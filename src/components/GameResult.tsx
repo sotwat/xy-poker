@@ -2,16 +2,20 @@ import { LetteringText } from './LetteringText';
 import { Modal } from './Modal';
 import { MatchRewards } from './MatchRewards';
 import type { MatchRewards as Rewards } from '../logic/matchRewards';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Trophy, Minus, Swords } from 'lucide-react';
+import { ResultScene } from './ResultScene';
+import { ResultNumber } from './ResultNumber';
 import type { GameState, Card } from '../logic/types';
 import { evaluateYHand, evaluateXHand } from '../logic/evaluation';
 import { calculateXHandScores } from '../logic/scoring';
-import { playClickSound, playTickSound } from '../utils/sound';
+import { playClickSound } from '../utils/sound';
 import './GameResult.css';
 import { useI18n } from '../i18n';
 
 interface GameResultProps {
     gameState: GameState;
+    viewerPlayerIndex?: number;
     rewards?: Rewards | null;
     rewardError?: boolean;
     onRetryRewards?: () => void;
@@ -29,6 +33,7 @@ interface GameResultProps {
 
 export const GameResult: React.FC<GameResultProps> = ({
     gameState,
+    viewerPlayerIndex = 0,
     onRestart,
     onClose,
     onViewBoard,
@@ -43,59 +48,7 @@ export const GameResult: React.FC<GameResultProps> = ({
     const p2 = players[1];
     const dice = players[0].dice;
 
-    const [p1DisplayScore, setP1DisplayScore] = useState(0);
-    const [p2DisplayScore, setP2DisplayScore] = useState(0);
-
-    useEffect(() => {
-        const duration = 800; // ms
-        const startTime = performance.now();
-        let lastPlayedTime = 0;
-        let animationFrameId: number;
-
-        const animate = (currentTime: number) => {
-            const elapsedTime = currentTime - startTime;
-            const progress = Math.min(elapsedTime / duration, 1);
-
-            const nextP1 = Math.floor(progress * p1.score);
-            const nextP2 = Math.floor(progress * p2.score);
-
-            let didScoreChange = false;
-
-            setP1DisplayScore(prevP1 => {
-                if (nextP1 !== prevP1) {
-                    didScoreChange = true;
-                }
-                return nextP1;
-            });
-
-            setP2DisplayScore(prevP2 => {
-                if (nextP2 !== prevP2) {
-                    didScoreChange = true;
-                }
-                return nextP2;
-            });
-
-            // Prevent audio clutter by playing sound only once per ~30ms if score changes
-            if (didScoreChange && currentTime - lastPlayedTime > 30) {
-                playTickSound();
-                lastPlayedTime = currentTime;
-            }
-
-            if (progress < 1) {
-                animationFrameId = requestAnimationFrame(animate);
-            } else {
-                setP1DisplayScore(p1.score);
-                setP2DisplayScore(p2.score);
-            }
-        };
-
-        animationFrameId = requestAnimationFrame(animate);
-
-        return () => {
-            cancelAnimationFrame(animationFrameId);
-        };
-    }, [p1.score, p2.score]);
-
+    const outcome = winner === 'draw' ? 'draw' : winner === `p${viewerPlayerIndex + 1}` ? 'win' : 'loss';
 
     // Evaluate Columns (Y-Hands)
     const columnResults = Array.from({ length: 5 }).map((_, colIndex) => {
@@ -142,24 +95,18 @@ export const GameResult: React.FC<GameResultProps> = ({
 
     return (
         <Modal className="game-result-overlay" label={t('game.showDetails')} onClose={onViewBoard}>
-            <div className="game-result-modal">
+            <ResultScene outcome={outcome} rewards={rewards}>
                 <div className="result-scroll">
-                <div className={`winner-announcement winner-${winner ?? 'draw'}`}>
-                    {winner === 'draw' ? (
-                        <span className="draw-text">{t('result.tie')}</span>
-                    ) : (
-                        <>
-                            Winner: <span className={winner === 'p1' ? 'p1-text' : 'p2-text'}>
-                                {winner === 'p1' ? p1Name : p2Name}
-                            </span>!
-                        </>
-                    )}
+                <div className="result-outcome">
+                    {outcome === 'win' ? <Trophy aria-hidden="true" /> : outcome === 'draw' ? <Minus aria-hidden="true" /> : <Swords aria-hidden="true" />}
+                    <strong><LetteringText>{outcome === 'win' ? 'YOU WIN' : outcome === 'loss' ? 'YOU LOSE' : 'DRAW'}</LetteringText></strong>
+                    {winner !== 'draw' && <small><LetteringText>{winner === 'p1' ? p1Name : p2Name}</LetteringText></small>}
                 </div>
 
                 <div className="final-scores">
                     <div className={`score-box p1 ${winner === 'p1' ? 'winner-box' : ''}`}>
                         <h3>{p1Name}</h3>
-                        <div className="score-val">{p1DisplayScore}</div>
+                        <div className="score-val"><ResultNumber to={p1.score} /></div>
                         <div className="bonus-val">{t('result.bonuses', { count: p1.bonusesClaimed })}</div>
                         {ratingUpdates && !rewards && ratingUpdates.p1 && (
                             <div className="rating-update">
@@ -175,7 +122,7 @@ export const GameResult: React.FC<GameResultProps> = ({
                     </div>
                     <div className={`score-box p2 ${winner === 'p2' ? 'winner-box' : ''}`}>
                         <h3>{p2Name}</h3>
-                        <div className="score-val">{p2DisplayScore}</div>
+                        <div className="score-val"><ResultNumber to={p2.score} /></div>
                         <div className="bonus-val">{t('result.bonuses', { count: p2.bonusesClaimed })}</div>
                         {ratingUpdates && !rewards && ratingUpdates.p2 && (
                             <div className="rating-update">
@@ -230,28 +177,28 @@ export const GameResult: React.FC<GameResultProps> = ({
 
                 <div className="button-group">
                     <button className="btn-secondary view-board-btn" onClick={() => { playClickSound(); onViewBoard(); }}>
-                        {t('result.viewBoard')}
+                        <LetteringText>{t('result.viewBoard')}</LetteringText>
                     </button>
                     <button className="btn-secondary quit-btn" onClick={onClose}>
-                        {backLabel}
+                        <LetteringText>{backLabel}</LetteringText>
                     </button>
                     <button className="btn-primary restart-btn" onClick={() => { playClickSound(); onRestart(); }}>
-                        {t('result.playAgain')}
+                        <LetteringText>{t('result.playAgain')}</LetteringText>
                     </button>
                 </div>
-            </div>
+            </ResultScene>
         </Modal>
     );
 };
 
 export function ForfeitResult({ won, rewards, error, onRetry, onClose }: { won: boolean; rewards: Rewards | null; error: boolean; onRetry: () => void; onClose: () => void }) {
     return <Modal className="game-result-overlay" label="Results" onClose={onClose}>
-        <div className="game-result-modal">
+        <ResultScene outcome={won ? 'win' : 'loss'} rewards={rewards}>
             <div className="result-scroll">
-                <div className="winner-announcement"><LetteringText>{won ? 'YOU WIN' : 'YOU LOSE'}</LetteringText></div>
+                <div className="result-outcome">{won ? <Trophy aria-hidden="true" /> : <Swords aria-hidden="true" />}<strong><LetteringText>{won ? 'YOU WIN' : 'YOU LOSE'}</LetteringText></strong></div>
                 <MatchRewards rewards={rewards} error={error} onRetry={onRetry} />
             </div>
             <button className="btn-primary" onClick={onClose}><LetteringText>HOME</LetteringText></button>
-        </div>
+        </ResultScene>
     </Modal>;
 }
