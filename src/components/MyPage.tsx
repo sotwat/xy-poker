@@ -22,6 +22,7 @@ interface MyPageProps {
     isOpen: boolean;
     onClose: () => void;
     userId: string;
+    displayName: string;
     isPremium: boolean;
     onNameChange?: (newName: string) => void;
     selectedSkin: DiceSkin;
@@ -57,6 +58,7 @@ export const MyPage: React.FC<MyPageProps> = ({
     isOpen,
     onClose,
     userId,
+    displayName,
     isPremium,
     onNameChange,
     selectedSkin,
@@ -95,7 +97,7 @@ export const MyPage: React.FC<MyPageProps> = ({
 
                 if (!cancelled) {
                     setProfile(nextProfile);
-                    setEditNameValue(nextProfile.username ?? '');
+                    setEditNameValue(nextProfile.username || displayName);
                 }
 
                 if (activeTab === 'ranking') {
@@ -153,7 +155,7 @@ export const MyPage: React.FC<MyPageProps> = ({
         return () => {
             cancelled = true;
         };
-    }, [activeTab, isOpen, userId]);
+    }, [activeTab, isOpen, userId, displayName]);
 
     const handleUpdateName = async () => {
         if (!profile || !editNameValue.trim()) return;
@@ -223,7 +225,7 @@ export const MyPage: React.FC<MyPageProps> = ({
                                             <div className="name-display-row">
                                                 <span className="username">
                                                     {isPremium && <PremiumBadge />}
-                                                    {profile.username || t('mypage.noName')}
+                                                    {profile.username || displayName}
                                                 </span>
                                                 <button type="button" onClick={() => setIsEditingName(true)} className="edit-icon-btn" aria-label={t('mypage.editName')}>{t('mypage.edit')}</button>
                                             </div>
