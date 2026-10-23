@@ -23,7 +23,7 @@ export function createResultAudio() {
     return {
         preload: preloadResultAudio,
         mute(value: boolean) { muted = value; if (value) this.stop(); },
-        play(name: keyof typeof paths, volume = 0.32) {
+        play(name: keyof typeof paths, volume = 0.32, playbackRate = 1) {
             if (muted || cancelled || document.hidden) return;
             const requested = generation;
             const started = performance.now();
@@ -34,6 +34,7 @@ export function createResultAudio() {
                 const source = context.createBufferSource();
                 const gain = context.createGain();
                 source.buffer = buffer;
+                source.playbackRate.value = playbackRate;
                 gain.gain.value = volume;
                 source.connect(gain).connect(context.destination);
                 sources.add(source);
