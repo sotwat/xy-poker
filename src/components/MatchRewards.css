@@ -20,12 +20,12 @@
 .achievement-earned svg, .achievement-earned small { color: var(--accent); }
 .match-rewards-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; font-size: 14px; color: var(--text-secondary); }
 .match-rewards-status button { min-height: 44px; }
-.game-result-overlay .game-result-modal { height: auto !important; max-height: calc(100dvh - 24px) !important; overflow: hidden !important; transform: none !important; border-radius: 2px !important; }
-.result-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 2px 4px; }
+.game-result-overlay .game-result-modal { height: auto !important; max-height: 100% !important; overflow: hidden !important; transform: none !important; border-radius: 2px !important; }
+.result-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 2px 20px 2px 4px; scrollbar-gutter: stable; overscroll-behavior: contain; }
 .game-result-modal .winner-announcement { margin: 0 0 12px; }
 .game-result-modal .final-scores { margin-bottom: 16px; }
 .game-result-modal .button-group { display: grid !important; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; flex-shrink: 0; }
-.game-result-modal .button-group button { padding: 12px 6px !important; min-height: 44px; min-width: 0 !important; width: auto !important; font-size: 12px !important; border-radius: 2px !important; }
+.game-result-modal .button-group button { padding: 12px 6px !important; min-height: 44px; min-width: 0 !important; width: auto !important; font-size: 14px !important; border-radius: 2px !important; }
 .result-hand-details { margin-top: 12px; border-top: 1px solid var(--border); font-size: 14px; }
 .result-hand-details summary { padding: 12px 0; cursor: pointer; color: var(--text-secondary); }
 @media (max-width: 480px) {
@@ -42,7 +42,7 @@
 
 .result-scene .match-rewards { padding-top: 12px; }
 .result-scene .reward-totals > div { border-left: 0; border-bottom: 2px solid var(--border-strong); padding: 10px 3px 12px; gap: 6px; }
-.result-scene .reward-totals strong { color: #ebc579; font-size: min(30px, calc(25cqw / var(--reward-number-chars, 5))); }
+.result-scene .reward-totals strong { color: #ebc579; font-size: min(32px, calc(36cqw / var(--reward-number-chars, 5))); }
 .result-scene .reward-totals strong.reward-negative { color: var(--text-secondary); }
 .reward-xp-track { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
 .reward-level { display: flex; align-items: center; gap: 4px; color: var(--text); font-size: 14px; flex-shrink: 0; }
@@ -63,3 +63,17 @@
 }
 
 .result-scene .reward-totals small { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+
+.result-scene { font-variant-numeric: tabular-nums; }
+.result-scene .reward-totals > div > span { font-weight: 600; }
+.result-scene .reward-totals small { font-size: 12px; line-height: 1.4; }
+.result-scene .result-achievement > div { align-items: baseline; line-height: 1.5; }
+.result-scene .result-achievement > div > span { display: block; overflow-wrap: anywhere; }
+.result-scene .result-achievement > div > span svg { vertical-align: -.15em; margin-right: 5px; }
+.result-scene .result-achievement > small { display: block; white-space: normal; line-height: 1.5; margin-top: 4px; }
+.result-scene .reward-cosmetics > div { overflow-wrap: anywhere; line-height: 1.5; }
+.result-scene .reward-cosmetics svg, .result-scene .reward-level-up > svg { flex-shrink: 0; }
+.result-scene .reward-level-up > div { min-width: 0; }
+.result-scene .result-hand-details .table-header,
+.result-scene .result-hand-details .table-row { grid-template-columns: minmax(30px, .5fr) repeat(2, minmax(0, 1.5fr)); gap: 6px; font-size: 13px; padding: 8px 4px; }
+.result-scene .result-hand-details .hand-name { font-size: 13px; overflow-wrap: anywhere; }

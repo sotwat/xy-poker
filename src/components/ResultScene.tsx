@@ -2,7 +2,6 @@ import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from '
 import { gsap } from 'gsap';
 import { FastForward, Volume2, VolumeX } from 'lucide-react';
 import { createResultAudio } from '../utils/resultAudio';
-import { LetteringText } from './LetteringText';
 import { setResultNumber, countResultNumber, ResultContext } from './resultMotion';
 import { ResultCelebrations } from './ResultCelebrations';
 import type { MatchRewards } from '../logic/matchRewards';
@@ -58,7 +57,7 @@ export function ResultScene({ outcome, children, rewards, rewardError }: { outco
                     const value = !muted; muteRef.current = value; setMuted(value); audio.current?.mute(value);
                     try { localStorage.setItem('xypoker_result_muted', String(value)); } catch { /* Storage can be unavailable. */ }
                 }}>{muted ? <VolumeX size={17} /> : <Volume2 size={17} />}</button>
-                {!skipped && !finished && !rewardError && <button onClick={skip}><FastForward size={15} /><LetteringText>SKIP</LetteringText></button>}
+                {!skipped && !finished && !rewardError && <button onClick={skip}><FastForward size={15} />SKIP</button>}
             </div>
             {children}
             <ResultCelebrations rewards={rewards} />

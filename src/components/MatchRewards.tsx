@@ -6,12 +6,11 @@ import { resultXpProgress } from '../logic/resultProgress';
 import { Coins, Flame, Trophy, TrendingUp } from 'lucide-react';
 import { advancedAchievements, type MatchRewards as Rewards } from '../logic/matchRewards';
 import { COSMETICS } from '../logic/progression';
-import { LetteringText } from './LetteringText';
 import { useI18n } from '../i18n';
 import './MatchRewards.css';
 
 export function MatchRewards({ rewards, error, onRetry }: { rewards: Rewards | null; error?: boolean; onRetry?: () => void }) {
-    if (!rewards) return <div className="match-rewards-status" role="status"><LetteringText>{error ? 'Rewards unavailable' : 'Saving rewards…'}</LetteringText>{error && onRetry && <button onClick={onRetry}><LetteringText>RETRY</LetteringText></button>}</div>;
+    if (!rewards) return <div className="match-rewards-status" role="status">{error ? 'Rewards unavailable' : 'Saving rewards…'}{error && onRetry && <button onClick={onRetry}>RETRY</button>}</div>;
     return <SavedMatchRewards key={rewards.matchId} rewards={rewards} />;
 }
 
@@ -78,34 +77,34 @@ function SavedMatchRewards({ rewards }: { rewards: Rewards }) {
     const challengeProgress = rewards.after.wins % 3;
     return <section ref={root} className="match-rewards" aria-label="Match rewards" aria-live="polite">
         <div className="reward-totals" style={{ '--reward-number-chars': Math.max(...[rewards.rating.change, rewards.coins.change, rewards.xp.change].map(n => String(Math.abs(n)).length + 1)) } as CSSProperties}>
-            <div><span><TrendingUp size={16} aria-hidden="true" /><LetteringText>{rewards.mode === 'bot' ? 'AI RATING' : 'RATING'}</LetteringText></span><strong className={rewards.rating.change < 0 ? 'reward-negative' : ''}><ResultNumber to={rewards.rating.change} signed /></strong><small><LetteringText>{String(rewards.rating.old)}</LetteringText><span>→ <LetteringText>{String(rewards.rating.new)}</LetteringText></span></small></div>
-            <div><span><Coins size={16} aria-hidden="true" /><LetteringText>COINS</LetteringText></span><strong><ResultNumber to={rewards.coins.change} signed /></strong><small><LetteringText>{`${rewards.coins.new}`}</LetteringText></small></div>
-            <div><span><LetteringText>XP</LetteringText></span><strong><ResultNumber to={rewards.xp.change} signed /></strong><small><LetteringText>{`${rewards.xp.new} XP`}</LetteringText></small></div>
+            <div><span><TrendingUp size={16} aria-hidden="true" />{rewards.mode === 'bot' ? 'AI RATING' : 'RATING'}</span><strong className={rewards.rating.change < 0 ? 'reward-negative' : ''}><ResultNumber to={rewards.rating.change} signed /></strong><small>{String(rewards.rating.old)}<span>→ {String(rewards.rating.new)}</span></small></div>
+            <div><span><Coins size={16} aria-hidden="true" />COINS</span><strong><ResultNumber to={rewards.coins.change} signed /></strong><small>{`${rewards.coins.new}`}</small></div>
+            <div><span>XP</span><strong><ResultNumber to={rewards.xp.change} signed /></strong><small>{`${rewards.xp.new} XP`}</small></div>
         </div>
         <div className="reward-xp-track">
-            <span className="reward-level"><LetteringText>LV</LetteringText> <ResultNumber from={rewards.level.old} to={rewards.level.new} /></span>
+            <span className="reward-level">LV <ResultNumber from={rewards.level.old} to={rewards.level.new} /></span>
             <div className="reward-xp-bar" role="progressbar" aria-label="Level XP" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(resultXpProgress(rewards.xp.new, rewards.level.old, rewards.level.new).fraction * 100)}><span className="reward-xp-fill" /></div>
         </div>
         {rewards.level.new > rewards.level.old && <div className="reward-level-up">
             <TrendingUp size={28} aria-hidden="true" />
-            <div><strong><LetteringText>LEVEL UP</LetteringText></strong><span><LetteringText>{`LV ${rewards.level.old} → ${rewards.level.new}`}</LetteringText></span></div>
-            <span><Coins size={16} aria-hidden="true" /><LetteringText>{`＋${rewards.breakdown.levelUp ?? 0}`}</LetteringText></span>
+            <div><strong>LEVEL UP</strong><span>{`LV ${rewards.level.old} → ${rewards.level.new}`}</span></div>
+            <span><Coins size={16} aria-hidden="true" />{`＋${rewards.breakdown.levelUp ?? 0}`}</span>
         </div>}
         <div className="reward-bonuses">
-            <span><LetteringText>{`MATCH ＋${rewards.breakdown.base}`}</LetteringText></span>
-            {rewards.breakdown.margin > 0 && <span><LetteringText>{`SCORE GAP ＋${rewards.breakdown.margin}`}</LetteringText></span>}
-            {rewards.after.currentWinStreak > 1 && <span><Flame size={14} aria-hidden="true" /><LetteringText>{`${rewards.after.currentWinStreak} WIN STREAK ＋${rewards.breakdown.streak}`}</LetteringText></span>}
-            {rewards.breakdown.challenge > 0 && <span><Trophy size={14} aria-hidden="true" /><LetteringText>{`3 WINS ＋${rewards.breakdown.challenge}`}</LetteringText></span>}
+            <span>{`MATCH ＋${rewards.breakdown.base}`}</span>
+            {rewards.breakdown.margin > 0 && <span>{`SCORE GAP ＋${rewards.breakdown.margin}`}</span>}
+            {rewards.after.currentWinStreak > 1 && <span><Flame size={14} aria-hidden="true" />{`${rewards.after.currentWinStreak} WIN STREAK ＋${rewards.breakdown.streak}`}</span>}
+            {rewards.breakdown.challenge > 0 && <span><Trophy size={14} aria-hidden="true" />{`3 WINS ＋${rewards.breakdown.challenge}`}</span>}
         </div>
-        <div className="reward-challenge"><span><LetteringText>3 WINS</LetteringText></span><progress max={3} value={rewards.breakdown.challenge > 0 ? 3 : challengeProgress} aria-label="Three-win reward" /><span><LetteringText>{rewards.breakdown.challenge > 0 ? '3 / 3' : `${challengeProgress} / 3`}</LetteringText></span></div>
+        <div className="reward-challenge"><span>3 WINS</span><progress max={3} value={rewards.breakdown.challenge > 0 ? 3 : challengeProgress} aria-label="Three-win reward" /><span>{rewards.breakdown.challenge > 0 ? '3 / 3' : `${challengeProgress} / 3`}</span></div>
         {(rewards.cosmetics?.length ?? 0) > 0 && <div className="reward-cosmetics">{rewards.cosmetics!.map(id => {
             const item = COSMETICS.find(c => c.id === id);
-            return item && <div key={id}><Trophy size={16} aria-hidden="true" /><LetteringText>{`${item.kind.toUpperCase()} · ${item.name}`}</LetteringText></div>;
+            return item && <div key={id}><Trophy size={16} aria-hidden="true" />{`${item.kind.toUpperCase()} · ${item.name}`}</div>;
         })}</div>}
         {progress.length > 0 && <div className="result-achievements">
             {progress.map(row => <div className={`result-achievement ${rewards.unlocked.includes(row.type) ? 'achievement-earned' : ''}`} key={row.type}>
-                <div><span>{rewards.unlocked.includes(row.type) && <Trophy size={15} aria-hidden="true" />}<LetteringText>{t(`achievement.${row.type}`)}</LetteringText></span><small><LetteringText>{rewards.unlocked.includes(row.type) ? 'UNLOCKED' : `${row.progress!.current} / ${row.progress!.target}`}</LetteringText></small></div>
-                {rewards.achievementRewards?.find(a => a.id === row.type) && <small><LetteringText>{`＋${rewards.achievementRewards.find(a => a.id === row.type)!.coins} COINS / ＋${rewards.achievementRewards.find(a => a.id === row.type)!.xp} XP`}</LetteringText></small>}
+                <div><span>{rewards.unlocked.includes(row.type) && <Trophy size={15} aria-hidden="true" />}{t(`achievement.${row.type}`)}</span><small>{rewards.unlocked.includes(row.type) ? 'UNLOCKED' : `${row.progress!.current} / ${row.progress!.target}`}</small></div>
+                {rewards.achievementRewards?.find(a => a.id === row.type) && <small>{`＋${rewards.achievementRewards.find(a => a.id === row.type)!.coins} COINS / ＋${rewards.achievementRewards.find(a => a.id === row.type)!.xp} XP`}</small>}
                 {row.progress && <progress max={row.progress.target} value={row.progress.current} aria-label={t(`achievement.${row.type}`)} />}
             </div>)}
         </div>}

@@ -69,7 +69,7 @@ graph TD
 
 ## ✅ Handover Status
 
-- **Current Version:** `10232333` (2026-10-23)
+- **Current Version:** `10240132` (2026-10-24)
 - **Status:** **Match rewards and permanent skin purchases; A9 policy retained**
 - **Last Critical Verification:**
     - Local vs AI: ✅ Start flow, turn selection, card placement working
@@ -94,6 +94,8 @@ graph TD
 ---
 
 ## 📜 Recent Changes (Last 10 Updates)
+
+1. **v10240132** (2026-10-24): **Readable Results** - Separate display lettering from result controls and data; reserve space for overlay scrollbars.
 
 1. **v10232333** (2026-10-23): **Result and Reward Fixes** - Consistent Vectura glyph sizing, responsive reward values, reduced-motion score recovery, reconnect-safe AI deals and bounded reward retry.
 2. **v10230917** (2026-10-23): **Result Presentation** - Staged outcome, rolling score/reward counters, XP progress, level and unlock spotlights, licensed result audio, skip and mute controls. See `docs/result-presentation.md`.
