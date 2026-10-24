@@ -1,0 +1,81 @@
+{
+  "scope": "Correlated saved training deals; four-action horizon, no terminal utility or strength inference",
+  "null_decisions": 48,
+  "continuations": 39,
+  "continuation_decisions": 117,
+  "over_90_seconds": 1,
+  "groups": {
+    "selection_9": {
+      "roots": 4,
+      "teacher_agreement": {
+        "learned": 0,
+        "uniform": 0,
+        "teacher50": 3
+      },
+      "changed": {
+        "learned": 0,
+        "uniform": 0,
+        "teacher50": 4
+      },
+      "mean_endpoint_value_delta": {
+        "learned": 0.0,
+        "uniform": 0.0,
+        "teacher50": -0.6782713755965233
+      }
+    },
+    "selection_17": {
+      "roots": 4,
+      "teacher_agreement": {
+        "learned": 1,
+        "uniform": 1,
+        "teacher50": 4
+      },
+      "changed": {
+        "learned": 0,
+        "uniform": 2,
+        "teacher50": 3
+      },
+      "mean_endpoint_value_delta": {
+        "learned": 0.0,
+        "uniform": -0.07215698063373566,
+        "teacher50": 0.02772672474384308
+      }
+    },
+    "confirmation_9": {
+      "roots": 4,
+      "teacher_agreement": {
+        "learned": 0,
+        "uniform": 0,
+        "teacher50": 2
+      },
+      "changed": {
+        "learned": 0,
+        "uniform": 2,
+        "teacher50": 3
+      },
+      "mean_endpoint_value_delta": {
+        "learned": 0.0,
+        "uniform": 0.31612586975097656,
+        "teacher50": 0.3645350784063339
+      }
+    },
+    "confirmation_17": {
+      "roots": 4,
+      "teacher_agreement": {
+        "learned": 0,
+        "uniform": 2,
+        "teacher50": 4
+      },
+      "changed": {
+        "learned": 0,
+        "uniform": 4,
+        "teacher50": 4
+      },
+      "mean_endpoint_value_delta": {
+        "learned": 0.0,
+        "uniform": -0.0025542080402374268,
+        "teacher50": -0.9151493608951569
+      }
+    }
+  }
+}
