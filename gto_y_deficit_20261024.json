@@ -1,0 +1,156 @@
+{
+  "models": [
+    {
+      "input": "gto_milestone_10000_matched12000_components_20261024.json",
+      "sha256": "2807b4f0bfcf1137fb0ef337d78c063f1fab8caaa7e49baf55bd0d7bcec0503a",
+      "model_sha256": "ff6904e7b58b126984ec93342b2836442707e23950781edc068c892be4fe5103",
+      "seed": 2548683648,
+      "groups": {
+        "all": {
+          "games": 100,
+          "columns_won": [
+            61,
+            439
+          ],
+          "points": [
+            175,
+            1537
+          ],
+          "tied_columns": 0,
+          "mean_points_per_won_column": [
+            2.8688524590163933,
+            3.501138952164009
+          ],
+          "y_deficit": 1362,
+          "count_term": 1294.272,
+          "award_size_residual": 67.728,
+          "count_fraction": 0.950273127753304,
+          "learner_zero_column_games": 50,
+          "learner_three_plus_columns_games": 0
+        },
+        "first25": {
+          "games": 50,
+          "columns_won": [
+            29,
+            221
+          ],
+          "points": [
+            77,
+            755
+          ],
+          "tied_columns": 0,
+          "mean_points_per_won_column": [
+            2.6551724137931036,
+            3.416289592760181
+          ],
+          "y_deficit": 678,
+          "count_term": 638.976,
+          "award_size_residual": 39.024,
+          "count_fraction": 0.9424424778761062,
+          "learner_zero_column_games": 28,
+          "learner_three_plus_columns_games": 0
+        },
+        "last25": {
+          "games": 50,
+          "columns_won": [
+            32,
+            218
+          ],
+          "points": [
+            98,
+            782
+          ],
+          "tied_columns": 0,
+          "mean_points_per_won_column": [
+            3.0625,
+            3.5871559633027523
+          ],
+          "y_deficit": 684,
+          "count_term": 654.72,
+          "award_size_residual": 29.28,
+          "count_fraction": 0.9571929824561404,
+          "learner_zero_column_games": 22,
+          "learner_three_plus_columns_games": 0
+        }
+      }
+    },
+    {
+      "input": "gto_milestone_12000_components_20261024.json",
+      "sha256": "4aba8ddf0f907c2d25690037d6c933342179862fac876f109896c9fc01d5ec9c",
+      "model_sha256": "21520a5e458a987a238e5a34752fbca14ffcf5b2d2c188e6e671c074d9b72920",
+      "seed": 2548683648,
+      "groups": {
+        "all": {
+          "games": 100,
+          "columns_won": [
+            76,
+            423
+          ],
+          "points": [
+            213,
+            1495
+          ],
+          "tied_columns": 1,
+          "mean_points_per_won_column": [
+            2.8026315789473686,
+            3.534278959810875
+          ],
+          "y_deficit": 1282,
+          "count_term": 1187.7274549098197,
+          "award_size_residual": 94.27254509018036,
+          "count_fraction": 0.9264644734085956,
+          "learner_zero_column_games": 43,
+          "learner_three_plus_columns_games": 2
+        },
+        "first25": {
+          "games": 50,
+          "columns_won": [
+            35,
+            215
+          ],
+          "points": [
+            92,
+            740
+          ],
+          "tied_columns": 0,
+          "mean_points_per_won_column": [
+            2.6285714285714286,
+            3.441860465116279
+          ],
+          "y_deficit": 648,
+          "count_term": 599.04,
+          "award_size_residual": 48.96,
+          "count_fraction": 0.9244444444444444,
+          "learner_zero_column_games": 26,
+          "learner_three_plus_columns_games": 1
+        },
+        "last25": {
+          "games": 50,
+          "columns_won": [
+            41,
+            208
+          ],
+          "points": [
+            121,
+            755
+          ],
+          "tied_columns": 1,
+          "mean_points_per_won_column": [
+            2.951219512195122,
+            3.6298076923076925
+          ],
+          "y_deficit": 634,
+          "count_term": 587.5180722891566,
+          "award_size_residual": 46.48192771084337,
+          "count_fraction": 0.9266846566075025,
+          "learner_zero_column_games": 17,
+          "learner_three_plus_columns_games": 1
+        }
+      }
+    }
+  ],
+  "new_games": 0,
+  "a9_control_games": 0,
+  "training_changed": false,
+  "scope": "Post-hoc accounting on reused evaluation deals; no causal or strength claim."
+}
