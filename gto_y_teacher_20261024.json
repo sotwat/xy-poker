@@ -1,0 +1,169 @@
+{
+  "replay_sha256": "bbef5e04f8bfd59ae0be58bd2866b5f328d3b1400cc98373e849a33fea34e1e8",
+  "replay_games": 12400,
+  "replay_samples": 20000,
+  "excluded": {
+    "search": 8572,
+    "turn_selection": 368,
+    "no_mixed_completion_choice": 5489
+  },
+  "models": [
+    {
+      "model_sha256": "ff6904e7b58b126984ec93342b2836442707e23950781edc068c892be4fe5103",
+      "groups": {
+        "teacher-a9-advice/complete": {
+          "n": 438,
+          "exact": 25,
+          "column": 114,
+          "uniform_exact": 0.052032826697989684,
+          "teacher_probability": 0.05419923943471691,
+          "ce": 3.6412754145931436,
+          "value": 0.029081057740128747,
+          "target": -1.0,
+          "mse": 1.7632074051251694,
+          "zero_value_mse": 1.0
+        },
+        "teacher-a9-advice/defer": {
+          "n": 943,
+          "exact": 49,
+          "column": 251,
+          "uniform_exact": 0.046786895106731265,
+          "teacher_probability": 0.05130917661895428,
+          "ce": 3.69858111708187,
+          "value": 0.0686914356996247,
+          "target": -1.0,
+          "mse": 1.7873202068049734,
+          "zero_value_mse": 1.0
+        },
+        "teacher-a9-selfplay/complete": {
+          "n": 1096,
+          "exact": 64,
+          "column": 302,
+          "uniform_exact": 0.051402468533411516,
+          "teacher_probability": 0.05427464908056886,
+          "ce": 3.7223384606577183,
+          "value": -0.017797491628758228,
+          "target": 0.011861313868613138,
+          "mse": 1.5968776828181135,
+          "zero_value_mse": 0.9625912408759124
+        },
+        "teacher-a9-selfplay/defer": {
+          "n": 1719,
+          "exact": 71,
+          "column": 454,
+          "uniform_exact": 0.046274483654650235,
+          "teacher_probability": 0.04716795346569086,
+          "ce": 3.794358498138907,
+          "value": -0.004570783571561732,
+          "target": -0.03664921465968586,
+          "mse": 1.6337310897534223,
+          "zero_value_mse": 0.9581151832460733
+        },
+        "teacher-a9/complete": {
+          "n": 511,
+          "exact": 29,
+          "column": 142,
+          "uniform_exact": 0.050767058728958994,
+          "teacher_probability": 0.05402789050585603,
+          "ce": 3.6275175508920925,
+          "value": -0.14423087058468576,
+          "target": 1.0,
+          "mse": 1.9872958188887444,
+          "zero_value_mse": 1.0
+        },
+        "teacher-a9/defer": {
+          "n": 864,
+          "exact": 40,
+          "column": 229,
+          "uniform_exact": 0.04594597717126211,
+          "teacher_probability": 0.04570623073312971,
+          "ce": 3.8412437438964844,
+          "value": -0.10467346730055632,
+          "target": 1.0,
+          "mse": 1.8867771007396557,
+          "zero_value_mse": 1.0
+        }
+      }
+    },
+    {
+      "model_sha256": "21520a5e458a987a238e5a34752fbca14ffcf5b2d2c188e6e671c074d9b72920",
+      "groups": {
+        "teacher-a9-advice/complete": {
+          "n": 438,
+          "exact": 68,
+          "column": 157,
+          "uniform_exact": 0.052032826697989684,
+          "teacher_probability": 0.1043495979483269,
+          "ce": 3.455299760653004,
+          "value": -0.14890081153068369,
+          "target": -1.0,
+          "mse": 1.4852613597155706,
+          "zero_value_mse": 1.0
+        },
+        "teacher-a9-advice/defer": {
+          "n": 943,
+          "exact": 137,
+          "column": 349,
+          "uniform_exact": 0.046786895106731265,
+          "teacher_probability": 0.09552346711952639,
+          "ce": 3.380949859780952,
+          "value": -0.1553406624374309,
+          "target": -1.0,
+          "mse": 1.4530238862507923,
+          "zero_value_mse": 1.0
+        },
+        "teacher-a9-selfplay/complete": {
+          "n": 1096,
+          "exact": 175,
+          "column": 384,
+          "uniform_exact": 0.051402468533411516,
+          "teacher_probability": 0.10553918093660453,
+          "ce": 3.3319057548133126,
+          "value": 0.01607954012651513,
+          "target": 0.011861313868613138,
+          "mse": 1.0251098810321224,
+          "zero_value_mse": 0.9625912408759124
+        },
+        "teacher-a9-selfplay/defer": {
+          "n": 1719,
+          "exact": 247,
+          "column": 587,
+          "uniform_exact": 0.046274483654650235,
+          "teacher_probability": 0.09754785512199646,
+          "ce": 3.496037987514316,
+          "value": 0.0040480243806023455,
+          "target": -0.03664921465968586,
+          "mse": 1.097936674076988,
+          "zero_value_mse": 0.9581151832460733
+        },
+        "teacher-a9/complete": {
+          "n": 511,
+          "exact": 91,
+          "column": 206,
+          "uniform_exact": 0.050767058728958994,
+          "teacher_probability": 0.12094915169792399,
+          "ce": 3.122414426560971,
+          "value": 0.2269108318769302,
+          "target": 1.0,
+          "mse": 1.3226955473539648,
+          "zero_value_mse": 1.0
+        },
+        "teacher-a9/defer": {
+          "n": 864,
+          "exact": 128,
+          "column": 292,
+          "uniform_exact": 0.04594597717126211,
+          "teacher_probability": 0.09222559962007734,
+          "ce": 3.512649324205187,
+          "value": 0.21666359459912335,
+          "target": 1.0,
+          "mse": 1.3346093230777316,
+          "zero_value_mse": 1.0
+        }
+      }
+    }
+  ],
+  "training_updates": 0,
+  "new_games": 0,
+  "scope": "Post-hoc correlated training replay; raw network agreement, not search or win strength."
+}
