@@ -1,0 +1,422 @@
+{
+  "scope": "Correlated learner self-play prefixes; A9 both seats thereafter; no learned model strength test",
+  "verified_sources": 4,
+  "verified_roots": 40,
+  "verified_continuations": 40,
+  "continuation_actions": 824,
+  "groups": {
+    "selection": {
+      "curves": [
+        {
+          "seed": 1354927397,
+          "utility_by_cutoff": {
+            "0": [
+              1.0,
+              1.0
+            ],
+            "1": [
+              1.0,
+              1.0
+            ],
+            "9": [
+              1.0,
+              1.0
+            ],
+            "17": [
+              -1.0,
+              -1.0
+            ],
+            "25": [
+              -1.0,
+              1.0
+            ]
+          },
+          "margin_by_cutoff": {
+            "0": [
+              8,
+              2
+            ],
+            "1": [
+              4,
+              6
+            ],
+            "9": [
+              3,
+              6
+            ],
+            "17": [
+              -1,
+              -1
+            ],
+            "25": [
+              -2,
+              2
+            ]
+          }
+        },
+        {
+          "seed": 1355032126,
+          "utility_by_cutoff": {
+            "0": [
+              -1.0,
+              1.0
+            ],
+            "1": [
+              -1.0,
+              -1.0
+            ],
+            "9": [
+              -1.0,
+              -1.0
+            ],
+            "17": [
+              -1.0,
+              -1.0
+            ],
+            "25": [
+              -1.0,
+              -1.0
+            ]
+          },
+          "margin_by_cutoff": {
+            "0": [
+              -4,
+              4
+            ],
+            "1": [
+              -4,
+              -15
+            ],
+            "9": [
+              -16,
+              -16
+            ],
+            "17": [
+              -3,
+              -3
+            ],
+            "25": [
+              -2,
+              -2
+            ]
+          }
+        }
+      ],
+      "cutoff_stats": {
+        "0": {
+          "utilities": [
+            1.0,
+            1.0,
+            -1.0,
+            1.0
+          ],
+          "mean_utility": 0.5,
+          "changed_outcomes_from_control": 0,
+          "mean_margin": 2.5,
+          "pair_mean_utility_delta_from_control": [
+            0.0,
+            0.0
+          ]
+        },
+        "1": {
+          "utilities": [
+            1.0,
+            1.0,
+            -1.0,
+            -1.0
+          ],
+          "mean_utility": 0.0,
+          "changed_outcomes_from_control": 1,
+          "mean_margin": -2.25,
+          "pair_mean_utility_delta_from_control": [
+            0.0,
+            -1.0
+          ]
+        },
+        "9": {
+          "utilities": [
+            1.0,
+            1.0,
+            -1.0,
+            -1.0
+          ],
+          "mean_utility": 0.0,
+          "changed_outcomes_from_control": 1,
+          "mean_margin": -5.75,
+          "pair_mean_utility_delta_from_control": [
+            0.0,
+            -1.0
+          ]
+        },
+        "17": {
+          "utilities": [
+            -1.0,
+            -1.0,
+            -1.0,
+            -1.0
+          ],
+          "mean_utility": -1.0,
+          "changed_outcomes_from_control": 3,
+          "mean_margin": -2.0,
+          "pair_mean_utility_delta_from_control": [
+            -2.0,
+            -1.0
+          ]
+        },
+        "25": {
+          "utilities": [
+            -1.0,
+            1.0,
+            -1.0,
+            -1.0
+          ],
+          "mean_utility": -0.5,
+          "changed_outcomes_from_control": 2,
+          "mean_margin": -1.0,
+          "pair_mean_utility_delta_from_control": [
+            -1.0,
+            -1.0
+          ]
+        }
+      }
+    },
+    "confirmation": {
+      "curves": [
+        {
+          "seed": 1355765229,
+          "utility_by_cutoff": {
+            "0": [
+              -1.0,
+              1.0
+            ],
+            "1": [
+              -1.0,
+              1.0
+            ],
+            "9": [
+              0.0,
+              -1.0
+            ],
+            "17": [
+              1.0,
+              1.0
+            ],
+            "25": [
+              1.0,
+              -1.0
+            ]
+          },
+          "margin_by_cutoff": {
+            "0": [
+              -20,
+              12
+            ],
+            "1": [
+              -20,
+              12
+            ],
+            "9": [
+              0,
+              -12
+            ],
+            "17": [
+              4,
+              4
+            ],
+            "25": [
+              6,
+              -2
+            ]
+          }
+        },
+        {
+          "seed": 1355869958,
+          "utility_by_cutoff": {
+            "0": [
+              -1.0,
+              -1.0
+            ],
+            "1": [
+              -1.0,
+              1.0
+            ],
+            "9": [
+              -1.0,
+              -0.0
+            ],
+            "17": [
+              1.0,
+              1.0
+            ],
+            "25": [
+              -1.0,
+              -1.0
+            ]
+          },
+          "margin_by_cutoff": {
+            "0": [
+              -14,
+              -6
+            ],
+            "1": [
+              -1,
+              6
+            ],
+            "9": [
+              -4,
+              0
+            ],
+            "17": [
+              10,
+              9
+            ],
+            "25": [
+              -12,
+              -2
+            ]
+          }
+        }
+      ],
+      "cutoff_stats": {
+        "0": {
+          "utilities": [
+            -1.0,
+            1.0,
+            -1.0,
+            -1.0
+          ],
+          "mean_utility": -0.5,
+          "changed_outcomes_from_control": 0,
+          "mean_margin": -7.0,
+          "pair_mean_utility_delta_from_control": [
+            0.0,
+            0.0
+          ]
+        },
+        "1": {
+          "utilities": [
+            -1.0,
+            1.0,
+            -1.0,
+            1.0
+          ],
+          "mean_utility": 0.0,
+          "changed_outcomes_from_control": 1,
+          "mean_margin": -0.75,
+          "pair_mean_utility_delta_from_control": [
+            0.0,
+            1.0
+          ]
+        },
+        "9": {
+          "utilities": [
+            0.0,
+            -1.0,
+            -1.0,
+            -0.0
+          ],
+          "mean_utility": -0.5,
+          "changed_outcomes_from_control": 3,
+          "mean_margin": -4.0,
+          "pair_mean_utility_delta_from_control": [
+            -0.5,
+            0.5
+          ]
+        },
+        "17": {
+          "utilities": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "mean_utility": 1.0,
+          "changed_outcomes_from_control": 3,
+          "mean_margin": 6.75,
+          "pair_mean_utility_delta_from_control": [
+            1.0,
+            2.0
+          ]
+        },
+        "25": {
+          "utilities": [
+            1.0,
+            -1.0,
+            -1.0,
+            -1.0
+          ],
+          "mean_utility": -0.5,
+          "changed_outcomes_from_control": 2,
+          "mean_margin": -2.5,
+          "pair_mean_utility_delta_from_control": [
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  },
+  "null_control": {
+    "pairs": [
+      {
+        "seed": 1354927397,
+        "mirror": false,
+        "identical_initial_state_and_seeds": true,
+        "first_divergent_absolute_action_index": 1,
+        "outcome_changed": false
+      },
+      {
+        "seed": 1354927397,
+        "mirror": true,
+        "identical_initial_state_and_seeds": true,
+        "first_divergent_absolute_action_index": 3,
+        "outcome_changed": false
+      },
+      {
+        "seed": 1355032126,
+        "mirror": false,
+        "identical_initial_state_and_seeds": true,
+        "first_divergent_absolute_action_index": null,
+        "outcome_changed": false
+      },
+      {
+        "seed": 1355032126,
+        "mirror": true,
+        "identical_initial_state_and_seeds": true,
+        "first_divergent_absolute_action_index": 2,
+        "outcome_changed": true
+      },
+      {
+        "seed": 1355765229,
+        "mirror": false,
+        "identical_initial_state_and_seeds": true,
+        "first_divergent_absolute_action_index": null,
+        "outcome_changed": false
+      },
+      {
+        "seed": 1355765229,
+        "mirror": true,
+        "identical_initial_state_and_seeds": true,
+        "first_divergent_absolute_action_index": null,
+        "outcome_changed": false
+      },
+      {
+        "seed": 1355869958,
+        "mirror": false,
+        "identical_initial_state_and_seeds": true,
+        "first_divergent_absolute_action_index": 3,
+        "outcome_changed": false
+      },
+      {
+        "seed": 1355869958,
+        "mirror": true,
+        "identical_initial_state_and_seeds": true,
+        "first_divergent_absolute_action_index": 9,
+        "outcome_changed": true
+      }
+    ],
+    "different_trajectories": 5,
+    "different_outcomes": 2,
+    "limitation": "Same observable/state input and requested seeds, but process call history and wall-clock budgets are not held equal"
+  }
+}
