@@ -4,7 +4,7 @@ import time
 from pathlib import Path
 import numpy as np
 import torch
-from audit_a9_repeatability_20261025 import Probe
+from diagnostic_probe import DiagnosticProbe as Probe
 from audit_root_prior_20261025 import search
 from audit_value_search import digest
 from environment import Bridge, XYState, resample
@@ -42,8 +42,9 @@ def run():
     OUT.write_text(json.dumps(result,indent=2)+'\n')
     def call(probe, request):
         check()
-        reply=probe.call(request)
+        reply=None
         try:
+            reply=probe.call(request)
             return validate_call_budget(reply,wall_deadline)
         except TimeoutError:
             result['budget_failure']=dict(request=request,reply=reply)

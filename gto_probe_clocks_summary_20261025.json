@@ -1,0 +1,54 @@
+{
+  "complete": true,
+  "decisions": 10,
+  "frozen_decisions": 8,
+  "timed_decisions": 2,
+  "elapsed_ms_range": [
+    520.530625,
+    1000.330083
+  ],
+  "cpu_ms_range": [
+    559.347,
+    1418.773
+  ],
+  "tests": [
+    {
+      "kind": "busy",
+      "actualElapsedMs": 100.332958,
+      "wallElapsedMs": 101,
+      "cpuMs": 93.35,
+      "parentWallElapsedMs": 216.6750431060791,
+      "parentMonotonicElapsedMs": 216.67608300049324
+    },
+    {
+      "kind": "pause_then_busy",
+      "actualElapsedMs": 762.970458,
+      "wallElapsedMs": 762,
+      "cpuMs": 94.496,
+      "parentWallElapsedMs": 804.0988445281982,
+      "parentMonotonicElapsedMs": 804.0993330068886
+    },
+    {
+      "kind": "stopped_child_timeout",
+      "reaped": true
+    },
+    {
+      "kind": "partial_line_timeout",
+      "passed": true
+    },
+    {
+      "kind": "wall_jump_after_wait",
+      "passed": true
+    }
+  ],
+  "power_evidence": {
+    "source": "Read-only local pmset -g log; current local man pmset",
+    "sleep_start": "2026-10-25 07:33:36 +0900",
+    "sleep_reason": "Clamshell Sleep",
+    "wake": "2026-10-25 07:51:21 +0900",
+    "interval_seconds": 1065,
+    "historical_probe_elapsed_seconds": 1063.308748291,
+    "inference": "Host sleep strongly supported as dominant elapsed outlier contribution; historical CPU breakdown unavailable"
+  },
+  "scope": "No full games, strength or live learning change"
+}

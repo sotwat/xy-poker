@@ -21,6 +21,8 @@ for await (const line of createInterface({ input: process.stdin, crlfDelay: Infi
         const originalRandom = Math.random;
         const ownNow = Object.getOwnPropertyDescriptor(performance, 'now');
         const started = process.hrtime.bigint();
+        const wallStartedMs = Date.now();
+        const cpuStarted = process.cpuUsage();
         try {
             Math.random = randomGenerator(request.seed);
             if (request.frozenClock) Object.defineProperty(performance, 'now', { configurable: true, value: () => 0 });
@@ -28,8 +30,11 @@ for await (const line of createInterface({ input: process.stdin, crlfDelay: Infi
             const cardIndex = ids.get(move.cardId);
             if (cardIndex === undefined) throw new Error('Unknown card');
             const diagnostics = getLastAiDecisionDiagnostics();
+            const cpuUsed = process.cpuUsage(cpuStarted);
             process.stdout.write(JSON.stringify({ action: cardIndex * 10 + move.colIndex * 2 + Number(move.isHidden),
-                diagnostics, actualElapsedMs: Number(process.hrtime.bigint() - started) / 1e6 }) + '\n');
+                diagnostics, wallStartedMs, wallFinishedMs: Date.now(),
+                cpuUserMs: cpuUsed.user / 1000, cpuSystemMs: cpuUsed.system / 1000,
+                actualElapsedMs: Number(process.hrtime.bigint() - started) / 1e6 }) + '\n');
         } finally {
             Math.random = originalRandom;
             if (request.frozenClock) {
