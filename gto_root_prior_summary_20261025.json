@@ -1,0 +1,174 @@
+{
+  "selection": {
+    "learned": {
+      "utilities": [
+        1.0,
+        1.0,
+        -1.0,
+        -1.0
+      ],
+      "deltas": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "changed_actions": 0,
+      "teacher_visits": [
+        1.0,
+        1.0,
+        1.0,
+        2.0
+      ],
+      "root_reselections": [
+        109,
+        109,
+        112,
+        112
+      ],
+      "gate_passed": false
+    },
+    "uniform": {
+      "utilities": [
+        1.0,
+        1.0,
+        -1.0,
+        -1.0
+      ],
+      "deltas": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "changed_actions": 4,
+      "teacher_visits": [
+        1.0,
+        1.0,
+        1.0,
+        6.0
+      ],
+      "root_reselections": [
+        109,
+        109,
+        112,
+        112
+      ],
+      "gate_passed": false
+    },
+    "teacher50": {
+      "utilities": [
+        1.0,
+        1.0,
+        -1.0,
+        -1.0
+      ],
+      "deltas": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "changed_actions": 4,
+      "teacher_visits": [
+        14.0,
+        9.0,
+        30.0,
+        15.0
+      ],
+      "root_reselections": [
+        109,
+        109,
+        112,
+        112
+      ],
+      "gate_passed": false
+    }
+  },
+  "confirmation": {
+    "learned": {
+      "utilities": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "deltas": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "changed_actions": 0,
+      "teacher_visits": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "root_reselections": [
+        109,
+        109,
+        112,
+        112
+      ],
+      "gate_passed": false
+    },
+    "uniform": {
+      "utilities": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "deltas": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "changed_actions": 4,
+      "teacher_visits": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "root_reselections": [
+        109,
+        109,
+        112,
+        112
+      ],
+      "gate_passed": false
+    },
+    "teacher50": {
+      "utilities": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "deltas": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "changed_actions": 3,
+      "teacher_visits": [
+        20.0,
+        20.0,
+        84.0,
+        11.0
+      ],
+      "root_reselections": [
+        109,
+        109,
+        112,
+        112
+      ],
+      "gate_passed": false
+    }
+  }
+}
