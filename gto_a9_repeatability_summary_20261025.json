@@ -1,0 +1,424 @@
+{
+  "cases": [
+    {
+      "group": "selection",
+      "seed": 1354927397,
+      "mirror": false,
+      "action_index": 1,
+      "timed_fresh": {
+        "actions": [
+          93,
+          93,
+          93
+        ],
+        "samples": [
+          37,
+          37,
+          37
+        ],
+        "actual_ms": [
+          994.954542,
+          976.17675,
+          992.189458
+        ]
+      },
+      "timed_reuse": {
+        "actions": [
+          93,
+          91,
+          91
+        ],
+        "samples": [
+          38,
+          47,
+          48
+        ],
+        "actual_ms": [
+          990.030916,
+          987.988833,
+          985.486417
+        ]
+      },
+      "timed_unique_actions": [
+        91,
+        93
+      ],
+      "frozen_fresh": {
+        "actions": [
+          95,
+          95,
+          95
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1491.179333,
+          1511.033,
+          1547.380542
+        ]
+      },
+      "frozen_reuse": {
+        "actions": [
+          95,
+          95,
+          95
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1505.049,
+          1316.28275,
+          1292.570708
+        ]
+      },
+      "frozen_unique_actions": [
+        95
+      ]
+    },
+    {
+      "group": "selection",
+      "seed": 1354927397,
+      "mirror": true,
+      "action_index": 3,
+      "timed_fresh": {
+        "actions": [
+          4,
+          4,
+          4
+        ],
+        "samples": [
+          33,
+          40,
+          39
+        ],
+        "actual_ms": [
+          991.477041,
+          990.015583,
+          989.202334
+        ]
+      },
+      "timed_reuse": {
+        "actions": [
+          4,
+          4,
+          4
+        ],
+        "samples": [
+          41,
+          47,
+          50
+        ],
+        "actual_ms": [
+          990.177125,
+          989.654375,
+          979.871958
+        ]
+      },
+      "timed_unique_actions": [
+        4
+      ],
+      "frozen_fresh": {
+        "actions": [
+          122,
+          122,
+          122
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1406.442459,
+          1408.62275,
+          1431.762917
+        ]
+      },
+      "frozen_reuse": {
+        "actions": [
+          122,
+          122,
+          122
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1445.15575,
+          1286.5715,
+          1224.713542
+        ]
+      },
+      "frozen_unique_actions": [
+        122
+      ]
+    },
+    {
+      "group": "selection",
+      "seed": 1355032126,
+      "mirror": true,
+      "action_index": 2,
+      "timed_fresh": {
+        "actions": [
+          354,
+          354,
+          354
+        ],
+        "samples": [
+          32,
+          35,
+          35
+        ],
+        "actual_ms": [
+          995.334042,
+          988.248792,
+          977.50275
+        ]
+      },
+      "timed_reuse": {
+        "actions": [
+          351,
+          354,
+          354
+        ],
+        "samples": [
+          36,
+          45,
+          47
+        ],
+        "actual_ms": [
+          989.451708,
+          989.759167,
+          987.724125
+        ]
+      },
+      "timed_unique_actions": [
+        351,
+        354
+      ],
+      "frozen_fresh": {
+        "actions": [
+          351,
+          351,
+          351
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1486.053584,
+          1464.400042,
+          1533.293833
+        ]
+      },
+      "frozen_reuse": {
+        "actions": [
+          351,
+          351,
+          351
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1501.363083,
+          1288.819083,
+          1299.81175
+        ]
+      },
+      "frozen_unique_actions": [
+        351
+      ]
+    },
+    {
+      "group": "confirmation",
+      "seed": 1355869958,
+      "mirror": false,
+      "action_index": 3,
+      "timed_fresh": {
+        "actions": [
+          267,
+          267,
+          267
+        ],
+        "samples": [
+          38,
+          38,
+          37
+        ],
+        "actual_ms": [
+          979.750209,
+          988.849209,
+          987.236792
+        ]
+      },
+      "timed_reuse": {
+        "actions": [
+          267,
+          267,
+          267
+        ],
+        "samples": [
+          39,
+          47,
+          48
+        ],
+        "actual_ms": [
+          986.179083,
+          992.165583,
+          978.466083
+        ]
+      },
+      "timed_unique_actions": [
+        267
+      ],
+      "frozen_fresh": {
+        "actions": [
+          91,
+          91,
+          91
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1435.935333,
+          1402.419708,
+          1387.80225
+        ]
+      },
+      "frozen_reuse": {
+        "actions": [
+          91,
+          91,
+          91
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1403.391959,
+          1241.583792,
+          1210.670875
+        ]
+      },
+      "frozen_unique_actions": [
+        91
+      ]
+    },
+    {
+      "group": "confirmation",
+      "seed": 1355869958,
+      "mirror": true,
+      "action_index": 9,
+      "timed_fresh": {
+        "actions": [
+          94,
+          94,
+          94
+        ],
+        "samples": [
+          49,
+          49,
+          49
+        ],
+        "actual_ms": [
+          993.419167,
+          987.330958,
+          992.976083
+        ]
+      },
+      "timed_reuse": {
+        "actions": [
+          94,
+          94,
+          92
+        ],
+        "samples": [
+          49,
+          60,
+          63
+        ],
+        "actual_ms": [
+          984.711459,
+          995.889,
+          993.123708
+        ]
+      },
+      "timed_unique_actions": [
+        92,
+        94
+      ],
+      "frozen_fresh": {
+        "actions": [
+          94,
+          94,
+          94
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1212.745208,
+          1337.742125,
+          1259.765583
+        ]
+      },
+      "frozen_reuse": {
+        "actions": [
+          94,
+          94,
+          94
+        ],
+        "samples": [
+          64,
+          64,
+          64
+        ],
+        "actual_ms": [
+          1286.921583,
+          1050.923166,
+          1010.445084
+        ]
+      },
+      "frozen_unique_actions": [
+        94
+      ]
+    }
+  ],
+  "scope": "Post hoc null-control divergence states; mechanism diagnosis, not strength comparison",
+  "timed": {
+    "decisions": 30,
+    "min_samples": 32,
+    "max_samples": 63,
+    "min_actual_ms": 976.17675,
+    "max_actual_ms": 995.889
+  },
+  "frozen": {
+    "decisions": 30,
+    "min_samples": 64,
+    "max_samples": 64,
+    "min_actual_ms": 1010.445084,
+    "max_actual_ms": 1547.380542
+  },
+  "timed_multiaction_cases": 3,
+  "frozen_multiaction_cases": 0
+}

@@ -1,0 +1,44 @@
+{
+  "status": "preregistered_not_implemented_or_executed",
+  "priority": "Complete any due 16000-game production-time A9 matched evaluation against frozen14000 before this diagnostic",
+  "question": "Does factual behaviour-return supervision versus measured teacher-continuation supervision change transfer when the same teacher policy targets and input states are used? These critics have different estimands; this is not a relabeling bug fix.",
+  "source_rule": {
+    "source": "first32 distinct complete saved baseline games with total_games>=15600",
+    "exclude": "no outcome-based filtering; do not substitute earlier games; retain every screened source and fail on invalid records; assert no overlap with previous evaluation and confirmation seed manifests; fail instead of silently skipping overlaps",
+    "split": "within each chronological block of4: indices0,1 update; index2 selection; index3 confirmation",
+    "units": "16 update games,8 selection games,8 confirmation games; no seed crosses splits; mirrors/three roots are clustered by source game",
+    "prefixes": "for each nominal prefix5,13,21 use the first state at or after that prefix where the original model seat is on turn; follow only the recorded prefix; no outcome filtering",
+    "mirrors": true,
+    "roots": 192,
+    "frozen_checkpoint": ".selfplay/diagnostic-target-semantics-20261026/checkpoint.pt",
+    "frozen_checkpoint_sha256": "493a4c9a8b5ec9d808e1fd5732cfe3e672be76e16885f89197741cb3548e1309"
+  },
+  "labels": {
+    "policy_target": "onehot root action from existing stateless fixed-clock64-sample isolated A9, proof limit1000000 each",
+    "factual_target": "original saved trajectory return for the original model seat, with mirror seat mapping preserved; provenance kept",
+    "teacher_target": "measured terminal actor return when both seats use that same diagnostic A9 from the identical actual state, including the teacher root action",
+    "input": "features for current player only; assert current player equals mapped original model seat at every root; legal mask/action/features round-trip",
+    "null": "two reused plus one fresh call at identical root/seed, all full64 samples and same legal action required",
+    "randomness": "decision seed = source seed XOR0x102687, plus absolute move index; use identical rule in all mirrors; save every request/reply and exact prefix",
+    "interpretation": "single actual hidden world and bounded diagnostic teacher, not conditional expected teacher value, teacher action-Q, or production-time A9 value; original factual targets remain unchanged"
+  },
+  "copy_trial": {
+    "precondition": "all192 roots complete, exact provenance/reducer/card conservation/mask/actor/score checks passed; no live state migration",
+    "control": "teacher policy CE plus factual return MSE, coefficients1 and1",
+    "candidate": "same teacher policy CE plus measured teacher-continuation return MSE, coefficients1 and1; candidate is an experimental teacher-distillation critic, not a replacement for current behaviour V",
+    "initialization": "deepcopy the same frozen14786 full model and original AdamW moments into both experimental copies; no model/optimizer initialization of existing parameters; live weights and all replay/RNG/population/progress untouched",
+    "budget": "exactly32 minibatches of64 sampled update rows with replacement, seed100526087, identical batches/order for both arms; existing saved optimizer learning rate/weight decay, clip5; one thread",
+    "data": "update16 games only; selection8 and confirmation8 each evaluated once after the single fixed32-update endpoint; no interim endpoint, feature, rate or source selection",
+    "metrics": "masked teacher CE/top1, teacher-return MSE and factual-return MSE on all splits, stage-wise and game-cluster summaries; frozen initial metrics also retained; no win-rate inference from these metrics",
+    "mechanism_gate": "in selection and separately confirmation, candidate teacher-return MSE must be strictly below control overall and in all three nominal stages; teacher CE must be no higher and top1 no lower than control overall and in all stages. Report factual MSE as a distinct estimand; do not hide its worsening. Failure at selection cannot be overturned by confirmation.",
+    "adoption_gate": "none: even a successful mechanism gate authorizes no live/source/production change. Different value estimands and teacher compute require a separately preregistered end-to-end heldout game comparison before any adoption; all current learning backups/compatibility checks remain mandatory"
+  },
+  "runtime": {
+    "heavy_work": "normal save-stop; both live OS locks free before acquiring both fail-closed; single nice15 process, absolute wall+monotonic1200sec per chunk and90sec per teacher call",
+    "resume": "persist immutable source/split/protocol/model hashes and completed roots; on timeout save failure/partial trace, exclude incomplete root from completed counts and recompute only that root on next chunk; never change source selection based on results",
+    "preserve": "full live latest.pt bytehash before/after each chunk and verification; keep all weights/AdamW/replay/RNG/population/progress/PR8/old backups; remove only own stop.flag and resume unchanged v3 after lock/hash checks",
+    "failure": "null disagreement, incomplete sample count, invalid record or incompatible resume fails closed; preserve evidence and investigate without silent exclusions"
+  },
+  "limits": "Newer behaviour models generated these saved states; frozen14786 predates them, but they remain learning-distribution data with mirror/root correlations. Different rollout policy, proof budget and compute, one hidden world, only32 source games and narrow copy fitting cannot prove general causal explanation, complete GTO or production strength.",
+  "current_scope": "Design only. No sources selected, teacher calls, searches, inference, updates, live migration or implementation performed under this plan yet. Ledger77/78/80 rejected interventions remain rejected; this changes measured value-target provenance rather than retrying their masks, step counts or priors. Before selection, explicitly check all previous evaluation/confirmation seeds for overlap; the future floor alone is not proof of disjointness."
+}

@@ -1,0 +1,2547 @@
+{
+  "input_sha256": "929a7b6554d983fbbfd7c7ce026969d76c205572bc235f9ea3dc660bcf3f2d40",
+  "model_sha256": "650da9edb968fb039b91b5004f7e5cc6a8df43b82393f798091f6bd91e51d1a4",
+  "seed": 2548483648,
+  "simulations": 128,
+  "games": 100,
+  "groups": {
+    "first25deals": {
+      "games": 50,
+      "xPointSum": [
+        101,
+        178
+      ],
+      "yPointSum": [
+        88,
+        758
+      ],
+      "xWins": 17,
+      "yWins": 1,
+      "bonuses": [
+        116,
+        134
+      ]
+    },
+    "last25deals": {
+      "games": 50,
+      "xPointSum": [
+        88,
+        151
+      ],
+      "yPointSum": [
+        83,
+        769
+      ],
+      "xWins": 21,
+      "yWins": 0,
+      "bonuses": [
+        114,
+        136
+      ]
+    }
+  },
+  "rows": [
+    {
+      "pair": 0,
+      "seed": 2548483648,
+      "swap": false,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        0,
+        16
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        4,
+        18
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 4,
+      "opponentBonuses": 1
+    },
+    {
+      "pair": 0,
+      "seed": 2548483648,
+      "swap": true,
+      "x": [
+        2,
+        6
+      ],
+      "y": [
+        4,
+        12
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        6,
+        18
+      ],
+      "modelX": "OnePair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 1,
+      "seed": 2548483649,
+      "swap": false,
+      "x": [
+        2,
+        4
+      ],
+      "y": [
+        0,
+        9
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        13
+      ],
+      "modelX": "OnePair",
+      "opponentX": "TwoPair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 1,
+      "seed": 2548483649,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        1,
+        8
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        1,
+        10
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 2,
+      "seed": 2548483650,
+      "swap": false,
+      "x": [
+        2,
+        4
+      ],
+      "y": [
+        0,
+        23
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        27
+      ],
+      "modelX": "OnePair",
+      "opponentX": "TwoPair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 2,
+      "seed": 2548483650,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        4,
+        19
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        4,
+        21
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 3,
+      "seed": 2548483651,
+      "swap": false,
+      "x": [
+        2,
+        3
+      ],
+      "y": [
+        0,
+        15
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        18
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 3,
+      "seed": 2548483651,
+      "swap": true,
+      "x": [
+        4,
+        6
+      ],
+      "y": [
+        0,
+        15
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        4,
+        21
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 4,
+      "seed": 2548483652,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        15
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        17
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 4,
+      "seed": 2548483652,
+      "swap": true,
+      "x": [
+        0,
+        6
+      ],
+      "y": [
+        4,
+        11
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        4,
+        17
+      ],
+      "modelX": "HighCard",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 5,
+      "seed": 2548483653,
+      "swap": false,
+      "x": [
+        2,
+        6
+      ],
+      "y": [
+        0,
+        18
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        24
+      ],
+      "modelX": "OnePair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 5,
+      "seed": 2548483653,
+      "swap": true,
+      "x": [
+        2,
+        0
+      ],
+      "y": [
+        3,
+        15
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        5,
+        15
+      ],
+      "modelX": "OnePair",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 6,
+      "seed": 2548483654,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        4,
+        13
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        4,
+        15
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 6,
+      "seed": 2548483654,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        17
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        19
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 7,
+      "seed": 2548483655,
+      "swap": false,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        2,
+        16
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        6,
+        18
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 7,
+      "seed": 2548483655,
+      "swap": true,
+      "x": [
+        5,
+        4
+      ],
+      "y": [
+        0,
+        18
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        5,
+        22
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "TwoPair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 8,
+      "seed": 2548483656,
+      "swap": false,
+      "x": [
+        1,
+        0
+      ],
+      "y": [
+        6,
+        15
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        7,
+        15
+      ],
+      "modelX": "HighCard",
+      "opponentX": "HighCard",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 8,
+      "seed": 2548483656,
+      "swap": true,
+      "x": [
+        1,
+        0
+      ],
+      "y": [
+        0,
+        21
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        1,
+        21
+      ],
+      "modelX": "HighCard",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 9,
+      "seed": 2548483657,
+      "swap": false,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        0,
+        21
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        4,
+        23
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 9,
+      "seed": 2548483657,
+      "swap": true,
+      "x": [
+        0,
+        4
+      ],
+      "y": [
+        7,
+        14
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        7,
+        18
+      ],
+      "modelX": "HighCard",
+      "opponentX": "TwoPair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 10,
+      "seed": 2548483658,
+      "swap": false,
+      "x": [
+        0,
+        4
+      ],
+      "y": [
+        0,
+        17
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        21
+      ],
+      "modelX": "HighCard",
+      "opponentX": "TwoPair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 10,
+      "seed": 2548483658,
+      "swap": true,
+      "x": [
+        0,
+        1
+      ],
+      "y": [
+        1,
+        16
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        1,
+        17
+      ],
+      "modelX": "HighCard",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 11,
+      "seed": 2548483659,
+      "swap": false,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        5,
+        16
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        8,
+        18
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 11,
+      "seed": 2548483659,
+      "swap": true,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        0,
+        21
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        3,
+        23
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 12,
+      "seed": 2548483660,
+      "swap": false,
+      "x": [
+        6,
+        12
+      ],
+      "y": [
+        0,
+        14
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        6,
+        26
+      ],
+      "modelX": "ThreeOfAKind",
+      "opponentX": "FullHouse",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 12,
+      "seed": 2548483660,
+      "swap": true,
+      "x": [
+        2,
+        3
+      ],
+      "y": [
+        0,
+        14
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        17
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 13,
+      "seed": 2548483661,
+      "swap": false,
+      "x": [
+        2,
+        0
+      ],
+      "y": [
+        0,
+        23
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        23
+      ],
+      "modelX": "OnePair",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 13,
+      "seed": 2548483661,
+      "swap": true,
+      "x": [
+        2,
+        6
+      ],
+      "y": [
+        1,
+        22
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        3,
+        28
+      ],
+      "modelX": "OnePair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 14,
+      "seed": 2548483662,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        17
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        19
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 14,
+      "seed": 2548483662,
+      "swap": true,
+      "x": [
+        0,
+        4
+      ],
+      "y": [
+        2,
+        15
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        2,
+        19
+      ],
+      "modelX": "HighCard",
+      "opponentX": "TwoPair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 15,
+      "seed": 2548483663,
+      "swap": false,
+      "x": [
+        2,
+        0
+      ],
+      "y": [
+        0,
+        15
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        15
+      ],
+      "modelX": "OnePair",
+      "opponentX": "HighCard",
+      "modelBonuses": 4,
+      "opponentBonuses": 1
+    },
+    {
+      "pair": 15,
+      "seed": 2548483663,
+      "swap": true,
+      "x": [
+        0,
+        6
+      ],
+      "y": [
+        2,
+        13
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        2,
+        19
+      ],
+      "modelX": "HighCard",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 16,
+      "seed": 2548483664,
+      "swap": false,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        0,
+        14
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        3,
+        16
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 4,
+      "opponentBonuses": 1
+    },
+    {
+      "pair": 16,
+      "seed": 2548483664,
+      "swap": true,
+      "x": [
+        12,
+        4
+      ],
+      "y": [
+        1,
+        13
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        13,
+        17
+      ],
+      "modelX": "FullHouse",
+      "opponentX": "TwoPair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 17,
+      "seed": 2548483665,
+      "swap": false,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        0,
+        15
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        3,
+        17
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 17,
+      "seed": 2548483665,
+      "swap": true,
+      "x": [
+        6,
+        2
+      ],
+      "y": [
+        0,
+        15
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        6,
+        17
+      ],
+      "modelX": "ThreeOfAKind",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 18,
+      "seed": 2548483666,
+      "swap": false,
+      "x": [
+        0,
+        6
+      ],
+      "y": [
+        0,
+        19
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        25
+      ],
+      "modelX": "HighCard",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 18,
+      "seed": 2548483666,
+      "swap": true,
+      "x": [
+        2,
+        12
+      ],
+      "y": [
+        11,
+        8
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        13,
+        20
+      ],
+      "modelX": "OnePair",
+      "opponentX": "FullHouse",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 19,
+      "seed": 2548483667,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        2,
+        15
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        2,
+        17
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 19,
+      "seed": 2548483667,
+      "swap": true,
+      "x": [
+        2,
+        6
+      ],
+      "y": [
+        0,
+        17
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        23
+      ],
+      "modelX": "OnePair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 20,
+      "seed": 2548483668,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        6,
+        18
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        6,
+        20
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 20,
+      "seed": 2548483668,
+      "swap": true,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        5,
+        19
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        9,
+        21
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 21,
+      "seed": 2548483669,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        1,
+        13
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        1,
+        15
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 21,
+      "seed": 2548483669,
+      "swap": true,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        2,
+        12
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        6,
+        14
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 22,
+      "seed": 2548483670,
+      "swap": false,
+      "x": [
+        2,
+        4
+      ],
+      "y": [
+        6,
+        9
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        8,
+        13
+      ],
+      "modelX": "OnePair",
+      "opponentX": "TwoPair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 22,
+      "seed": 2548483670,
+      "swap": true,
+      "x": [
+        2,
+        3
+      ],
+      "y": [
+        2,
+        13
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        4,
+        16
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 23,
+      "seed": 2548483671,
+      "swap": false,
+      "x": [
+        0,
+        12
+      ],
+      "y": [
+        2,
+        9
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        2,
+        21
+      ],
+      "modelX": "HighCard",
+      "opponentX": "FullHouse",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 23,
+      "seed": 2548483671,
+      "swap": true,
+      "x": [
+        2,
+        4
+      ],
+      "y": [
+        0,
+        11
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        15
+      ],
+      "modelX": "OnePair",
+      "opponentX": "TwoPair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 24,
+      "seed": 2548483672,
+      "swap": false,
+      "x": [
+        2,
+        6
+      ],
+      "y": [
+        4,
+        10
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        6,
+        16
+      ],
+      "modelX": "OnePair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 24,
+      "seed": 2548483672,
+      "swap": true,
+      "x": [
+        2,
+        4
+      ],
+      "y": [
+        0,
+        14
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        18
+      ],
+      "modelX": "OnePair",
+      "opponentX": "TwoPair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 25,
+      "seed": 2548483673,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        5,
+        10
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        5,
+        12
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 25,
+      "seed": 2548483673,
+      "swap": true,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        3,
+        12
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        6,
+        14
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 26,
+      "seed": 2548483674,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        24
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        26
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 26,
+      "seed": 2548483674,
+      "swap": true,
+      "x": [
+        2,
+        0
+      ],
+      "y": [
+        0,
+        24
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        24
+      ],
+      "modelX": "OnePair",
+      "opponentX": "HighCard",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 27,
+      "seed": 2548483675,
+      "swap": false,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        1,
+        13
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        4,
+        15
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 4,
+      "opponentBonuses": 1
+    },
+    {
+      "pair": 27,
+      "seed": 2548483675,
+      "swap": true,
+      "x": [
+        2,
+        3
+      ],
+      "y": [
+        5,
+        9
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        7,
+        12
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 28,
+      "seed": 2548483676,
+      "swap": false,
+      "x": [
+        2,
+        0
+      ],
+      "y": [
+        0,
+        14
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        14
+      ],
+      "modelX": "OnePair",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 28,
+      "seed": 2548483676,
+      "swap": true,
+      "x": [
+        6,
+        2
+      ],
+      "y": [
+        4,
+        10
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        10,
+        12
+      ],
+      "modelX": "ThreeOfAKind",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 29,
+      "seed": 2548483677,
+      "swap": false,
+      "x": [
+        0,
+        6
+      ],
+      "y": [
+        1,
+        9
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        1,
+        15
+      ],
+      "modelX": "HighCard",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 29,
+      "seed": 2548483677,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        10
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        12
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 30,
+      "seed": 2548483678,
+      "swap": false,
+      "x": [
+        1,
+        0
+      ],
+      "y": [
+        0,
+        21
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        1,
+        21
+      ],
+      "modelX": "HighCard",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 30,
+      "seed": 2548483678,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        21
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        23
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 31,
+      "seed": 2548483679,
+      "swap": false,
+      "x": [
+        0,
+        6
+      ],
+      "y": [
+        1,
+        13
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        1,
+        19
+      ],
+      "modelX": "HighCard",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 31,
+      "seed": 2548483679,
+      "swap": true,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        1,
+        13
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        5,
+        15
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 32,
+      "seed": 2548483680,
+      "swap": false,
+      "x": [
+        2,
+        3
+      ],
+      "y": [
+        0,
+        16
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        19
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 32,
+      "seed": 2548483680,
+      "swap": true,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        1,
+        15
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        4,
+        17
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 33,
+      "seed": 2548483681,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        1,
+        19
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        1,
+        21
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 33,
+      "seed": 2548483681,
+      "swap": true,
+      "x": [
+        2,
+        4
+      ],
+      "y": [
+        1,
+        19
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        3,
+        23
+      ],
+      "modelX": "OnePair",
+      "opponentX": "TwoPair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 34,
+      "seed": 2548483682,
+      "swap": false,
+      "x": [
+        0,
+        4
+      ],
+      "y": [
+        0,
+        21
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        25
+      ],
+      "modelX": "HighCard",
+      "opponentX": "TwoPair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 34,
+      "seed": 2548483682,
+      "swap": true,
+      "x": [
+        2,
+        0
+      ],
+      "y": [
+        0,
+        21
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        21
+      ],
+      "modelX": "OnePair",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 35,
+      "seed": 2548483683,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        12
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        14
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 35,
+      "seed": 2548483683,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        2,
+        10
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        2,
+        12
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 36,
+      "seed": 2548483684,
+      "swap": false,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        0,
+        19
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        4,
+        21
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 36,
+      "seed": 2548483684,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        2,
+        17
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        2,
+        19
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 37,
+      "seed": 2548483685,
+      "swap": false,
+      "x": [
+        0,
+        6
+      ],
+      "y": [
+        4,
+        12
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        4,
+        18
+      ],
+      "modelX": "HighCard",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 37,
+      "seed": 2548483685,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        6,
+        10
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        6,
+        12
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 38,
+      "seed": 2548483686,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        15
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        17
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 38,
+      "seed": 2548483686,
+      "swap": true,
+      "x": [
+        10,
+        4
+      ],
+      "y": [
+        0,
+        15
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        10,
+        19
+      ],
+      "modelX": "Straight",
+      "opponentX": "TwoPair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 39,
+      "seed": 2548483687,
+      "swap": false,
+      "x": [
+        2,
+        6
+      ],
+      "y": [
+        6,
+        11
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        8,
+        17
+      ],
+      "modelX": "OnePair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 39,
+      "seed": 2548483687,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        2,
+        15
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        2,
+        17
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 40,
+      "seed": 2548483688,
+      "swap": false,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        1,
+        9
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        4,
+        11
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 40,
+      "seed": 2548483688,
+      "swap": true,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        1,
+        9
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        5,
+        11
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 41,
+      "seed": 2548483689,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        6,
+        13
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        6,
+        15
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 41,
+      "seed": 2548483689,
+      "swap": true,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        1,
+        18
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        4,
+        20
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 1,
+      "opponentBonuses": 4
+    },
+    {
+      "pair": 42,
+      "seed": 2548483690,
+      "swap": false,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        3,
+        16
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        6,
+        18
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 42,
+      "seed": 2548483690,
+      "swap": true,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        19
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        21
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 43,
+      "seed": 2548483691,
+      "swap": false,
+      "x": [
+        1,
+        0
+      ],
+      "y": [
+        6,
+        19
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        7,
+        19
+      ],
+      "modelX": "HighCard",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 43,
+      "seed": 2548483691,
+      "swap": true,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        0,
+        25
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        3,
+        27
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 44,
+      "seed": 2548483692,
+      "swap": false,
+      "x": [
+        2,
+        6
+      ],
+      "y": [
+        4,
+        17
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        6,
+        23
+      ],
+      "modelX": "OnePair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 44,
+      "seed": 2548483692,
+      "swap": true,
+      "x": [
+        4,
+        0
+      ],
+      "y": [
+        4,
+        17
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        8,
+        17
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "HighCard",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 45,
+      "seed": 2548483693,
+      "swap": false,
+      "x": [
+        0,
+        12
+      ],
+      "y": [
+        2,
+        20
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        2,
+        32
+      ],
+      "modelX": "HighCard",
+      "opponentX": "FullHouse",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    },
+    {
+      "pair": 45,
+      "seed": 2548483693,
+      "swap": true,
+      "x": [
+        4,
+        2
+      ],
+      "y": [
+        0,
+        22
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        4,
+        24
+      ],
+      "modelX": "TwoPair",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 46,
+      "seed": 2548483694,
+      "swap": false,
+      "x": [
+        0,
+        2
+      ],
+      "y": [
+        0,
+        18
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        20
+      ],
+      "modelX": "HighCard",
+      "opponentX": "OnePair",
+      "modelBonuses": 0,
+      "opponentBonuses": 5
+    },
+    {
+      "pair": 46,
+      "seed": 2548483694,
+      "swap": true,
+      "x": [
+        0,
+        12
+      ],
+      "y": [
+        0,
+        18
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        0,
+        30
+      ],
+      "modelX": "HighCard",
+      "opponentX": "FullHouse",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 47,
+      "seed": 2548483695,
+      "swap": false,
+      "x": [
+        2,
+        6
+      ],
+      "y": [
+        2,
+        12
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        4,
+        18
+      ],
+      "modelX": "OnePair",
+      "opponentX": "ThreeOfAKind",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 47,
+      "seed": 2548483695,
+      "swap": true,
+      "x": [
+        0,
+        4
+      ],
+      "y": [
+        6,
+        8
+      ],
+      "yWins": [
+        2,
+        3
+      ],
+      "scores": [
+        6,
+        12
+      ],
+      "modelX": "HighCard",
+      "opponentX": "TwoPair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 48,
+      "seed": 2548483696,
+      "swap": false,
+      "x": [
+        6,
+        0
+      ],
+      "y": [
+        0,
+        12
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        6,
+        12
+      ],
+      "modelX": "ThreeOfAKind",
+      "opponentX": "HighCard",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 48,
+      "seed": 2548483696,
+      "swap": true,
+      "x": [
+        0,
+        12
+      ],
+      "y": [
+        1,
+        11
+      ],
+      "yWins": [
+        1,
+        4
+      ],
+      "scores": [
+        1,
+        23
+      ],
+      "modelX": "HighCard",
+      "opponentX": "FullHouse",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 49,
+      "seed": 2548483697,
+      "swap": false,
+      "x": [
+        3,
+        2
+      ],
+      "y": [
+        0,
+        18
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        3,
+        20
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 2,
+      "opponentBonuses": 3
+    },
+    {
+      "pair": 49,
+      "seed": 2548483697,
+      "swap": true,
+      "x": [
+        2,
+        3
+      ],
+      "y": [
+        0,
+        18
+      ],
+      "yWins": [
+        0,
+        5
+      ],
+      "scores": [
+        2,
+        21
+      ],
+      "modelX": "OnePair",
+      "opponentX": "OnePair",
+      "modelBonuses": 3,
+      "opponentBonuses": 2
+    }
+  ],
+  "newGames": 0,
+  "productionChanged": false
+}

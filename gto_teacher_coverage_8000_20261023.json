@@ -1,0 +1,232 @@
+{
+  "model_sha256": "650da9edb968fb039b91b5004f7e5cc6a8df43b82393f798091f6bd91e51d1a4",
+  "records": [
+    {
+      "seed": 2548283648,
+      "swap": false,
+      "ply": 14,
+      "teacher": 18,
+      "played": 470,
+      "policy_best": 432,
+      "teacher_probability": 0.004347587004303932,
+      "value": 0.9888378977775574,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283648,
+      "swap": true,
+      "ply": 14,
+      "teacher": 132,
+      "played": 446,
+      "policy_best": 346,
+      "teacher_probability": 0.0048293424770236015,
+      "value": 0.9854946732521057,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283649,
+      "swap": false,
+      "ply": 14,
+      "teacher": 110,
+      "played": 114,
+      "policy_best": 418,
+      "teacher_probability": 0.04518703371286392,
+      "value": 0.9993464350700378,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283649,
+      "swap": true,
+      "ply": 14,
+      "teacher": 120,
+      "played": 330,
+      "policy_best": 330,
+      "teacher_probability": 0.06030626595020294,
+      "value": 0.9999675154685974,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283650,
+      "swap": false,
+      "ply": 14,
+      "teacher": 148,
+      "played": 86,
+      "policy_best": 88,
+      "teacher_probability": 0.004431168083101511,
+      "value": 0.6918886303901672,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283650,
+      "swap": true,
+      "ply": 14,
+      "teacher": 28,
+      "played": 146,
+      "policy_best": 328,
+      "teacher_probability": 0.029072728008031845,
+      "value": 0.9685670137405396,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283651,
+      "swap": false,
+      "ply": 14,
+      "teacher": 345,
+      "played": 341,
+      "policy_best": 241,
+      "teacher_probability": 0.003263325896114111,
+      "value": 0.9999216794967651,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283651,
+      "swap": true,
+      "ply": 15,
+      "teacher": 84,
+      "played": 446,
+      "policy_best": 34,
+      "teacher_probability": 0.039212100207805634,
+      "value": -0.9415823817253113,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283652,
+      "swap": false,
+      "ply": 14,
+      "teacher": 278,
+      "played": 32,
+      "policy_best": 52,
+      "teacher_probability": 0.06072385236620903,
+      "value": 0.23120997846126556,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283652,
+      "swap": true,
+      "ply": 14,
+      "teacher": 420,
+      "played": 168,
+      "policy_best": 122,
+      "teacher_probability": 0.013805697672069073,
+      "value": 0.9952151775360107,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283653,
+      "swap": false,
+      "ply": 14,
+      "teacher": 502,
+      "played": 380,
+      "policy_best": 380,
+      "teacher_probability": 0.014352545142173767,
+      "value": 1.0,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283653,
+      "swap": true,
+      "ply": 15,
+      "teacher": 270,
+      "played": 112,
+      "policy_best": 380,
+      "teacher_probability": 0.021450163796544075,
+      "value": -0.94063800573349,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283654,
+      "swap": false,
+      "ply": 14,
+      "teacher": 104,
+      "played": 102,
+      "policy_best": 388,
+      "teacher_probability": 0.09052672237157822,
+      "value": 0.9980153441429138,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283654,
+      "swap": true,
+      "ply": 14,
+      "teacher": 382,
+      "played": 382,
+      "policy_best": 380,
+      "teacher_probability": 0.07099997997283936,
+      "value": 0.9999080896377563,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283655,
+      "swap": false,
+      "ply": 14,
+      "teacher": 168,
+      "played": 186,
+      "policy_best": 68,
+      "teacher_probability": 0.00588025851175189,
+      "value": 0.9998728632926941,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283655,
+      "swap": true,
+      "ply": 15,
+      "teacher": 478,
+      "played": 484,
+      "policy_best": 482,
+      "teacher_probability": 0.0769667848944664,
+      "value": 0.862127959728241,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283656,
+      "swap": false,
+      "ply": 14,
+      "teacher": 356,
+      "played": 484,
+      "policy_best": 484,
+      "teacher_probability": 0.010399498976767063,
+      "value": 0.9977852702140808,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283656,
+      "swap": true,
+      "ply": 14,
+      "teacher": 38,
+      "played": 104,
+      "policy_best": 92,
+      "teacher_probability": 0.023051077499985695,
+      "value": 0.999998152256012,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283657,
+      "swap": false,
+      "ply": 15,
+      "teacher": 406,
+      "played": 322,
+      "policy_best": 322,
+      "teacher_probability": 0.04716917872428894,
+      "value": 0.9988694787025452,
+      "outcome": -1.0
+    },
+    {
+      "seed": 2548283657,
+      "swap": true,
+      "ply": 14,
+      "teacher": 226,
+      "played": 226,
+      "policy_best": 250,
+      "teacher_probability": 0.05925251170992851,
+      "value": 0.7331677675247192,
+      "outcome": -1.0
+    }
+  ],
+  "scope": "post-hoc first 10 evaluation pairs, one midgame learner state per seat",
+  "training_updates": 0,
+  "teacher_seed": 100523201,
+  "agreement": 0,
+  "search_agreement": 2,
+  "mean_value": 0.7283986769616604,
+  "mean_teacher_probability": 0.034261391148902476
+}

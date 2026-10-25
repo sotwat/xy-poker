@@ -1,0 +1,19 @@
+{
+  "started_utc": "2026-10-25T15:06:51.639692+00:00",
+  "ended_utc": "2026-10-25T15:06:52.246898+00:00",
+  "reports": [
+    {
+      "input_name": "matched-14000-control",
+      "input_sha256": "b02d305a40a1c797755cc70a4a26afefc6dd8f2f574da8fed3762975584939a0",
+      "snapshot_bytes": 71628,
+      "complete": true,
+      "games": 100,
+      "moves": 3100,
+      "unique_seed_seats": 100,
+      "model_sha256": null,
+      "seed": 2548883648,
+      "mismatches": [],
+      "score_disagreements": 0
+    }
+  ]
+}

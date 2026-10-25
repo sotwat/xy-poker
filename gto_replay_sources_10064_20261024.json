@@ -1,0 +1,38 @@
+{
+  "teacher-a9-advice": {
+    "n": 2860,
+    "agreement": 0.5944055944055944,
+    "target_probability": 0.37751813657195354,
+    "value": -0.8442859082516133,
+    "outcome": -0.9783216783216783,
+    "mse": 0.1595286067111544,
+    "cross_entropy": 1.579457615305168,
+    "positive": 31,
+    "negative": 2829,
+    "draw": 0
+  },
+  "teacher-a9": {
+    "n": 2854,
+    "agreement": 0.5833917309039944,
+    "target_probability": 0.3716127718311534,
+    "value": 0.8057714812408205,
+    "outcome": 0.9782761037140855,
+    "mse": 0.2011642581746632,
+    "cross_entropy": 1.6351495514282692,
+    "positive": 2823,
+    "negative": 31,
+    "draw": 0
+  },
+  "search": {
+    "n": 14286,
+    "agreement": 0.38933221335573287,
+    "target_probability": 0.14800192036750856,
+    "value": -0.01356385835945432,
+    "outcome": -0.010849783004339914,
+    "mse": 0.15029263278975993,
+    "cross_entropy": 2.7433343328401003,
+    "positive": 6755,
+    "negative": 6910,
+    "draw": 621
+  }
+}

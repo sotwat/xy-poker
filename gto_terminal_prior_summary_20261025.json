@@ -1,0 +1,74 @@
+{
+  "scope": "Correlated saved learner states, both sides switched to diagnostic bounded A9 after root. Not production A9 strength or independent heldout games",
+  "sources": 4,
+  "roots": 8,
+  "continuations": 16,
+  "null_decisions": 24,
+  "continuation_decisions": 336,
+  "proof_calls": 720,
+  "incomplete_proofs": 16,
+  "completed_nonempty_proofs": 16,
+  "groups": {
+    "selection": {
+      "utilities": {
+        "learned": [
+          1.0,
+          1.0,
+          1.0,
+          -1.0
+        ],
+        "teacher50": [
+          1.0,
+          1.0,
+          1.0,
+          -1.0
+        ]
+      },
+      "pairs": [
+        {
+          "seed": 1371684037,
+          "utility_delta_mean": 0.0,
+          "score_margin_delta_mean": 1.0
+        },
+        {
+          "seed": 1371788766,
+          "utility_delta_mean": 0.0,
+          "score_margin_delta_mean": -8.0
+        }
+      ],
+      "paired_utility_delta_mean": 0.0,
+      "mechanism_gate": false
+    },
+    "confirmation": {
+      "utilities": {
+        "learned": [
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "teacher50": [
+          1.0,
+          -1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "pairs": [
+        {
+          "seed": 1372521869,
+          "utility_delta_mean": -1.0,
+          "score_margin_delta_mean": -1.0
+        },
+        {
+          "seed": 1372626598,
+          "utility_delta_mean": 0.5,
+          "score_margin_delta_mean": 2.0
+        }
+      ],
+      "paired_utility_delta_mean": -0.25,
+      "mechanism_gate": false
+    }
+  },
+  "pilot_gate": false
+}

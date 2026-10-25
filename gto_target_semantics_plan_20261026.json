@@ -1,0 +1,27 @@
+{
+  "status": "planned_not_executed",
+  "hypothesis": "Logged state-value targets describe the executed continuation policy; they are not counterfactual returns for the one-hot teacher action. Compare fixed learner and teacher continuations from identical early states before changing value supervision.",
+  "sources": "first four distinct saved baseline games at or after game15000; no outcome filtering; retain all screening",
+  "selection_indices": [
+    0,
+    1
+  ],
+  "confirmation_indices": [
+    2,
+    3
+  ],
+  "prefix": 5,
+  "mirrors": true,
+  "model": "frozen14786 checkpoint from diagnostic-target-semantics-20261026/checkpoint.pt",
+  "arms": [
+    "model seat follows frozen learner for remainder; other seat diagnostic A9",
+    "both seats diagnostic A9 for remainder"
+  ],
+  "learner": "128 IS-MCTS simulations /8 completions; fixed recorded RNG and deterministic tie rule",
+  "teacher": "existing stateless fixed-clock64-sample isolated A9; each proof cap1m; incomplete proof discarded",
+  "null": "two reused plus one fresh A9 call at each identical root/seed, require agreement and full64 samples",
+  "outcomes": "16 complete continuations, paired utility and score margin by source deal, X/Y breakdown; retain root network value and original logged z as descriptive quantities",
+  "limits": "different continuation policies and computation budgets, correlated saved learning deals and mirrors, one actual hidden world per root; no expected-value accuracy, isolated causal low-win explanation or production strength claim",
+  "gate": "no live learning change or value relabeling from this pilot; do not infer that all advice z should be positive or that state value is teacher-action Q; no tuning on confirmation",
+  "runtime": "normal save-stop, both live locks free then acquire both; one nice15 runner; wall+monotonic1200 seconds/per-call limits; save failed/partial work without treating it as complete; full latest bytehash equality; resume unchanged v3 after verification"
+}

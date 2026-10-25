@@ -1,0 +1,19 @@
+{
+  "status": "planned_not_executed",
+  "hypothesis": "With stage, played card and concealment held fixed, bonus-taking versus deferral can still trade off column quality against draw and denial; terminal accounting is required.",
+  "source_rule": "First four distinct saved self-play deals at or after game 14400 with at least one same-card/same-concealment legal action in both classes at exactly prefix 17. Save every screened source and rejected reason before outcomes; no winner/score selection.",
+  "selection_indices": [0, 1],
+  "confirmation_indices": [2, 3],
+  "seat_mirrors": true,
+  "prefix": 17,
+  "frozen_model_games": 14000,
+  "simulations": 128,
+  "common_worlds": 8,
+  "candidate_rule": "For each common card/concealment key select each class's highest search visit probability (prior then ID ties). Select the key by maximum sum of the two visit probabilities, then summed prior, then numeric card/concealment key. No terminal outcome is used for selection.",
+  "continuation": "Both seats stateless isolated fixed-clock A9, 64 samples, each proof cap 1000000 instrumented units; incomplete proof discarded. Not production time-limited A9 strength.",
+  "null_control": "Two reused and one fresh decision per root on identical state/seed; require same action and full sample count.",
+  "accounting": ["terminal utility and score margin by source pair", "X and per-column Y scores", "root bonus card played or retained", "target-column first completer and final winner"],
+  "gate": "Mechanism pilot only; no live adoption. Report all source-pair differences separately by fixed group. No feature/rate tuning on confirmation.",
+  "remaining_confound": "The legal placements use different columns and change subsequent states; this still does not isolate a rules-level marginal draw/denial effect.",
+  "runtime": "Normal save-stop, both live OS locks free then acquire both, one nice15 runner, wall plus monotonic 1200 seconds and per-call limits, preserve latest bytehash before/after. Resume unchanged v3 only after verification. No paid computation."
+}

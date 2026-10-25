@@ -1,0 +1,950 @@
+{
+  "complete": true,
+  "cases": [
+    {
+      "name": "historical_outlier",
+      "state": {
+        "players": [
+          {
+            "id": "p1",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 14,
+                "id": "clubs-14"
+              },
+              {
+                "suit": "spades",
+                "rank": 9,
+                "id": "spades-9"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 6,
+                "id": "diamonds-6"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 8,
+                "id": "diamonds-8"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "spades",
+                  "rank": 14,
+                  "id": "spades-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 7,
+                  "id": "spades-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 12,
+                  "id": "clubs-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 3,
+                  "id": "diamonds-3",
+                  "isHidden": true
+                },
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                {
+                  "suit": "hearts",
+                  "rank": 9,
+                  "id": "hearts-9",
+                  "isHidden": true
+                },
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null
+              ]
+            ],
+            "dice": [
+              4,
+              4,
+              3,
+              2,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 2,
+            "bonusesClaimed": 0
+          },
+          {
+            "id": "p2",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 4,
+                "id": "clubs-4"
+              },
+              {
+                "suit": "hearts",
+                "rank": 7,
+                "id": "hearts-7"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 14,
+                "id": "diamonds-14"
+              },
+              {
+                "suit": "spades",
+                "rank": 12,
+                "id": "spades-12"
+              },
+              {
+                "suit": "hearts",
+                "rank": 10,
+                "id": "hearts-10"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 9,
+                  "id": "clubs-9",
+                  "isHidden": true
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 2,
+                  "id": "diamonds-2",
+                  "isHidden": true
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 12,
+                  "id": "diamonds-12",
+                  "isHidden": false
+                },
+                null,
+                null
+              ],
+              [
+                null,
+                {
+                  "suit": "hearts",
+                  "rank": 3,
+                  "id": "hearts-3",
+                  "isHidden": false
+                },
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                {
+                  "suit": "spades",
+                  "rank": 11,
+                  "id": "spades-11",
+                  "isHidden": true
+                },
+                null,
+                null,
+                null
+              ]
+            ],
+            "dice": [
+              4,
+              4,
+              3,
+              2,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 3,
+            "bonusesClaimed": 1
+          }
+        ],
+        "currentPlayerIndex": 0,
+        "phase": "playing",
+        "deck": [
+          {
+            "suit": "clubs",
+            "rank": 10,
+            "id": "clubs-10"
+          },
+          {
+            "suit": "spades",
+            "rank": 3,
+            "id": "spades-3"
+          },
+          {
+            "suit": "hearts",
+            "rank": 8,
+            "id": "hearts-8"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 11,
+            "id": "diamonds-11"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 5,
+            "id": "diamonds-5"
+          },
+          {
+            "suit": "spades",
+            "rank": 5,
+            "id": "spades-5"
+          },
+          {
+            "suit": "spades",
+            "rank": 4,
+            "id": "spades-4"
+          },
+          {
+            "suit": "hearts",
+            "rank": 5,
+            "id": "hearts-5"
+          },
+          {
+            "suit": "spades",
+            "rank": 8,
+            "id": "spades-8"
+          },
+          {
+            "suit": "clubs",
+            "rank": 7,
+            "id": "clubs-7"
+          },
+          {
+            "suit": "clubs",
+            "rank": 5,
+            "id": "clubs-5"
+          },
+          {
+            "suit": "hearts",
+            "rank": 11,
+            "id": "hearts-11"
+          },
+          {
+            "suit": "hearts",
+            "rank": 13,
+            "id": "hearts-13"
+          },
+          {
+            "suit": "hearts",
+            "rank": 14,
+            "id": "hearts-14"
+          },
+          {
+            "suit": "hearts",
+            "rank": 12,
+            "id": "hearts-12"
+          },
+          {
+            "suit": "spades",
+            "rank": 13,
+            "id": "spades-13"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 9,
+            "id": "diamonds-9"
+          },
+          {
+            "suit": "clubs",
+            "rank": 8,
+            "id": "clubs-8"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 10,
+            "id": "diamonds-10"
+          },
+          {
+            "suit": "clubs",
+            "rank": 13,
+            "id": "clubs-13"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 7,
+            "id": "diamonds-7"
+          },
+          {
+            "suit": "hearts",
+            "rank": 6,
+            "id": "hearts-6"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 4,
+            "id": "diamonds-4"
+          },
+          {
+            "suit": "hearts",
+            "rank": 4,
+            "id": "hearts-4"
+          },
+          {
+            "suit": "hearts",
+            "rank": 2,
+            "id": "hearts-2"
+          },
+          {
+            "suit": "clubs",
+            "rank": 6,
+            "id": "clubs-6"
+          },
+          {
+            "suit": "clubs",
+            "rank": 2,
+            "id": "clubs-2"
+          },
+          {
+            "suit": "clubs",
+            "rank": 11,
+            "id": "clubs-11"
+          },
+          {
+            "suit": "spades",
+            "rank": 6,
+            "id": "spades-6"
+          },
+          {
+            "suit": "spades",
+            "rank": 2,
+            "id": "spades-2"
+          },
+          {
+            "suit": "spades",
+            "rank": 10,
+            "id": "spades-10"
+          },
+          {
+            "suit": "clubs",
+            "rank": 3,
+            "id": "clubs-3"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 13,
+            "id": "diamonds-13"
+          }
+        ],
+        "turnCount": 11,
+        "winner": null
+      },
+      "seed": 1361617215,
+      "previous_action": 193
+    },
+    {
+      "name": "selection_root_control",
+      "state": {
+        "players": [
+          {
+            "id": "p1",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 3,
+                "id": "clubs-3"
+              },
+              {
+                "suit": "spades",
+                "rank": 10,
+                "id": "spades-10"
+              },
+              {
+                "suit": "spades",
+                "rank": 11,
+                "id": "spades-11"
+              },
+              {
+                "suit": "hearts",
+                "rank": 4,
+                "id": "hearts-4"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 4,
+                  "id": "clubs-4",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 13,
+                  "id": "spades-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 7,
+                  "id": "clubs-7",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 2,
+                  "id": "hearts-2",
+                  "isHidden": true
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 6,
+                  "id": "clubs-6",
+                  "isHidden": true
+                }
+              ],
+              [
+                null,
+                {
+                  "suit": "hearts",
+                  "rank": 7,
+                  "id": "hearts-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 12,
+                  "id": "clubs-12",
+                  "isHidden": false
+                },
+                null,
+                {
+                  "suit": "hearts",
+                  "rank": 3,
+                  "id": "hearts-3",
+                  "isHidden": false
+                }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null
+              ]
+            ],
+            "dice": [
+              5,
+              4,
+              2,
+              2,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 3,
+            "bonusesClaimed": 0
+          },
+          {
+            "id": "p2",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 14,
+                "id": "clubs-14"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 3,
+                "id": "diamonds-3"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 8,
+                "id": "diamonds-8"
+              },
+              {
+                "suit": "clubs",
+                "rank": 10,
+                "id": "clubs-10"
+              },
+              {
+                "suit": "hearts",
+                "rank": 11,
+                "id": "hearts-11"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 13,
+                  "id": "diamonds-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 14,
+                  "id": "diamonds-14",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 14,
+                  "id": "hearts-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 2,
+                  "id": "clubs-2",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 13,
+                  "id": "hearts-13",
+                  "isHidden": true
+                }
+              ],
+              [
+                null,
+                {
+                  "suit": "spades",
+                  "rank": 9,
+                  "id": "spades-9",
+                  "isHidden": false
+                },
+                null,
+                {
+                  "suit": "diamonds",
+                  "rank": 7,
+                  "id": "diamonds-7",
+                  "isHidden": false
+                },
+                null
+              ],
+              [
+                null,
+                {
+                  "suit": "spades",
+                  "rank": 3,
+                  "id": "spades-3",
+                  "isHidden": false
+                },
+                null,
+                null,
+                null
+              ]
+            ],
+            "dice": [
+              5,
+              4,
+              2,
+              2,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 3,
+            "bonusesClaimed": 1
+          }
+        ],
+        "currentPlayerIndex": 1,
+        "phase": "playing",
+        "deck": [
+          {
+            "suit": "diamonds",
+            "rank": 9,
+            "id": "diamonds-9"
+          },
+          {
+            "suit": "hearts",
+            "rank": 8,
+            "id": "hearts-8"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 10,
+            "id": "diamonds-10"
+          },
+          {
+            "suit": "spades",
+            "rank": 14,
+            "id": "spades-14"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 12,
+            "id": "diamonds-12"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 11,
+            "id": "diamonds-11"
+          },
+          {
+            "suit": "spades",
+            "rank": 6,
+            "id": "spades-6"
+          },
+          {
+            "suit": "spades",
+            "rank": 7,
+            "id": "spades-7"
+          },
+          {
+            "suit": "hearts",
+            "rank": 6,
+            "id": "hearts-6"
+          },
+          {
+            "suit": "spades",
+            "rank": 2,
+            "id": "spades-2"
+          },
+          {
+            "suit": "hearts",
+            "rank": 10,
+            "id": "hearts-10"
+          },
+          {
+            "suit": "clubs",
+            "rank": 11,
+            "id": "clubs-11"
+          },
+          {
+            "suit": "clubs",
+            "rank": 9,
+            "id": "clubs-9"
+          },
+          {
+            "suit": "spades",
+            "rank": 12,
+            "id": "spades-12"
+          },
+          {
+            "suit": "clubs",
+            "rank": 13,
+            "id": "clubs-13"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 6,
+            "id": "diamonds-6"
+          },
+          {
+            "suit": "hearts",
+            "rank": 5,
+            "id": "hearts-5"
+          },
+          {
+            "suit": "spades",
+            "rank": 5,
+            "id": "spades-5"
+          },
+          {
+            "suit": "hearts",
+            "rank": 12,
+            "id": "hearts-12"
+          },
+          {
+            "suit": "hearts",
+            "rank": 9,
+            "id": "hearts-9"
+          },
+          {
+            "suit": "clubs",
+            "rank": 5,
+            "id": "clubs-5"
+          },
+          {
+            "suit": "spades",
+            "rank": 8,
+            "id": "spades-8"
+          },
+          {
+            "suit": "spades",
+            "rank": 4,
+            "id": "spades-4"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 2,
+            "id": "diamonds-2"
+          },
+          {
+            "suit": "clubs",
+            "rank": 8,
+            "id": "clubs-8"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 5,
+            "id": "diamonds-5"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 4,
+            "id": "diamonds-4"
+          }
+        ],
+        "turnCount": 17,
+        "winner": null
+      },
+      "seed": 1360820445,
+      "previous_action": 384
+    }
+  ],
+  "rows": [
+    {
+      "case": "historical_outlier",
+      "history": "fresh",
+      "clock": "frozen",
+      "action": 193,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 36,
+        "searchedMoves": 36,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884712130,
+      "wallFinishedMs": 1792884713127,
+      "cpuUserMs": 1381.83,
+      "cpuSystemMs": 19.361,
+      "actualElapsedMs": 996.313208,
+      "parentWallElapsedMs": 1130.7060718536377
+    },
+    {
+      "case": "historical_outlier",
+      "history": "fresh",
+      "clock": "frozen",
+      "action": 193,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 36,
+        "searchedMoves": 36,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884713203,
+      "wallFinishedMs": 1792884714196,
+      "cpuUserMs": 1387.72,
+      "cpuSystemMs": 18.328,
+      "actualElapsedMs": 992.475708,
+      "parentWallElapsedMs": 1061.0411167144775
+    },
+    {
+      "case": "historical_outlier",
+      "history": "reuse",
+      "clock": "frozen",
+      "action": 193,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 36,
+        "searchedMoves": 36,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884714273,
+      "wallFinishedMs": 1792884715274,
+      "cpuUserMs": 1398.34,
+      "cpuSystemMs": 20.433,
+      "actualElapsedMs": 1000.330083,
+      "parentWallElapsedMs": 1069.7369575500488
+    },
+    {
+      "case": "historical_outlier",
+      "history": "reuse",
+      "clock": "frozen",
+      "action": 193,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 36,
+        "searchedMoves": 36,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884715276,
+      "wallFinishedMs": 1792884716129,
+      "cpuUserMs": 972.799,
+      "cpuSystemMs": 10.21,
+      "actualElapsedMs": 852.345791,
+      "parentWallElapsedMs": 854.0880680084229
+    },
+    {
+      "case": "historical_outlier",
+      "history": "reuse",
+      "clock": "timed",
+      "action": 193,
+      "diagnostics": {
+        "elapsedMs": 828.6391250000001,
+        "legalMoves": 36,
+        "searchedMoves": 36,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884716130,
+      "wallFinishedMs": 1792884716959,
+      "cpuUserMs": 880.697,
+      "cpuSystemMs": 12.225,
+      "actualElapsedMs": 828.821,
+      "parentWallElapsedMs": 829.4100761413574
+    },
+    {
+      "case": "selection_root_control",
+      "history": "fresh",
+      "clock": "frozen",
+      "action": 384,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 20,
+        "searchedMoves": 20,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884717035,
+      "wallFinishedMs": 1792884717698,
+      "cpuUserMs": 996.973,
+      "cpuSystemMs": 15.932,
+      "actualElapsedMs": 663.851375,
+      "parentWallElapsedMs": 732.0959568023682
+    },
+    {
+      "case": "selection_root_control",
+      "history": "fresh",
+      "clock": "frozen",
+      "action": 384,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 20,
+        "searchedMoves": 20,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884717776,
+      "wallFinishedMs": 1792884718458,
+      "cpuUserMs": 1021.672,
+      "cpuSystemMs": 16.915,
+      "actualElapsedMs": 681.959875,
+      "parentWallElapsedMs": 751.0662078857422
+    },
+    {
+      "case": "selection_root_control",
+      "history": "reuse",
+      "clock": "frozen",
+      "action": 384,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 20,
+        "searchedMoves": 20,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884718534,
+      "wallFinishedMs": 1792884719210,
+      "cpuUserMs": 1016.246,
+      "cpuSystemMs": 16.596,
+      "actualElapsedMs": 675.739208,
+      "parentWallElapsedMs": 744.1287040710449
+    },
+    {
+      "case": "selection_root_control",
+      "history": "reuse",
+      "clock": "frozen",
+      "action": 384,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 20,
+        "searchedMoves": 20,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884719212,
+      "wallFinishedMs": 1792884719792,
+      "cpuUserMs": 651.039,
+      "cpuSystemMs": 10.543,
+      "actualElapsedMs": 580.050833,
+      "parentWallElapsedMs": 580.7528495788574
+    },
+    {
+      "case": "selection_root_control",
+      "history": "reuse",
+      "clock": "timed",
+      "action": 384,
+      "diagnostics": {
+        "elapsedMs": 520.435166,
+        "legalMoves": 20,
+        "searchedMoves": 20,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792884719793,
+      "wallFinishedMs": 1792884720314,
+      "cpuUserMs": 555.286,
+      "cpuSystemMs": 4.061,
+      "actualElapsedMs": 520.530625,
+      "parentWallElapsedMs": 520.939826965332
+    }
+  ],
+  "plan": {
+    "samples": 64,
+    "timeout_seconds": 90,
+    "total_wall_seconds": 300,
+    "repetitions": {
+      "frozen_fresh": 2,
+      "frozen_reuse": 2,
+      "timed_reuse": 1
+    },
+    "scope": "Timing mechanism only; no strength games"
+  }
+}

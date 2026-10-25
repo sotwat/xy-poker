@@ -1,0 +1,199 @@
+{
+  "checkpoint_sha256": "ec67c96f30cbc3d70265f3141161eeac596392f47d7787bdd272502150bf55dd",
+  "total_games": 12973,
+  "model_sha256": "c6c9c60247f415401a7815c022a95b40de6a0e700180bffbe5b655b1dc3c4319",
+  "replay_rows": 20000,
+  "teacher_rows": {
+    "teacher-a9-selfplay": 5715,
+    "teacher-a9": 2863,
+    "teacher-a9-advice": 2841
+  },
+  "checks": {
+    "recorded_teacher_action_matches": 371,
+    "state_feature_mask_actor_return_mirror_hidden_invariance": 496,
+    "teacher_card_column_hidden_roundtrip": 480,
+    "advice_differs_from_played_action": 110,
+    "advice_legal_only_no_original_call_log": 125
+  },
+  "matches": [
+    {
+      "total_games": 12942,
+      "seed": 1375559010,
+      "opponent": "teacher-selfplay",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12943,
+      "seed": 1375663739,
+      "opponent": "baseline",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "1": 16,
+        "0": 15
+      }
+    },
+    {
+      "total_games": 12947,
+      "seed": 1376082655,
+      "opponent": "baseline",
+      "model_seat": 0,
+      "rows": 31,
+      "actors": {
+        "1": 16,
+        "0": 15
+      }
+    },
+    {
+      "total_games": 12949,
+      "seed": 1376292113,
+      "opponent": "teacher-selfplay",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "1": 16,
+        "0": 15
+      }
+    },
+    {
+      "total_games": 12950,
+      "seed": 1376396842,
+      "opponent": "teacher-selfplay",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "1": 16,
+        "0": 15
+      }
+    },
+    {
+      "total_games": 12951,
+      "seed": 1376501571,
+      "opponent": "baseline",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12955,
+      "seed": 1376920487,
+      "opponent": "baseline",
+      "model_seat": 0,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12957,
+      "seed": 1377129945,
+      "opponent": "teacher-selfplay",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "1": 16,
+        "0": 15
+      }
+    },
+    {
+      "total_games": 12958,
+      "seed": 1377234674,
+      "opponent": "teacher-selfplay",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12959,
+      "seed": 1377339403,
+      "opponent": "baseline",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12963,
+      "seed": 1377758319,
+      "opponent": "baseline",
+      "model_seat": 0,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12965,
+      "seed": 1377967777,
+      "opponent": "teacher-selfplay",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12966,
+      "seed": 1378072506,
+      "opponent": "teacher-selfplay",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12967,
+      "seed": 1378177235,
+      "opponent": "baseline",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "1": 16,
+        "0": 15
+      }
+    },
+    {
+      "total_games": 12971,
+      "seed": 1378596151,
+      "opponent": "baseline",
+      "model_seat": 0,
+      "rows": 31,
+      "actors": {
+        "0": 16,
+        "1": 15
+      }
+    },
+    {
+      "total_games": 12973,
+      "seed": 1378805609,
+      "opponent": "teacher-selfplay",
+      "model_seat": 1,
+      "rows": 31,
+      "actors": {
+        "1": 16,
+        "0": 15
+      }
+    }
+  ],
+  "new_teacher_calls": 0,
+  "training_updates": 0,
+  "limits": "Structural audit of correlated stored data, not strength or independent scoring. Advice calls have no stored original response log: label legality/alignment only; current teacher recomputation would not prove historical response identity."
+}

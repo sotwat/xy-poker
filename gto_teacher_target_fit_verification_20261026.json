@@ -1,0 +1,11 @@
+{
+  "input_sha256": "783b1e99670f4c5370f712464a1157867044b46300e76259780c8e62e5336c75",
+  "dataset_sha256": "a29674ea50c4734a2dd31afa640c2a3f6bb72080ab7444dec87f6db245852d75",
+  "metric_groups_checked": 132,
+  "gates": {
+    "selection": false,
+    "confirmation": false
+  },
+  "optimizer_steps_increment": 32,
+  "adopted": false
+}
