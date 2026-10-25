@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import { boundedProof, diagnosticTick, workState } from './diagnostic_work_budget';
+assert.deepEqual(boundedProof(0, () => diagnosticTick('zero')), { status: 'incomplete', result: null, used: 0, remaining: 0, exhaustedAt: 'zero' });
+assert.doesNotThrow(() => diagnosticTick('outside-after-limit'));
+assert.equal(boundedProof(1, () => { diagnosticTick('one'); return 7; }).result, 7);
+assert.throws(() => boundedProof(3, () => boundedProof(1, () => 1)), /Nested proof budget/);
+assert.doesNotThrow(() => diagnosticTick('outside-after-nested-error'));
+assert.throws(() => boundedProof(1, () => { throw new Error('separate failure'); }), /separate failure/);
+assert.doesNotThrow(() => diagnosticTick('outside-after-error'));
+assert.equal(boundedProof(1, () => { diagnosticTick('reset'); return workState().used; }).result, 1);
+console.log('Budget lifecycle: inactive outside proof, all error exits restore, exact cap, reset and nesting verified.');
+const adapter = await import('./diagnostic_proof_adapter');
+const { readFileSync } = await import('node:fs');
+const state = JSON.parse(readFileSync('src/logic/fixtures/forced-win.json', 'utf8')).state;
+adapter.configureProofs(1000);
+assert.throws(() => adapter.boundedFinalMove(state, state.currentPlayerIndex, Infinity), /not instrumented/);

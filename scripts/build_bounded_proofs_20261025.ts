@@ -42,6 +42,6 @@ for (const name of files) {
     transformed.dispose();
     manifest[path] = { sha256: createHash('sha256').update(source).digest('hex'), functionSites, loopSites };
 }
-writeFileSync(`${output}/budget.ts`, readFileSync('scripts/diagnostic_work_budget.ts'));
+writeFileSync(`${output}/budget.ts`, readFileSync('scripts/diagnostic_work_budget.ts', 'utf8').replace('DIAGNOSTIC_INSTRUMENTED = false', 'DIAGNOSTIC_INSTRUMENTED = true'));
 writeFileSync(`${output}/manifest.json`, JSON.stringify({ unit: 'function entry or loop iteration; not CPU instructions or nodes', files: manifest }, null, 2) + '\n');
 console.log(JSON.stringify(manifest));
