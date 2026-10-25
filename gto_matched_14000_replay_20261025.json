@@ -1,0 +1,32 @@
+{
+  "started_utc": "2026-10-25T14:15:39.781412+00:00",
+  "ended_utc": "2026-10-25T14:15:40.969570+00:00",
+  "reports": [
+    {
+      "input_name": "XY\u30dd\u30fc\u30ab\u30fc",
+      "input_sha256": "4bdf330cbda504fd60fd07c4e5f182b04e41d7eb8d8b17b8825ad54b19275135",
+      "snapshot_bytes": 71412,
+      "complete": true,
+      "games": 100,
+      "moves": 3100,
+      "unique_seed_seats": 100,
+      "model_sha256": "21520a5e458a987a238e5a34752fbca14ffcf5b2d2c188e6e671c074d9b72920",
+      "seed": 2548883648,
+      "mismatches": [],
+      "score_disagreements": 0
+    },
+    {
+      "input_name": "XY\u30dd\u30fc\u30ab\u30fc",
+      "input_sha256": "1001fa6edb3fbbcf26aa05318d3c0ccedc945d559e6b6f285f79ac8cbd01fb4c",
+      "snapshot_bytes": 71398,
+      "complete": true,
+      "games": 100,
+      "moves": 3100,
+      "unique_seed_seats": 100,
+      "model_sha256": "709bb9a4982b29118627cdf03d850bd7ab0a898e20da58dd81f7b0218b6f61bf",
+      "seed": 2548883648,
+      "mismatches": [],
+      "score_disagreements": 0
+    }
+  ]
+}

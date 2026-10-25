@@ -1,0 +1,282 @@
+{
+  "before": {
+    "model_sha256": "21520a5e458a987a238e5a34752fbca14ffcf5b2d2c188e6e671c074d9b72920",
+    "training_games": 12000,
+    "wins": 2,
+    "draws": 0,
+    "losses": 98
+  },
+  "after": {
+    "model_sha256": "709bb9a4982b29118627cdf03d850bd7ab0a898e20da58dd81f7b0218b6f61bf",
+    "training_games": 14000,
+    "wins": 1,
+    "draws": 0,
+    "losses": 99
+  },
+  "seed": 2548883648,
+  "pairs": 50,
+  "games_per_model": 100,
+  "simulations": 128,
+  "world_samples": 8,
+  "opponent_settings": "A9 default: 1000ms cap / 64 MC samples",
+  "mean_utility_delta": -0.02,
+  "paired_hoeffding95": [
+    -0.7882582330559367,
+    0.7482582330559366
+  ],
+  "mean_score_margin_delta": -0.58,
+  "pair_records": [
+    {
+      "seed": 2548883648,
+      "utility_delta": 0.0,
+      "score_margin_delta": -4.0
+    },
+    {
+      "seed": 2548883649,
+      "utility_delta": 0.0,
+      "score_margin_delta": 0.5
+    },
+    {
+      "seed": 2548883650,
+      "utility_delta": 0.0,
+      "score_margin_delta": -4.5
+    },
+    {
+      "seed": 2548883651,
+      "utility_delta": 0.0,
+      "score_margin_delta": -3.0
+    },
+    {
+      "seed": 2548883652,
+      "utility_delta": 0.0,
+      "score_margin_delta": 3.0
+    },
+    {
+      "seed": 2548883653,
+      "utility_delta": 0.0,
+      "score_margin_delta": -6.0
+    },
+    {
+      "seed": 2548883654,
+      "utility_delta": 0.0,
+      "score_margin_delta": -8.5
+    },
+    {
+      "seed": 2548883655,
+      "utility_delta": 0.0,
+      "score_margin_delta": 7.0
+    },
+    {
+      "seed": 2548883656,
+      "utility_delta": 0.0,
+      "score_margin_delta": -0.5
+    },
+    {
+      "seed": 2548883657,
+      "utility_delta": 0.0,
+      "score_margin_delta": -7.0
+    },
+    {
+      "seed": 2548883658,
+      "utility_delta": 0.0,
+      "score_margin_delta": 1.5
+    },
+    {
+      "seed": 2548883659,
+      "utility_delta": 0.0,
+      "score_margin_delta": 9.5
+    },
+    {
+      "seed": 2548883660,
+      "utility_delta": 0.0,
+      "score_margin_delta": -4.5
+    },
+    {
+      "seed": 2548883661,
+      "utility_delta": 0.0,
+      "score_margin_delta": 0.5
+    },
+    {
+      "seed": 2548883662,
+      "utility_delta": 0.0,
+      "score_margin_delta": 5.5
+    },
+    {
+      "seed": 2548883663,
+      "utility_delta": 0.0,
+      "score_margin_delta": -2.5
+    },
+    {
+      "seed": 2548883664,
+      "utility_delta": 0.0,
+      "score_margin_delta": 5.5
+    },
+    {
+      "seed": 2548883665,
+      "utility_delta": 0.0,
+      "score_margin_delta": -4.0
+    },
+    {
+      "seed": 2548883666,
+      "utility_delta": 0.0,
+      "score_margin_delta": 6.0
+    },
+    {
+      "seed": 2548883667,
+      "utility_delta": 0.0,
+      "score_margin_delta": -6.0
+    },
+    {
+      "seed": 2548883668,
+      "utility_delta": 0.0,
+      "score_margin_delta": 0.5
+    },
+    {
+      "seed": 2548883669,
+      "utility_delta": 0.0,
+      "score_margin_delta": 3.5
+    },
+    {
+      "seed": 2548883670,
+      "utility_delta": 0.0,
+      "score_margin_delta": -2.5
+    },
+    {
+      "seed": 2548883671,
+      "utility_delta": 0.0,
+      "score_margin_delta": -9.0
+    },
+    {
+      "seed": 2548883672,
+      "utility_delta": 0.0,
+      "score_margin_delta": 0.5
+    },
+    {
+      "seed": 2548883673,
+      "utility_delta": 0.0,
+      "score_margin_delta": -0.5
+    },
+    {
+      "seed": 2548883674,
+      "utility_delta": 0.0,
+      "score_margin_delta": -2.5
+    },
+    {
+      "seed": 2548883675,
+      "utility_delta": 0.0,
+      "score_margin_delta": -7.5
+    },
+    {
+      "seed": 2548883676,
+      "utility_delta": 0.0,
+      "score_margin_delta": -2.0
+    },
+    {
+      "seed": 2548883677,
+      "utility_delta": 0.0,
+      "score_margin_delta": 2.0
+    },
+    {
+      "seed": 2548883678,
+      "utility_delta": 0.0,
+      "score_margin_delta": 1.0
+    },
+    {
+      "seed": 2548883679,
+      "utility_delta": 0.0,
+      "score_margin_delta": 3.0
+    },
+    {
+      "seed": 2548883680,
+      "utility_delta": 0.0,
+      "score_margin_delta": 2.0
+    },
+    {
+      "seed": 2548883681,
+      "utility_delta": 0.0,
+      "score_margin_delta": 13.5
+    },
+    {
+      "seed": 2548883682,
+      "utility_delta": 0.0,
+      "score_margin_delta": -10.5
+    },
+    {
+      "seed": 2548883683,
+      "utility_delta": 0.0,
+      "score_margin_delta": 9.0
+    },
+    {
+      "seed": 2548883684,
+      "utility_delta": 0.0,
+      "score_margin_delta": 3.0
+    },
+    {
+      "seed": 2548883685,
+      "utility_delta": 0.0,
+      "score_margin_delta": -11.0
+    },
+    {
+      "seed": 2548883686,
+      "utility_delta": 0.0,
+      "score_margin_delta": 0.0
+    },
+    {
+      "seed": 2548883687,
+      "utility_delta": 0.0,
+      "score_margin_delta": 1.5
+    },
+    {
+      "seed": 2548883688,
+      "utility_delta": 0.0,
+      "score_margin_delta": 1.5
+    },
+    {
+      "seed": 2548883689,
+      "utility_delta": 0.0,
+      "score_margin_delta": -1.5
+    },
+    {
+      "seed": 2548883690,
+      "utility_delta": 0.0,
+      "score_margin_delta": -2.0
+    },
+    {
+      "seed": 2548883691,
+      "utility_delta": 0.0,
+      "score_margin_delta": 1.5
+    },
+    {
+      "seed": 2548883692,
+      "utility_delta": -1.0,
+      "score_margin_delta": -2.5
+    },
+    {
+      "seed": 2548883693,
+      "utility_delta": 0.0,
+      "score_margin_delta": 1.0
+    },
+    {
+      "seed": 2548883694,
+      "utility_delta": 0.0,
+      "score_margin_delta": 2.0
+    },
+    {
+      "seed": 2548883695,
+      "utility_delta": 0.0,
+      "score_margin_delta": -7.5
+    },
+    {
+      "seed": 2548883696,
+      "utility_delta": 0.0,
+      "score_margin_delta": -8.5
+    },
+    {
+      "seed": 2548883697,
+      "utility_delta": 0.0,
+      "score_margin_delta": 4.5
+    }
+  ],
+  "production_changed": false,
+  "scope": "Pair means; observed equality is not proof of equal population strength. Score is secondary."
+}
