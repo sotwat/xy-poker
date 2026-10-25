@@ -1,0 +1,212 @@
+{
+  "input_sha256": "3a3327dcb19919b8d6fd34a2d03a0f43dc72ddae75726229873061980913db57",
+  "games": 64,
+  "rows": 1735,
+  "groups": {
+    "selection/search": {
+      "rows": 556,
+      "game_actor_clusters": 36,
+      "labels": {
+        "-1": 265,
+        "0": 46,
+        "1": 245
+      },
+      "mean_z": -0.03597122302158273,
+      "mean_cluster_z": -0.027777777777777776,
+      "argmax_matches": 239,
+      "mean_executed_target_mass": 0.29766895092032153
+    },
+    "selection/teacher-a9": {
+      "rows": 184,
+      "game_actor_clusters": 12,
+      "labels": {
+        "1": 184
+      },
+      "mean_z": 1.0,
+      "mean_cluster_z": 1.0,
+      "argmax_matches": 184,
+      "mean_executed_target_mass": 1.0
+    },
+    "selection/teacher-a9-advice": {
+      "rows": 188,
+      "game_actor_clusters": 12,
+      "labels": {
+        "-1": 188
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 12,
+      "mean_executed_target_mass": 0.06382978723404255
+    },
+    "selection/advice-agrees-False": {
+      "rows": 176,
+      "game_actor_clusters": 12,
+      "labels": {
+        "-1": 176
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 0,
+      "mean_executed_target_mass": 0.0
+    },
+    "selection/advice-agrees-True": {
+      "rows": 12,
+      "game_actor_clusters": 8,
+      "labels": {
+        "-1": 12
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 12,
+      "mean_executed_target_mass": 1.0
+    },
+    "selection/advice-early": {
+      "rows": 68,
+      "game_actor_clusters": 12,
+      "labels": {
+        "-1": 68
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 5,
+      "mean_executed_target_mass": 0.07352941176470588
+    },
+    "selection/advice-middle": {
+      "rows": 60,
+      "game_actor_clusters": 12,
+      "labels": {
+        "-1": 60
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 4,
+      "mean_executed_target_mass": 0.06666666666666667
+    },
+    "selection/advice-late": {
+      "rows": 60,
+      "game_actor_clusters": 12,
+      "labels": {
+        "-1": 60
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 3,
+      "mean_executed_target_mass": 0.05
+    },
+    "selection/teacher-a9-selfplay": {
+      "rows": 372,
+      "game_actor_clusters": 24,
+      "labels": {
+        "-1": 189,
+        "1": 183
+      },
+      "mean_z": -0.016129032258064516,
+      "mean_cluster_z": 0.0,
+      "argmax_matches": 372,
+      "mean_executed_target_mass": 1.0
+    },
+    "confirmation/search": {
+      "rows": 187,
+      "game_actor_clusters": 12,
+      "labels": {
+        "0": 31,
+        "1": 78,
+        "-1": 78
+      },
+      "mean_z": 0.0,
+      "mean_cluster_z": 0.0,
+      "argmax_matches": 82,
+      "mean_executed_target_mass": 0.2831698181157444
+    },
+    "confirmation/teacher-a9": {
+      "rows": 62,
+      "game_actor_clusters": 4,
+      "labels": {
+        "1": 62
+      },
+      "mean_z": 1.0,
+      "mean_cluster_z": 1.0,
+      "argmax_matches": 62,
+      "mean_executed_target_mass": 1.0
+    },
+    "confirmation/teacher-a9-advice": {
+      "rows": 62,
+      "game_actor_clusters": 4,
+      "labels": {
+        "-1": 62
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 4,
+      "mean_executed_target_mass": 0.06451612903225806
+    },
+    "confirmation/advice-agrees-False": {
+      "rows": 58,
+      "game_actor_clusters": 4,
+      "labels": {
+        "-1": 58
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 0,
+      "mean_executed_target_mass": 0.0
+    },
+    "confirmation/advice-agrees-True": {
+      "rows": 4,
+      "game_actor_clusters": 3,
+      "labels": {
+        "-1": 4
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 4,
+      "mean_executed_target_mass": 1.0
+    },
+    "confirmation/advice-early": {
+      "rows": 22,
+      "game_actor_clusters": 4,
+      "labels": {
+        "-1": 22
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 1,
+      "mean_executed_target_mass": 0.045454545454545456
+    },
+    "confirmation/advice-middle": {
+      "rows": 20,
+      "game_actor_clusters": 4,
+      "labels": {
+        "-1": 20
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 2,
+      "mean_executed_target_mass": 0.1
+    },
+    "confirmation/advice-late": {
+      "rows": 20,
+      "game_actor_clusters": 4,
+      "labels": {
+        "-1": 20
+      },
+      "mean_z": -1.0,
+      "mean_cluster_z": -1.0,
+      "argmax_matches": 1,
+      "mean_executed_target_mass": 0.05
+    },
+    "confirmation/teacher-a9-selfplay": {
+      "rows": 124,
+      "game_actor_clusters": 8,
+      "labels": {
+        "-1": 48,
+        "1": 45,
+        "0": 31
+      },
+      "mean_z": -0.024193548387096774,
+      "mean_cluster_z": 0.0,
+      "argmax_matches": 124,
+      "mean_executed_target_mass": 1.0
+    }
+  }
+}
