@@ -112,19 +112,23 @@ class Residual(nn.Module):
         return logits + addition, values
 
 
-def run(directory):
+def run(directory, replication=False):
     test_features()
     torch.set_num_threads(1)
     started = time.monotonic()
     path = directory / 'latest.pt'
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     saved = load_checkpoint(path)
-    snapshot = directory.parent / 'diagnostic-action-residual-20261025' / 'checkpoint.pt'
+    snapshot = directory.parent / ('diagnostic-action-residual-replication-20261025' if replication
+                                   else 'diagnostic-action-residual-20261025') / 'checkpoint.pt'
     snapshot.parent.mkdir(exist_ok=True)
     if not snapshot.exists():
         snapshot.write_bytes(path.read_bytes())
     assert hashlib.sha256(snapshot.read_bytes()).hexdigest() == digest
     excluded = {g['seed'] for g in json.loads(Path('gto_teacher_fit_20261025.json').read_text())['manifest']}
+    if replication:
+        excluded.update(g['seed'] for g in json.loads(
+            Path('gto_action_residual_20261025.json').read_text())['manifest'])
     events = [json.loads(l) for l in (directory / 'events.jsonl').read_text().splitlines()]
     events = [e for e in events if e.get('event') == 'selfplay' and e['total_games'] <= saved['total_games']]
     cursor, games, quotas = len(saved['replay']), [], collections.Counter()
@@ -215,7 +219,9 @@ def run(directory):
                    for k in initial[split])
     assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
     return dict(total_games=saved['total_games'], checkpoint_sha256=digest, model_sha256=original,
-                protocol='Exclude all78 games; latest32 teacher games stratified16/8/8. Per stratum '
+                replication=replication, excluded_game_count=len(excluded),
+                protocol=('Exclude all78/79 games; ' if replication else 'Exclude all78 games; ') +
+                         'latest32 teacher games stratified16/8/8. Per stratum '
                          '2train/1selection/1confirmation, fixed256 batch64 seed100525079. Frozen base; '
                          'zero residual; fresh head-only AdamW lr.001 wd1e-4 clip5 for both arms. '
                          'No checkpoint/hyperparameter selection. Selection and confirmation gates '
@@ -234,5 +240,6 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--directory', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--replication', action='store_true')
     args = p.parse_args()
-    args.output.write_text(json.dumps(run(args.directory), indent=2)+'\n')
+    args.output.write_text(json.dumps(run(args.directory, args.replication), indent=2)+'\n')
