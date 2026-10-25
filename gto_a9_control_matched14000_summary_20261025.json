@@ -1,0 +1,297 @@
+{
+  "input_sha256": "b02d305a40a1c797755cc70a4a26afefc6dd8f2f574da8fed3762975584939a0",
+  "games": 100,
+  "pairs": 50,
+  "counts": {
+    "wins": 50,
+    "losses": 46,
+    "draws": 4
+  },
+  "by_swap": {
+    "False": {
+      "wins": 27,
+      "losses": 21,
+      "draws": 2
+    },
+    "True": {
+      "losses": 25,
+      "draws": 2,
+      "wins": 23
+    }
+  },
+  "pair_mean_utility": 0.04,
+  "pair_hoeffding_95": [
+    -0.34412911652796835,
+    0.4241291165279683
+  ],
+  "mean_score_margin": 0.92,
+  "pair_stats": [
+    {
+      "seed": 2548883648,
+      "utility": 0.0,
+      "score_margin": 4.5
+    },
+    {
+      "seed": 2548883649,
+      "utility": -0.5,
+      "score_margin": -2.0
+    },
+    {
+      "seed": 2548883650,
+      "utility": 0.0,
+      "score_margin": 2.0
+    },
+    {
+      "seed": 2548883651,
+      "utility": 0.5,
+      "score_margin": 1.5
+    },
+    {
+      "seed": 2548883652,
+      "utility": 1.0,
+      "score_margin": 9.5
+    },
+    {
+      "seed": 2548883653,
+      "utility": -1.0,
+      "score_margin": -13.0
+    },
+    {
+      "seed": 2548883654,
+      "utility": 0.0,
+      "score_margin": 6.0
+    },
+    {
+      "seed": 2548883655,
+      "utility": 0.0,
+      "score_margin": 3.0
+    },
+    {
+      "seed": 2548883656,
+      "utility": 0.0,
+      "score_margin": 1.0
+    },
+    {
+      "seed": 2548883657,
+      "utility": 1.0,
+      "score_margin": 10.0
+    },
+    {
+      "seed": 2548883658,
+      "utility": 0.0,
+      "score_margin": 2.5
+    },
+    {
+      "seed": 2548883659,
+      "utility": 1.0,
+      "score_margin": 4.0
+    },
+    {
+      "seed": 2548883660,
+      "utility": -1.0,
+      "score_margin": -2.5
+    },
+    {
+      "seed": 2548883661,
+      "utility": 0.0,
+      "score_margin": -3.0
+    },
+    {
+      "seed": 2548883662,
+      "utility": 0.0,
+      "score_margin": 6.5
+    },
+    {
+      "seed": 2548883663,
+      "utility": -1.0,
+      "score_margin": -11.0
+    },
+    {
+      "seed": 2548883664,
+      "utility": 0.0,
+      "score_margin": 9.0
+    },
+    {
+      "seed": 2548883665,
+      "utility": 0.5,
+      "score_margin": 3.5
+    },
+    {
+      "seed": 2548883666,
+      "utility": 0.0,
+      "score_margin": -1.0
+    },
+    {
+      "seed": 2548883667,
+      "utility": 1.0,
+      "score_margin": 8.5
+    },
+    {
+      "seed": 2548883668,
+      "utility": 1.0,
+      "score_margin": 9.5
+    },
+    {
+      "seed": 2548883669,
+      "utility": 0.0,
+      "score_margin": 2.0
+    },
+    {
+      "seed": 2548883670,
+      "utility": 1.0,
+      "score_margin": 3.0
+    },
+    {
+      "seed": 2548883671,
+      "utility": 0.0,
+      "score_margin": 0.0
+    },
+    {
+      "seed": 2548883672,
+      "utility": 0.0,
+      "score_margin": -1.5
+    },
+    {
+      "seed": 2548883673,
+      "utility": 0.0,
+      "score_margin": 1.5
+    },
+    {
+      "seed": 2548883674,
+      "utility": 1.0,
+      "score_margin": 9.5
+    },
+    {
+      "seed": 2548883675,
+      "utility": -1.0,
+      "score_margin": -10.0
+    },
+    {
+      "seed": 2548883676,
+      "utility": 0.0,
+      "score_margin": -2.0
+    },
+    {
+      "seed": 2548883677,
+      "utility": 0.0,
+      "score_margin": 4.0
+    },
+    {
+      "seed": 2548883678,
+      "utility": 0.0,
+      "score_margin": 0.0
+    },
+    {
+      "seed": 2548883679,
+      "utility": -1.0,
+      "score_margin": -6.5
+    },
+    {
+      "seed": 2548883680,
+      "utility": 0.0,
+      "score_margin": 3.0
+    },
+    {
+      "seed": 2548883681,
+      "utility": 0.0,
+      "score_margin": -3.0
+    },
+    {
+      "seed": 2548883682,
+      "utility": -1.0,
+      "score_margin": -20.0
+    },
+    {
+      "seed": 2548883683,
+      "utility": 0.0,
+      "score_margin": 2.5
+    },
+    {
+      "seed": 2548883684,
+      "utility": 0.0,
+      "score_margin": -1.5
+    },
+    {
+      "seed": 2548883685,
+      "utility": 0.0,
+      "score_margin": 2.5
+    },
+    {
+      "seed": 2548883686,
+      "utility": 1.0,
+      "score_margin": 6.5
+    },
+    {
+      "seed": 2548883687,
+      "utility": 0.0,
+      "score_margin": -0.5
+    },
+    {
+      "seed": 2548883688,
+      "utility": -1.0,
+      "score_margin": -2.0
+    },
+    {
+      "seed": 2548883689,
+      "utility": 0.0,
+      "score_margin": 2.0
+    },
+    {
+      "seed": 2548883690,
+      "utility": -1.0,
+      "score_margin": -6.5
+    },
+    {
+      "seed": 2548883691,
+      "utility": 0.0,
+      "score_margin": 0.5
+    },
+    {
+      "seed": 2548883692,
+      "utility": 1.0,
+      "score_margin": 8.0
+    },
+    {
+      "seed": 2548883693,
+      "utility": 1.0,
+      "score_margin": 10.5
+    },
+    {
+      "seed": 2548883694,
+      "utility": -0.5,
+      "score_margin": -5.0
+    },
+    {
+      "seed": 2548883695,
+      "utility": -1.0,
+      "score_margin": -3.5
+    },
+    {
+      "seed": 2548883696,
+      "utility": 1.0,
+      "score_margin": 3.0
+    },
+    {
+      "seed": 2548883697,
+      "utility": 0.0,
+      "score_margin": 1.0
+    }
+  ],
+  "chunks": [
+    {
+      "started_utc": "2026-10-25T14:14:18.202038+00:00",
+      "ended_utc": "2026-10-25T14:38:18.587284+00:00",
+      "start_pairs": 0,
+      "end_pairs": 35,
+      "status": "chunk_deadline"
+    },
+    {
+      "started_utc": "2026-10-25T14:56:30.034609+00:00",
+      "ended_utc": "2026-10-25T15:06:15.366956+00:00",
+      "start_pairs": 35,
+      "end_pairs": 50,
+      "status": "complete"
+    }
+  ],
+  "note": "seat0 A9 perspective; pair dependence retained; runtime/process correlation not corrected"
+}
