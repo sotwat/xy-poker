@@ -1,0 +1,34 @@
+{
+  "complete": true,
+  "cases": 6,
+  "total_decisions": 84,
+  "bounded_a9_decisions": 72,
+  "sample_counts": [
+    64
+  ],
+  "stateless": true,
+  "caps": {
+    "0": {
+      "decisions": 24,
+      "incomplete_proofs": 48
+    },
+    "1000": {
+      "decisions": 24,
+      "incomplete_proofs": 36
+    },
+    "20000000": {
+      "decisions": 24,
+      "incomplete_proofs": 0
+    }
+  },
+  "source": {
+    "hashes": {
+      "src/logic/game.ts": "6ef47a4ebbb03d06e7d7628b01dcd91a4f3a55c82577fc43577a8e5d4fe3854a",
+      "src/logic/gtoPolicy.ts": "77910a7a60a74da638ebe91fb33086ff30729a8e4bda5e156f97f618e094bbad",
+      "src/logic/ai.ts": "37e0a1669740ea437d8ae005b49812ab1f833cb28955772ff7597a4ae9f45ac8"
+    },
+    "capScope": "Per proof invocation; at most final + response + forced calls",
+    "clock": "Frozen for diagnostic64-sample comparisons; not production A9",
+    "plans": "Explicitly reset between diagnostic decisions"
+  }
+}

@@ -1,0 +1,5940 @@
+{
+  "complete": true,
+  "scope": "Integration fixtures only; no selection/confirmation or strength evaluation",
+  "plan": {
+    "caps": [
+      0,
+      1000,
+      20000000
+    ],
+    "samples": 64,
+    "stateless": true,
+    "fresh": 2,
+    "reuse": 2,
+    "overall_seconds": 300
+  },
+  "cases": [
+    {
+      "name": "endgame",
+      "state": {
+        "players": [
+          {
+            "id": "p1",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 14,
+                "id": "clubs-14"
+              },
+              {
+                "suit": "hearts",
+                "rank": 3,
+                "id": "hearts-3"
+              },
+              {
+                "suit": "clubs",
+                "rank": 4,
+                "id": "clubs-4"
+              },
+              {
+                "suit": "hearts",
+                "rank": 11,
+                "id": "hearts-11"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 3,
+                "id": "diamonds-3"
+              },
+              {
+                "suit": "spades",
+                "rank": 12,
+                "id": "spades-12"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "spades",
+                  "rank": 11,
+                  "id": "spades-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 4,
+                  "id": "hearts-4",
+                  "isHidden": true
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 11,
+                  "id": "diamonds-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 6,
+                  "id": "hearts-6",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 9,
+                  "id": "diamonds-9",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 12,
+                  "id": "diamonds-12",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 5,
+                  "id": "hearts-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 14,
+                  "id": "hearts-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 7,
+                  "id": "clubs-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 7,
+                  "id": "diamonds-7",
+                  "isHidden": false
+                }
+              ],
+              [
+                null,
+                {
+                  "suit": "spades",
+                  "rank": 6,
+                  "id": "spades-6",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 5,
+                  "id": "spades-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 8,
+                  "id": "spades-8",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 7,
+                  "id": "hearts-7",
+                  "isHidden": false
+                }
+              ]
+            ],
+            "dice": [
+              5,
+              4,
+              4,
+              3,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 2,
+            "bonusesClaimed": 2
+          },
+          {
+            "id": "p2",
+            "hand": [
+              {
+                "suit": "hearts",
+                "rank": 2,
+                "id": "hearts-2"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 2,
+                "id": "diamonds-2"
+              },
+              {
+                "suit": "clubs",
+                "rank": 6,
+                "id": "clubs-6"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 10,
+                "id": "diamonds-10"
+              },
+              {
+                "suit": "spades",
+                "rank": 10,
+                "id": "spades-10"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 8,
+                "id": "diamonds-8"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 4,
+                "id": "diamonds-4"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 9,
+                  "id": "clubs-9",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 14,
+                  "id": "spades-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 14,
+                  "id": "diamonds-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 9,
+                  "id": "hearts-9",
+                  "isHidden": true
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 6,
+                  "id": "diamonds-6",
+                  "isHidden": true
+                }
+              ],
+              [
+                {
+                  "suit": "spades",
+                  "rank": 9,
+                  "id": "spades-9",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 2,
+                  "id": "clubs-2",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 13,
+                  "id": "diamonds-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 10,
+                  "id": "clubs-10",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 5,
+                  "id": "diamonds-5",
+                  "isHidden": true
+                }
+              ],
+              [
+                {
+                  "suit": "spades",
+                  "rank": 7,
+                  "id": "spades-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 3,
+                  "id": "clubs-3",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 13,
+                  "id": "spades-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 11,
+                  "id": "clubs-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 4,
+                  "id": "spades-4",
+                  "isHidden": false
+                }
+              ]
+            ],
+            "dice": [
+              5,
+              4,
+              4,
+              3,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 3,
+            "bonusesClaimed": 3
+          }
+        ],
+        "currentPlayerIndex": 0,
+        "phase": "playing",
+        "deck": [
+          {
+            "suit": "clubs",
+            "rank": 5,
+            "id": "clubs-5"
+          },
+          {
+            "suit": "clubs",
+            "rank": 12,
+            "id": "clubs-12"
+          },
+          {
+            "suit": "spades",
+            "rank": 2,
+            "id": "spades-2"
+          },
+          {
+            "suit": "clubs",
+            "rank": 8,
+            "id": "clubs-8"
+          },
+          {
+            "suit": "spades",
+            "rank": 3,
+            "id": "spades-3"
+          },
+          {
+            "suit": "hearts",
+            "rank": 8,
+            "id": "hearts-8"
+          },
+          {
+            "suit": "hearts",
+            "rank": 10,
+            "id": "hearts-10"
+          },
+          {
+            "suit": "hearts",
+            "rank": 12,
+            "id": "hearts-12"
+          },
+          {
+            "suit": "clubs",
+            "rank": 13,
+            "id": "clubs-13"
+          },
+          {
+            "suit": "hearts",
+            "rank": 13,
+            "id": "hearts-13"
+          }
+        ],
+        "turnCount": 30,
+        "winner": null
+      },
+      "seed": 107525001
+    },
+    {
+      "name": "endgame-reply",
+      "state": {
+        "players": [
+          {
+            "id": "p1",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 3,
+                "id": "clubs-3"
+              },
+              {
+                "suit": "hearts",
+                "rank": 3,
+                "id": "hearts-3"
+              },
+              {
+                "suit": "hearts",
+                "rank": 4,
+                "id": "hearts-4"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 11,
+                "id": "diamonds-11"
+              },
+              {
+                "suit": "hearts",
+                "rank": 9,
+                "id": "hearts-9"
+              },
+              {
+                "suit": "hearts",
+                "rank": 12,
+                "id": "hearts-12"
+              },
+              {
+                "suit": "spades",
+                "rank": 9,
+                "id": "spades-9"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 14,
+                  "id": "clubs-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 7,
+                  "id": "clubs-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 4,
+                  "id": "diamonds-4",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 11,
+                  "id": "hearts-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 12,
+                  "id": "diamonds-12",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 13,
+                  "id": "clubs-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 6,
+                  "id": "spades-6",
+                  "isHidden": true
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 3,
+                  "id": "diamonds-3",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 10,
+                  "id": "clubs-10",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 13,
+                  "id": "spades-13",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "spades",
+                  "rank": 12,
+                  "id": "spades-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 5,
+                  "id": "clubs-5",
+                  "isHidden": true
+                },
+                null,
+                {
+                  "suit": "diamonds",
+                  "rank": 9,
+                  "id": "diamonds-9",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 14,
+                  "id": "hearts-14",
+                  "isHidden": false
+                }
+              ]
+            ],
+            "dice": [
+              6,
+              6,
+              5,
+              4,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 3,
+            "bonusesClaimed": 3
+          },
+          {
+            "id": "p2",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 2,
+                "id": "clubs-2"
+              },
+              {
+                "suit": "spades",
+                "rank": 5,
+                "id": "spades-5"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 10,
+                "id": "diamonds-10"
+              },
+              {
+                "suit": "spades",
+                "rank": 10,
+                "id": "spades-10"
+              },
+              {
+                "suit": "clubs",
+                "rank": 11,
+                "id": "clubs-11"
+              },
+              {
+                "suit": "hearts",
+                "rank": 10,
+                "id": "hearts-10"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "hearts",
+                  "rank": 6,
+                  "id": "hearts-6",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 6,
+                  "id": "diamonds-6",
+                  "isHidden": true
+                },
+                {
+                  "suit": "spades",
+                  "rank": 14,
+                  "id": "spades-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 14,
+                  "id": "diamonds-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 9,
+                  "id": "clubs-9",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "hearts",
+                  "rank": 5,
+                  "id": "hearts-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 7,
+                  "id": "spades-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 2,
+                  "id": "hearts-2",
+                  "isHidden": true
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 2,
+                  "id": "diamonds-2",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 8,
+                  "id": "hearts-8",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "spades",
+                  "rank": 4,
+                  "id": "spades-4",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 8,
+                  "id": "clubs-8",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 3,
+                  "id": "spades-3",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 5,
+                  "id": "diamonds-5",
+                  "isHidden": false
+                },
+                null
+              ]
+            ],
+            "dice": [
+              6,
+              6,
+              5,
+              4,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 3,
+            "bonusesClaimed": 2
+          }
+        ],
+        "currentPlayerIndex": 0,
+        "phase": "playing",
+        "deck": [
+          {
+            "suit": "diamonds",
+            "rank": 8,
+            "id": "diamonds-8"
+          },
+          {
+            "suit": "clubs",
+            "rank": 4,
+            "id": "clubs-4"
+          },
+          {
+            "suit": "spades",
+            "rank": 8,
+            "id": "spades-8"
+          },
+          {
+            "suit": "spades",
+            "rank": 2,
+            "id": "spades-2"
+          },
+          {
+            "suit": "clubs",
+            "rank": 6,
+            "id": "clubs-6"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 13,
+            "id": "diamonds-13"
+          },
+          {
+            "suit": "hearts",
+            "rank": 13,
+            "id": "hearts-13"
+          },
+          {
+            "suit": "spades",
+            "rank": 11,
+            "id": "spades-11"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 7,
+            "id": "diamonds-7"
+          },
+          {
+            "suit": "hearts",
+            "rank": 7,
+            "id": "hearts-7"
+          },
+          {
+            "suit": "clubs",
+            "rank": 12,
+            "id": "clubs-12"
+          }
+        ],
+        "turnCount": 29,
+        "winner": null
+      },
+      "seed": 107525001
+    },
+    {
+      "name": "response-bounds",
+      "state": {
+        "players": [
+          {
+            "id": "p1",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 12,
+                "id": "clubs-12"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 4,
+                "id": "diamonds-4"
+              },
+              {
+                "suit": "clubs",
+                "rank": 6,
+                "id": "clubs-6"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 6,
+                "id": "diamonds-6"
+              },
+              {
+                "suit": "hearts",
+                "rank": 12,
+                "id": "hearts-12"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 11,
+                "id": "diamonds-11"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 3,
+                  "id": "diamonds-3",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 12,
+                  "id": "spades-12",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 9,
+                  "id": "hearts-9",
+                  "isHidden": true
+                },
+                {
+                  "suit": "spades",
+                  "rank": 14,
+                  "id": "spades-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 8,
+                  "id": "hearts-8",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 4,
+                  "id": "clubs-4",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 13,
+                  "id": "spades-13",
+                  "isHidden": true
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 9,
+                  "id": "clubs-9",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 2,
+                  "id": "diamonds-2",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 4,
+                  "id": "hearts-4",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "hearts",
+                  "rank": 5,
+                  "id": "hearts-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 11,
+                  "id": "spades-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 9,
+                  "id": "spades-9",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 3,
+                  "id": "spades-3",
+                  "isHidden": false
+                },
+                null
+              ]
+            ],
+            "dice": [
+              3,
+              3,
+              2,
+              2,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 3,
+            "bonusesClaimed": 2
+          },
+          {
+            "id": "p2",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 3,
+                "id": "clubs-3"
+              },
+              {
+                "suit": "spades",
+                "rank": 7,
+                "id": "spades-7"
+              },
+              {
+                "suit": "spades",
+                "rank": 6,
+                "id": "spades-6"
+              },
+              {
+                "suit": "clubs",
+                "rank": 7,
+                "id": "clubs-7"
+              },
+              {
+                "suit": "hearts",
+                "rank": 3,
+                "id": "hearts-3"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 10,
+                "id": "diamonds-10"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 12,
+                "id": "diamonds-12"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 14,
+                  "id": "diamonds-14",
+                  "isHidden": true
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 14,
+                  "id": "clubs-14",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 11,
+                  "id": "hearts-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 14,
+                  "id": "hearts-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 5,
+                  "id": "spades-5",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 13,
+                  "id": "diamonds-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 13,
+                  "id": "clubs-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 10,
+                  "id": "spades-10",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 13,
+                  "id": "hearts-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 5,
+                  "id": "clubs-5",
+                  "isHidden": true
+                }
+              ],
+              [
+                null,
+                {
+                  "suit": "clubs",
+                  "rank": 8,
+                  "id": "clubs-8",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 9,
+                  "id": "diamonds-9",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 7,
+                  "id": "hearts-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 5,
+                  "id": "diamonds-5",
+                  "isHidden": false
+                }
+              ]
+            ],
+            "dice": [
+              3,
+              3,
+              2,
+              2,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 3,
+            "bonusesClaimed": 3
+          }
+        ],
+        "currentPlayerIndex": 1,
+        "phase": "playing",
+        "deck": [
+          {
+            "suit": "spades",
+            "rank": 2,
+            "id": "spades-2"
+          },
+          {
+            "suit": "spades",
+            "rank": 4,
+            "id": "spades-4"
+          },
+          {
+            "suit": "clubs",
+            "rank": 10,
+            "id": "clubs-10"
+          },
+          {
+            "suit": "hearts",
+            "rank": 2,
+            "id": "hearts-2"
+          },
+          {
+            "suit": "spades",
+            "rank": 8,
+            "id": "spades-8"
+          },
+          {
+            "suit": "hearts",
+            "rank": 10,
+            "id": "hearts-10"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 7,
+            "id": "diamonds-7"
+          },
+          {
+            "suit": "clubs",
+            "rank": 11,
+            "id": "clubs-11"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 8,
+            "id": "diamonds-8"
+          },
+          {
+            "suit": "clubs",
+            "rank": 2,
+            "id": "clubs-2"
+          },
+          {
+            "suit": "hearts",
+            "rank": 6,
+            "id": "hearts-6"
+          }
+        ],
+        "turnCount": 29,
+        "winner": null
+      },
+      "seed": 107525001
+    },
+    {
+      "name": "forced-win",
+      "state": {
+        "players": [
+          {
+            "id": "p1",
+            "hand": [
+              {
+                "suit": "hearts",
+                "rank": 13,
+                "id": "hearts-13"
+              },
+              {
+                "suit": "clubs",
+                "rank": 7,
+                "id": "clubs-7"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 13,
+                "id": "diamonds-13"
+              },
+              {
+                "suit": "spades",
+                "rank": 3,
+                "id": "spades-3"
+              },
+              {
+                "suit": "clubs",
+                "rank": 10,
+                "id": "clubs-10"
+              },
+              {
+                "suit": "hearts",
+                "rank": 2,
+                "id": "hearts-2"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 4,
+                  "id": "clubs-4",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 2,
+                  "id": "diamonds-2",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 6,
+                  "id": "hearts-6",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 12,
+                  "id": "spades-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 8,
+                  "id": "hearts-8",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "spades",
+                  "rank": 8,
+                  "id": "spades-8",
+                  "isHidden": true
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 9,
+                  "id": "diamonds-9",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 7,
+                  "id": "spades-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 8,
+                  "id": "diamonds-8",
+                  "isHidden": false
+                },
+                null
+              ],
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 8,
+                  "id": "clubs-8",
+                  "isHidden": true
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 11,
+                  "id": "hearts-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 4,
+                  "id": "diamonds-4",
+                  "isHidden": false
+                },
+                null,
+                null
+              ]
+            ],
+            "dice": [
+              6,
+              5,
+              4,
+              2,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 2,
+            "bonusesClaimed": 2
+          },
+          {
+            "id": "p2",
+            "hand": [
+              {
+                "suit": "clubs",
+                "rank": 2,
+                "id": "clubs-2"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 5,
+                "id": "diamonds-5"
+              },
+              {
+                "suit": "clubs",
+                "rank": 6,
+                "id": "clubs-6"
+              },
+              {
+                "suit": "clubs",
+                "rank": 11,
+                "id": "clubs-11"
+              },
+              {
+                "suit": "hearts",
+                "rank": 7,
+                "id": "hearts-7"
+              },
+              {
+                "suit": "clubs",
+                "rank": 3,
+                "id": "clubs-3"
+              },
+              {
+                "suit": "spades",
+                "rank": 5,
+                "id": "spades-5"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 14,
+                  "id": "diamonds-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 13,
+                  "id": "clubs-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 10,
+                  "id": "hearts-10",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 5,
+                  "id": "clubs-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 9,
+                  "id": "spades-9",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "spades",
+                  "rank": 10,
+                  "id": "spades-10",
+                  "isHidden": false
+                },
+                null,
+                {
+                  "suit": "spades",
+                  "rank": 14,
+                  "id": "spades-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 3,
+                  "id": "hearts-3",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 9,
+                  "id": "clubs-9",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 12,
+                  "id": "clubs-12",
+                  "isHidden": false
+                },
+                null,
+                {
+                  "suit": "diamonds",
+                  "rank": 7,
+                  "id": "diamonds-7",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 6,
+                  "id": "spades-6",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 4,
+                  "id": "spades-4",
+                  "isHidden": false
+                }
+              ]
+            ],
+            "dice": [
+              6,
+              5,
+              4,
+              2,
+              1
+            ],
+            "score": 0,
+            "hiddenCardsCount": 0,
+            "bonusesClaimed": 3
+          }
+        ],
+        "currentPlayerIndex": 0,
+        "phase": "playing",
+        "deck": [
+          {
+            "suit": "hearts",
+            "rank": 14,
+            "id": "hearts-14"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 3,
+            "id": "diamonds-3"
+          },
+          {
+            "suit": "hearts",
+            "rank": 12,
+            "id": "hearts-12"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 10,
+            "id": "diamonds-10"
+          },
+          {
+            "suit": "spades",
+            "rank": 13,
+            "id": "spades-13"
+          },
+          {
+            "suit": "hearts",
+            "rank": 9,
+            "id": "hearts-9"
+          },
+          {
+            "suit": "spades",
+            "rank": 2,
+            "id": "spades-2"
+          },
+          {
+            "suit": "spades",
+            "rank": 11,
+            "id": "spades-11"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 12,
+            "id": "diamonds-12"
+          },
+          {
+            "suit": "hearts",
+            "rank": 5,
+            "id": "hearts-5"
+          },
+          {
+            "suit": "clubs",
+            "rank": 14,
+            "id": "clubs-14"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 6,
+            "id": "diamonds-6"
+          },
+          {
+            "suit": "hearts",
+            "rank": 4,
+            "id": "hearts-4"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 11,
+            "id": "diamonds-11"
+          }
+        ],
+        "turnCount": 26,
+        "winner": null
+      },
+      "seed": 107525001
+    },
+    {
+      "name": "joint-forced-win",
+      "state": {
+        "players": [
+          {
+            "id": "p1",
+            "hand": [
+              {
+                "suit": "spades",
+                "rank": 3,
+                "id": "spades-3"
+              },
+              {
+                "suit": "hearts",
+                "rank": 3,
+                "id": "hearts-3"
+              },
+              {
+                "suit": "clubs",
+                "rank": 9,
+                "id": "clubs-9"
+              },
+              {
+                "suit": "clubs",
+                "rank": 6,
+                "id": "clubs-6"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 11,
+                "id": "diamonds-11"
+              },
+              {
+                "suit": "spades",
+                "rank": 9,
+                "id": "spades-9"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 9,
+                  "id": "diamonds-9",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 12,
+                  "id": "clubs-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 14,
+                  "id": "diamonds-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 5,
+                  "id": "hearts-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 6,
+                  "id": "spades-6",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 8,
+                  "id": "clubs-8",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 13,
+                  "id": "clubs-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 13,
+                  "id": "hearts-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 5,
+                  "id": "clubs-5",
+                  "isHidden": false
+                },
+                null
+              ],
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 10,
+                  "id": "diamonds-10",
+                  "isHidden": false
+                },
+                null,
+                {
+                  "suit": "hearts",
+                  "rank": 12,
+                  "id": "hearts-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 3,
+                  "id": "diamonds-3",
+                  "isHidden": false
+                },
+                null
+              ]
+            ],
+            "dice": [
+              6,
+              5,
+              5,
+              4,
+              2
+            ],
+            "score": 0,
+            "hiddenCardsCount": 0,
+            "bonusesClaimed": 2
+          },
+          {
+            "id": "p2",
+            "hand": [
+              {
+                "suit": "diamonds",
+                "rank": 2,
+                "id": "diamonds-2"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 5,
+                "id": "diamonds-5"
+              },
+              {
+                "suit": "spades",
+                "rank": 10,
+                "id": "spades-10"
+              },
+              {
+                "suit": "hearts",
+                "rank": 4,
+                "id": "hearts-4"
+              },
+              {
+                "suit": "hearts",
+                "rank": 7,
+                "id": "hearts-7"
+              },
+              {
+                "suit": "spades",
+                "rank": 13,
+                "id": "spades-13"
+              },
+              {
+                "suit": "spades",
+                "rank": 8,
+                "id": "spades-8"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "spades",
+                  "rank": 12,
+                  "id": "spades-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 11,
+                  "id": "clubs-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 11,
+                  "id": "spades-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 4,
+                  "id": "spades-4",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 7,
+                  "id": "diamonds-7",
+                  "isHidden": false
+                }
+              ],
+              [
+                null,
+                {
+                  "suit": "diamonds",
+                  "rank": 12,
+                  "id": "diamonds-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 10,
+                  "id": "clubs-10",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 5,
+                  "id": "spades-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 7,
+                  "id": "spades-7",
+                  "isHidden": false
+                }
+              ],
+              [
+                null,
+                {
+                  "suit": "diamonds",
+                  "rank": 13,
+                  "id": "diamonds-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 9,
+                  "id": "hearts-9",
+                  "isHidden": false
+                },
+                null,
+                {
+                  "suit": "clubs",
+                  "rank": 7,
+                  "id": "clubs-7",
+                  "isHidden": false
+                }
+              ]
+            ],
+            "dice": [
+              6,
+              5,
+              5,
+              4,
+              2
+            ],
+            "score": 0,
+            "hiddenCardsCount": 0,
+            "bonusesClaimed": 3
+          }
+        ],
+        "currentPlayerIndex": 1,
+        "phase": "playing",
+        "deck": [
+          {
+            "suit": "clubs",
+            "rank": 2,
+            "id": "clubs-2"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 6,
+            "id": "diamonds-6"
+          },
+          {
+            "suit": "clubs",
+            "rank": 14,
+            "id": "clubs-14"
+          },
+          {
+            "suit": "spades",
+            "rank": 2,
+            "id": "spades-2"
+          },
+          {
+            "suit": "hearts",
+            "rank": 6,
+            "id": "hearts-6"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 4,
+            "id": "diamonds-4"
+          },
+          {
+            "suit": "hearts",
+            "rank": 2,
+            "id": "hearts-2"
+          },
+          {
+            "suit": "clubs",
+            "rank": 4,
+            "id": "clubs-4"
+          },
+          {
+            "suit": "hearts",
+            "rank": 11,
+            "id": "hearts-11"
+          },
+          {
+            "suit": "spades",
+            "rank": 14,
+            "id": "spades-14"
+          },
+          {
+            "suit": "hearts",
+            "rank": 8,
+            "id": "hearts-8"
+          },
+          {
+            "suit": "hearts",
+            "rank": 10,
+            "id": "hearts-10"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 8,
+            "id": "diamonds-8"
+          },
+          {
+            "suit": "clubs",
+            "rank": 3,
+            "id": "clubs-3"
+          },
+          {
+            "suit": "hearts",
+            "rank": 14,
+            "id": "hearts-14"
+          }
+        ],
+        "turnCount": 25,
+        "winner": null
+      },
+      "seed": 107525001
+    },
+    {
+      "name": "shared-four-proof",
+      "state": {
+        "players": [
+          {
+            "id": "p1",
+            "hand": [
+              {
+                "suit": "spades",
+                "rank": 3,
+                "id": "spades-3"
+              },
+              {
+                "suit": "hearts",
+                "rank": 3,
+                "id": "hearts-3"
+              },
+              {
+                "suit": "clubs",
+                "rank": 9,
+                "id": "clubs-9"
+              },
+              {
+                "suit": "clubs",
+                "rank": 6,
+                "id": "clubs-6"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 11,
+                "id": "diamonds-11"
+              },
+              {
+                "suit": "spades",
+                "rank": 9,
+                "id": "spades-9"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 9,
+                  "id": "diamonds-9",
+                  "isHidden": true
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 12,
+                  "id": "clubs-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 14,
+                  "id": "diamonds-14",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 5,
+                  "id": "hearts-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 6,
+                  "id": "spades-6",
+                  "isHidden": false
+                }
+              ],
+              [
+                {
+                  "suit": "clubs",
+                  "rank": 8,
+                  "id": "clubs-8",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 13,
+                  "id": "clubs-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 13,
+                  "id": "hearts-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 5,
+                  "id": "clubs-5",
+                  "isHidden": false
+                },
+                null
+              ],
+              [
+                {
+                  "suit": "diamonds",
+                  "rank": 10,
+                  "id": "diamonds-10",
+                  "isHidden": false
+                },
+                null,
+                {
+                  "suit": "hearts",
+                  "rank": 12,
+                  "id": "hearts-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 3,
+                  "id": "diamonds-3",
+                  "isHidden": false
+                },
+                null
+              ]
+            ],
+            "dice": [
+              6,
+              5,
+              5,
+              4,
+              2
+            ],
+            "score": 0,
+            "hiddenCardsCount": 1,
+            "bonusesClaimed": 2
+          },
+          {
+            "id": "p2",
+            "hand": [
+              {
+                "suit": "diamonds",
+                "rank": 2,
+                "id": "diamonds-2"
+              },
+              {
+                "suit": "diamonds",
+                "rank": 5,
+                "id": "diamonds-5"
+              },
+              {
+                "suit": "spades",
+                "rank": 10,
+                "id": "spades-10"
+              },
+              {
+                "suit": "hearts",
+                "rank": 4,
+                "id": "hearts-4"
+              },
+              {
+                "suit": "hearts",
+                "rank": 7,
+                "id": "hearts-7"
+              },
+              {
+                "suit": "spades",
+                "rank": 13,
+                "id": "spades-13"
+              },
+              {
+                "suit": "spades",
+                "rank": 8,
+                "id": "spades-8"
+              }
+            ],
+            "board": [
+              [
+                {
+                  "suit": "spades",
+                  "rank": 12,
+                  "id": "spades-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 11,
+                  "id": "clubs-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 11,
+                  "id": "spades-11",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 4,
+                  "id": "spades-4",
+                  "isHidden": false
+                },
+                {
+                  "suit": "diamonds",
+                  "rank": 7,
+                  "id": "diamonds-7",
+                  "isHidden": false
+                }
+              ],
+              [
+                null,
+                {
+                  "suit": "diamonds",
+                  "rank": 12,
+                  "id": "diamonds-12",
+                  "isHidden": false
+                },
+                {
+                  "suit": "clubs",
+                  "rank": 10,
+                  "id": "clubs-10",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 5,
+                  "id": "spades-5",
+                  "isHidden": false
+                },
+                {
+                  "suit": "spades",
+                  "rank": 7,
+                  "id": "spades-7",
+                  "isHidden": false
+                }
+              ],
+              [
+                null,
+                {
+                  "suit": "diamonds",
+                  "rank": 13,
+                  "id": "diamonds-13",
+                  "isHidden": false
+                },
+                {
+                  "suit": "hearts",
+                  "rank": 9,
+                  "id": "hearts-9",
+                  "isHidden": false
+                },
+                null,
+                {
+                  "suit": "clubs",
+                  "rank": 7,
+                  "id": "clubs-7",
+                  "isHidden": false
+                }
+              ]
+            ],
+            "dice": [
+              6,
+              5,
+              5,
+              4,
+              2
+            ],
+            "score": 0,
+            "hiddenCardsCount": 0,
+            "bonusesClaimed": 3
+          }
+        ],
+        "currentPlayerIndex": 1,
+        "phase": "playing",
+        "deck": [
+          {
+            "suit": "clubs",
+            "rank": 2,
+            "id": "clubs-2"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 6,
+            "id": "diamonds-6"
+          },
+          {
+            "suit": "clubs",
+            "rank": 14,
+            "id": "clubs-14"
+          },
+          {
+            "suit": "spades",
+            "rank": 2,
+            "id": "spades-2"
+          },
+          {
+            "suit": "hearts",
+            "rank": 6,
+            "id": "hearts-6"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 4,
+            "id": "diamonds-4"
+          },
+          {
+            "suit": "hearts",
+            "rank": 2,
+            "id": "hearts-2"
+          },
+          {
+            "suit": "clubs",
+            "rank": 4,
+            "id": "clubs-4"
+          },
+          {
+            "suit": "hearts",
+            "rank": 11,
+            "id": "hearts-11"
+          },
+          {
+            "suit": "spades",
+            "rank": 14,
+            "id": "spades-14"
+          },
+          {
+            "suit": "hearts",
+            "rank": 8,
+            "id": "hearts-8"
+          },
+          {
+            "suit": "hearts",
+            "rank": 10,
+            "id": "hearts-10"
+          },
+          {
+            "suit": "diamonds",
+            "rank": 8,
+            "id": "diamonds-8"
+          },
+          {
+            "suit": "clubs",
+            "rank": 3,
+            "id": "clubs-3"
+          },
+          {
+            "suit": "hearts",
+            "rank": 14,
+            "id": "hearts-14"
+          }
+        ],
+        "turnCount": 25,
+        "winner": null
+      },
+      "seed": 107525001
+    }
+  ],
+  "rows": [
+    {
+      "case": "endgame",
+      "cap": 0,
+      "history": "baseline",
+      "generation": "a7",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 34.669,
+      "actualElapsedMs": 20.4005,
+      "parentWallElapsedMs": 179.52704429626465,
+      "parentMonotonicElapsedMs": 179.5264579996001
+    },
+    {
+      "case": "endgame",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 34.395,
+      "actualElapsedMs": 20.2495,
+      "parentWallElapsedMs": 123.65484237670898,
+      "parentMonotonicElapsedMs": 123.65429199417122
+    },
+    {
+      "case": "endgame",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 34.145,
+      "actualElapsedMs": 20.41225,
+      "parentWallElapsedMs": 115.3709888458252,
+      "parentMonotonicElapsedMs": 115.36841599445324
+    },
+    {
+      "case": "endgame",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 24.599,
+      "actualElapsedMs": 14.713792,
+      "parentWallElapsedMs": 15.187978744506836,
+      "parentMonotonicElapsedMs": 15.18874999601394
+    },
+    {
+      "case": "endgame",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 16.54,
+      "actualElapsedMs": 13.155666,
+      "parentWallElapsedMs": 13.583183288574219,
+      "parentMonotonicElapsedMs": 13.583791995188221
+    },
+    {
+      "case": "endgame",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:157",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 34.799,
+      "actualElapsedMs": 21.262709,
+      "parentWallElapsedMs": 116.52684211730957,
+      "parentMonotonicElapsedMs": 116.52574999607168
+    },
+    {
+      "case": "endgame",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:157",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 35.384,
+      "actualElapsedMs": 21.200042,
+      "parentWallElapsedMs": 117.53702163696289,
+      "parentMonotonicElapsedMs": 117.53645799763035
+    },
+    {
+      "case": "endgame",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:157",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 20.046,
+      "actualElapsedMs": 13.024709,
+      "parentWallElapsedMs": 13.53597640991211,
+      "parentMonotonicElapsedMs": 13.537042003008537
+    },
+    {
+      "case": "endgame",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 491,
+      "move": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:157",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 38.483,
+      "actualElapsedMs": 15.44625,
+      "parentWallElapsedMs": 15.818119049072266,
+      "parentMonotonicElapsedMs": 15.818250001757406
+    },
+    {
+      "case": "endgame",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 281,
+      "move": {
+        "cardId": "clubs-4",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 907451,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1049,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 6840,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 81.695,
+      "actualElapsedMs": 43.23825,
+      "parentWallElapsedMs": 142.37523078918457,
+      "parentMonotonicElapsedMs": 142.37533300183713
+    },
+    {
+      "case": "endgame",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 281,
+      "move": {
+        "cardId": "clubs-4",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 907451,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1049,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 6840,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 87.414,
+      "actualElapsedMs": 44.473042,
+      "parentWallElapsedMs": 137.04204559326172,
+      "parentMonotonicElapsedMs": 137.04204199893866
+    },
+    {
+      "case": "endgame",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 281,
+      "move": {
+        "cardId": "clubs-4",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 907451,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1049,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 6840,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 103.191,
+      "actualElapsedMs": 36.856709,
+      "parentWallElapsedMs": 37.30010986328125,
+      "parentMonotonicElapsedMs": 37.29979200579692
+    },
+    {
+      "case": "endgame",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 281,
+      "move": {
+        "cardId": "clubs-4",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-12",
+        "colIndex": 0,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 907451,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1049,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 6840,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 54.571,
+      "actualElapsedMs": 35.02175,
+      "parentWallElapsedMs": 35.46476364135742,
+      "parentMonotonicElapsedMs": 35.466166998958215
+    },
+    {
+      "case": "endgame",
+      "history": "original-fresh",
+      "action": 281,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 12,
+        "searchedMoves": 12,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 6840,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792893132032,
+      "wallFinishedMs": 1792893132074,
+      "cpuUserMs": 66.844,
+      "cpuSystemMs": 2.819,
+      "actualElapsedMs": 41.898917,
+      "parentWallElapsedMs": 142.22407341003418,
+      "parentMonotonicElapsedMs": 142.22458300355356
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 0,
+      "history": "baseline",
+      "generation": "a7",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 70.877,
+      "actualElapsedMs": 37.908,
+      "parentWallElapsedMs": 38.48099708557129,
+      "parentMonotonicElapsedMs": 38.48254100012127
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 79.135,
+      "actualElapsedMs": 44.950875,
+      "parentWallElapsedMs": 148.61583709716797,
+      "parentMonotonicElapsedMs": 148.61783299420495
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 76.519,
+      "actualElapsedMs": 44.453458,
+      "parentWallElapsedMs": 149.80697631835938,
+      "parentMonotonicElapsedMs": 149.81024998996872
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 52.768,
+      "actualElapsedMs": 33.092333,
+      "parentWallElapsedMs": 33.64300727844238,
+      "parentMonotonicElapsedMs": 33.64324998983648
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 57.166,
+      "actualElapsedMs": 33.711541,
+      "parentWallElapsedMs": 34.32869911193848,
+      "parentMonotonicElapsedMs": 34.32883300411049
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 92.339,
+      "actualElapsedMs": 52.57175,
+      "parentWallElapsedMs": 163.58017921447754,
+      "parentMonotonicElapsedMs": 163.5830419982085
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 82.672,
+      "actualElapsedMs": 47.73525,
+      "parentWallElapsedMs": 158.3547592163086,
+      "parentMonotonicElapsedMs": 158.35687499202322
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 60.444,
+      "actualElapsedMs": 36.772667,
+      "parentWallElapsedMs": 37.41621971130371,
+      "parentMonotonicElapsedMs": 37.416250008391216
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 224,
+      "move": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 54.293,
+      "actualElapsedMs": 33.739291,
+      "parentWallElapsedMs": 34.27314758300781,
+      "parentMonotonicElapsedMs": 34.27358399494551
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 74,
+      "move": {
+        "cardId": "hearts-9",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 17481106,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1419,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 507.949,
+      "actualElapsedMs": 361.964875,
+      "parentWallElapsedMs": 473.82187843322754,
+      "parentMonotonicElapsedMs": 473.8243330066325
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 74,
+      "move": {
+        "cardId": "hearts-9",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 17481106,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1419,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 507.208,
+      "actualElapsedMs": 361.246167,
+      "parentWallElapsedMs": 474.560022354126,
+      "parentMonotonicElapsedMs": 474.5629579992965
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 74,
+      "move": {
+        "cardId": "hearts-9",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 17481106,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1419,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 452.931,
+      "actualElapsedMs": 335.526458,
+      "parentWallElapsedMs": 336.29417419433594,
+      "parentMonotonicElapsedMs": 336.2956249911804
+    },
+    {
+      "case": "endgame-reply",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 74,
+      "move": {
+        "cardId": "hearts-9",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-11",
+        "colIndex": 2,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 17481106,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1419,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 327.303,
+      "actualElapsedMs": 297.754625,
+      "parentWallElapsedMs": 298.19297790527344,
+      "parentMonotonicElapsedMs": 298.19408401090186
+    },
+    {
+      "case": "endgame-reply",
+      "history": "original-fresh",
+      "action": 74,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792893134661,
+      "wallFinishedMs": 1792893134925,
+      "cpuUserMs": 358.747,
+      "cpuSystemMs": 4.868,
+      "actualElapsedMs": 263.834708,
+      "parentWallElapsedMs": 366.0159111022949,
+      "parentMonotonicElapsedMs": 366.019207998761
+    },
+    {
+      "case": "response-bounds",
+      "cap": 0,
+      "history": "baseline",
+      "generation": "a7",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 41.423,
+      "actualElapsedMs": 26.419,
+      "parentWallElapsedMs": 26.98516845703125,
+      "parentMonotonicElapsedMs": 26.985332995536737
+    },
+    {
+      "case": "response-bounds",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 80.3,
+      "actualElapsedMs": 46.892292,
+      "parentWallElapsedMs": 200.9599208831787,
+      "parentMonotonicElapsedMs": 200.96270799695048
+    },
+    {
+      "case": "response-bounds",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 80.208,
+      "actualElapsedMs": 45.764791,
+      "parentWallElapsedMs": 159.9140167236328,
+      "parentMonotonicElapsedMs": 159.9170829867944
+    },
+    {
+      "case": "response-bounds",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 52.601,
+      "actualElapsedMs": 28.848875,
+      "parentWallElapsedMs": 29.430866241455078,
+      "parentMonotonicElapsedMs": 29.43141599826049
+    },
+    {
+      "case": "response-bounds",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 43.899,
+      "actualElapsedMs": 27.915959,
+      "parentWallElapsedMs": 28.316974639892578,
+      "parentMonotonicElapsedMs": 28.317666001385078
+    },
+    {
+      "case": "response-bounds",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 76.344,
+      "actualElapsedMs": 44.742291,
+      "parentWallElapsedMs": 158.00786018371582,
+      "parentMonotonicElapsedMs": 158.01012500014622
+    },
+    {
+      "case": "response-bounds",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 73.208,
+      "actualElapsedMs": 43.006166,
+      "parentWallElapsedMs": 145.13206481933594,
+      "parentMonotonicElapsedMs": 145.13420799630694
+    },
+    {
+      "case": "response-bounds",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 51.646,
+      "actualElapsedMs": 25.525584,
+      "parentWallElapsedMs": 25.937795639038086,
+      "parentMonotonicElapsedMs": 25.937999991583638
+    },
+    {
+      "case": "response-bounds",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 230,
+      "move": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "certificateKnowledge:24",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 24.363,
+      "actualElapsedMs": 22.997042,
+      "parentWallElapsedMs": 23.359060287475586,
+      "parentMonotonicElapsedMs": 23.360582999885082
+    },
+    {
+      "case": "response-bounds",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 430,
+      "move": {
+        "cardId": "spades-6",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 17127127,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "responses",
+          "status": "returned",
+          "used": 17510275,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1419,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 723.544,
+      "actualElapsedMs": 562.001541,
+      "parentWallElapsedMs": 663.4900569915771,
+      "parentMonotonicElapsedMs": 663.4932500019204
+    },
+    {
+      "case": "response-bounds",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 430,
+      "move": {
+        "cardId": "spades-6",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 17127127,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "responses",
+          "status": "returned",
+          "used": 17510275,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1419,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 677.091,
+      "actualElapsedMs": 527.228125,
+      "parentWallElapsedMs": 619.5797920227051,
+      "parentMonotonicElapsedMs": 619.582667000941
+    },
+    {
+      "case": "response-bounds",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 430,
+      "move": {
+        "cardId": "spades-6",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 17127127,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "responses",
+          "status": "returned",
+          "used": 17510275,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1419,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 561.548,
+      "actualElapsedMs": 490.000583,
+      "parentWallElapsedMs": 490.4599189758301,
+      "parentMonotonicElapsedMs": 490.4614590050187
+    },
+    {
+      "case": "response-bounds",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 430,
+      "move": {
+        "cardId": "spades-6",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-12",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 17127127,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "responses",
+          "status": "returned",
+          "used": 17510275,
+          "exhaustedAt": "",
+          "hasResult": true
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 1419,
+          "exhaustedAt": "",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 481.81,
+      "actualElapsedMs": 462.1215,
+      "parentWallElapsedMs": 462.4590873718262,
+      "parentMonotonicElapsedMs": 462.46020900434814
+    },
+    {
+      "case": "response-bounds",
+      "history": "original-fresh",
+      "action": 430,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 7,
+        "searchedMoves": 7,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 116280,
+        "usedDominanceOverride": true,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792893138152,
+      "wallFinishedMs": 1792893138587,
+      "cpuUserMs": 559.178,
+      "cpuSystemMs": 7.622,
+      "actualElapsedMs": 434.558959,
+      "parentWallElapsedMs": 521.5778350830078,
+      "parentMonotonicElapsedMs": 521.579833002761
+    },
+    {
+      "case": "forced-win",
+      "cap": 0,
+      "history": "baseline",
+      "generation": "a7",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 329.196,
+      "actualElapsedMs": 201.359792,
+      "parentWallElapsedMs": 201.81584358215332,
+      "parentMonotonicElapsedMs": 201.81662500544917
+    },
+    {
+      "case": "forced-win",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 526.391,
+      "actualElapsedMs": 285.553958,
+      "parentWallElapsedMs": 383.93616676330566,
+      "parentMonotonicElapsedMs": 383.93837500188965
+    },
+    {
+      "case": "forced-win",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 528.664,
+      "actualElapsedMs": 286.794875,
+      "parentWallElapsedMs": 391.25609397888184,
+      "parentMonotonicElapsedMs": 391.2588329985738
+    },
+    {
+      "case": "forced-win",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 278.529,
+      "actualElapsedMs": 201.936667,
+      "parentWallElapsedMs": 202.53705978393555,
+      "parentMonotonicElapsedMs": 202.5379169936059
+    },
+    {
+      "case": "forced-win",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 213.415,
+      "actualElapsedMs": 169.321709,
+      "parentWallElapsedMs": 169.68393325805664,
+      "parentMonotonicElapsedMs": 169.6846670092782
+    },
+    {
+      "case": "forced-win",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 523.685,
+      "actualElapsedMs": 286.924375,
+      "parentWallElapsedMs": 395.8437442779541,
+      "parentMonotonicElapsedMs": 395.84683399880305
+    },
+    {
+      "case": "forced-win",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 529.685,
+      "actualElapsedMs": 288.803792,
+      "parentWallElapsedMs": 400.0849723815918,
+      "parentMonotonicElapsedMs": 400.08845800184645
+    },
+    {
+      "case": "forced-win",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 171.258,
+      "actualElapsedMs": 159.757333,
+      "parentWallElapsedMs": 160.15219688415527,
+      "parentMonotonicElapsedMs": 160.1534579967847
+    },
+    {
+      "case": "forced-win",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 248,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:5",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 201.244,
+      "actualElapsedMs": 174.968791,
+      "parentWallElapsedMs": 175.31800270080566,
+      "parentMonotonicElapsedMs": 175.3185410052538
+    },
+    {
+      "case": "forced-win",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 246,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 3,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 21248,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 485.394,
+      "actualElapsedMs": 263.874792,
+      "parentWallElapsedMs": 360.9459400177002,
+      "parentMonotonicElapsedMs": 360.9489999944344
+    },
+    {
+      "case": "forced-win",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 246,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 3,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 21248,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 488.231,
+      "actualElapsedMs": 264.075166,
+      "parentWallElapsedMs": 362.67971992492676,
+      "parentMonotonicElapsedMs": 362.6826660038205
+    },
+    {
+      "case": "forced-win",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 246,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 3,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 21248,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 185.205,
+      "actualElapsedMs": 163.231541,
+      "parentWallElapsedMs": 163.6958122253418,
+      "parentMonotonicElapsedMs": 163.69616601150483
+    },
+    {
+      "case": "forced-win",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 246,
+      "move": {
+        "cardId": "diamonds-13",
+        "colIndex": 3,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "diamonds-13",
+        "colIndex": 4,
+        "isHidden": false
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 21248,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 164.063,
+      "actualElapsedMs": 157.573792,
+      "parentWallElapsedMs": 158.04314613342285,
+      "parentMonotonicElapsedMs": 158.04349999234546
+    },
+    {
+      "case": "forced-win",
+      "history": "original-fresh",
+      "action": 246,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 24,
+        "searchedMoves": 24,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792893142328,
+      "wallFinishedMs": 1792893142588,
+      "cpuUserMs": 453.587,
+      "cpuSystemMs": 9.544,
+      "actualElapsedMs": 260.176084,
+      "parentWallElapsedMs": 360.6700897216797,
+      "parentMonotonicElapsedMs": 360.67275000095833
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 0,
+      "history": "baseline",
+      "generation": "a7",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 367.9,
+      "actualElapsedMs": 272.113875,
+      "parentWallElapsedMs": 272.5698947906494,
+      "parentMonotonicElapsedMs": 272.57083299627993
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 781.314,
+      "actualElapsedMs": 432.590625,
+      "parentWallElapsedMs": 533.9138507843018,
+      "parentMonotonicElapsedMs": 533.91745800036
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 884.248,
+      "actualElapsedMs": 488.133333,
+      "parentWallElapsedMs": 609.2910766601562,
+      "parentMonotonicElapsedMs": 609.2937909998
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 380.268,
+      "actualElapsedMs": 347.072583,
+      "parentWallElapsedMs": 347.5658893585205,
+      "parentMonotonicElapsedMs": 347.5682499993127
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 371.422,
+      "actualElapsedMs": 400.06625,
+      "parentWallElapsedMs": 400.61092376708984,
+      "parentMonotonicElapsedMs": 400.61262498784345
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:51",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 861.497,
+      "actualElapsedMs": 478.509875,
+      "parentWallElapsedMs": 622.3459243774414,
+      "parentMonotonicElapsedMs": 622.3479170002975
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:51",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 976.574,
+      "actualElapsedMs": 783.965958,
+      "parentWallElapsedMs": 898.6110687255859,
+      "parentMonotonicElapsedMs": 898.616165999556
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:51",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 380.622,
+      "actualElapsedMs": 437.428667,
+      "parentWallElapsedMs": 438.1723403930664,
+      "parentMonotonicElapsedMs": 438.1737920048181
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:51",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 302.539,
+      "actualElapsedMs": 332.138458,
+      "parentWallElapsedMs": 332.5459957122803,
+      "parentMonotonicElapsedMs": 332.54725000006147
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 470,
+      "move": {
+        "cardId": "spades-10",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 649193,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 870.408,
+      "actualElapsedMs": 506.498708,
+      "parentWallElapsedMs": 617.1109676361084,
+      "parentMonotonicElapsedMs": 617.1149169967975
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 470,
+      "move": {
+        "cardId": "spades-10",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 649193,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 816.089,
+      "actualElapsedMs": 438.87325,
+      "parentWallElapsedMs": 548.8560199737549,
+      "parentMonotonicElapsedMs": 548.8595839997288
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 470,
+      "move": {
+        "cardId": "spades-10",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 649193,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 328.12,
+      "actualElapsedMs": 317.076958,
+      "parentWallElapsedMs": 317.50988960266113,
+      "parentMonotonicElapsedMs": 317.5113340112148
+    },
+    {
+      "case": "joint-forced-win",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 470,
+      "move": {
+        "cardId": "spades-10",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 649193,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 350.619,
+      "actualElapsedMs": 404.973084,
+      "parentWallElapsedMs": 405.60317039489746,
+      "parentMonotonicElapsedMs": 405.62049999425653
+    },
+    {
+      "case": "joint-forced-win",
+      "history": "original-fresh",
+      "action": 470,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792893149278,
+      "wallFinishedMs": 1792893150133,
+      "cpuUserMs": 1065.776,
+      "cpuSystemMs": 40.981,
+      "actualElapsedMs": 854.942625,
+      "parentWallElapsedMs": 1018.4581279754639,
+      "parentMonotonicElapsedMs": 1018.4610830037855
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 0,
+      "history": "baseline",
+      "generation": "a7",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 437.688,
+      "actualElapsedMs": 428.250792,
+      "parentWallElapsedMs": 429.0318489074707,
+      "parentMonotonicElapsedMs": 429.033458000049
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 856.463,
+      "actualElapsedMs": 488.472875,
+      "parentWallElapsedMs": 617.3179149627686,
+      "parentMonotonicElapsedMs": 617.3210830020253
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 0,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 1185.631,
+      "actualElapsedMs": 680.502292,
+      "parentWallElapsedMs": 829.9226760864258,
+      "parentMonotonicElapsedMs": 829.9265410023509
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 349.899,
+      "actualElapsedMs": 312.228542,
+      "parentWallElapsedMs": 312.816858291626,
+      "parentMonotonicElapsedMs": 312.8181670035701
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 0,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "endgame:31",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 0,
+          "exhaustedAt": "forcedWin:46",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 270.139,
+      "actualElapsedMs": 270.462125,
+      "parentWallElapsedMs": 270.91288566589355,
+      "parentMonotonicElapsedMs": 270.91462499811314
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:21",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 1211.322,
+      "actualElapsedMs": 671.26975,
+      "parentWallElapsedMs": 812.7861022949219,
+      "parentMonotonicElapsedMs": 812.7888339950005
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 1000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:21",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 1252.574,
+      "actualElapsedMs": 685.615375,
+      "parentWallElapsedMs": 862.79296875,
+      "parentMonotonicElapsedMs": 862.7961660095025
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:21",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 346.61,
+      "actualElapsedMs": 340.680959,
+      "parentWallElapsedMs": 341.17698669433594,
+      "parentMonotonicElapsedMs": 341.17766699637286
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 1000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 507,
+      "move": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "incomplete",
+          "used": 1000,
+          "exhaustedAt": "evaluation:21",
+          "hasResult": false
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 0,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 352.907,
+      "actualElapsedMs": 355.945709,
+      "parentWallElapsedMs": 356.5101623535156,
+      "parentMonotonicElapsedMs": 356.51191699435003
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 470,
+      "move": {
+        "cardId": "spades-10",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 428507,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 1311.881,
+      "actualElapsedMs": 770.416083,
+      "parentWallElapsedMs": 1230.0388813018799,
+      "parentMonotonicElapsedMs": 1230.0417920050677
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 20000000,
+      "history": "fresh",
+      "generation": "a9",
+      "action": 470,
+      "move": {
+        "cardId": "spades-10",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 428507,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 927.987,
+      "actualElapsedMs": 507.992625,
+      "parentWallElapsedMs": 639.1110420227051,
+      "parentMonotonicElapsedMs": 639.1131249984028
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 470,
+      "move": {
+        "cardId": "spades-10",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 428507,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 277.045,
+      "actualElapsedMs": 268.060667,
+      "parentWallElapsedMs": 268.4950828552246,
+      "parentMonotonicElapsedMs": 268.49562500137836
+    },
+    {
+      "case": "shared-four-proof",
+      "cap": 20000000,
+      "history": "reuse",
+      "generation": "a9",
+      "action": 470,
+      "move": {
+        "cardId": "spades-10",
+        "colIndex": 0,
+        "isHidden": false
+      },
+      "baseline": {
+        "cardId": "spades-13",
+        "colIndex": 3,
+        "isHidden": true
+      },
+      "proofs": [
+        {
+          "method": "final",
+          "status": "returned",
+          "used": 16,
+          "exhaustedAt": "",
+          "hasResult": false
+        },
+        {
+          "method": "forced",
+          "status": "returned",
+          "used": 428507,
+          "exhaustedAt": "",
+          "hasResult": true
+        }
+      ],
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "cpuMs": 255.871,
+      "actualElapsedMs": 248.708416,
+      "parentWallElapsedMs": 249.12714958190918,
+      "parentMonotonicElapsedMs": 249.12779100122862
+    },
+    {
+      "case": "shared-four-proof",
+      "history": "original-fresh",
+      "action": 470,
+      "diagnostics": {
+        "elapsedMs": 0,
+        "legalMoves": 28,
+        "searchedMoves": 28,
+        "completedBeliefSamples": 64,
+        "usedRollout": true,
+        "exactEndgameWorlds": 0,
+        "usedDominanceOverride": false,
+        "forcedWinPlanLength": 3,
+        "usedForcedWinContinuation": false
+      },
+      "wallStartedMs": 1792893157647,
+      "wallFinishedMs": 1792893158105,
+      "cpuUserMs": 794.771,
+      "cpuSystemMs": 15.549,
+      "actualElapsedMs": 457.204958,
+      "parentWallElapsedMs": 563.8360977172852,
+      "parentMonotonicElapsedMs": 563.8393330009421
+    }
+  ]
+}
