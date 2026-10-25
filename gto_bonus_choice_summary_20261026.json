@@ -1,0 +1,70 @@
+{
+  "input_sha256": "3f41d318ac6859243acb9cff9bcbe0442d4155da082d7ab9d247795f74501356",
+  "roots": 8,
+  "continuations": 16,
+  "moves": 288,
+  "null_decisions": 24,
+  "continuation_decisions": 272,
+  "proof_calls": 592,
+  "incomplete_proofs": 16,
+  "groups": {
+    "selection": {
+      "roots": 4,
+      "pairs": [
+        {
+          "seed": 1488980517,
+          "utility_bonus_minus_defer": 0.5,
+          "score_margin_bonus_minus_defer": 5.5
+        },
+        {
+          "seed": 1489085246,
+          "utility_bonus_minus_defer": 1.0,
+          "score_margin_bonus_minus_defer": 10.0
+        }
+      ],
+      "utilities": {
+        "bonus": [
+          0.0,
+          -1.0,
+          -1.0,
+          1.0
+        ],
+        "defer": [
+          -1.0,
+          -1.0,
+          -1.0,
+          -1.0
+        ]
+      }
+    },
+    "confirmation": {
+      "roots": 4,
+      "pairs": [
+        {
+          "seed": 1489818349,
+          "utility_bonus_minus_defer": -2.0,
+          "score_margin_bonus_minus_defer": -9.5
+        },
+        {
+          "seed": 1489923078,
+          "utility_bonus_minus_defer": 0.0,
+          "score_margin_bonus_minus_defer": 2.0
+        }
+      ],
+      "utilities": {
+        "bonus": [
+          -1.0,
+          -1.0,
+          -1.0,
+          -1.0
+        ],
+        "defer": [
+          1.0,
+          1.0,
+          -1.0,
+          -1.0
+        ]
+      }
+    }
+  }
+}
