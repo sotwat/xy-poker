@@ -1,0 +1,146 @@
+{
+  "complete": true,
+  "scope": "Diagnostic proof harness only; not A9 integration, full-game bound, or strength evaluation",
+  "manifest": {
+    "unit": "function entry or loop iteration; not CPU instructions or nodes",
+    "files": {
+      "src/logic/endgame.ts": {
+        "sha256": "1914fec70b72ce557358bef70669ddde99f58d06eafe5a908c12b8e98d602c51",
+        "functionSites": 44,
+        "loopSites": 4
+      },
+      "src/logic/forcedWin.ts": {
+        "sha256": "77511e353befbfa6da54da30f7ed16c75fe014113c286167cd720bcd92638dc7",
+        "functionSites": 29,
+        "loopSites": 9
+      },
+      "src/logic/jointForcedWin.ts": {
+        "sha256": "bf4f6ec5139fd782f15e5a0bd22bed47dc3ce3f2e0167d08416f48752b678ef6",
+        "functionSites": 27,
+        "loopSites": 8
+      },
+      "src/logic/sharedCardProof.ts": {
+        "sha256": "c9fa4e980710d79b446d288b69b382ac7503edbc7a3cf80e68b0384fd692e82b",
+        "functionSites": 53,
+        "loopSites": 10
+      },
+      "src/logic/certificateKnowledge.ts": {
+        "sha256": "b5eb4c3c57706ae0c9fe4e3085b03fd0750ad0311e612e2674fa83073cb9974e",
+        "functionSites": 13,
+        "loopSites": 0
+      },
+      "src/logic/deck.ts": {
+        "sha256": "504fadd30cef8a2f3c78a6f3d92922e10f7b54c1cb5392a3c0cf3748f212aea0",
+        "functionSites": 3,
+        "loopSites": 3
+      },
+      "src/logic/evaluation.ts": {
+        "sha256": "f4eae893683f513780287e1149b20c5313581ebdd166f3012aa92bae0aef079e",
+        "functionSites": 30,
+        "loopSites": 1
+      },
+      "src/logic/scoring.ts": {
+        "sha256": "25595feb8d46d9765ac437a38e3bc3effed85ffc93fc88f1efc4010746d6e86d",
+        "functionSites": 2,
+        "loopSites": 1
+      },
+      "src/logic/types.ts": {
+        "sha256": "7d077c0b8ad291a66c3396e2ad428a1b119699f2c7f9c795efb6ef28bad7f1db",
+        "functionSites": 0,
+        "loopSites": 0
+      }
+    }
+  },
+  "rows": [
+    {
+      "fixture": "endgame",
+      "work": 907451,
+      "proofMethod": "final-enumeration",
+      "worlds": 6840,
+      "cpuMs": 141.684,
+      "elapsedMs": 77.905167,
+      "checks": [
+        "original-parity",
+        "exact-boundary",
+        "zero-one-half-minus-one-incomplete",
+        "repeat",
+        "input-preserved"
+      ]
+    },
+    {
+      "fixture": "endgame-reply",
+      "work": 17864254,
+      "proofMethod": "final-enumeration",
+      "worlds": 116280,
+      "cpuMs": 1038.42,
+      "elapsedMs": 955.533708,
+      "checks": [
+        "original-parity",
+        "exact-boundary",
+        "zero-one-half-minus-one-incomplete",
+        "repeat",
+        "input-preserved"
+      ]
+    },
+    {
+      "fixture": "response-bounds",
+      "work": 17510275,
+      "proofMethod": "final-enumeration",
+      "worlds": 116280,
+      "cpuMs": 959.541,
+      "elapsedMs": 951.500417,
+      "checks": [
+        "original-parity",
+        "exact-boundary",
+        "zero-one-half-minus-one-incomplete",
+        "repeat",
+        "input-preserved"
+      ]
+    },
+    {
+      "fixture": "forced-win",
+      "work": 21248,
+      "proofMethod": "independent-hands",
+      "worlds": null,
+      "cpuMs": 11.277,
+      "elapsedMs": 5.59925,
+      "checks": [
+        "original-parity",
+        "exact-boundary",
+        "zero-one-half-minus-one-incomplete",
+        "repeat",
+        "input-preserved"
+      ]
+    },
+    {
+      "fixture": "joint-forced-win",
+      "work": 649193,
+      "proofMethod": "joint-completions",
+      "worlds": null,
+      "cpuMs": 245.812,
+      "elapsedMs": 110.638292,
+      "checks": [
+        "original-parity",
+        "exact-boundary",
+        "zero-one-half-minus-one-incomplete",
+        "repeat",
+        "input-preserved"
+      ]
+    },
+    {
+      "fixture": "shared-four-proof",
+      "work": 428507,
+      "proofMethod": "joint-branches",
+      "worlds": null,
+      "cpuMs": 82.71,
+      "elapsedMs": 40.729375,
+      "checks": [
+        "original-parity",
+        "exact-boundary",
+        "zero-one-half-minus-one-incomplete",
+        "repeat",
+        "input-preserved"
+      ]
+    }
+  ]
+}
