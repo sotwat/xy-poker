@@ -1,0 +1,2919 @@
+{
+  "input_sha256": "b8f1bebf8480d986c5820d0f34ed0a157daafbd22a8ee991e8a77f599db945d8",
+  "scope": "Post-hoc accounting of existing 16 continuations; no new games, selection or strength evidence",
+  "productionChanged": false,
+  "newAiCalls": 0,
+  "groups": {
+    "selection": {
+      "roots": 4,
+      "rootBonusUsed": 3,
+      "targetColumnWins": [
+        0,
+        3
+      ],
+      "actorYMargin": [
+        -2,
+        4
+      ],
+      "actorXMargin": [
+        -2,
+        -14
+      ]
+    },
+    "confirmation": {
+      "roots": 4,
+      "rootBonusUsed": 4,
+      "targetColumnWins": [
+        0,
+        0
+      ],
+      "actorYMargin": [
+        -40,
+        -46
+      ],
+      "actorXMargin": [
+        5,
+        16
+      ]
+    }
+  },
+  "rows": [
+    {
+      "group": "selection",
+      "seed": 1528358621,
+      "mirror": false,
+      "actor": 0,
+      "prefix": 17,
+      "targetColumn": 2,
+      "arms": [
+        {
+          "mode": "bonus",
+          "x": [
+            2,
+            8
+          ],
+          "y": [
+            10,
+            7
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    11,
+                    6
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    12,
+                    4,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 4,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 4,
+                  "rankValue": 6,
+                  "kickers": [
+                    5
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 4,
+                  "rankValue": 6,
+                  "kickers": [
+                    14
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 3,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    8,
+                    3
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    13,
+                    4
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    8,
+                    7
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    11,
+                    10,
+                    5
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "Straight",
+                  "score": 2,
+                  "rankValue": 3,
+                  "kickers": [
+                    10
+                  ]
+                },
+                {
+                  "type": "OnePair",
+                  "score": 2,
+                  "rankValue": 2,
+                  "kickers": [
+                    9,
+                    7
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 2,
+              "card": "hearts-9",
+              "move": 0,
+              "playedAt": 8
+            },
+            {
+              "seat": 1,
+              "col": 3,
+              "card": "hearts-6",
+              "move": 1,
+              "playedAt": null
+            },
+            {
+              "seat": 0,
+              "col": 1,
+              "card": "hearts-2",
+              "move": 6,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 4,
+              "card": "spades-8",
+              "move": 7,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": 8,
+          "targetColumnBonusOwner": 0,
+          "targetColumnActorWins": false
+        },
+        {
+          "mode": "defer",
+          "x": [
+            2,
+            4
+          ],
+          "y": [
+            11,
+            6
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    11,
+                    6
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    12,
+                    4,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 4,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    8,
+                    5
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 4,
+                  "rankValue": 5,
+                  "kickers": [
+                    12,
+                    7,
+                    4
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 3,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    9,
+                    3
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    7,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 3,
+                  "rankValue": 6,
+                  "kickers": [
+                    8
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    10,
+                    5,
+                    4
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 2,
+                  "rankValue": 4,
+                  "kickers": [
+                    10,
+                    8
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 2,
+                  "rankValue": 6,
+                  "kickers": [
+                    9
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 2,
+              "card": "hearts-6",
+              "move": 2,
+              "playedAt": 10
+            },
+            {
+              "seat": 0,
+              "col": 4,
+              "card": "clubs-13",
+              "move": 4,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 1,
+              "card": "diamonds-7",
+              "move": 7,
+              "playedAt": 11
+            },
+            {
+              "seat": 0,
+              "col": 3,
+              "card": "spades-5",
+              "move": 10,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 0,
+          "targetColumnActorWins": true
+        }
+      ]
+    },
+    {
+      "group": "selection",
+      "seed": 1528358621,
+      "mirror": true,
+      "actor": 1,
+      "prefix": 17,
+      "targetColumn": 2,
+      "arms": [
+        {
+          "mode": "bonus",
+          "x": [
+            2,
+            3
+          ],
+          "y": [
+            5,
+            12
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    12,
+                    4,
+                    3
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    11,
+                    6
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 4,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    12,
+                    11,
+                    9
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    7,
+                    5
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 3,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    7,
+                    3
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    8,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    10,
+                    5
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    4,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 2,
+                  "rankValue": 5,
+                  "kickers": [
+                    9,
+                    7,
+                    5
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 2,
+                  "rankValue": 4,
+                  "kickers": [
+                    10,
+                    8
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 1,
+              "col": 2,
+              "card": "hearts-9",
+              "move": 0,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 4,
+              "card": "clubs-13",
+              "move": 4,
+              "playedAt": 10
+            },
+            {
+              "seat": 0,
+              "col": 3,
+              "card": "diamonds-9",
+              "move": 5,
+              "playedAt": 13
+            },
+            {
+              "seat": 1,
+              "col": 1,
+              "card": "clubs-11",
+              "move": 12,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": false
+        },
+        {
+          "mode": "defer",
+          "x": [
+            4,
+            2
+          ],
+          "y": [
+            4,
+            13
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    12,
+                    4,
+                    3
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    11,
+                    6
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 4,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 4,
+                  "rankValue": 5,
+                  "kickers": [
+                    12,
+                    7,
+                    4
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    8,
+                    5
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 3,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    7,
+                    3
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    9,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    11,
+                    10,
+                    5
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    8,
+                    7
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    11,
+                    9,
+                    8
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 2,
+                  "rankValue": 4,
+                  "kickers": [
+                    10,
+                    8
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 3,
+              "card": "clubs-4",
+              "move": 1,
+              "playedAt": 3
+            },
+            {
+              "seat": 1,
+              "col": 4,
+              "card": "clubs-13",
+              "move": 4,
+              "playedAt": null
+            },
+            {
+              "seat": 0,
+              "col": 1,
+              "card": "diamonds-9",
+              "move": 5,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 2,
+              "card": "spades-14",
+              "move": 8,
+              "playedAt": 12
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": true
+        }
+      ]
+    },
+    {
+      "group": "selection",
+      "seed": 1528463350,
+      "mirror": false,
+      "actor": 1,
+      "prefix": 17,
+      "targetColumn": 1,
+      "arms": [
+        {
+          "mode": "bonus",
+          "x": [
+            4,
+            6
+          ],
+          "y": [
+            13,
+            7
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    12,
+                    9
+                  ]
+                },
+                {
+                  "type": "OnePair",
+                  "score": 5,
+                  "rankValue": 2,
+                  "kickers": [
+                    14,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 5,
+                  "rankValue": 6,
+                  "kickers": [
+                    11
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    6,
+                    2
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 5,
+                  "rankValue": 6,
+                  "kickers": [
+                    12
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    4,
+                    6
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 3,
+                  "rankValue": 6,
+                  "kickers": [
+                    6
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    10,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    4,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    8,
+                    5
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 1,
+              "col": 1,
+              "card": "diamonds-14",
+              "move": 0,
+              "playedAt": 2
+            },
+            {
+              "seat": 0,
+              "col": 2,
+              "card": "hearts-7",
+              "move": 5,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 3,
+              "card": "clubs-14",
+              "move": 6,
+              "playedAt": 10
+            }
+          ],
+          "rootBonusPlayedAt": 2,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": false
+        },
+        {
+          "mode": "defer",
+          "x": [
+            6,
+            2
+          ],
+          "y": [
+            10,
+            10
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    12,
+                    9
+                  ]
+                },
+                {
+                  "type": "OnePair",
+                  "score": 5,
+                  "rankValue": 2,
+                  "kickers": [
+                    14,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "Straight",
+                  "score": 5,
+                  "rankValue": 3,
+                  "kickers": [
+                    12
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    9,
+                    6
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 5,
+                  "rankValue": 6,
+                  "kickers": [
+                    12
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    14,
+                    6
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 3,
+                  "rankValue": 6,
+                  "kickers": [
+                    8
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    10,
+                    8,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    4,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    8,
+                    5,
+                    2
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 2,
+              "card": "spades-4",
+              "move": 3,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 3,
+              "card": "hearts-13",
+              "move": 6,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 1,
+              "card": "spades-6",
+              "move": 12,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": true
+        }
+      ]
+    },
+    {
+      "group": "selection",
+      "seed": 1528463350,
+      "mirror": true,
+      "actor": 0,
+      "prefix": 17,
+      "targetColumn": 1,
+      "arms": [
+        {
+          "mode": "bonus",
+          "x": [
+            3,
+            2
+          ],
+          "y": [
+            7,
+            13
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "OnePair",
+                  "score": 5,
+                  "rankValue": 2,
+                  "kickers": [
+                    14,
+                    3
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    12,
+                    9
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    6,
+                    2
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 5,
+                  "rankValue": 6,
+                  "kickers": [
+                    11
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    14,
+                    6
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 5,
+                  "rankValue": 6,
+                  "kickers": [
+                    12
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 3,
+                  "rankValue": 6,
+                  "kickers": [
+                    5
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 3,
+                  "rankValue": 6,
+                  "kickers": [
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 2,
+                  "rankValue": 4,
+                  "kickers": [
+                    8,
+                    5
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    4,
+                    2
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 1,
+              "card": "diamonds-14",
+              "move": 0,
+              "playedAt": 12
+            },
+            {
+              "seat": 1,
+              "col": 2,
+              "card": "hearts-10",
+              "move": 3,
+              "playedAt": 5
+            },
+            {
+              "seat": 0,
+              "col": 3,
+              "card": "diamonds-7",
+              "move": 10,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": 12,
+          "targetColumnBonusOwner": 0,
+          "targetColumnActorWins": false
+        },
+        {
+          "mode": "defer",
+          "x": [
+            6,
+            12
+          ],
+          "y": [
+            5,
+            15
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    3,
+                    14
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    12,
+                    9
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    9,
+                    6
+                  ]
+                },
+                {
+                  "type": "Straight",
+                  "score": 5,
+                  "rankValue": 3,
+                  "kickers": [
+                    12
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 5,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    7,
+                    6
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 5,
+                  "rankValue": 6,
+                  "kickers": [
+                    12
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    8,
+                    3
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 3,
+                  "rankValue": 4,
+                  "kickers": [
+                    4,
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    8,
+                    5,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    4,
+                    2
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 1,
+              "col": 2,
+              "card": "spades-4",
+              "move": 3,
+              "playedAt": null
+            },
+            {
+              "seat": 0,
+              "col": 3,
+              "card": "spades-3",
+              "move": 4,
+              "playedAt": 12
+            },
+            {
+              "seat": 0,
+              "col": 1,
+              "card": "diamonds-7",
+              "move": 10,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 0,
+          "targetColumnActorWins": false
+        }
+      ]
+    },
+    {
+      "group": "confirmation",
+      "seed": 1529196453,
+      "mirror": false,
+      "actor": 1,
+      "prefix": 17,
+      "targetColumn": 0,
+      "arms": [
+        {
+          "mode": "bonus",
+          "x": [
+            2,
+            3
+          ],
+          "y": [
+            15,
+            4
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Straight",
+                  "score": 6,
+                  "rankValue": 3,
+                  "kickers": [
+                    12
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 6,
+                  "rankValue": 1,
+                  "kickers": [
+                    11,
+                    10,
+                    2
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 4,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 4,
+                  "rankValue": 4,
+                  "kickers": [
+                    14,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    7,
+                    4
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 4,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    8,
+                    5,
+                    3
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 4,
+                  "rankValue": 6,
+                  "kickers": [
+                    6
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    11,
+                    9,
+                    7
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 3,
+                  "rankValue": 4,
+                  "kickers": [
+                    14,
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Straight",
+                  "score": 2,
+                  "rankValue": 3,
+                  "kickers": [
+                    13
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    12,
+                    5
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 1,
+              "col": 0,
+              "card": "diamonds-5",
+              "move": 0,
+              "playedAt": 2
+            },
+            {
+              "seat": 0,
+              "col": 4,
+              "card": "hearts-8",
+              "move": 5,
+              "playedAt": null
+            },
+            {
+              "seat": 0,
+              "col": 3,
+              "card": "spades-2",
+              "move": 11,
+              "playedAt": 13
+            }
+          ],
+          "rootBonusPlayedAt": 2,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": false
+        },
+        {
+          "mode": "defer",
+          "x": [
+            2,
+            4
+          ],
+          "y": [
+            13,
+            6
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "StraightFlush",
+                  "score": 6,
+                  "rankValue": 7,
+                  "kickers": [
+                    12
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 6,
+                  "rankValue": 1,
+                  "kickers": [
+                    10,
+                    6,
+                    2
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 4,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 4,
+                  "rankValue": 4,
+                  "kickers": [
+                    14,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    7,
+                    4
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 4,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    8,
+                    5,
+                    3
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 4,
+                  "rankValue": 6,
+                  "kickers": [
+                    6
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    9,
+                    7
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    11,
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "Straight",
+                  "score": 2,
+                  "rankValue": 3,
+                  "kickers": [
+                    13
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 2,
+                  "rankValue": 5,
+                  "kickers": [
+                    12,
+                    6,
+                    3
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 3,
+              "card": "hearts-14",
+              "move": 3,
+              "playedAt": 7
+            },
+            {
+              "seat": 0,
+              "col": 4,
+              "card": "hearts-8",
+              "move": 5,
+              "playedAt": null
+            },
+            {
+              "seat": 0,
+              "col": 0,
+              "card": "spades-2",
+              "move": 11,
+              "playedAt": 13
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 0,
+          "targetColumnActorWins": false
+        }
+      ]
+    },
+    {
+      "group": "confirmation",
+      "seed": 1529196453,
+      "mirror": true,
+      "actor": 0,
+      "prefix": 17,
+      "targetColumn": 0,
+      "arms": [
+        {
+          "mode": "bonus",
+          "x": [
+            3,
+            2
+          ],
+          "y": [
+            4,
+            15
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 6,
+                  "rankValue": 1,
+                  "kickers": [
+                    11,
+                    10,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 6,
+                  "rankValue": 1,
+                  "kickers": [
+                    11,
+                    10,
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 4,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    7,
+                    4
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 4,
+                  "rankValue": 4,
+                  "kickers": [
+                    14,
+                    12
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 4,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 4,
+                  "rankValue": 6,
+                  "kickers": [
+                    6
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    8,
+                    5,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    13,
+                    8
+                  ]
+                },
+                {
+                  "type": "OnePair",
+                  "score": 3,
+                  "rankValue": 2,
+                  "kickers": [
+                    7,
+                    9
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    12,
+                    5,
+                    2
+                  ]
+                },
+                {
+                  "type": "Straight",
+                  "score": 2,
+                  "rankValue": 3,
+                  "kickers": [
+                    13
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 0,
+              "card": "diamonds-5",
+              "move": 0,
+              "playedAt": 2
+            },
+            {
+              "seat": 1,
+              "col": 4,
+              "card": "hearts-8",
+              "move": 5,
+              "playedAt": 7
+            },
+            {
+              "seat": 1,
+              "col": 3,
+              "card": "diamonds-11",
+              "move": 9,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": 2,
+          "targetColumnBonusOwner": 0,
+          "targetColumnActorWins": false
+        },
+        {
+          "mode": "defer",
+          "x": [
+            4,
+            2
+          ],
+          "y": [
+            4,
+            15
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 6,
+                  "rankValue": 4,
+                  "kickers": [
+                    10,
+                    2
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 6,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    12,
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 4,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    7,
+                    4
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    11,
+                    5
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 4,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 4,
+                  "rankValue": 4,
+                  "kickers": [
+                    6,
+                    13
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    8,
+                    5,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 3,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 3,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    11,
+                    8
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 3,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    9,
+                    7
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 2,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 2,
+                  "rankValue": 1,
+                  "kickers": [
+                    12,
+                    10,
+                    5
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 2,
+                  "rankValue": 4,
+                  "kickers": [
+                    11,
+                    13
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 1,
+              "col": 4,
+              "card": "hearts-14",
+              "move": 3,
+              "playedAt": 5
+            },
+            {
+              "seat": 1,
+              "col": 0,
+              "card": "diamonds-2",
+              "move": 7,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 3,
+              "card": "diamonds-11",
+              "move": 9,
+              "playedAt": 13
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": false
+        }
+      ]
+    },
+    {
+      "group": "confirmation",
+      "seed": 1529301182,
+      "mirror": false,
+      "actor": 1,
+      "prefix": 17,
+      "targetColumn": 0,
+      "arms": [
+        {
+          "mode": "bonus",
+          "x": [
+            2,
+            3
+          ],
+          "y": [
+            11,
+            5
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 5,
+                  "rankValue": 5,
+                  "kickers": [
+                    7,
+                    5,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    7,
+                    2
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    9,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    6,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 4,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 4,
+                  "rankValue": 4,
+                  "kickers": [
+                    10,
+                    14
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 4,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    13,
+                    10
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "OnePair",
+                  "score": 1,
+                  "rankValue": 2,
+                  "kickers": [
+                    5,
+                    12
+                  ]
+                },
+                {
+                  "type": "ThreeOfAKind",
+                  "score": 1,
+                  "rankValue": 8,
+                  "kickers": [
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 1,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    8,
+                    7
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 1,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    9,
+                    3
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 1,
+              "col": 0,
+              "card": "clubs-3",
+              "move": 0,
+              "playedAt": 4
+            },
+            {
+              "seat": 1,
+              "col": 4,
+              "card": "hearts-4",
+              "move": 4,
+              "playedAt": null
+            },
+            {
+              "seat": 0,
+              "col": 2,
+              "card": "diamonds-3",
+              "move": 9,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": 4,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": false
+        },
+        {
+          "mode": "defer",
+          "x": [
+            2,
+            12
+          ],
+          "y": [
+            15,
+            1
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    5,
+                    4
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    10,
+                    7,
+                    2
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    9,
+                    8
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    6,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 4,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 4,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    10,
+                    8
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 4,
+                  "rankValue": 4,
+                  "kickers": [
+                    13,
+                    10
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 1,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "OnePair",
+                  "score": 1,
+                  "rankValue": 2,
+                  "kickers": [
+                    5,
+                    12
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 1,
+                  "rankValue": 4,
+                  "kickers": [
+                    8,
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 1,
+                  "rankValue": 4,
+                  "kickers": [
+                    7,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 1,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    3,
+                    2
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 1,
+              "col": 2,
+              "card": "spades-14",
+              "move": 6,
+              "playedAt": null
+            },
+            {
+              "seat": 0,
+              "col": 4,
+              "card": "hearts-2",
+              "move": 7,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 0,
+              "card": "diamonds-12",
+              "move": 8,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": false
+        }
+      ]
+    },
+    {
+      "group": "confirmation",
+      "seed": 1529301182,
+      "mirror": true,
+      "actor": 0,
+      "prefix": 17,
+      "targetColumn": 0,
+      "arms": [
+        {
+          "mode": "bonus",
+          "x": [
+            6,
+            4
+          ],
+          "y": [
+            2,
+            14
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    7,
+                    2
+                  ]
+                },
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    5,
+                    2
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    6,
+                    3
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    9,
+                    14
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 4,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 4,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    10,
+                    3
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 4,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    10,
+                    7
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 1,
+                  "rankValue": 4,
+                  "kickers": [
+                    8,
+                    3
+                  ]
+                },
+                {
+                  "type": "OnePair",
+                  "score": 1,
+                  "rankValue": 2,
+                  "kickers": [
+                    5,
+                    12
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "Flush",
+                  "score": 1,
+                  "rankValue": 5,
+                  "kickers": [
+                    13,
+                    11,
+                    4
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 1,
+                  "rankValue": 4,
+                  "kickers": [
+                    7,
+                    8
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 0,
+              "card": "clubs-3",
+              "move": 0,
+              "playedAt": 10
+            },
+            {
+              "seat": 1,
+              "col": 4,
+              "card": "spades-14",
+              "move": 5,
+              "playedAt": 13
+            },
+            {
+              "seat": 1,
+              "col": 2,
+              "card": "diamonds-4",
+              "move": 7,
+              "playedAt": null
+            }
+          ],
+          "rootBonusPlayedAt": 10,
+          "targetColumnBonusOwner": 0,
+          "targetColumnActorWins": false
+        },
+        {
+          "mode": "defer",
+          "x": [
+            4,
+            2
+          ],
+          "y": [
+            1,
+            15
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    14,
+                    7,
+                    2
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    5,
+                    7
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 5,
+                  "rankValue": 1,
+                  "kickers": [
+                    9,
+                    6,
+                    3
+                  ]
+                },
+                {
+                  "type": "PureOnePair",
+                  "score": 5,
+                  "rankValue": 4,
+                  "kickers": [
+                    9,
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 2,
+              "points": 4,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "PureOnePair",
+                  "score": 4,
+                  "rankValue": 4,
+                  "kickers": [
+                    13,
+                    10
+                  ]
+                },
+                {
+                  "type": "Flush",
+                  "score": 4,
+                  "rankValue": 5,
+                  "kickers": [
+                    14,
+                    10,
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 0,
+              "actorWins": true,
+              "ranks": [
+                {
+                  "type": "PureStraight",
+                  "score": 1,
+                  "rankValue": 6,
+                  "kickers": [
+                    10
+                  ]
+                },
+                {
+                  "type": "OnePair",
+                  "score": 1,
+                  "rankValue": 2,
+                  "kickers": [
+                    5,
+                    12
+                  ]
+                }
+              ]
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 1,
+              "actorWins": false,
+              "ranks": [
+                {
+                  "type": "HighCard",
+                  "score": 1,
+                  "rankValue": 1,
+                  "kickers": [
+                    13,
+                    8,
+                    3
+                  ]
+                },
+                {
+                  "type": "PureStraight",
+                  "score": 1,
+                  "rankValue": 6,
+                  "kickers": [
+                    3
+                  ]
+                }
+              ]
+            }
+          ],
+          "bonusDraws": [
+            {
+              "seat": 0,
+              "col": 4,
+              "card": "clubs-7",
+              "move": 4,
+              "playedAt": null
+            },
+            {
+              "seat": 0,
+              "col": 2,
+              "card": "diamonds-2",
+              "move": 6,
+              "playedAt": null
+            },
+            {
+              "seat": 1,
+              "col": 0,
+              "card": "diamonds-3",
+              "move": 9,
+              "playedAt": 13
+            }
+          ],
+          "rootBonusPlayedAt": null,
+          "targetColumnBonusOwner": 1,
+          "targetColumnActorWins": false
+        }
+      ]
+    }
+  ]
+}
