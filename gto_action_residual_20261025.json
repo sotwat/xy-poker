@@ -1,0 +1,880 @@
+{
+  "total_games": 13140,
+  "checkpoint_sha256": "5ef54f628fd137a72ebce1fd95301551d4e990001692a7e3765b3929b63e512b",
+  "model_sha256": "825b3957234c41725045c04489c8f644afb6a73ad735bf08876bb2854f141038",
+  "protocol": "Exclude all78 games; latest32 teacher games stratified16/8/8. Per stratum 2train/1selection/1confirmation, fixed256 batch64 seed100525079. Frozen base; zero residual; fresh head-only AdamW lr.001 wd1e-4 clip5 for both arms. No checkpoint/hyperparameter selection. Selection and confirmation gates require shared CE below flat and base, top1 >= both, all+eachteacher group.",
+  "feature_dimension": 72,
+  "feature_suit_permutation_checks": 992,
+  "manifest": [
+    {
+      "seed": 1389697425,
+      "total_games": 13077,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1389802154,
+      "total_games": 13078,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1389906883,
+      "total_games": 13079,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1390325799,
+      "total_games": 13083,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1390535257,
+      "total_games": 13085,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "selection",
+      "rows": 31
+    },
+    {
+      "seed": 1390639986,
+      "total_games": 13086,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "seed": 1390744715,
+      "total_games": 13087,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1391163631,
+      "total_games": 13091,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1391373089,
+      "total_games": 13093,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1391477818,
+      "total_games": 13094,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1391582547,
+      "total_games": 13095,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "selection",
+      "rows": 31
+    },
+    {
+      "seed": 1392001463,
+      "total_games": 13099,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "selection",
+      "rows": 31
+    },
+    {
+      "seed": 1392210921,
+      "total_games": 13101,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "selection",
+      "rows": 31
+    },
+    {
+      "seed": 1392315650,
+      "total_games": 13102,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "seed": 1392420379,
+      "total_games": 13103,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "seed": 1392839295,
+      "total_games": 13107,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "seed": 1393048753,
+      "total_games": 13109,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1393153482,
+      "total_games": 13110,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1393258211,
+      "total_games": 13111,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1393677127,
+      "total_games": 13115,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1393886585,
+      "total_games": 13117,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "selection",
+      "rows": 31
+    },
+    {
+      "seed": 1393991314,
+      "total_games": 13118,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "seed": 1394096043,
+      "total_games": 13119,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1394514959,
+      "total_games": 13123,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1394724417,
+      "total_games": 13125,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1394829146,
+      "total_games": 13126,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "seed": 1394933875,
+      "total_games": 13127,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "selection",
+      "rows": 31
+    },
+    {
+      "seed": 1395352791,
+      "total_games": 13131,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "selection",
+      "rows": 31
+    },
+    {
+      "seed": 1395562249,
+      "total_games": 13133,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "selection",
+      "rows": 31
+    },
+    {
+      "seed": 1395666978,
+      "total_games": 13134,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "seed": 1395771707,
+      "total_games": 13135,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "seed": 1396190623,
+      "total_games": 13139,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 31
+    }
+  ],
+  "initial": {
+    "train": {
+      "all": {
+        "n": 496,
+        "ce": 2.9410167201872794,
+        "teacher_probability": 0.11926760212067634,
+        "top1": 0.15524193548387097,
+        "top5": 0.4576612903225806,
+        "mean_rank": 9.40524193548387,
+        "value_mse": 0.9038114855366368
+      },
+      "teacher-a9-selfplay": {
+        "n": 248,
+        "ce": 2.926201605027722,
+        "teacher_probability": 0.12890200076564665,
+        "top1": 0.1693548387096774,
+        "top5": 0.4717741935483871,
+        "mean_rank": 8.975806451612904,
+        "value_mse": 0.7482973683264947
+      },
+      "teacher-a9": {
+        "n": 125,
+        "ce": 3.03262646484375,
+        "teacher_probability": 0.1136011962890625,
+        "top1": 0.152,
+        "top5": 0.392,
+        "mean_rank": 11.2,
+        "value_mse": 1.132094970703125
+      },
+      "teacher-a9-advice": {
+        "n": 123,
+        "ce": 2.877788512687373,
+        "teacher_probability": 0.10560068270055259,
+        "top1": 0.13008130081300814,
+        "top5": 0.4959349593495935,
+        "mean_rank": 8.447154471544716,
+        "value_mse": 0.985373024048844
+      }
+    },
+    "selection": {
+      "all": {
+        "n": 248,
+        "ce": 3.0679574781848538,
+        "teacher_probability": 0.1039136455905053,
+        "top1": 0.14112903225806453,
+        "top5": 0.3951612903225806,
+        "mean_rank": 10.411290322580646,
+        "value_mse": 1.0981797864360194
+      },
+      "teacher-a9-selfplay": {
+        "n": 124,
+        "ce": 2.987828900737147,
+        "teacher_probability": 0.10535000216576361,
+        "top1": 0.1532258064516129,
+        "top5": 0.43548387096774194,
+        "mean_rank": 9.85483870967742,
+        "value_mse": 1.000155295095136
+      },
+      "teacher-a9-advice": {
+        "n": 62,
+        "ce": 3.143646732453377,
+        "teacher_probability": 0.10781933415320612,
+        "top1": 0.1774193548387097,
+        "top5": 0.3709677419354839,
+        "mean_rank": 11.306451612903226,
+        "value_mse": 1.2975937627976941
+      },
+      "teacher-a9": {
+        "n": 62,
+        "ce": 3.152524886592742,
+        "teacher_probability": 0.09713524387728784,
+        "top1": 0.08064516129032258,
+        "top5": 0.3387096774193548,
+        "mean_rank": 10.629032258064516,
+        "value_mse": 1.0948147927561114
+      }
+    },
+    "confirm": {
+      "all": {
+        "n": 248,
+        "ce": 3.320664805750693,
+        "teacher_probability": 0.11496261627443376,
+        "top1": 0.14919354838709678,
+        "top5": 0.3548387096774194,
+        "mean_rank": 11.435483870967742,
+        "value_mse": 1.3394058596703313
+      },
+      "teacher-a9-selfplay": {
+        "n": 124,
+        "ce": 3.2878846199281755,
+        "teacher_probability": 0.14288848446261498,
+        "top1": 0.20161290322580644,
+        "top5": 0.3790322580645161,
+        "mean_rank": 11.330645161290322,
+        "value_mse": 0.8628585569320186
+      },
+      "teacher-a9": {
+        "n": 61,
+        "ce": 3.54983395435771,
+        "teacher_probability": 0.06846993868468237,
+        "top1": 0.08196721311475409,
+        "top5": 0.26229508196721313,
+        "mean_rank": 13.147540983606557,
+        "value_mse": 1.1613581923187757
+      },
+      "teacher-a9-advice": {
+        "n": 63,
+        "ce": 3.163290599035838,
+        "teacher_probability": 0.10501414253598168,
+        "top1": 0.1111111111111111,
+        "top5": 0.3968253968253968,
+        "mean_rank": 9.984126984126984,
+        "value_mse": 2.449766855391245
+      }
+    }
+  },
+  "outcomes": {
+    "flat": {
+      "parameters": 67338,
+      "trace": [
+        {
+          "updates": 32,
+          "train": {
+            "all": {
+              "n": 496,
+              "ce": 2.8691739113100114,
+              "teacher_probability": 0.12645721243273828,
+              "top1": 0.17137096774193547,
+              "top5": 0.48185483870967744,
+              "mean_rank": 8.929435483870968,
+              "value_mse": 0.9038114855366368
+            },
+            "teacher-a9-selfplay": {
+              "n": 248,
+              "ce": 2.848641303277785,
+              "teacher_probability": 0.13714140076791087,
+              "top1": 0.1935483870967742,
+              "top5": 0.4959677419354839,
+              "mean_rank": 8.508064516129032,
+              "value_mse": 0.7482973683264947
+            },
+            "teacher-a9": {
+              "n": 125,
+              "ce": 2.96481591796875,
+              "teacher_probability": 0.12052167510986328,
+              "top1": 0.16,
+              "top5": 0.424,
+              "mean_rank": 10.648,
+              "value_mse": 1.132094970703125
+            },
+            "teacher-a9-advice": {
+              "n": 123,
+              "ce": 2.8133753334603657,
+              "teacher_probability": 0.1109471747545692,
+              "top1": 0.13821138211382114,
+              "top5": 0.5121951219512195,
+              "mean_rank": 8.032520325203253,
+              "value_mse": 0.985373024048844
+            }
+          }
+        },
+        {
+          "updates": 128,
+          "train": {
+            "all": {
+              "n": 496,
+              "ce": 2.643214071950605,
+              "teacher_probability": 0.14967834180401218,
+              "top1": 0.23387096774193547,
+              "top5": 0.5645161290322581,
+              "mean_rank": 7.425403225806452,
+              "value_mse": 0.9038114855366368
+            },
+            "teacher-a9-selfplay": {
+              "n": 248,
+              "ce": 2.612738332440776,
+              "teacher_probability": 0.16383202614322787,
+              "top1": 0.2661290322580645,
+              "top5": 0.5846774193548387,
+              "mean_rank": 7.100806451612903,
+              "value_mse": 0.7482973683264947
+            },
+            "teacher-a9": {
+              "n": 125,
+              "ce": 2.756914306640625,
+              "teacher_probability": 0.1395924072265625,
+              "top1": 0.2,
+              "top5": 0.504,
+              "mean_rank": 9.024,
+              "value_mse": 1.132094970703125
+            },
+            "teacher-a9-advice": {
+              "n": 123,
+              "ce": 2.5891118243457827,
+              "teacher_probability": 0.131390749923582,
+              "top1": 0.2032520325203252,
+              "top5": 0.5853658536585366,
+              "mean_rank": 6.455284552845528,
+              "value_mse": 0.985373024048844
+            }
+          }
+        },
+        {
+          "updates": 256,
+          "train": {
+            "all": {
+              "n": 496,
+              "ce": 2.376003449962985,
+              "teacher_probability": 0.18076409447577693,
+              "top1": 0.3024193548387097,
+              "top5": 0.6491935483870968,
+              "mean_rank": 5.824596774193548,
+              "value_mse": 0.9038114855366368
+            },
+            "teacher-a9-selfplay": {
+              "n": 248,
+              "ce": 2.3375153080109627,
+              "teacher_probability": 0.19772868771706859,
+              "top1": 0.3548387096774194,
+              "top5": 0.6733870967741935,
+              "mean_rank": 5.471774193548387,
+              "value_mse": 0.7482973683264947
+            },
+            "teacher-a9": {
+              "n": 125,
+              "ce": 2.49171142578125,
+              "teacher_probability": 0.16732618713378905,
+              "top1": 0.232,
+              "top5": 0.584,
+              "mean_rank": 7.4,
+              "value_mse": 1.132094970703125
+            },
+            "teacher-a9-advice": {
+              "n": 123,
+              "ce": 2.3360159028836383,
+              "teacher_probability": 0.16021545534211445,
+              "top1": 0.2682926829268293,
+              "top5": 0.6666666666666666,
+              "mean_rank": 4.934959349593496,
+              "value_mse": 0.985373024048844
+            }
+          }
+        }
+      ],
+      "metrics": {
+        "train": {
+          "all": {
+            "n": 496,
+            "ce": 2.376003449962985,
+            "teacher_probability": 0.18076409447577693,
+            "top1": 0.3024193548387097,
+            "top5": 0.6491935483870968,
+            "mean_rank": 5.824596774193548,
+            "value_mse": 0.9038114855366368
+          },
+          "teacher-a9-selfplay": {
+            "n": 248,
+            "ce": 2.3375153080109627,
+            "teacher_probability": 0.19772868771706859,
+            "top1": 0.3548387096774194,
+            "top5": 0.6733870967741935,
+            "mean_rank": 5.471774193548387,
+            "value_mse": 0.7482973683264947
+          },
+          "teacher-a9": {
+            "n": 125,
+            "ce": 2.49171142578125,
+            "teacher_probability": 0.16732618713378905,
+            "top1": 0.232,
+            "top5": 0.584,
+            "mean_rank": 7.4,
+            "value_mse": 1.132094970703125
+          },
+          "teacher-a9-advice": {
+            "n": 123,
+            "ce": 2.3360159028836383,
+            "teacher_probability": 0.16021545534211445,
+            "top1": 0.2682926829268293,
+            "top5": 0.6666666666666666,
+            "mean_rank": 4.934959349593496,
+            "value_mse": 0.985373024048844
+          }
+        },
+        "selection": {
+          "all": {
+            "n": 248,
+            "ce": 3.0833072047079764,
+            "teacher_probability": 0.1059284710115002,
+            "top1": 0.13306451612903225,
+            "top5": 0.38306451612903225,
+            "mean_rank": 10.266129032258064,
+            "value_mse": 1.0981797864360194
+          },
+          "teacher-a9-selfplay": {
+            "n": 124,
+            "ce": 2.9932452786353325,
+            "teacher_probability": 0.1056313976164787,
+            "top1": 0.14516129032258066,
+            "top5": 0.41935483870967744,
+            "mean_rank": 9.516129032258064,
+            "value_mse": 1.000155295095136
+          },
+          "teacher-a9-advice": {
+            "n": 62,
+            "ce": 3.21111568327873,
+            "teacher_probability": 0.10561894601391207,
+            "top1": 0.16129032258064516,
+            "top5": 0.3387096774193548,
+            "mean_rank": 11.35483870967742,
+            "value_mse": 1.2975937627976941
+          },
+          "teacher-a9": {
+            "n": 62,
+            "ce": 3.13562257828251,
+            "teacher_probability": 0.10683213510820942,
+            "top1": 0.08064516129032258,
+            "top5": 0.3548387096774194,
+            "mean_rank": 10.67741935483871,
+            "value_mse": 1.0948147927561114
+          }
+        },
+        "confirm": {
+          "all": {
+            "n": 248,
+            "ce": 3.3646509724278606,
+            "teacher_probability": 0.11458791840460993,
+            "top1": 0.14516129032258066,
+            "top5": 0.3548387096774194,
+            "mean_rank": 11.504032258064516,
+            "value_mse": 1.3394058596703313
+          },
+          "teacher-a9-selfplay": {
+            "n": 124,
+            "ce": 3.3571986536825857,
+            "teacher_probability": 0.14008482040897494,
+            "top1": 0.1935483870967742,
+            "top5": 0.3790322580645161,
+            "mean_rank": 11.524193548387096,
+            "value_mse": 0.8628585569320186
+          },
+          "teacher-a9": {
+            "n": 61,
+            "ce": 3.5663972448130123,
+            "teacher_probability": 0.06838624203791384,
+            "top1": 0.08196721311475409,
+            "top5": 0.26229508196721313,
+            "mean_rank": 13.01639344262295,
+            "value_mse": 1.1613581923187757
+          },
+          "teacher-a9-advice": {
+            "n": 63,
+            "ce": 3.1839778839595736,
+            "teacher_probability": 0.10913845849415613,
+            "top1": 0.1111111111111111,
+            "top5": 0.3968253968253968,
+            "mean_rank": 10.0,
+            "value_mse": 2.449766855391245
+          }
+        }
+      }
+    },
+    "shared": {
+      "parameters": 2369,
+      "trace": [
+        {
+          "updates": 32,
+          "train": {
+            "all": {
+              "n": 496,
+              "ce": 2.9359017033730783,
+              "teacher_probability": 0.1195859505284217,
+              "top1": 0.16129032258064516,
+              "top5": 0.4596774193548387,
+              "mean_rank": 9.32258064516129,
+              "value_mse": 0.9038114855366368
+            },
+            "teacher-a9-selfplay": {
+              "n": 248,
+              "ce": 2.920883055656187,
+              "teacher_probability": 0.12930537039233791,
+              "top1": 0.1774193548387097,
+              "top5": 0.47580645161290325,
+              "mean_rank": 8.90725806451613,
+              "value_mse": 0.7482973683264947
+            },
+            "teacher-a9": {
+              "n": 125,
+              "ce": 3.027132568359375,
+              "teacher_probability": 0.11381388092041016,
+              "top1": 0.16,
+              "top5": 0.392,
+              "mean_rank": 11.072,
+              "value_mse": 1.132094970703125
+            },
+            "teacher-a9-advice": {
+              "n": 123,
+              "ce": 2.8734694069963163,
+              "teacher_probability": 0.1058549803446948,
+              "top1": 0.13008130081300814,
+              "top5": 0.4959349593495935,
+              "mean_rank": 8.382113821138212,
+              "value_mse": 0.985373024048844
+            }
+          }
+        },
+        {
+          "updates": 128,
+          "train": {
+            "all": {
+              "n": 496,
+              "ce": 2.8369757129300024,
+              "teacher_probability": 0.12868489373114803,
+              "top1": 0.19959677419354838,
+              "top5": 0.5463709677419355,
+              "mean_rank": 8.22983870967742,
+              "value_mse": 0.9038114855366368
+            },
+            "teacher-a9-selfplay": {
+              "n": 248,
+              "ce": 2.8121340351720012,
+              "teacher_probability": 0.14105648379172048,
+              "top1": 0.22983870967741934,
+              "top5": 0.5483870967741935,
+              "mean_rank": 7.846774193548387,
+              "value_mse": 0.7482973683264947
+            },
+            "teacher-a9": {
+              "n": 125,
+              "ce": 2.91696240234375,
+              "teacher_probability": 0.1200111541748047,
+              "top1": 0.168,
+              "top5": 0.504,
+              "mean_rank": 9.712,
+              "value_mse": 1.132094970703125
+            },
+            "teacher-a9-advice": {
+              "n": 123,
+              "ce": 2.805775712176067,
+              "teacher_probability": 0.11255534102277058,
+              "top1": 0.17073170731707318,
+              "top5": 0.5853658536585366,
+              "mean_rank": 7.495934959349594,
+              "value_mse": 0.985373024048844
+            }
+          }
+        },
+        {
+          "updates": 256,
+          "train": {
+            "all": {
+              "n": 496,
+              "ce": 2.728081057148595,
+              "teacher_probability": 0.14461684803808889,
+              "top1": 0.2056451612903226,
+              "top5": 0.5786290322580645,
+              "mean_rank": 7.506048387096774,
+              "value_mse": 0.9038114855366368
+            },
+            "teacher-a9-selfplay": {
+              "n": 248,
+              "ce": 2.695028366581086,
+              "teacher_probability": 0.15828079562033376,
+              "top1": 0.24596774193548387,
+              "top5": 0.5766129032258065,
+              "mean_rank": 7.395161290322581,
+              "value_mse": 0.7482973683264947
+            },
+            "teacher-a9": {
+              "n": 125,
+              "ce": 2.779329345703125,
+              "teacher_probability": 0.13847056579589845,
+              "top1": 0.16,
+              "top5": 0.552,
+              "mean_rank": 8.344,
+              "value_mse": 1.132094970703125
+            },
+            "teacher-a9-advice": {
+              "n": 123,
+              "ce": 2.7426422863471798,
+              "teacher_probability": 0.1233129966549757,
+              "top1": 0.17073170731707318,
+              "top5": 0.6097560975609756,
+              "mean_rank": 6.878048780487805,
+              "value_mse": 0.985373024048844
+            }
+          }
+        }
+      ],
+      "metrics": {
+        "train": {
+          "all": {
+            "n": 496,
+            "ce": 2.728081057148595,
+            "teacher_probability": 0.14461684803808889,
+            "top1": 0.2056451612903226,
+            "top5": 0.5786290322580645,
+            "mean_rank": 7.506048387096774,
+            "value_mse": 0.9038114855366368
+          },
+          "teacher-a9-selfplay": {
+            "n": 248,
+            "ce": 2.695028366581086,
+            "teacher_probability": 0.15828079562033376,
+            "top1": 0.24596774193548387,
+            "top5": 0.5766129032258065,
+            "mean_rank": 7.395161290322581,
+            "value_mse": 0.7482973683264947
+          },
+          "teacher-a9": {
+            "n": 125,
+            "ce": 2.779329345703125,
+            "teacher_probability": 0.13847056579589845,
+            "top1": 0.16,
+            "top5": 0.552,
+            "mean_rank": 8.344,
+            "value_mse": 1.132094970703125
+          },
+          "teacher-a9-advice": {
+            "n": 123,
+            "ce": 2.7426422863471798,
+            "teacher_probability": 0.1233129966549757,
+            "top1": 0.17073170731707318,
+            "top5": 0.6097560975609756,
+            "mean_rank": 6.878048780487805,
+            "value_mse": 0.985373024048844
+          }
+        },
+        "selection": {
+          "all": {
+            "n": 248,
+            "ce": 2.8909117175686743,
+            "teacher_probability": 0.12953802847093152,
+            "top1": 0.22580645161290322,
+            "top5": 0.49193548387096775,
+            "mean_rank": 8.774193548387096,
+            "value_mse": 1.0981797864360194
+          },
+          "teacher-a9-selfplay": {
+            "n": 124,
+            "ce": 2.8253897390057965,
+            "teacher_probability": 0.1328627678655809,
+            "top1": 0.2661290322580645,
+            "top5": 0.49193548387096775,
+            "mean_rank": 8.556451612903226,
+            "value_mse": 1.000155295095136
+          },
+          "teacher-a9-advice": {
+            "n": 62,
+            "ce": 2.9645447269562752,
+            "teacher_probability": 0.13085519113848287,
+            "top1": 0.1774193548387097,
+            "top5": 0.45161290322580644,
+            "mean_rank": 10.0,
+            "value_mse": 1.2975937627976941
+          },
+          "teacher-a9": {
+            "n": 62,
+            "ce": 2.9483241419638357,
+            "teacher_probability": 0.1215713947050033,
+            "top1": 0.1935483870967742,
+            "top5": 0.532258064516129,
+            "mean_rank": 7.983870967741935,
+            "value_mse": 1.0948147927561114
+          }
+        },
+        "confirm": {
+          "all": {
+            "n": 248,
+            "ce": 3.1735137201124624,
+            "teacher_probability": 0.1346707728601271,
+            "top1": 0.17338709677419356,
+            "top5": 0.4798387096774194,
+            "mean_rank": 9.649193548387096,
+            "value_mse": 1.3394058596703313
+          },
+          "teacher-a9-selfplay": {
+            "n": 124,
+            "ce": 3.0823762955204135,
+            "teacher_probability": 0.168918824964954,
+            "top1": 0.23387096774193547,
+            "top5": 0.5241935483870968,
+            "mean_rank": 9.64516129032258,
+            "value_mse": 0.8628585569320186
+          },
+          "teacher-a9": {
+            "n": 61,
+            "ce": 3.407108244348745,
+            "teacher_probability": 0.08013430579763944,
+            "top1": 0.08196721311475409,
+            "top5": 0.4262295081967213,
+            "mean_rank": 10.327868852459016,
+            "value_mse": 1.1613581923187757
+          },
+          "teacher-a9-advice": {
+            "n": 63,
+            "ce": 3.1267162504650297,
+            "teacher_probability": 0.12006708175416976,
+            "top1": 0.14285714285714285,
+            "top5": 0.4444444444444444,
+            "mean_rank": 9.0,
+            "value_mse": 2.449766855391245
+          }
+        }
+      }
+    }
+  },
+  "selection_gate": true,
+  "confirm_gate": true,
+  "elapsed_seconds": 16.55450991699763,
+  "base_preserved": true,
+  "live_updates": 0,
+  "new_games": 0,
+  "new_a9_calls": 0,
+  "limits": "Previously trained correlated replay; local transfer only. Unequal head capacity; fresh head optimizers differ from original AdamW. No A9 matches/search/reducer strength test; exact old outputs only at initialization, values remain fixed."
+}
