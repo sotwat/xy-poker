@@ -1,0 +1,824 @@
+{
+  "checkpoint_sha256": "faf9ce6c0e6a4b0550c4b0ea70a576b0f8777afd027c8b5ca70a64c0ebf08437",
+  "total_games": 12998,
+  "model_sha256": "c1eb0ffa9f50ff5050b9287f2a87f295db65d8c8e32e29e6d34aa6458d507a6c",
+  "seed": 100525077,
+  "protocol": "Latest 16 complete games per curriculum kind; chronological every fourth game reserved from local updates. Three predeclared arms, 32 identical 64-row batches, copied AdamW including moments; no live writes.",
+  "gate": "Diagnostic candidate requires lower confirmation policy CE and value MSE than shared, including every teacher-source group. No live adoption gate.",
+  "manifest": [
+    {
+      "total_games": 12935,
+      "seed": 1374825907,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12936,
+      "seed": 1374930636,
+      "kind": "past-model",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 16
+    },
+    {
+      "total_games": 12937,
+      "seed": 1375035365,
+      "kind": "self",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12938,
+      "seed": 1375140094,
+      "kind": "self",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12939,
+      "seed": 1375244823,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12940,
+      "seed": 1375349552,
+      "kind": "past-model",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 16
+    },
+    {
+      "total_games": 12941,
+      "seed": 1375454281,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12942,
+      "seed": 1375559010,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12943,
+      "seed": 1375663739,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12944,
+      "seed": 1375768468,
+      "kind": "past-model",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 16
+    },
+    {
+      "total_games": 12945,
+      "seed": 1375873197,
+      "kind": "self",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12946,
+      "seed": 1375977926,
+      "kind": "self",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12947,
+      "seed": 1376082655,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12948,
+      "seed": 1376187384,
+      "kind": "past-model",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 16
+    },
+    {
+      "total_games": 12949,
+      "seed": 1376292113,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12950,
+      "seed": 1376396842,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12951,
+      "seed": 1376501571,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12952,
+      "seed": 1376606300,
+      "kind": "past-model",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 15
+    },
+    {
+      "total_games": 12953,
+      "seed": 1376711029,
+      "kind": "self",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12954,
+      "seed": 1376815758,
+      "kind": "self",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12955,
+      "seed": 1376920487,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12956,
+      "seed": 1377025216,
+      "kind": "past-model",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 15
+    },
+    {
+      "total_games": 12957,
+      "seed": 1377129945,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12958,
+      "seed": 1377234674,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12959,
+      "seed": 1377339403,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12960,
+      "seed": 1377444132,
+      "kind": "past-model",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 16
+    },
+    {
+      "total_games": 12961,
+      "seed": 1377548861,
+      "kind": "self",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12962,
+      "seed": 1377653590,
+      "kind": "self",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12963,
+      "seed": 1377758319,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12964,
+      "seed": 1377863048,
+      "kind": "past-model",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 16
+    },
+    {
+      "total_games": 12965,
+      "seed": 1377967777,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12966,
+      "seed": 1378072506,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12967,
+      "seed": 1378177235,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12968,
+      "seed": 1378281964,
+      "kind": "past-model",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 15
+    },
+    {
+      "total_games": 12969,
+      "seed": 1378386693,
+      "kind": "self",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12970,
+      "seed": 1378491422,
+      "kind": "self",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12971,
+      "seed": 1378596151,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12972,
+      "seed": 1378700880,
+      "kind": "past-model",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 16
+    },
+    {
+      "total_games": 12973,
+      "seed": 1378805609,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12974,
+      "seed": 1378910338,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12975,
+      "seed": 1379015067,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12976,
+      "seed": 1379119796,
+      "kind": "past-model",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 16
+    },
+    {
+      "total_games": 12977,
+      "seed": 1379224525,
+      "kind": "self",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12978,
+      "seed": 1379329254,
+      "kind": "self",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12979,
+      "seed": 1379433983,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12980,
+      "seed": 1379538712,
+      "kind": "past-model",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 15
+    },
+    {
+      "total_games": 12981,
+      "seed": 1379643441,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12982,
+      "seed": 1379748170,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12983,
+      "seed": 1379852899,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12984,
+      "seed": 1379957628,
+      "kind": "past-model",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 15
+    },
+    {
+      "total_games": 12985,
+      "seed": 1380062357,
+      "kind": "self",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12986,
+      "seed": 1380167086,
+      "kind": "self",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12987,
+      "seed": 1380271815,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12988,
+      "seed": 1380376544,
+      "kind": "past-model",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 16
+    },
+    {
+      "total_games": 12989,
+      "seed": 1380481273,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12990,
+      "seed": 1380586002,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12991,
+      "seed": 1380690731,
+      "kind": "baseline",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12992,
+      "seed": 1380795460,
+      "kind": "past-model",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 16
+    },
+    {
+      "total_games": 12993,
+      "seed": 1380900189,
+      "kind": "self",
+      "model_seat": 0,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12994,
+      "seed": 1381004918,
+      "kind": "self",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12995,
+      "seed": 1381109647,
+      "kind": "baseline",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 31
+    },
+    {
+      "total_games": 12996,
+      "seed": 1381214376,
+      "kind": "past-model",
+      "model_seat": 0,
+      "split": "confirm",
+      "rows": 16
+    },
+    {
+      "total_games": 12997,
+      "seed": 1381319105,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "train",
+      "rows": 31
+    },
+    {
+      "total_games": 12998,
+      "seed": 1381423834,
+      "kind": "teacher-selfplay",
+      "model_seat": 1,
+      "split": "confirm",
+      "rows": 31
+    }
+  ],
+  "train_rows": 1304,
+  "confirm_rows": 435,
+  "before": {
+    "train": {
+      "all": {
+        "n": 1304,
+        "policy_ce": 3.1606163437381114,
+        "value_mse": 0.9226960748251231
+      },
+      "teacher-a9": {
+        "n": 186,
+        "policy_ce": 3.2236383781638196,
+        "value_mse": 1.4253284046726842
+      },
+      "teacher-a9-advice": {
+        "n": 186,
+        "policy_ce": 3.260976529890491,
+        "value_mse": 1.1026737613062705
+      },
+      "search": {
+        "n": 560,
+        "policy_ce": 3.085757991245815,
+        "value_mse": 0.7280425650732858
+      },
+      "teacher-a9-selfplay": {
+        "n": 372,
+        "policy_ce": 3.191615007256949,
+        "value_mse": 0.874417753629787
+      }
+    },
+    "confirm": {
+      "all": {
+        "n": 435,
+        "policy_ce": 3.2630363124540485,
+        "value_mse": 1.2296004196693158
+      },
+      "search": {
+        "n": 187,
+        "policy_ce": 3.1389824311363506,
+        "value_mse": 1.4886678304264251
+      },
+      "teacher-a9": {
+        "n": 62,
+        "policy_ce": 3.2998194694519043,
+        "value_mse": 1.2729301452636719
+      },
+      "teacher-a9-advice": {
+        "n": 62,
+        "policy_ce": 2.9916574954986572,
+        "value_mse": 1.7573513984680176
+      },
+      "teacher-a9-selfplay": {
+        "n": 124,
+        "policy_ce": 3.567415475845337,
+        "value_mse": 0.5533695816993713
+      }
+    }
+  },
+  "gradients": [
+    {
+      "dot": 0.3528161942958832,
+      "policy_norm": 2.147951602935791,
+      "value_norm": 3.810238838195801,
+      "cosine": 0.04310938294744729,
+      "joint_policy_direction": 4.966522216796875,
+      "joint_value_direction": 14.870830535888672
+    },
+    {
+      "dot": 0.6541087627410889,
+      "policy_norm": 2.1226558685302734,
+      "value_norm": 3.7834575176239014,
+      "cosine": 0.08144820546411385,
+      "joint_policy_direction": 5.159802436828613,
+      "joint_value_direction": 14.968729019165039
+    },
+    {
+      "dot": -0.49336671829223633,
+      "policy_norm": 1.9717530012130737,
+      "value_norm": 3.721005916595459,
+      "cosine": -0.06724453297166809,
+      "joint_policy_direction": 3.3944613933563232,
+      "joint_value_direction": 13.352603912353516
+    },
+    {
+      "dot": 0.8802713751792908,
+      "policy_norm": 2.321495294570923,
+      "value_norm": 3.316035032272339,
+      "cosine": 0.11434828713524618,
+      "joint_policy_direction": 6.269634246826172,
+      "joint_value_direction": 11.8764066696167
+    },
+    {
+      "dot": 0.42318421602249146,
+      "policy_norm": 2.2878336906433105,
+      "value_norm": 2.1563265323638916,
+      "cosine": 0.08578087341718929,
+      "joint_policy_direction": 5.657413005828857,
+      "joint_value_direction": 5.072960376739502
+    },
+    {
+      "dot": 0.33911412954330444,
+      "policy_norm": 2.2449839115142822,
+      "value_norm": 2.876079797744751,
+      "cosine": 0.05252084774657199,
+      "joint_policy_direction": 5.379070281982422,
+      "joint_value_direction": 8.610997200012207
+    },
+    {
+      "dot": 0.056251633912324905,
+      "policy_norm": 2.153038501739502,
+      "value_norm": 2.1731510162353516,
+      "cosine": 0.012022462639561825,
+      "joint_policy_direction": 4.691833019256592,
+      "joint_value_direction": 4.77885627746582
+    },
+    {
+      "dot": -0.014800302684307098,
+      "policy_norm": 2.065666437149048,
+      "value_norm": 2.062717914581299,
+      "cosine": -0.0034735260937888888,
+      "joint_policy_direction": 4.25219202041626,
+      "joint_value_direction": 4.240034103393555
+    }
+  ],
+  "arms": {
+    "shared": {
+      "train": {
+        "all": {
+          "n": 1304,
+          "policy_ce": 2.8416470150274735,
+          "value_mse": 0.46817371377184347
+        },
+        "teacher-a9": {
+          "n": 186,
+          "policy_ce": 2.8235893608421407,
+          "value_mse": 0.5723799165859017
+        },
+        "teacher-a9-advice": {
+          "n": 186,
+          "policy_ce": 2.805389209460187,
+          "value_mse": 0.6528319947181209
+        },
+        "search": {
+          "n": 560,
+          "policy_ce": 2.9481635774884904,
+          "value_mse": 0.38077583738735743
+        },
+        "teacher-a9-selfplay": {
+          "n": 372,
+          "policy_ce": 2.7084572366488877,
+          "value_mse": 0.4553081944424619
+        }
+      },
+      "confirm": {
+        "all": {
+          "n": 435,
+          "policy_ce": 3.1259135745037563,
+          "value_mse": 1.279214336954314
+        },
+        "search": {
+          "n": 187,
+          "policy_ce": 3.033421835159873,
+          "value_mse": 1.4619854287030225
+        },
+        "teacher-a9": {
+          "n": 62,
+          "policy_ce": 3.0326449871063232,
+          "value_mse": 1.2939807176589966
+        },
+        "teacher-a9-advice": {
+          "n": 62,
+          "policy_ce": 3.049314022064209,
+          "value_mse": 1.940258502960205
+        },
+        "teacher-a9-selfplay": {
+          "n": 124,
+          "policy_ce": 3.3503305912017822,
+          "value_mse": 0.6656783223152161
+        }
+      },
+      "model_sha256": "c2ac09fbdd07fa910a701a071f069f8481a3334fdffae3d1065ff21ded666208"
+    },
+    "value-head-only": {
+      "train": {
+        "all": {
+          "n": 1304,
+          "policy_ce": 2.781174141936507,
+          "value_mse": 0.9724533876027066
+        },
+        "teacher-a9": {
+          "n": 186,
+          "policy_ce": 2.759532890012187,
+          "value_mse": 1.2608005410881453
+        },
+        "teacher-a9-advice": {
+          "n": 186,
+          "policy_ce": 2.7035903417935936,
+          "value_mse": 1.3247003170751757
+        },
+        "search": {
+          "n": 560,
+          "policy_ce": 2.904703664779663,
+          "value_mse": 0.8192415475845337
+        },
+        "teacher-a9-selfplay": {
+          "n": 372,
+          "policy_ce": 2.6448282913495134,
+          "value_mse": 0.882797803930057
+        }
+      },
+      "confirm": {
+        "all": {
+          "n": 435,
+          "policy_ce": 3.1214798269600705,
+          "value_mse": 1.2201915165473676
+        },
+        "search": {
+          "n": 187,
+          "policy_ce": 3.0409554797697833,
+          "value_mse": 1.4086790123087838
+        },
+        "teacher-a9": {
+          "n": 62,
+          "policy_ce": 3.017542600631714,
+          "value_mse": 1.1793285608291626
+        },
+        "teacher-a9-advice": {
+          "n": 62,
+          "policy_ce": 2.970954179763794,
+          "value_mse": 1.9239047765731812
+        },
+        "teacher-a9-selfplay": {
+          "n": 124,
+          "policy_ce": 3.370147466659546,
+          "value_mse": 0.6045149564743042
+        }
+      },
+      "model_sha256": "ebbb3e5256be522f0c13d751b965cb24a7678ef76ee90a553ebee4313e3b23ac"
+    },
+    "policy-head-only": {
+      "train": {
+        "all": {
+          "n": 1304,
+          "policy_ce": 3.1835164248577654,
+          "value_mse": 0.43822270814626496
+        },
+        "teacher-a9": {
+          "n": 186,
+          "policy_ce": 3.2217146042854554,
+          "value_mse": 0.5818345309585653
+        },
+        "teacher-a9-advice": {
+          "n": 186,
+          "policy_ce": 3.236195877034177,
+          "value_mse": 0.5946881873633272
+        },
+        "search": {
+          "n": 560,
+          "policy_ce": 3.154977410180228,
+          "value_mse": 0.3603639951774052
+        },
+        "teacher-a9-selfplay": {
+          "n": 372,
+          "policy_ce": 3.1810393999981623,
+          "value_mse": 0.40539076764096493
+        }
+      },
+      "confirm": {
+        "all": {
+          "n": 435,
+          "policy_ce": 3.276977440406536,
+          "value_mse": 1.2583227020570602
+        },
+        "search": {
+          "n": 187,
+          "policy_ce": 3.1426468494741675,
+          "value_mse": 1.5823296008900525
+        },
+        "teacher-a9": {
+          "n": 62,
+          "policy_ce": 3.29701566696167,
+          "value_mse": 1.241607427597046
+        },
+        "teacher-a9-advice": {
+          "n": 62,
+          "policy_ce": 3.078425884246826,
+          "value_mse": 1.7222877740859985
+        },
+        "teacher-a9-selfplay": {
+          "n": 124,
+          "policy_ce": 3.568812847137451,
+          "value_mse": 0.5460747480392456
+        }
+      },
+      "model_sha256": "a5506cc1f15ca412efc7dfd92bff040ea4febde4aea3ecb0b6176ccc60b2232c"
+    }
+  },
+  "limitations": "All rows were already eligible for live training; confirmation is held out only from these local updates, not independent strength data. Game outcomes and sources are correlated. AdamW momentum/decay and gradient clipping mean raw gradient dots do not establish update harm. No matches, A9 calls, new deals or live training updates in this audit.",
+  "candidate_gates": {
+    "value-head-only": false,
+    "policy-head-only": false
+  }
+}
