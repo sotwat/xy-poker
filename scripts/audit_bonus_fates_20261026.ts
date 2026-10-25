@@ -13,7 +13,7 @@ interface Row {
     root: GameState; prefix: number[]; arms: { bonus: number; defer: number };
     outcomes: Record<'bonus' | 'defer', Outcome>;
 }
-const path = 'gto_bonus_choice_20261026.json';
+const path = process.argv[2] ?? 'gto_bonus_choice_20261026.json';
 const raw = readFileSync(path);
 const input = JSON.parse(raw.toString()) as { complete: boolean; rows: Row[] };
 assert(input.complete && input.rows.length === 8);
@@ -98,7 +98,7 @@ const groups = Object.fromEntries(['selection', 'confirmation'].map(group => {
         actorYMargin: ['bonus', 'defer'].map((_, i) => subset.reduce((sum, r) => sum + r.arms[i].y[r.actor] - r.arms[i].y[1-r.actor], 0)),
         actorXMargin: ['bonus', 'defer'].map((_, i) => subset.reduce((sum, r) => sum + r.arms[i].x[r.actor] - r.arms[i].x[1-r.actor], 0)) }];
 }));
-writeFileSync('gto_bonus_fates_20261026.json', JSON.stringify({
+writeFileSync(process.argv[3] ?? 'gto_bonus_fates_20261026.json', JSON.stringify({
     input_sha256: createHash('sha256').update(raw).digest('hex'),
     scope: 'Post-hoc accounting of existing 16 continuations; no new games, selection or strength evidence',
     productionChanged: false, newAiCalls: 0, groups, rows }, null, 2) + '\n');

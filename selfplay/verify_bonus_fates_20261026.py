@@ -1,12 +1,13 @@
 """Independent saved-board and arithmetic checks of bonus fate accounting."""
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-raw = (ROOT/'gto_bonus_choice_20261026.json').read_bytes()
+raw = (ROOT/(sys.argv[1] if len(sys.argv)>1 else 'gto_bonus_choice_20261026.json')).read_bytes()
 source = json.loads(raw)
-d = json.loads((ROOT/'gto_bonus_fates_20261026.json').read_text())
+d = json.loads((ROOT/(sys.argv[2] if len(sys.argv)>2 else 'gto_bonus_fates_20261026.json')).read_text())
 assert d['input_sha256'] == hashlib.sha256(raw).hexdigest()
 assert len(d['rows']) == len(source['rows']) == 8
 for r, original in zip(d['rows'], source['rows']):
