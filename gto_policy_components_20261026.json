@@ -1,0 +1,732 @@
+{
+  "input_sha256": "70a3bda8e2f23b952e32c84bb6fc8acbcad09d72484d7961eea639e4251c38e5",
+  "rows": [
+    {
+      "group": "selection",
+      "seed": 1591405479,
+      "mirror": false,
+      "actor": 0,
+      "outcomes": {
+        "learner": {
+          "x": [
+            0,
+            8
+          ],
+          "y": [
+            6,
+            6
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 0
+            },
+            {
+              "col": 1,
+              "points": 2,
+              "winner": 1
+            },
+            {
+              "col": 2,
+              "points": 2,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 1
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -8
+        },
+        "teacher": {
+          "x": [
+            10,
+            12
+          ],
+          "y": [
+            8,
+            4
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 0
+            },
+            {
+              "col": 1,
+              "points": 2,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 2,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 1
+            }
+          ],
+          "utility": 1,
+          "scoreMargin": 2
+        }
+      }
+    },
+    {
+      "group": "selection",
+      "seed": 1591405479,
+      "mirror": true,
+      "actor": 1,
+      "outcomes": {
+        "learner": {
+          "x": [
+            10,
+            2
+          ],
+          "y": [
+            10,
+            2
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 0
+            },
+            {
+              "col": 1,
+              "points": 2,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 2,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 0
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -16
+        },
+        "teacher": {
+          "x": [
+            4,
+            5
+          ],
+          "y": [
+            3,
+            9
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 2,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 2,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 0
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 1
+            }
+          ],
+          "utility": 1,
+          "scoreMargin": 7
+        }
+      }
+    },
+    {
+      "group": "selection",
+      "seed": 1591824395,
+      "mirror": false,
+      "actor": 1,
+      "outcomes": {
+        "learner": {
+          "x": [
+            2,
+            0
+          ],
+          "y": [
+            14,
+            0
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 0
+            },
+            {
+              "col": 1,
+              "points": 3,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 3,
+              "winner": 0
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 0
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -16
+        },
+        "teacher": {
+          "x": [
+            6,
+            2
+          ],
+          "y": [
+            5,
+            9
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 3,
+              "winner": 1
+            },
+            {
+              "col": 2,
+              "points": 3,
+              "winner": 0
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 0
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0
+            }
+          ],
+          "utility": 0,
+          "scoreMargin": 0
+        }
+      }
+    },
+    {
+      "group": "selection",
+      "seed": 1591824395,
+      "mirror": true,
+      "actor": 0,
+      "outcomes": {
+        "learner": {
+          "x": [
+            0,
+            2
+          ],
+          "y": [
+            3,
+            11
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 3,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 3,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 1
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -10
+        },
+        "teacher": {
+          "x": [
+            2,
+            8
+          ],
+          "y": [
+            0,
+            11
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 3,
+              "winner": null
+            },
+            {
+              "col": 2,
+              "points": 3,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 1,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 1
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -17
+        }
+      }
+    },
+    {
+      "group": "confirmation",
+      "seed": 1592243311,
+      "mirror": false,
+      "actor": 0,
+      "outcomes": {
+        "learner": {
+          "x": [
+            2,
+            0
+          ],
+          "y": [
+            5,
+            17
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 4,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 3,
+              "winner": 1
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -10
+        },
+        "teacher": {
+          "x": [
+            3,
+            2
+          ],
+          "y": [
+            8,
+            14
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 4,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 3,
+              "winner": 0
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -5
+        }
+      }
+    },
+    {
+      "group": "confirmation",
+      "seed": 1592243311,
+      "mirror": true,
+      "actor": 1,
+      "outcomes": {
+        "learner": {
+          "x": [
+            5,
+            4
+          ],
+          "y": [
+            22,
+            0
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 3,
+              "points": 4,
+              "winner": 0
+            },
+            {
+              "col": 4,
+              "points": 3,
+              "winner": 0
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -23
+        },
+        "teacher": {
+          "x": [
+            4,
+            2
+          ],
+          "y": [
+            5,
+            17
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 3,
+              "points": 4,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 3,
+              "winner": 1
+            }
+          ],
+          "utility": 1,
+          "scoreMargin": 10
+        }
+      }
+    },
+    {
+      "group": "confirmation",
+      "seed": 1592662227,
+      "mirror": false,
+      "actor": 1,
+      "outcomes": {
+        "learner": {
+          "x": [
+            4,
+            0
+          ],
+          "y": [
+            15,
+            6
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 3,
+              "points": 4,
+              "winner": 0
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -13
+        },
+        "teacher": {
+          "x": [
+            2,
+            0
+          ],
+          "y": [
+            6,
+            15
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 4,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0
+            }
+          ],
+          "utility": 1,
+          "scoreMargin": 7
+        }
+      }
+    },
+    {
+      "group": "confirmation",
+      "seed": 1592662227,
+      "mirror": true,
+      "actor": 0,
+      "outcomes": {
+        "learner": {
+          "x": [
+            2,
+            3
+          ],
+          "y": [
+            1,
+            20
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 1
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 1
+            },
+            {
+              "col": 3,
+              "points": 4,
+              "winner": 1
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 0
+            }
+          ],
+          "utility": -1,
+          "scoreMargin": -20
+        },
+        "teacher": {
+          "x": [
+            2,
+            8
+          ],
+          "y": [
+            20,
+            1
+          ],
+          "columns": [
+            {
+              "col": 0,
+              "points": 6,
+              "winner": 0
+            },
+            {
+              "col": 1,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 2,
+              "points": 5,
+              "winner": 0
+            },
+            {
+              "col": 3,
+              "points": 4,
+              "winner": 0
+            },
+            {
+              "col": 4,
+              "points": 1,
+              "winner": 1
+            }
+          ],
+          "utility": 1,
+          "scoreMargin": 13
+        }
+      }
+    }
+  ],
+  "scope": "Actual reducer and production hand helpers, not an independent hand evaluator",
+  "independent_arithmetic": {
+    "selection": {
+      "learner": {
+        "wins": 0,
+        "draws": 0,
+        "losses": 4,
+        "x_margin": -20,
+        "y_margin": -30,
+        "score_margin": -50
+      },
+      "teacher": {
+        "wins": 2,
+        "draws": 1,
+        "losses": 1,
+        "x_margin": -11,
+        "y_margin": 3,
+        "score_margin": -8
+      }
+    },
+    "confirmation": {
+      "learner": {
+        "wins": 0,
+        "draws": 0,
+        "losses": 4,
+        "x_margin": -4,
+        "y_margin": -62,
+        "score_margin": -66
+      },
+      "teacher": {
+        "wins": 3,
+        "draws": 0,
+        "losses": 1,
+        "x_margin": -9,
+        "y_margin": 34,
+        "score_margin": 25
+      }
+    }
+  }
+}
