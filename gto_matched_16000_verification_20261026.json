@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "new_inference": 0,
+  "pairs": 50,
+  "games": 200,
+  "moves": 6200,
+  "counts": [
+    {
+      "wins": 0,
+      "draws": 0,
+      "losses": 100
+    },
+    {
+      "wins": 1,
+      "draws": 0,
+      "losses": 99
+    }
+  ],
+  "mean_utility_delta": 0.02,
+  "mean_score_margin_delta": 0.45,
+  "paired_hoeffding95": [
+    -0.7482582330559366,
+    0.7882582330559367
+  ],
+  "changed_pairs": [
+    {
+      "seed": 2549083679,
+      "utility_delta": 1.0,
+      "score_margin_delta": 7.5
+    }
+  ],
+  "inputs": {
+    "gto_milestone_14000_matched16000_result_20261026.json": "53571ddf3a5b2e2b3081477753030ab552660314f84788fd5c20d9f230a341af",
+    "gto_milestone_16000_result_20261026.json": "105f52c3ba7a788ecd7607f6683a00d19ab298d7a28e6c3220fe42ef4a076195",
+    "gto_matched_14000_16000_20261026.json": "f10a94f492312a24ddab4dbca957efb316bcbf28bc8aa9bf137d0d08fa863ab8"
+  }
+}

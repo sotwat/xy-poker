@@ -1,0 +1,26 @@
+{
+  "status": "closed_by_user",
+  "date": "2026-10-26",
+  "reason": "User instructed ending the project because strength improvement was not established.",
+  "training_games": 16083,
+  "iteration": 4020,
+  "games_within_iteration": 3,
+  "live_checkpoint_sha256": "e6a025dcb5df02bd65ff850368407c4920980b917f49d5bf37b6e52a46edd24f",
+  "learning_restarted": false,
+  "automation_id": "xy",
+  "automation_deleted": true,
+  "control": {
+    "complete": false,
+    "stopped_by_user": true,
+    "pairs": 42,
+    "games": 84,
+    "wins": 41,
+    "draws": 4,
+    "losses": 39,
+    "raw_sha256": "8d6408e2eee6cc5d7df4668899a5c52591870723aff7b6cd52e8b5947336875a",
+    "scope": "Partial raw outcomes; no final control replay or complete-control inference. Last raw chunk status running reflects interruption, not a live process."
+  },
+  "preserved": "All model, optimizer, replay, RNG, population, progress, PR8 provenance, frozen checkpoints and older backups.",
+  "production_changed": false,
+  "restart_requires_explicit_user_request": true
+}
