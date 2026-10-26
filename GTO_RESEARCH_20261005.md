@@ -430,3 +430,9 @@ gto_target_semantics_plan_20261026.jsonは未実行：15000局以降の別baseli
 報告GTO_TEACHER_TARGET_COLLECTION_20261026.md、再現collect/verify/fit_teacher_targets・audit/verify_teacher_target_components等、結果gto_teacher_target_{dataset,collection_summary,components,fit,fit_verification,overlap}_20261026.json。元計画JSONの未実行表示は歴史、今回complete=trueを優先して同試験を繰返さない。raw/全応答/中断attempt/モデル両コピー/元入力は.selfplay/diagnostic-teacher-target-20261026へ保持。AI/bridge/rules/学習方式/本番変更・採用・公開なし。既存工程/直近skill調査再利用、追加課金/連携なし。次は16kの凍結14kとの新同配札/既定時間制A9/本体採点/不確実性/A9対照を優先、今回配札で独立強度判断や確認調整をしない。小診断なので通常通知なし。
 
 再開後、監督61150/学習61153（nice10）、15,757局/更新3939・両OS lock保持を実確認。現在PID/進捗は次回再確認する。
+
+### 2026-10-26 継続89：16k A9評価1勝99敗、本体100局一致、同配札14k参照は進行中
+
+16k固定モデルは新50配札seed2549083648〜2549083697×席交換100局、128探索8補完/既定時間制A9（64標本上限/1000ms）で1勝0分99敗。100局3100手の本体再生・X/Y内訳・別Python勝敗/集計一致。旧14k1勝99敗は別配札なので改善判定に使わない。同配札の凍結14k参照は現在実行中、A9対A9対照は未実行。未完結果から改善/不変とはしない。
+
+学習は16083局/4020世代内3局で正常保存停止。latest.pt全bytehash e6a025dcb5df02bd65ff850368407c4920980b917f49d5bf37b6e52a46edd24f。全旧状態/PR8/保全を保持し両lock解放後、wrapper65007が両lockを取得して参照をnice15/24分単独実行中。出力.selfplay/comparison-14000-on-16000/a9-milestones/games-00016000/result.json。自分のlive stop.flagを維持し参照/対照完了まで学習再開済みとしない。次回現在PID/両lock/進捗を確認し、未完なら同設定で残りペアを再開する。参照本体再生/ペア不確実性・同50配札A9対照完了後、live hash一致と両lock解放を確認して自分のflagだけ外しv3を再開する。報告GTO_MATCHED_16000_20261026.mdに手順/限界を記録。AI/bridge/rules/学習方式/本番未変更、既存工程/skill調査再利用、追加課金/連携なし。比較未完なので通常通知なし。
